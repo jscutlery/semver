@@ -9,7 +9,6 @@ import { VersionBuilderSchema } from './schema';
 jest.mock('standard-version', () => jest.fn(() => Promise.resolve()));
 
 const options: VersionBuilderSchema = {
-  root: 'lib',
   dryRun: false,
   noVerify: false,
   firstRelease: false,
