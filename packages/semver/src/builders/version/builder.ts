@@ -1,8 +1,4 @@
-import {
-  BuilderContext,
-  BuilderOutput,
-  createBuilder,
-} from '@angular-devkit/architect';
+import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
 import { resolve } from 'path';
 import { from, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
@@ -33,7 +29,10 @@ export function runBuilder(
       })
     ),
     mapTo({ success: true }),
-    catchError(() => of({ success: false }))
+    catchError(() => {
+      context.reportStatus('Error');
+      return of({ success: false });
+    })
   );
 }
 

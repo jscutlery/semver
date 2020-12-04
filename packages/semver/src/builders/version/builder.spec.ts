@@ -1,9 +1,8 @@
-import { Architect } from '@angular-devkit/architect';
-import { TestingArchitectHost } from '@angular-devkit/architect/testing';
-import { schema } from '@angular-devkit/core';
-import { join } from 'path';
+import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as standardVersion from 'standard-version';
 
+import { getMockContext } from '../../utils/testing';
+import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 
 jest.mock('standard-version', () => jest.fn(() => Promise.resolve()));
@@ -15,29 +14,15 @@ const options: VersionBuilderSchema = {
 };
 
 describe('@jscutlery/semver:version', () => {
-  let architect: Architect;
-  let architectHost: TestingArchitectHost;
+  let context: MockBuilderContext;
 
   beforeEach(async () => {
-    const registry = new schema.CoreSchemaRegistry();
-    registry.addPostTransform(schema.transforms.addUndefinedDefaults);
-
-    architectHost = new TestingArchitectHost('/root', '/root');
-    architect = new Architect(architectHost, registry);
-
-    await architectHost.addBuilderFromPackage(join(__dirname, '../../..'));
+    context = await getMockContext();
+    context.getProjectMetadata = jest.fn().mockResolvedValue({ root: '/root/lib' })
   });
 
-  it('runs standard-version', async () => {
-    const run = await architect.scheduleBuilder(
-      '@jscutlery/semver:version',
-      options
-    );
-    const output = await run.result;
-
-    await run.stop();
-
-    expect(output.success).toBe(true);
+  it('runs standard-version with project options', async () => {
+    await runBuilder(options, context).toPromise();
     expect(standardVersion).toBeCalledWith(
       expect.objectContaining({
         silent: false,
