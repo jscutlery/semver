@@ -9,7 +9,7 @@ describe('semver e2e', () => {
   it('should create semver', async (done) => {
     const plugin = uniq('semver');
     ensureNxProject('@jscutlery/semver', 'dist/packages/semver');
-    await runNxCommandAsync(`generate @jscutlery/semver:semver ${plugin}`);
+    await runNxCommandAsync(`generate @jscutlery/semver:version ${plugin}`);
 
     const result = await runNxCommandAsync(`build ${plugin}`);
     expect(result.stdout).toContain('Builder ran');
@@ -22,7 +22,7 @@ describe('semver e2e', () => {
       const plugin = uniq('semver');
       ensureNxProject('@jscutlery/semver', 'dist/packages/semver');
       await runNxCommandAsync(
-        `generate @jscutlery/semver:semver ${plugin} --directory subdir`
+        `generate @jscutlery/semver:version ${plugin} --directory subdir`
       );
       expect(() =>
         checkFilesExist(`libs/subdir/${plugin}/src/index.ts`)
@@ -36,7 +36,7 @@ describe('semver e2e', () => {
       const plugin = uniq('semver');
       ensureNxProject('@jscutlery/semver', 'dist/packages/semver');
       await runNxCommandAsync(
-        `generate @jscutlery/semver:semver ${plugin} --tags e2etag,e2ePackage`
+        `generate @jscutlery/semver:version ${plugin} --tags e2etag,e2ePackage`
       );
       const nxJson = readJson('nx.json');
       expect(nxJson.projects[plugin].tags).toEqual(['e2etag', 'e2ePackage']);

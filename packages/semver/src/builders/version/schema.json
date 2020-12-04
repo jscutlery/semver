@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://json-schema.org/draft-07/schema",
+  "title": "Version builder",
+  "description": "Automate versioning and CHANGELOG generation.",
+  "type": "object",
+  "properties": {
+    "root": {
+      "description": "The source root",
+      "type": "string"
+    },
+    "dry-run": {
+      "description": "See the commands that running standard-version would run",
+      "type": "boolean",
+      "default": false
+    },
+    "no-verify": {
+      "description": "Bypass pre-commit or commit-msg git hooks during the commit phase",
+      "type": "boolean",
+      "default": false
+    },
+    "first-release": {
+      "description": "Is this the first release ?",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": []
+}

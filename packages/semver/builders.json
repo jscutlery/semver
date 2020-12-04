@@ -1,4 +1,10 @@
 {
   "$schema": "../../node_modules/@angular-devkit/architect/src/builders-schema.json",
-  "builders": {}
+  "builders": {
+    "version": {
+      "implementation": "./src/builders/version/builder",
+      "schema": "./src/builders/version/schema.json",
+      "description": "Automate versioning and CHANGELOG generation."
+    }
+  }
 }

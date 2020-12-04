@@ -1,6 +1,16 @@
 {
   "name": "@jscutlery/semver",
   "version": "0.0.1",
+  "description": "Nx plugin for automate versioning and CHANGELOG generation.",
   "main": "src/index.js",
-  "builders": "./builders.json"
+  "builders": "./builders.json",
+  "repository": {
+    "url": "https://github.com/jscutlery/nx-plugin-semver"
+  },
+  "dependencies": {
+    "standard-version": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/standard-version": "^7.0.0"
+  }
 }
