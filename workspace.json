@@ -7,6 +7,9 @@
       "projectType": "library",
       "schematics": {},
       "architect": {
+        "version": {
+          "builder": "@jscutlery/semver:version"
+        },
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
