@@ -1,0 +1,40 @@
+name: SemVer CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        fetch-depth: 0
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: git fetch --no-tags --prune --depth=5 origin main
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./yarn.lock') }}
+    - run: yarn
+    - run: yarn nx affected:lint --base=origin/main --head=${{ github.event.pull_request.head.ref }}
+    - run: yarn nx affected:build --base=origin/main --head=${{ github.event.pull_request.head.ref }}
+    - run: yarn nx affected:test --base=origin/main --head=${{ github.event.pull_request.head.ref }}
+    - run: yarn nx affected:e2e --headless --base=origin/main --head=${{ github.event.pull_request.head.ref }}
