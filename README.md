@@ -1,12 +1,10 @@
-<div align="center">
-  <a href="https://www.npmjs.com/package/@jscutlery/semver" rel="nofollow">
-    <img src="https://badgen.net/npm/v/@jscutlery/semver">
-  </a>
-</div>
+<a href="https://www.npmjs.com/package/@jscutlery/semver" rel="nofollow">
+  <img src="https://badgen.net/npm/v/@jscutlery/semver">
+</a>
 
 # @jscutlery/semver
 
-An Nx plugin for versioning using [semver](https://semver.org/) and CHANGELOG generation powered by [Conventional Commits](https://conventionalcommits.org).
+Nx plugin for versioning using [SemVer](https://semver.org/) and CHANGELOG generation powered by [Conventional Commits](https://conventionalcommits.org).
 
 ## Setup
 
@@ -40,15 +38,15 @@ nx run my-package:version [...options]
 
 #### What it does
 
-Retrieve the current version of package.json file.
+Retrieve the current version of `package.json` file.
 
 Bump the version based on your commits.
 
 Generates a changelog based on your commits (uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) under the hood).
 
-Creates a new commit including your package.json file and updated CHANGELOG.
+Creates a new `commit` including your package.json file and updated CHANGELOG.
 
-Creates a new tag with the new version number.
+Creates a new `tag` with the new version number.
 
 #### Available options
 
