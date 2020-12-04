@@ -1,7 +1,7 @@
 {
   "npmScope": "jscutlery",
   "affected": {
-    "defaultBase": "master"
+    "defaultBase": "main"
   },
   "implicitDependencies": {
     "workspace.json": "*",
@@ -25,10 +25,6 @@
   "projects": {
     "semver": {
       "tags": []
-    },
-    "semver-e2e": {
-      "tags": [],
-      "implicitDependencies": ["semver"]
     }
   },
   "workspaceLayout": {
