@@ -38,25 +38,27 @@ Update your `angular.json` or `workspace.json` file and add:
 nx run my-package:version [...options]
 ```
 
+#### What it does
+
 Retrieve the current version of package.json file.
 
 Bump the version based on your commits.
 
-Generates a changelog based on your commits (uses conventional-changelog under the hood).
+Generates a changelog based on your commits (uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) under the hood).
 
 Creates a new commit including your package.json file and updated CHANGELOG.
 
 Creates a new tag with the new version number.
 
-Available options : 
+#### Available options
 
-- **`--dry-run`** `boolean` Run with dry mode
-- **`--no-verify`** `boolean` Skip git hooks
-- **`--first-release`** `boolean` Generate the CHANGELOG file
+- **`--dry-run`** `boolean` run with dry mode
+- **`--no-verify`** `boolean` skip git hooks
+- **`--first-release`** `boolean` generate the CHANGELOG file
 
 ## Changelog
 
-For new features or breaking changes [see the changelog](CHANGELOG.md).
+For new features or breaking changes [see the changelog](https://github.com/jscutlery/nx-plugin-semver/blob/main/packages/semver/CHANGELOG.md).
 
 ## Contributors
 
