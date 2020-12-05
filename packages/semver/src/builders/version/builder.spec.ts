@@ -23,6 +23,7 @@ describe('@jscutlery/semver:version', () => {
 
   beforeEach(async () => {
     context = await getMockContext();
+    context.logger.error = jest.fn();
     context.getProjectMetadata = jest
       .fn()
       .mockResolvedValue({ root: '/root/lib' });
@@ -95,12 +96,14 @@ describe('@jscutlery/semver:version', () => {
       ])
     );
   });
+
   it('should fail if Git config is missing', async () => {
     const output = await runBuilder(
-      { ...options, push: true, remote: undefined, baseBranch: null },
+      { ...options, push: true, remote: undefined, baseBranch: undefined },
       context
     ).toPromise();
 
+    expect(context.logger.error).toBeCalled()
     expect(output).toEqual(expect.objectContaining({ success: false }));
   });
 });

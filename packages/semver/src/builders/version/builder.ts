@@ -1,8 +1,8 @@
 import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
-import { noop, Rule } from '@angular-devkit/schematics';
+import { noop } from '@angular-devkit/schematics';
 import { exec } from '@lerna/child-process';
 import { resolve } from 'path';
-import { defer, from, Observable, of } from 'rxjs';
+import { defer, from, Observable, of, throwError } from 'rxjs';
 import { catchError, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -11,17 +11,6 @@ import { VersionBuilderSchema } from './schema';
 async function getProjectRoot(context: BuilderContext): Promise<string> {
   const metadata = await context.getProjectMetadata(context.target.project);
   return metadata.root as string;
-}
-
-function normalizeOptions(options: any): VersionBuilderSchema {
-  return {
-    push: options.push,
-    remote: options.remote,
-    dryRun: options['dry-run'],
-    noVerify: options['no-verify'],
-    baseBranch: options['base-branch'],
-    firstRelease: options['first-release'],
-  };
 }
 
 function pushToGitRemote({
@@ -34,16 +23,7 @@ function pushToGitRemote({
   branch: string;
   context: BuilderContext;
   noVerify: boolean;
-}): Rule {
-  if (remote == null || branch == null) {
-    context.logger.error(
-      'Missing configuration for Git push, please provide --remote and --branch options, see: https://github.com/jscutlery/semver#configure' +
-        '\n' +
-        'Skipping git push...'
-    );
-    throw new Error('Missing configuration');
-  }
-
+}): Promise<void> {
   const gitPushOptions = [
     '--follow-tags',
     ...(noVerify ? ['--no-verify'] : []),
@@ -79,18 +59,42 @@ function pushToGitRemote({
   });
 }
 
+function tryPushingToGitRemote({
+  remote,
+  branch,
+  noVerify,
+  context,
+}: {
+  remote: string;
+  branch: string;
+  context: BuilderContext;
+  noVerify: boolean;
+}): Observable<any> {
+  if (remote == null || branch == null) {
+    context.logger.error(
+      'Missing configuration for Git push, please provide --remote and --branch options, see: https://github.com/jscutlery/semver#configure' +
+        '\n' +
+        'Skipping git push...'
+    );
+
+    return throwError('Missing configuration');
+  }
+
+  return defer(() =>
+    pushToGitRemote({
+      remote,
+      branch,
+      noVerify,
+      context,
+    })
+  );
+}
+
 export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  const {
-    push,
-    remote,
-    dryRun,
-    baseBranch,
-    noVerify,
-    firstRelease,
-  } = normalizeOptions(options);
+  const { push, remote, dryRun, baseBranch, noVerify, firstRelease } = options;
 
   return from(getProjectRoot(context)).pipe(
     switchMap((projectRoot) =>
@@ -108,14 +112,12 @@ export function runBuilder(
     ),
     push && dryRun === false
       ? switchMapTo(
-          defer(() =>
-            pushToGitRemote({
-              remote,
-              branch: baseBranch,
-              noVerify,
-              context,
-            })
-          )
+          tryPushingToGitRemote({
+            branch: baseBranch,
+            remote,
+            noVerify,
+            context,
+          })
         )
       : mapTo(noop()),
     mapTo({ success: true }),

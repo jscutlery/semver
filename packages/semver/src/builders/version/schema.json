@@ -5,17 +5,17 @@
   "description": "Automate versioning and CHANGELOG generation.",
   "type": "object",
   "properties": {
-    "dry-run": {
+    "dryRun": {
       "description": "See what commands would be run, without committing to git or updating files.",
       "type": "boolean",
       "default": false
     },
-    "no-verify": {
+    "noVerify": {
       "description": "Bypass pre-commit or commit-msg git hooks during the commit phase.",
       "type": "boolean",
       "default": false
     },
-    "first-release": {
+    "firstRelease": {
       "description": "Generate your CHANGELOG for your first release.",
       "type": "boolean",
       "default": false
@@ -30,7 +30,7 @@
       "type": "string",
       "default": "origin"
     },
-    "base-branch": {
+    "baseBranch": {
       "description": "Pushes against git base branch.",
       "type": "string",
       "default": "main"
