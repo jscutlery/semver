@@ -52,7 +52,7 @@ describe('@jscutlery/semver:version', () => {
     expect(childProcess.exec).not.toHaveBeenCalled();
   });
 
-  it('should not to Git with right options', async () => {
+  it('should push to Git with right options', async () => {
     await runBuilder(
       { ...options, push: true, remote: 'origin', baseBranch: 'main' },
       context
