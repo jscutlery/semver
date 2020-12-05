@@ -1,17 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
   "$id": "https://json-schema.org/draft-07/schema",
-  "title": "Version builder",
+  "title": "JSCutlery Version builder",
   "description": "Automate versioning and CHANGELOG generation.",
   "type": "object",
   "properties": {
     "dry-run": {
-      "description": "See the commands that running standard-version would run",
+      "description": "See the commands that running standard-version would run.",
       "type": "boolean",
       "default": false
     },
     "no-verify": {
-      "description": "Bypass pre-commit or commit-msg git hooks during the commit phase",
+      "description": "Bypass pre-commit or commit-msg git hooks during the commit phase.",
       "type": "boolean",
       "default": false
     },
@@ -19,6 +19,21 @@
       "description": "Generate your CHANGELOG for your first release.",
       "type": "boolean",
       "default": false
+    },
+    "push": {
+      "description": "Pushes to the git remote.",
+      "type": "boolean",
+      "default": false
+    },
+    "remote": {
+      "description": "Pushes against git remote repository.",
+      "type": "string",
+      "default": "origin"
+    },
+    "baseBranch": {
+      "description": "Pushes against git base branch.",
+      "type": "string",
+      "default": "main"
     }
   },
   "required": []
