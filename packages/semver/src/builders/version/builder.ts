@@ -1,12 +1,8 @@
-import {
-  BuilderContext,
-  BuilderOutput,
-  createBuilder,
-} from '@angular-devkit/architect';
+import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
 import { noop, Rule } from '@angular-devkit/schematics';
 import { exec } from '@lerna/child-process';
 import { resolve } from 'path';
-import { from, Observable, of, defer } from 'rxjs';
+import { defer, from, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -15,6 +11,17 @@ import { VersionBuilderSchema } from './schema';
 async function getProjectRoot(context: BuilderContext): Promise<string> {
   const metadata = await context.getProjectMetadata(context.target.project);
   return metadata.root as string;
+}
+
+function normalizeOptions(options: any): VersionBuilderSchema {
+  return {
+    push: options.push,
+    remote: options.remote,
+    dryRun: options['dry-run'],
+    noVerify: options['no-verify'],
+    baseBranch: options['base-branch'],
+    firstRelease: options['first-release'],
+  };
 }
 
 function pushToGitRemote({
@@ -29,9 +36,12 @@ function pushToGitRemote({
   noVerify: boolean;
 }): Rule {
   if (remote == null || branch == null) {
-    throw new Error(
-      'Missing configuration for Git push, please provide --remote and --branch options'
+    context.logger.error(
+      'Missing configuration for Git push, please provide --remote and --branch options, see: https://github.com/jscutlery/semver#configure' +
+        '\n' +
+        'Skipping git push...'
     );
+    throw new Error('Missing configuration');
   }
 
   const gitPushOptions = [
@@ -73,28 +83,37 @@ export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
+  const {
+    push,
+    remote,
+    dryRun,
+    baseBranch,
+    noVerify,
+    firstRelease,
+  } = normalizeOptions(options);
+
   return from(getProjectRoot(context)).pipe(
     switchMap((projectRoot) =>
       standardVersion({
         silent: false,
         path: projectRoot,
-        dryRun: options.dryRun,
-        noVerify: options.noVerify,
-        firstRelease: options.firstRelease,
+        dryRun,
+        noVerify,
+        firstRelease,
         infile: resolve(projectRoot, 'CHANGELOG.md'),
         packageFiles: [resolve(projectRoot, 'package.json')],
         bumpFiles: [resolve(projectRoot, 'package.json')],
         preset: require.resolve('conventional-changelog-angular'),
       })
     ),
-    options.push && options.dryRun === false
+    push && dryRun === false
       ? switchMapTo(
           defer(() =>
             pushToGitRemote({
-              remote: options.remote,
-              branch: options.baseBranch,
+              remote,
+              branch: baseBranch,
+              noVerify,
               context,
-              noVerify: options.noVerify,
             })
           )
         )

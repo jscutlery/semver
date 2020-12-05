@@ -30,7 +30,7 @@
       "type": "string",
       "default": "origin"
     },
-    "baseBranch": {
+    "base-branch": {
       "description": "Pushes against git base branch.",
       "type": "string",
       "default": "main"
