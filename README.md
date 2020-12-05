@@ -25,6 +25,7 @@ Update your `angular.json` or `workspace.json` file and add builder target:
       "version": {
         "builder": "@jscutlery/semver:version"
         "options": {
+          "push": true,
           "remote": "origin",
           "baseBranch": "master"
         }
