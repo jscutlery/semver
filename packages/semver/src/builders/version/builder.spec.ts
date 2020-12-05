@@ -63,7 +63,6 @@ describe('@jscutlery/semver:version', () => {
       expect.arrayContaining([
         'push',
         '--follow-tags',
-        '--no-verify',
         '--atomic',
         'origin',
         'main',
@@ -71,6 +70,30 @@ describe('@jscutlery/semver:version', () => {
     );
   });
 
+  it(`should push to Git and add '--no-verify' option when asked for`, async () => {
+    await runBuilder(
+      {
+        ...options,
+        push: true,
+        remote: 'origin',
+        baseBranch: 'main',
+        noVerify: true,
+      },
+      context
+    ).toPromise();
+
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      'git',
+      expect.arrayContaining([
+        'push',
+        '--follow-tags',
+        '--no-verify',
+        '--atomic',
+        'origin',
+        'main',
+      ])
+    );
+  });
   it('should fail if Git config is missing', async () => {
     const output = await runBuilder(
       { ...options, push: true, remote: undefined, baseBranch: null },

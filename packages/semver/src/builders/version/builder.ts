@@ -17,21 +17,31 @@ async function getProjectRoot(context: BuilderContext): Promise<string> {
   return metadata.root as string;
 }
 
-function pushToGitRemote(
-  remote: string,
-  branch: string,
-  context: BuilderContext
-): Rule {
+function pushToGitRemote({
+  remote,
+  branch,
+  context,
+  noVerify,
+}: {
+  remote: string;
+  branch: string;
+  context: BuilderContext;
+  noVerify: boolean;
+}): Rule {
   if (remote == null || branch == null) {
     throw new Error(
       'Missing configuration for Git push, please provide --remote and --branch options'
     );
   }
 
+  const gitPushOptions = [
+    '--follow-tags',
+    ...(noVerify ? ['--no-verify'] : []),
+  ];
+
   return exec('git', [
     'push',
-    '--follow-tags',
-    '--no-verify',
+    ...gitPushOptions,
     '--atomic',
     remote,
     branch,
@@ -51,13 +61,7 @@ function pushToGitRemote(
         'git push --atomic failed, attempting non-atomic push'
       );
 
-      return exec('git', [
-        'push',
-        '--follow-tags',
-        '--no-verify',
-        remote,
-        branch,
-      ]);
+      return exec('git', ['push', ...gitPushOptions, remote, branch]);
     }
 
     // ensure unexpected errors still break chain
@@ -85,7 +89,12 @@ export function runBuilder(
     options.push && options.dryRun === false
       ? switchMapTo(
           defer(() =>
-            pushToGitRemote(options.remote, options.baseBranch, context)
+            pushToGitRemote({
+              remote: options.remote,
+              branch: options.baseBranch,
+              context,
+              noVerify: options.noVerify,
+            })
           )
         )
       : mapTo(noop()),
