@@ -4,19 +4,19 @@
 
 # @jscutlery/semver
 
-Nx plugin for versioning using [SemVer](https://semver.org/) and CHANGELOG generation powered by [Conventional Commits](https://conventionalcommits.org).
+**Nx plugin for versioning** using [SemVer](https://semver.org/) and **CHANGELOG generation** powered by [Conventional Commits](https://conventionalcommits.org).
 
 ## Setup
 
-### 1. Install
+### Install
 
 ```
 yarn add @jscutlery/semver -D
 ```
 
-### 2. Configure
+### Configure
 
-Update your `angular.json` or `workspace.json` file and add:
+Update your `angular.json` or `workspace.json` file and add builder target:
 
 ```
 {
@@ -24,35 +24,43 @@ Update your `angular.json` or `workspace.json` file and add:
     architect: {
       "version": {
         "builder": "@jscutlery/semver:version"
+        "options": {
+          "remote": "origin",
+          "baseBranch": "master"
+        }
       }
     }
-  } 
+  }
 }
 ```
 
-### 3. Release
+Note that builder options are optional.
+
+### Release
+
+Release your package by running:
 
 ```
 nx run my-package:version [...options]
 ```
 
-#### What it does
+#### When run, this command does the following:
 
-Retrieve the current version of `package.json` file.
+1. Retrieve the current version of `package.json` file from `my-package` project.
+2. Bump the version based on your commits.
+3. Generates a changelog based on your commits (uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) under the hood).
+4. Creates a new `commit` including your package.json file and updated CHANGELOG.
+5. Creates a new `tag` with the new version number.
+6. Push the release if enabled.
 
-Bump the version based on your commits.
+#### Available options:
 
-Generates a changelog based on your commits (uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) under the hood).
-
-Creates a new `commit` including your package.json file and updated CHANGELOG.
-
-Creates a new `tag` with the new version number.
-
-#### Available options
-
-- **`--dry-run`** `boolean` run with dry mode
-- **`--no-verify`** `boolean` skip git hooks
-- **`--first-release`** `boolean` generate the CHANGELOG file
+| name                  | type      | default | description                 |
+| --------------------- | --------- | ------- | --------------------------- |
+| **`--dry-run`**       | `boolean` | `false` | run with dry mode           |
+| **`--no-verify`**     | `boolean` | `false` | skip git hooks              |
+| **`--first-release`** | `boolean` | `false` | generate the CHANGELOG file |
+| **`--push`**          | `boolean` | `false` | push the release            |
 
 ## Changelog
 
