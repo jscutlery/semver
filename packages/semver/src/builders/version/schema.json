@@ -6,7 +6,7 @@
   "type": "object",
   "properties": {
     "dry-run": {
-      "description": "See the commands that running standard-version would run.",
+      "description": "See what commands would be run, without committing to git or updating files.",
       "type": "boolean",
       "default": false
     },
