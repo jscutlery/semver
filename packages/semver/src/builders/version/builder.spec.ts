@@ -35,6 +35,7 @@ describe('@jscutlery/semver:version', () => {
     expect(standardVersion).toBeCalledWith(
       expect.objectContaining({
         silent: false,
+        preset: expect.stringContaining('conventional-changelog-angular'),
         dryRun: false,
         noVerify: false,
         firstRelease: false,

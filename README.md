@@ -51,7 +51,7 @@ nx run my-package:version [...options]
 
 1. Retrieve the current version of `package.json` file from `my-package` project.
 2. Bump the version based on your commits.
-3. Generates a changelog based on your commits (uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) under the hood).
+3. Generates a changelog based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
 4. Creates a new `commit` including your package.json file and updated CHANGELOG.
 5. Creates a new `tag` with the new version number.
 6. Push the release if enabled.

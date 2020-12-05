@@ -84,6 +84,7 @@ export function runBuilder(
         infile: resolve(projectRoot, 'CHANGELOG.md'),
         packageFiles: [resolve(projectRoot, 'package.json')],
         bumpFiles: [resolve(projectRoot, 'package.json')],
+        preset: require.resolve('conventional-changelog-angular'),
       })
     ),
     options.push && options.dryRun === false
