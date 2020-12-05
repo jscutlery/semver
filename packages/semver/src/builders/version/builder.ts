@@ -82,7 +82,7 @@ export function runBuilder(
         bumpFiles: [resolve(projectRoot, 'package.json')],
       })
     ),
-    options.push
+    options.push && options.dryRun === false
       ? switchMapTo(
           defer(() =>
             pushToGitRemote(options.remote, options.baseBranch, context)
