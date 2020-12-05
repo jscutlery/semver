@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/renovate",
+  "extends": ["config:base", ":semanticCommitScopeDisabled"],
+  "automerge": true,
+  "automergeType": "branch",
+  "baseBranches": ["main"],
+  "semanticCommits": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "automergeType": "branch"
+  },
+  "rangeStrategy": "update-lockfile",
+  "commitMessage": "{{{commitMessagePrefix}}} 📦 {{{commitMessageAction}}} {{{commitMessageTopic}}} {{{commitMessageExtra}}} {{{commitMessageSuffix}}}"
+}
