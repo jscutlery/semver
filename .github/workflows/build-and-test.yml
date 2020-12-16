@@ -22,7 +22,7 @@ jobs:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         fetch-depth: 0
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
     - run: git fetch --no-tags --prune --depth=5 origin main
