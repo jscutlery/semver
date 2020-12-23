@@ -34,6 +34,11 @@
       "description": "Pushes against git base branch.",
       "type": "string",
       "default": "main"
+    },
+    "syncVersions": {
+      "description": "Sync all package versions.",
+      "type": "boolean",
+      "default": false
     }
   },
   "required": []

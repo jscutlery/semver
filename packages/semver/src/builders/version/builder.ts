@@ -1,11 +1,16 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import {
+  BuilderContext,
+  BuilderOutput,
+  createBuilder,
+} from '@angular-devkit/architect';
 import { noop } from '@angular-devkit/schematics';
 import { exec } from '@lerna/child-process';
+import { readFile } from 'fs';
 import { resolve } from 'path';
 import { defer, from, Observable, of, throwError } from 'rxjs';
-import { catchError, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
-
+import { promisify } from 'util';
 import { VersionBuilderSchema } from './schema';
 
 async function getProjectRoot(context: BuilderContext): Promise<string> {
@@ -94,11 +99,28 @@ export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  const { push, remote, dryRun, baseBranch, noVerify, firstRelease } = options;
+  const {
+    push,
+    remote,
+    dryRun,
+    baseBranch,
+    noVerify,
+    firstRelease,
+    syncVersions,
+  } = options;
 
   return from(getProjectRoot(context)).pipe(
     switchMap((projectRoot) =>
-      standardVersion({
+      getPackageFiles(projectRoot).pipe(
+        map((packageFiles) => ({ projectRoot, packageFiles }))
+      )
+    ),
+    switchMap(({ projectRoot, packageFiles }) => {
+      const bumpFiles = syncVersions
+        ? packageFiles
+        : [resolve(projectRoot, 'package.json')];
+
+      return standardVersion({
         silent: false,
         path: projectRoot,
         dryRun,
@@ -106,10 +128,10 @@ export function runBuilder(
         firstRelease,
         infile: resolve(projectRoot, 'CHANGELOG.md'),
         packageFiles: [resolve(projectRoot, 'package.json')],
-        bumpFiles: [resolve(projectRoot, 'package.json')],
+        bumpFiles,
         preset: require.resolve('conventional-changelog-angular'),
-      })
-    ),
+      });
+    }),
     push && dryRun === false
       ? switchMapTo(
           tryPushingToGitRemote({
@@ -126,6 +148,32 @@ export function runBuilder(
       return of({ success: false });
     })
   );
+}
+
+export interface WorkspaceDefinition {
+  projects: {
+    [key: string]: {
+      root: string;
+    };
+  };
+}
+
+export function getPackageFiles(projectRoot: string): Observable<string[]> {
+  return getWorkspaceDefinition(projectRoot).pipe(
+    map((workspaceDefinition) =>
+      Object.values(workspaceDefinition.projects).map((project) =>
+        resolve(projectRoot, project.root, 'package.json')
+      )
+    )
+  );
+}
+
+export function getWorkspaceDefinition(
+  projectRoot: string
+): Observable<WorkspaceDefinition> {
+  return from(
+    promisify(readFile)(resolve(projectRoot, 'workspace.json'), 'utf-8')
+  ).pipe(map((data) => JSON.parse(data)));
 }
 
 export default createBuilder(runBuilder);

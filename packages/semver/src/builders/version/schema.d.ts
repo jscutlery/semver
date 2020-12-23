@@ -7,4 +7,5 @@ export interface VersionBuilderSchema extends JsonObject {
   push?: boolean;
   remote?: string;
   baseBranch?: string;
+  syncVersions?: boolean;
 }
