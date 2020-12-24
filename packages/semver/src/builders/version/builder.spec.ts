@@ -22,6 +22,7 @@ const options: VersionBuilderSchema = {
 
 describe('@jscutlery/semver:version', () => {
   let context: MockBuilderContext;
+  let fakeReadFileSync: jest.Mock;
 
   beforeEach(async () => {
     context = await getMockContext();
@@ -30,25 +31,29 @@ describe('@jscutlery/semver:version', () => {
       .fn()
       .mockResolvedValue({ root: '/root/packages/lib' });
 
+    fakeReadFileSync = jest.fn().mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        projects: {
+          a: {
+            root: 'packages/a',
+          },
+          b: {
+            root: 'packages/b',
+          },
+        },
+      })
+    );
     jest
       .spyOn(fs, 'readFile')
       .mockImplementation((...args: Parameters<typeof fs.readFile>) => {
         // eslint-disable-next-line @typescript-eslint/ban-types
         const callback = args[args.length - 1] as Function;
-        callback(
-          null,
-          JSON.stringify({
-            version: 1,
-            projects: {
-              a: {
-                root: 'packages/a',
-              },
-              b: {
-                root: 'packages/b',
-              },
-            },
-          })
-        );
+        try {
+          callback(null, fakeReadFileSync(args));
+        } catch (e) {
+          callback(e);
+        }
       });
   });
 
