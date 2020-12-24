@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "aliases": ["install"],
+      "schema": "./src/schematics/ng-add/schema.json",
+      "factory": "./src/schematics/ng-add/index#ngAdd",
+      "description": "Add @jscutlery/semver to the workspace."
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

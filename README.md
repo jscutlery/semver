@@ -66,7 +66,7 @@ nx run my-package:version [...options]
 | **`--push`**          | `boolean` | `false`    | push the release                   |
 | **`--origin`**        | `string`  | `'origin'` | push against git remote repository |
 | **`--base-branch`**   | `string`  | `'main'`   | push against git base branch       |
-| **`--sync-versions`** | `boolean` | `false`    | lock version between packages      |
+| **`--sync-versions`** | `boolean` | `false`    | lock/sync version between packages |
 
 
 ## Changelog
