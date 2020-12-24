@@ -3,7 +3,7 @@ import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as fs from 'fs';
 import * as standardVersion from 'standard-version';
 
-import { getMockContext } from '../../utils/testing';
+import { getMockContext } from './testing';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 

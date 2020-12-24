@@ -11,7 +11,7 @@ export async function getTestArchitect() {
 
   const architect = new Architect(architectHost, registry);
 
-  await architectHost.addBuilderFromPackage(join(__dirname, '../..'));
+  await architectHost.addBuilderFromPackage(join(__dirname, '../../..'));
 
   return [architect, architectHost] as [Architect, TestingArchitectHost];
 }
@@ -20,6 +20,6 @@ export async function getMockContext() {
   const [architect, architectHost] = await getTestArchitect();
 
   const context = new MockBuilderContext(architect, architectHost);
-  await context.addBuilderFromPackage(join(__dirname, '../..'));
+  await context.addBuilderFromPackage(join(__dirname, '../../..'));
   return context;
 }
