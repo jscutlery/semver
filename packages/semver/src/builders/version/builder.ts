@@ -107,7 +107,6 @@ function getPackageFiles(projectRoot: string): Observable<string[]> {
     )
   );
 }
-
 function getWorkspaceDefinition(
   projectRoot: string
 ): Observable<WorkspaceDefinition> {

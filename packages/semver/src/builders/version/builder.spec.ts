@@ -47,8 +47,11 @@ describe('@jscutlery/semver:version', () => {
       });
   });
 
-  describe('Independent version', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
+  describe('Independent version', () => {
     beforeEach(async () => {
       context = await getMockContext();
       context.logger.error = jest.fn();
@@ -156,7 +159,8 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(fs.readFile).toHaveBeenLastCalledWith(
+      expect(fs.readFile).toBeCalledTimes(1);
+      expect(fs.readFile).toBeCalledWith(
         '/root/workspace.json',
         'utf-8',
         expect.any(Function)
