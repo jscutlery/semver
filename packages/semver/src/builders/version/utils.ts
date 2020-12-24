@@ -3,7 +3,7 @@ import { exec } from '@lerna/child-process';
 import { readFile } from 'fs';
 import { resolve } from 'path';
 import { defer, from, Observable, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { promisify } from 'util';
 
 export interface WorkspaceDefinition {
@@ -107,7 +107,12 @@ export function getPackageFiles(projectRoot: string): Observable<string[]> {
 export function getWorkspaceDefinition(
   projectRoot: string
 ): Observable<WorkspaceDefinition> {
+  return _readJsonFile(resolve(projectRoot, 'workspace.json'))
+    .pipe(catchError(() => _readJsonFile(resolve(projectRoot, 'angular.json'))));
+}
+
+export function _readJsonFile(filePath: string) {
   return from(
-    promisify(readFile)(resolve(projectRoot, 'workspace.json'), 'utf-8')
-  ).pipe(map((data) => JSON.parse(data)));
+    promisify(readFile)(filePath, 'utf-8')
+  ).pipe(map((data) => JSON.parse(data)))
 }
