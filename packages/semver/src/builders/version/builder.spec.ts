@@ -19,12 +19,19 @@ const options: VersionBuilderSchema = {
   push: false,
   remote: 'origin',
   baseBranch: 'main',
+  syncVersions: false,
 };
 
 describe('@jscutlery/semver:version', () => {
   let context: MockBuilderContext;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    context = await getMockContext();
+    context.logger.error = jest.fn();
+    context.getProjectMetadata = jest
+      .fn()
+      .mockResolvedValue({ root: '/root/packages/lib' });
+
     jest
       .spyOn(fs, 'readFile')
       .mockImplementation((...args: Parameters<typeof fs.readFile>) => {
@@ -51,16 +58,67 @@ describe('@jscutlery/semver:version', () => {
     jest.clearAllMocks();
   });
 
-  describe('Independent version', () => {
-    beforeEach(async () => {
-      context = await getMockContext();
-      context.logger.error = jest.fn();
-      context.getProjectMetadata = jest
-        .fn()
-        .mockResolvedValue({ root: '/root/packages/lib' });
-    });
+  it('should not push to Git by default', async () => {
+    await runBuilder(options, context).toPromise();
 
-    it('runs standard-version with project options', async () => {
+    expect(childProcess.exec).not.toHaveBeenCalled();
+  });
+
+  it('should push to Git with right options', async () => {
+    await runBuilder(
+      { ...options, push: true, remote: 'origin', baseBranch: 'main' },
+      context
+    ).toPromise();
+
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      'git',
+      expect.arrayContaining([
+        'push',
+        '--follow-tags',
+        '--atomic',
+        'origin',
+        'main',
+      ])
+    );
+  });
+
+  it(`should push to Git and add '--no-verify' option when asked for`, async () => {
+    await runBuilder(
+      {
+        ...options,
+        push: true,
+        noVerify: true,
+      },
+      context
+    ).toPromise();
+
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      'git',
+      expect.arrayContaining([
+        'push',
+        '--follow-tags',
+        '--no-verify',
+        '--atomic',
+        'origin',
+        'main',
+      ])
+    );
+  });
+
+  it('should fail if Git config is missing', async () => {
+    const output = await runBuilder(
+      { ...options, push: true, remote: undefined, baseBranch: undefined },
+      context
+    ).toPromise();
+
+    expect(context.logger.error).toBeCalledWith(
+      expect.stringContaining('Missing configuration')
+    );
+    expect(output).toEqual(expect.objectContaining({ success: false }));
+  });
+
+  describe('Independent version', () => {
+    it('should run standard-version independently on a project', async () => {
       const output = await runBuilder(options, context).toPromise();
 
       expect(output).toEqual(expect.objectContaining({ success: true }));
@@ -78,78 +136,17 @@ describe('@jscutlery/semver:version', () => {
         })
       );
     });
-
-    it('should not push to Git by default', async () => {
-      await runBuilder(options, context).toPromise();
-
-      expect(childProcess.exec).not.toHaveBeenCalled();
-    });
-
-    it('should push to Git with right options', async () => {
-      await runBuilder(
-        { ...options, push: true, remote: 'origin', baseBranch: 'main' },
-        context
-      ).toPromise();
-
-      expect(childProcess.exec).toHaveBeenCalledWith(
-        'git',
-        expect.arrayContaining([
-          'push',
-          '--follow-tags',
-          '--atomic',
-          'origin',
-          'main',
-        ])
-      );
-    });
-
-    it(`should push to Git and add '--no-verify' option when asked for`, async () => {
-      await runBuilder(
-        {
-          ...options,
-          push: true,
-          noVerify: true,
-        },
-        context
-      ).toPromise();
-
-      expect(childProcess.exec).toHaveBeenCalledWith(
-        'git',
-        expect.arrayContaining([
-          'push',
-          '--follow-tags',
-          '--no-verify',
-          '--atomic',
-          'origin',
-          'main',
-        ])
-      );
-    });
-
-    it('should fail if Git config is missing', async () => {
-      const output = await runBuilder(
-        { ...options, push: true, remote: undefined, baseBranch: undefined },
-        context
-      ).toPromise();
-
-      expect(context.logger.error).toBeCalledWith(
-        expect.stringContaining('Missing configuration')
-      );
-      expect(output).toEqual(expect.objectContaining({ success: false }));
-    });
   });
 
   describe('Sync version', () => {
     beforeEach(async () => {
-      context = await getMockContext();
-
       /* With the sync version, the builder runs on the workspace. */
       context.getProjectMetadata = jest
         .fn()
         .mockResolvedValue({ root: '/root' });
     });
 
-    it('should sync projects versions', async () => {
+    it('should run standard-version on multiple projects', async () => {
       const output = await runBuilder(
         {
           ...options,
