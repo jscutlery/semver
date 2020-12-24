@@ -2,6 +2,7 @@ import * as childProcess from '@lerna/child-process';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as fs from 'fs';
 import * as standardVersion from 'standard-version';
+
 import { getMockContext } from '../../utils/testing';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
@@ -16,6 +17,8 @@ const options: VersionBuilderSchema = {
   noVerify: false,
   firstRelease: false,
   push: false,
+  remote: 'origin',
+  baseBranch: 'main',
 };
 
 describe('@jscutlery/semver:version', () => {
@@ -25,6 +28,7 @@ describe('@jscutlery/semver:version', () => {
     jest
       .spyOn(fs, 'readFile')
       .mockImplementation((...args: Parameters<typeof fs.readFile>) => {
+        // eslint-disable-next-line @typescript-eslint/ban-types
         const callback = args[args.length - 1] as Function;
         callback(
           null,
@@ -44,6 +48,7 @@ describe('@jscutlery/semver:version', () => {
   });
 
   describe('Independent version', () => {
+
     beforeEach(async () => {
       context = await getMockContext();
       context.logger.error = jest.fn();
@@ -51,6 +56,7 @@ describe('@jscutlery/semver:version', () => {
         .fn()
         .mockResolvedValue({ root: '/root/packages/lib' });
     });
+
     it('runs standard-version with project options', async () => {
       const output = await runBuilder(options, context).toPromise();
 
@@ -99,8 +105,6 @@ describe('@jscutlery/semver:version', () => {
         {
           ...options,
           push: true,
-          remote: 'origin',
-          baseBranch: 'main',
           noVerify: true,
         },
         context
@@ -125,7 +129,9 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(context.logger.error).toBeCalled();
+      expect(context.logger.error).toBeCalledWith(
+        expect.stringContaining('Missing configuration')
+      );
       expect(output).toEqual(expect.objectContaining({ success: false }));
     });
   });
@@ -134,7 +140,7 @@ describe('@jscutlery/semver:version', () => {
     beforeEach(async () => {
       context = await getMockContext();
 
-      /*  With the sync version, the builder runs on the workspace. */
+      /* With the sync version, the builder runs on the workspace. */
       context.getProjectMetadata = jest
         .fn()
         .mockResolvedValue({ root: '/root' });
@@ -144,9 +150,6 @@ describe('@jscutlery/semver:version', () => {
       const output = await runBuilder(
         {
           ...options,
-          push: true,
-          remote: undefined,
-          baseBranch: undefined,
           /* Enable sync versions. */
           syncVersions: true,
         },
@@ -174,6 +177,7 @@ describe('@jscutlery/semver:version', () => {
           packageFiles: ['/root/package.json'],
         })
       );
+      expect(output).toEqual(expect.objectContaining({ success: true }));
     });
   });
 });

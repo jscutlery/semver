@@ -1,8 +1,4 @@
-import {
-  BuilderContext,
-  BuilderOutput,
-  createBuilder,
-} from '@angular-devkit/architect';
+import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
 import { noop } from '@angular-devkit/schematics';
 import { exec } from '@lerna/child-process';
 import { readFile } from 'fs';
@@ -11,7 +7,16 @@ import { defer, from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 import { promisify } from 'util';
+
 import { VersionBuilderSchema } from './schema';
+
+interface WorkspaceDefinition {
+  projects: {
+    [key: string]: {
+      root: string;
+    };
+  };
+}
 
 async function getProjectRoot(context: BuilderContext): Promise<string> {
   const metadata = await context.getProjectMetadata(context.target.project);
@@ -64,7 +69,7 @@ function pushToGitRemote({
   });
 }
 
-function tryPushingToGitRemote({
+function tryPushToGitRemote({
   remote,
   branch,
   noVerify,
@@ -76,13 +81,11 @@ function tryPushingToGitRemote({
   noVerify: boolean;
 }): Observable<any> {
   if (remote == null || branch == null) {
-    context.logger.error(
+    return throwError(
       'Missing configuration for Git push, please provide --remote and --branch options, see: https://github.com/jscutlery/semver#configure' +
         '\n' +
         'Skipping git push...'
     );
-
-    return throwError('Missing configuration');
   }
 
   return defer(() =>
@@ -93,6 +96,24 @@ function tryPushingToGitRemote({
       context,
     })
   );
+}
+
+function getPackageFiles(projectRoot: string): Observable<string[]> {
+  return getWorkspaceDefinition(projectRoot).pipe(
+    map((workspaceDefinition) =>
+      Object.values(workspaceDefinition.projects).map((project) =>
+        resolve(projectRoot, project.root, 'package.json')
+      )
+    )
+  );
+}
+
+function getWorkspaceDefinition(
+  projectRoot: string
+): Observable<WorkspaceDefinition> {
+  return from(
+    promisify(readFile)(resolve(projectRoot, 'workspace.json'), 'utf-8')
+  ).pipe(map((data) => JSON.parse(data)));
 }
 
 export function runBuilder(
@@ -134,7 +155,7 @@ export function runBuilder(
     }),
     push && dryRun === false
       ? switchMapTo(
-          tryPushingToGitRemote({
+          tryPushToGitRemote({
             branch: baseBranch,
             remote,
             noVerify,
@@ -143,37 +164,12 @@ export function runBuilder(
         )
       : mapTo(noop()),
     mapTo({ success: true }),
-    catchError(() => {
+    catchError((error) => {
+      context.logger.error(error);
       context.reportStatus('Error');
       return of({ success: false });
     })
   );
-}
-
-export interface WorkspaceDefinition {
-  projects: {
-    [key: string]: {
-      root: string;
-    };
-  };
-}
-
-export function getPackageFiles(projectRoot: string): Observable<string[]> {
-  return getWorkspaceDefinition(projectRoot).pipe(
-    map((workspaceDefinition) =>
-      Object.values(workspaceDefinition.projects).map((project) =>
-        resolve(projectRoot, project.root, 'package.json')
-      )
-    )
-  );
-}
-
-export function getWorkspaceDefinition(
-  projectRoot: string
-): Observable<WorkspaceDefinition> {
-  return from(
-    promisify(readFile)(resolve(projectRoot, 'workspace.json'), 'utf-8')
-  ).pipe(map((data) => JSON.parse(data)));
 }
 
 export default createBuilder(runBuilder);
