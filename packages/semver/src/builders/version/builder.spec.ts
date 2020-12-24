@@ -7,9 +7,7 @@ import { getMockContext } from '../../utils/testing';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 
-/* For no apparent reason jest.mock does not work for this module. */
-jest.spyOn(childProcess, 'exec');
-
+jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn(() => Promise.resolve()));
 
 const options: VersionBuilderSchema = {
@@ -54,9 +52,9 @@ describe('@jscutlery/semver:version', () => {
       });
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(() =>
+    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore()
+  );
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
