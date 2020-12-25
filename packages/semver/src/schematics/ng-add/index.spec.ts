@@ -4,6 +4,7 @@ import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
 import * as path from 'path';
 
 import { SchemaOptions } from './schema';
+import { readJsonInTree } from './testing';
 
 const collectionPath = path.join(__dirname, '../../../collection.json');
 
@@ -37,9 +38,10 @@ describe('ng-add schematic', () => {
       .runSchematicAsync('ng-add', options, appTree)
       .toPromise();
 
-    const packageJson = tree.readContent('/package.json');
-    expect(packageJson).toBeTruthy();
-    expect(packageJson).toContain('@jscutlery/semver');
+    const packageJson = readJsonInTree(tree, 'package.json');
+
+    expect(packageJson.dependencies['@jscutlery/semver']).toBeUndefined();
+    expect(packageJson.devDependencies['@jscutlery/semver']).toBeDefined();
   });
 
   xit('should configure semver for multiple projects', async () => {

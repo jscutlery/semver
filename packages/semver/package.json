@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "standard-version": "^9.0.0",
-    "@lerna/child-process": "^3.16.5",
-    "@nrwl/angular": "^11.0.18"
+    "@lerna/child-process": "^3.16.5"
   },
   "devDependencies": {
     "@types/standard-version": "^7.0.0"

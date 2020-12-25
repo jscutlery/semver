@@ -1,33 +1,19 @@
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import { addPackageJsonDependency, NodeDependency, NodeDependencyType } from '@schematics/angular/utility/dependencies';
-import { of } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { updateJsonInTree } from '@nrwl/workspace';
 
 import { getLatestNodeVersion } from '../../utils/npm';
 import { SchemaOptions } from './schema';
 
 const PACKAGE_NAME = '@jscutlery/semver';
 
-function addDependency(): Rule {
-  return (tree, ctx): any => {
-    return of(PACKAGE_NAME).pipe(
-      concatMap((dep) => getLatestNodeVersion(dep)),
-      map(({ name, version }) => {
-        ctx.logger.info(
-          `✅️ Added ${name}@${version} to ${NodeDependencyType.Dev}`
-        );
-        const nodeDependency: NodeDependency = {
-          name,
-          version,
-          type: NodeDependencyType.Dev,
-          overwrite: false,
-        };
-        addPackageJsonDependency(tree, nodeDependency);
-        return tree;
-      })
-    );
-  };
+async function updateDependencies(): Promise<Rule> {
+  const { version } = await getLatestNodeVersion(PACKAGE_NAME)
+  return updateJsonInTree('package.json', (json) => {
+    delete json.dependencies[PACKAGE_NAME];
+    json.devDependencies[PACKAGE_NAME] = version;
+    return json;
+  });
 }
 
 function installDependencies(): Rule {
@@ -39,10 +25,7 @@ function installDependencies(): Rule {
 }
 
 export function ngAdd(options: SchemaOptions): Rule {
-  return (tree: Tree, ctx: SchematicContext) => {
-    return chain([
-      addDependency(),
-      installDependencies()
-    ]);
+  return async (tree: Tree, ctx: SchematicContext) => {
+    return chain([await updateDependencies(), installDependencies()]);
   };
 }
