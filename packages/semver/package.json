@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "builders": "./builders.json",
+  "schematics": "./collection.json",
   "repository": {
     "url": "https://github.com/jscutlery/nx-plugin-semver"
   },

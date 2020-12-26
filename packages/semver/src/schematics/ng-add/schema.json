@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "ngAdd",
+  "title": "@jscutlery/semver ng-add schematic",
+  "type": "object",
+  "properties": {
+    "syncVersions": {
+      "description": "Lock/sync versions between packages",
+      "type": "boolean",
+      "default": false
+    },
+    "projectName": {
+      "description": "The project to target for independent versions",
+      "type": "string"
+    }
+  },
+  "required": []
+}

@@ -141,9 +141,9 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('Sync version', () => {
+  describe('Sync versions', () => {
     beforeEach(async () => {
-      /* With the sync version, the builder runs on the workspace. */
+      /* With the sync versions, the builder runs on the workspace. */
       (context.getProjectMetadata as jest.MockedFunction<
         typeof context.getProjectMetadata
       >).mockResolvedValue({ root: '/root' });
