@@ -6,10 +6,11 @@
   "properties": {
     "syncVersions": {
       "description": "Lock/sync versions between packages",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "projectName": {
-      "description": "The project name for independent version",
+      "description": "The project to target for independent versions",
       "type": "string"
     }
   },
