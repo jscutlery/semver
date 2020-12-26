@@ -1,6 +1,6 @@
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import { updateJsonInTree, updateWorkspace } from '@nrwl/workspace';
+import { updateJsonInTree, updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
 
 import { SchemaOptions } from './schema';
 import { getLatestNodeVersion } from './utils';
@@ -25,7 +25,7 @@ function installDependencies(): Rule {
 }
 
 export function ngAdd(options: SchemaOptions): Rule {
-  return async (tree: Tree, ctx: SchematicContext) => {
+  return async () => {
     return chain([
       await updateDependencies(),
       installDependencies(),
@@ -59,6 +59,13 @@ export function ngAdd(options: SchemaOptions): Rule {
           });
         }
       }),
+      updateNxJsonInTree((nxConfig) => ({
+        ...nxConfig,
+        projects: {
+          ...nxConfig.projects,
+          workspace: { tags: [] }
+        }
+      }))
     ]);
   };
 }

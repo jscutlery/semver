@@ -1,6 +1,6 @@
 import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
-import { readJsonInTree, readWorkspace } from '@nrwl/workspace';
+import { readJsonInTree, readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
 import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
 import * as path from 'path';
 
@@ -67,7 +67,20 @@ describe('ng-add schematic', () => {
       );
     });
 
-    it.todo('should add workspace project to nx.json if it does not exist');
+    it('should add workspace project to nx.json', async () => {
+      const tree = await schematicRunner
+        .runSchematicAsync('ng-add', options, appTree)
+        .toPromise();
+
+      const nxConfig = readNxJsonInTree(tree);
+
+      expect(nxConfig.projects.workspace).toBeDefined();
+      expect(nxConfig.projects.workspace).toEqual(
+        expect.objectContaining({
+          tags: [],
+        })
+      );
+    });
   });
 
   describe('Independent versions', () => {
