@@ -20,11 +20,11 @@ export async function getProjectRoot(context: BuilderContext): Promise<string> {
 }
 
 export function pushToGitRemote({
-                           remote,
-                           branch,
-                           context,
-                           noVerify
-                         }: {
+  remote,
+  branch,
+  context,
+  noVerify,
+}: {
   remote: string;
   branch: string;
   context: BuilderContext;
@@ -32,7 +32,7 @@ export function pushToGitRemote({
 }): Promise<void> {
   const gitPushOptions = [
     '--follow-tags',
-    ...(noVerify ? ['--no-verify'] : [])
+    ...(noVerify ? ['--no-verify'] : []),
   ];
 
   return exec('git', [
@@ -40,7 +40,7 @@ export function pushToGitRemote({
     ...gitPushOptions,
     '--atomic',
     remote,
-    branch
+    branch,
   ]).catch((error) => {
     // @see https://github.com/sindresorhus/execa/blob/v1.0.0/index.js#L159-L179
     // the error message _should_ be on stderr except when GIT_REDIRECT_STDERR has been configured to redirect
@@ -66,11 +66,11 @@ export function pushToGitRemote({
 }
 
 export function tryPushToGitRemote({
-                                     remote,
-                                     branch,
-                                     noVerify,
-                                     context
-                                   }: {
+  remote,
+  branch,
+  noVerify,
+  context,
+}: {
   remote: string;
   branch: string;
   context: BuilderContext;
@@ -79,8 +79,8 @@ export function tryPushToGitRemote({
   if (remote == null || branch == null) {
     return throwError(
       'Missing configuration for Git push, please provide --remote and --branch options, see: https://github.com/jscutlery/semver#configure' +
-      '\n' +
-      'Skipping git push...'
+        '\n' +
+        'Skipping git push...'
     );
   }
 
@@ -89,7 +89,7 @@ export function tryPushToGitRemote({
       remote,
       branch,
       noVerify,
-      context
+      context,
     })
   );
 }
@@ -107,12 +107,13 @@ export function getPackageFiles(projectRoot: string): Observable<string[]> {
 export function getWorkspaceDefinition(
   projectRoot: string
 ): Observable<WorkspaceDefinition> {
-  return _readJsonFile(resolve(projectRoot, 'workspace.json'))
-    .pipe(catchError(() => _readJsonFile(resolve(projectRoot, 'angular.json'))));
+  return _readJsonFile(resolve(projectRoot, 'workspace.json')).pipe(
+    catchError(() => _readJsonFile(resolve(projectRoot, 'angular.json')))
+  );
 }
 
 export function _readJsonFile(filePath: string) {
-  return from(
-    promisify(readFile)(filePath, 'utf-8')
-  ).pipe(map((data) => JSON.parse(data)))
+  return from(promisify(readFile)(filePath, 'utf-8')).pipe(
+    map((data) => JSON.parse(data))
+  );
 }
