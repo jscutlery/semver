@@ -10,11 +10,12 @@ const collectionPath = path.join(__dirname, '../../../collection.json');
 
 const libOptions = { name: 'lib' };
 
-let options: SchemaOptions = {
+const defaultOptions: SchemaOptions = {
+  projectName: 'lib',
   syncVersions: false,
+  push: true,
   branch: 'main',
   remote: 'origin',
-  push: true,
 };
 
 describe('ng-add schematic', () => {
@@ -35,7 +36,7 @@ describe('ng-add schematic', () => {
 
   it('should add proper package to dev dependencies', async () => {
     const tree = await schematicRunner
-      .runSchematicAsync('ng-add', options, appTree)
+      .runSchematicAsync('ng-add', defaultOptions, appTree)
       .toPromise();
 
     const packageJson = readJsonInTree(tree, 'package.json');
@@ -45,7 +46,7 @@ describe('ng-add schematic', () => {
   });
 
   describe('Sync versions', () => {
-    options = { ...options, syncVersions: true };
+    const options = { ...defaultOptions, syncVersions: true };
 
     it('should add workspace project to workspace.json', async () => {
       const tree = await schematicRunner
@@ -67,5 +68,36 @@ describe('ng-add schematic', () => {
     });
 
     it.todo('should add workspace project to nx.json if it does not exist');
+  });
+
+  describe('Independent versions', () => {
+    const options = { ...defaultOptions, syncVersions: false, projectName: 'lib' }
+
+    it('should throw if --project-name is not defined', async () => {
+      try {
+        await schematicRunner
+        .runSchematicAsync('ng-add', { ...options, projectName: undefined }, appTree)
+        .toPromise()
+      } catch (error) {
+        expect(error.message).toContain('Missing option --project-name')
+      }
+    });
+
+    it('should add version builder to the given project', async () => {
+      const tree = await schematicRunner
+        .runSchematicAsync('ng-add', options, appTree)
+        .toPromise();
+
+      const workspace = readWorkspace(tree);
+
+      expect(workspace.projects.lib.architect).toEqual(
+        expect.objectContaining({
+          version: {
+            builder: '@jscutlery/semver:version',
+            options: { syncVersions: false },
+          },
+        })
+      );
+    });
   });
 });

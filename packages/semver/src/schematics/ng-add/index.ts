@@ -42,6 +42,21 @@ export function ngAdd(options: SchemaOptions): Rule {
               },
             },
           });
+        } else {
+          /* Otherwise configure the 'version' builder for the given project. */
+          if (options.projectName == null) {
+            throw new Error(
+              'Missing option --project-name should be passed for independent versions.'
+            );
+          }
+
+          const { targets } = workspace.projects.get(options.projectName);
+
+          targets.add({
+            name: 'version',
+            builder: '@jscutlery/semver:version',
+            options: { syncVersions: false },
+          });
         }
       }),
     ]);
