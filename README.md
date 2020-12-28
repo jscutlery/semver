@@ -28,58 +28,6 @@ nx add @jscutlery/semver --sync-versions
 
 > One issue with this approach is that a major change in any project will result in all projects having a new major version.
 
-## Manual setup
-
-### Install
-
-```
-yarn add @jscutlery/semver -D
-```
-
-### Configure
-
-Update your `angular.json` or `workspace.json` file and add builder target.
-
-#### Independent project
-
-```
-{
-  "my-project": {
-    ...
-    "architect": {
-      "version": {
-        "builder": "@jscutlery/semver:version"
-        "options": {
-          "push": true,
-          "remote": "origin",
-          "baseBranch": "master"
-        }
-      }
-    }
-  }
-}
-```
-
-Note that target options are optional.
-
-#### Multiple projects
-
-```
-{
-  "workspace": {
-    "root": ".",
-    "architect": {
-      "version": {
-        "builder": "@jscutlery/semver:version"
-        "options": {
-          "syncVersions": true
-        }
-      }
-    }
-  }
-}
-```
-
 ## Usage
 
 ### Release
