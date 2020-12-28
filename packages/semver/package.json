@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "standard-version": "^9.0.0",
-    "@lerna/child-process": "^3.16.5"
+    "@lerna/child-process": "^3.16.5",
+    "@angular-devkit/build-angular": "0.1100.5"
   },
   "devDependencies": {
     "@types/standard-version": "^7.0.0"
