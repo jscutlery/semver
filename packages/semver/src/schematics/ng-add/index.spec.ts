@@ -1,6 +1,10 @@
 import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
-import { readJsonInTree, readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
+import {
+  readJsonInTree,
+  readNxJsonInTree,
+  readWorkspace,
+} from '@nrwl/workspace';
 import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
 import * as path from 'path';
 
@@ -84,15 +88,23 @@ describe('ng-add schematic', () => {
   });
 
   describe('Independent versions', () => {
-    const options = { ...defaultOptions, syncVersions: false, projectName: 'lib' }
+    const options = {
+      ...defaultOptions,
+      syncVersions: false,
+      projectName: 'lib',
+    };
 
     it('should throw if --project-name is not defined', async () => {
       try {
         await schematicRunner
-        .runSchematicAsync('ng-add', { ...options, projectName: undefined }, appTree)
-        .toPromise()
+          .runSchematicAsync(
+            'ng-add',
+            { ...options, projectName: undefined },
+            appTree
+          )
+          .toPromise();
       } catch (error) {
-        expect(error.message).toContain('Missing option --project-name')
+        expect(error.message).toContain('Missing option --project-name');
       }
     });
 
@@ -111,6 +123,16 @@ describe('ng-add schematic', () => {
           },
         })
       );
+    });
+
+    xit('🚧 should not touch nx.json', async () => {
+      const tree = await schematicRunner
+        .runSchematicAsync('ng-add', options, appTree)
+        .toPromise();
+
+      const nxConfig = readNxJsonInTree(tree);
+
+      expect(nxConfig.projects.workspace).toBeUndefined();
     });
   });
 });

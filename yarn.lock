@@ -1298,6 +1298,13 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@jscutlery/semver@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-0.1.1.tgz#2acf810df765782a9d87359384a028f40cf3f91b"
+  integrity sha512-BfHFHW+M7IfHaGilUZKcJmAvbbpoVKs4iS4GiVGrZdHl7rnvwb3W3lHPy6mRUbRqnrCfNnwMMBiojsVqIBWsmQ==
+  dependencies:
+    standard-version "^9.0.0"
+
 "@jsdevtools/coverage-istanbul-loader@3.0.5":
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@jsdevtools/coverage-istanbul-loader/-/coverage-istanbul-loader-3.0.5.tgz#2a4bc65d0271df8d4435982db4af35d81754ee26"
