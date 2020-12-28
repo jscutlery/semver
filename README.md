@@ -8,7 +8,9 @@
 
 ## Setup
 
-### Independent versions (default)
+### Install
+
+#### Independent versions (default)
 
 Allow specific project to be versioned independently.
 
@@ -16,7 +18,7 @@ Allow specific project to be versioned independently.
 nx add @jscutlery/semver --package-name my-lib
 ```
 
-### Synchronous versions
+#### Synchronous versions
 
 Allow multiple projects to be versioned in a fixed/locked mode. Use this if you want to automatically tie all package versions together.
 
@@ -28,18 +30,23 @@ nx add @jscutlery/semver --sync-versions
 
 ## Manual setup
 
+### Install
+
 ```
 yarn add @jscutlery/semver -D
 ```
 
 ### Configure
 
-Update your `angular.json` or `workspace.json` file and add builder target:
+Update your `angular.json` or `workspace.json` file and add builder target.
+
+#### Independent project
 
 ```
 {
   "my-project": {
-    architect: {
+    ...
+    "architect": {
       "version": {
         "builder": "@jscutlery/semver:version"
         "options": {
@@ -53,11 +60,31 @@ Update your `angular.json` or `workspace.json` file and add builder target:
 }
 ```
 
-Note that builder options are optional.
+Note that target options are optional.
+
+#### Multiple projects
+
+```
+{
+  "workspace": {
+    "root": ".",
+    "architect": {
+      "version": {
+        "builder": "@jscutlery/semver:version"
+        "options": {
+          "syncVersions": true
+        }
+      }
+    }
+  }
+}
+```
 
 ## Usage
 
-### Release independent project
+### Release
+
+#### Independent project
 
 Release project independently by running:
 
@@ -65,7 +92,7 @@ Release project independently by running:
 nx run my-project:version [...options]
 ```
 
-### Release multiple projects
+#### Multiple projects
 
 Release multiple projects in workspace:
 
