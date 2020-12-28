@@ -8,7 +8,25 @@
 
 ## Setup
 
-### Install
+### Independent versions (default)
+
+Allow specific project to be versioned independently.
+
+```
+nx add @jscutlery/semver --package-name my-lib
+```
+
+### Synchronous versions
+
+Allow multiple projects to be versioned in a fixed/locked mode. Use this if you want to automatically tie all package versions together.
+
+```
+nx add @jscutlery/semver --sync-versions
+```
+
+> One issue with this approach is that a major change in any project will result in all projects having a new major version.
+
+## Manual setup
 
 ```
 yarn add @jscutlery/semver -D
@@ -20,7 +38,7 @@ Update your `angular.json` or `workspace.json` file and add builder target:
 
 ```
 {
-  "my-package": {
+  "my-project": {
     architect: {
       "version": {
         "builder": "@jscutlery/semver:version"
@@ -39,17 +57,25 @@ Note that builder options are optional.
 
 ## Usage
 
-### Release
+### Release independent project
 
-Release your package by running:
+Release project independently by running:
 
 ```
-nx run my-package:version [...options]
+nx run my-project:version [...options]
+```
+
+### Release multiple projects
+
+Release multiple projects in workspace:
+
+```
+nx run workspace:version [...options]
 ```
 
 #### When run, this command does the following:
 
-1. Retrieve the current version of `package.json` file from `my-package` project.
+1. Retrieve the current version of `package.json` file from `my-project` project.
 2. Bump the version based on your commits.
 3. Generates a changelog based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
 4. Creates a new `commit` including your package.json file and updated CHANGELOG.
@@ -58,15 +84,15 @@ nx run my-package:version [...options]
 
 #### Available options:
 
-| name                  | type      | default    | description                        |
-| --------------------- | --------- | ---------- | ---------------------------------- |
-| **`--dry-run`**       | `boolean` | `false`    | run with dry mode                  |
-| **`--no-verify`**     | `boolean` | `false`    | skip git hooks                     |
-| **`--first-release`** | `boolean` | `false`    | generate the CHANGELOG file        |
-| **`--push`**          | `boolean` | `false`    | push the release                   |
-| **`--origin`**        | `string`  | `'origin'` | push against git remote repository |
-| **`--base-branch`**   | `string`  | `'main'`   | push against git base branch       |
-| **`--sync-versions`** | `boolean` | `false`    | lock/sync versions between packages |
+| name                  | type      | default    | description                         |
+| --------------------- | --------- | ---------- | ----------------------------------- |
+| **`--dry-run`**       | `boolean` | `false`    | run with dry mode                   |
+| **`--no-verify`**     | `boolean` | `false`    | skip git hooks                      |
+| **`--first-release`** | `boolean` | `false`    | generate the CHANGELOG file         |
+| **`--push`**          | `boolean` | `false`    | push the release                    |
+| **`--origin`**        | `string`  | `'origin'` | push against git remote repository  |
+| **`--base-branch`**   | `string`  | `'main'`   | push against git base branch        |
+| **`--sync-versions`** | `boolean` | `false`    | lock/sync versions between projects |
 
 
 ## Changelog
