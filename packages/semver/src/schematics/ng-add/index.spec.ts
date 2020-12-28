@@ -125,7 +125,7 @@ describe('ng-add schematic', () => {
       );
     });
 
-    xit('🚧 should not touch nx.json', async () => {
+    it('should not touch nx.json', async () => {
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
