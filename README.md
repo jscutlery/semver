@@ -15,7 +15,7 @@
 Allow specific project to be versioned independently.
 
 ```
-nx add @jscutlery/semver --package-name my-lib
+nx add @jscutlery/semver --project-name my-lib
 ```
 
 #### Synchronous versions
