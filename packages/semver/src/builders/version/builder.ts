@@ -23,7 +23,7 @@ export function runBuilder(
 
   return from(getProjectRoot(context)).pipe(
     switchMap((projectRoot) =>
-      getPackageFiles(projectRoot).pipe(
+      getPackageFiles(context.workspaceRoot).pipe(
         map((packageFiles) => ({ projectRoot, packageFiles }))
       )
     ),

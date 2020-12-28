@@ -94,21 +94,21 @@ export function tryPushToGitRemote({
   );
 }
 
-export function getPackageFiles(projectRoot: string): Observable<string[]> {
-  return getWorkspaceDefinition(projectRoot).pipe(
+export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
+  return getWorkspaceDefinition(workspaceRoot).pipe(
     map((workspaceDefinition) =>
       Object.values(workspaceDefinition.projects).map((project) =>
-        resolve(projectRoot, project.root, 'package.json')
+        resolve(workspaceRoot, project.root, 'package.json')
       )
     )
   );
 }
 
 export function getWorkspaceDefinition(
-  projectRoot: string
+  workspaceRoot: string
 ): Observable<WorkspaceDefinition> {
-  return _readJsonFile(resolve(projectRoot, 'workspace.json')).pipe(
-    catchError(() => _readJsonFile(resolve(projectRoot, 'angular.json')))
+  return _readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
+    catchError(() => _readJsonFile(resolve(workspaceRoot, 'angular.json')))
   );
 }
 
