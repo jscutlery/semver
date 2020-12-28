@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.1](https://github.com/jscutlery/nx-plugin-semver/compare/v0.2.0...v0.2.1) (2020-12-28)
+
+
+### Bug Fixes
+
+* 🐞 don't add workspace to nx.json with independent versions ([bbab0a7](https://github.com/jscutlery/nx-plugin-semver/commit/bbab0a76fbfd4fe421abb96e166a5d6408a41b81))
+
+
+
 # [0.2.0](https://github.com/jscutlery/nx-plugin-semver/compare/v0.1.1...v0.2.0) (2020-12-28)
 
 
