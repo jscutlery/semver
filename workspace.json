@@ -31,7 +31,7 @@
             "packageJson": "packages/semver/package.json",
             "main": "packages/semver/src/index.ts",
             "assets": [
-              "packages/semver/*.md",
+              "README.md",
               {
                 "input": "./packages/semver/src",
                 "glob": "**/*.!(ts)",
