@@ -1,43 +1,11 @@
-import {
-  chain,
-  Rule,
-  SchematicContext,
-  Tree,
-} from '@angular-devkit/schematics';
-import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import {
-  updateJsonInTree,
-  updateNxJsonInTree,
-  updateWorkspace,
-} from '@nrwl/workspace';
+import { chain, Rule } from '@angular-devkit/schematics';
+import { updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
 
 import { SchemaOptions } from './schema';
-import { getLatestNodeVersion } from './utils';
-
-const PACKAGE_NAME = '@jscutlery/semver';
-
-async function updateDependencies(): Promise<Rule> {
-  const { version } = await getLatestNodeVersion(PACKAGE_NAME);
-  return updateJsonInTree('package.json', (json) => {
-    delete json.dependencies[PACKAGE_NAME];
-    json.devDependencies[PACKAGE_NAME] = version;
-    return json;
-  });
-}
-
-function installDependencies(): Rule {
-  return (tree: Tree, ctx: SchematicContext) => {
-    ctx.addTask(new NodePackageInstallTask());
-    ctx.logger.debug('✅️ Dependencies installed');
-    return tree;
-  };
-}
 
 export function ngAdd(options: SchemaOptions): Rule {
   return async () => {
     return chain([
-      await updateDependencies(),
-      installDependencies(),
       ...(options.syncVersions
         ? /* Synced versioning. */
           [

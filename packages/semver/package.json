@@ -10,6 +10,9 @@
   "repository": {
     "url": "https://github.com/jscutlery/nx-plugin-semver"
   },
+  "ng-add": {
+    "save": "devDependencies"
+  },
   "dependencies": {
     "standard-version": "^9.0.0",
     "@lerna/child-process": "^3.16.5",

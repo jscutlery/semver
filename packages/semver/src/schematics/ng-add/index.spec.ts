@@ -38,17 +38,6 @@ describe('ng-add schematic', () => {
     appTree = await runSchematic('lib', libOptions, appTree);
   });
 
-  it('should add proper package to dev dependencies', async () => {
-    const tree = await schematicRunner
-      .runSchematicAsync('ng-add', defaultOptions, appTree)
-      .toPromise();
-
-    const packageJson = readJsonInTree(tree, 'package.json');
-
-    expect(packageJson.dependencies['@jscutlery/semver']).toBeUndefined();
-    expect(packageJson.devDependencies['@jscutlery/semver']).toBeDefined();
-  });
-
   describe('Sync versions', () => {
     const options = { ...defaultOptions, syncVersions: true };
 
