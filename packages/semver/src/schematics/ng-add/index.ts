@@ -1,4 +1,4 @@
-import { chain, Rule } from '@angular-devkit/schematics';
+import { chain, Rule, SchematicsException } from '@angular-devkit/schematics';
 import { updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
 
 import { SchemaOptions } from './schema';
@@ -35,7 +35,7 @@ export function ngAdd(options: SchemaOptions): Rule {
             updateWorkspace((workspace) => {
               /* Otherwise configure the 'version' builder for the given project. */
               if (options.projectName == null) {
-                throw new Error(
+                throw new SchematicsException(
                   'Missing option --project-name should be passed for independent versions.'
                 );
               }
