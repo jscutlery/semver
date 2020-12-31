@@ -4,7 +4,7 @@ import { updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
 import { SchemaOptions } from './schema';
 
 export function ngAdd(options: SchemaOptions): Rule {
-  return async () => {
+  return () => {
     return chain([
       ...(options.syncVersions
         ? /* Synced versioning. */
