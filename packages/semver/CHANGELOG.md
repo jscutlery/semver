@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [0.3.0](https://github.com/jscutlery/nx-plugin-semver/compare/v0.2.1...v0.3.0) (2020-12-31)
+
+
+### Bug Fixes
+
+* 🐞 add tag prefix in independent mode ([e690d37](https://github.com/jscutlery/nx-plugin-semver/commit/e690d3710fe1e463379cb61dc65a857b422fc504)), closes [#34](https://github.com/jscutlery/nx-plugin-semver/issues/34)
+
+
+### Features
+
+* ✅ prompt user for syncing versions ([4de371a](https://github.com/jscutlery/nx-plugin-semver/commit/4de371a8d2d6d39d2436ec82f43b5af01c82b8ee))
+
+
+
 ## [0.2.1](https://github.com/jscutlery/nx-plugin-semver/compare/v0.2.0...v0.2.1) (2020-12-28)
 
 
