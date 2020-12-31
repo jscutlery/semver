@@ -32,7 +32,7 @@ This mode is useful when you are working with one product.
 
 ### Release
 
-#### Independent project
+#### Independent mode
 
 Release project independently by running:
 
@@ -40,9 +40,15 @@ Release project independently by running:
 nx run my-project:version [...options]
 ```
 
-#### Multiple projects
+You can leverage the built-in affected command to only version changed packages:
 
-Release multiple projects in workspace:
+```
+nx affected --target version [...options]
+```
+
+#### Synced mode
+
+Release multiple projects at once:
 
 ```
 nx run workspace:version [...options]
