@@ -10,21 +10,19 @@
 
 ### Install
 
+```
+nx add @jscutlery/semver
+```
+
+This package allows you to manage your monorepo using one of two modes: Synced or Independent.
+
 #### Independent versions (default)
 
-Allow specific project to be versioned independently.
-
-```
-nx add @jscutlery/semver --project-name my-lib
-```
+Allow specific project to be versioned independently for each package and makes sense for a group of components.
 
 #### Synchronous versions
 
 Allow multiple projects to be versioned in a fixed/locked mode. Use this if you want to automatically tie all package versions together.
-
-```
-nx add @jscutlery/semver --sync-versions
-```
 
 > One issue with this approach is that a major change in any project will result in all projects having a new major version.
 
