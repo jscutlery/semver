@@ -38,6 +38,7 @@ export function runBuilder(
         dryRun,
         noVerify,
         firstRelease,
+        tagPrefix: syncVersions === false ? context.target.project : null,
         infile: resolve(projectRoot, 'CHANGELOG.md'),
         packageFiles: [resolve(projectRoot, 'package.json')],
         bumpFiles,

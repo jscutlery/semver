@@ -27,6 +27,7 @@ describe('@jscutlery/semver:version', () => {
   beforeEach(async () => {
     context = await getMockContext();
     context.logger.error = jest.fn();
+    context.target.project = 'lib';
     context.getProjectMetadata = jest
       .fn()
       .mockResolvedValue({ root: '/root/packages/lib' });
@@ -132,6 +133,7 @@ describe('@jscutlery/semver:version', () => {
           dryRun: false,
           noVerify: false,
           firstRelease: false,
+          tagPrefix: 'lib',
           path: '/root/packages/lib',
           infile: '/root/packages/lib/CHANGELOG.md',
           bumpFiles: ['/root/packages/lib/package.json'],
@@ -142,11 +144,12 @@ describe('@jscutlery/semver:version', () => {
   });
 
   describe('Sync versions', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       /* With the sync versions, the builder runs on the workspace. */
       (context.getProjectMetadata as jest.MockedFunction<
         typeof context.getProjectMetadata
       >).mockResolvedValue({ root: '/root' });
+      context.target.project = 'workspace';
     });
 
     it('should run standard-version on multiple projects', async () => {
@@ -172,6 +175,7 @@ describe('@jscutlery/semver:version', () => {
           dryRun: false,
           noVerify: false,
           firstRelease: false,
+          tagPrefix: null,
           path: '/root',
           infile: '/root/CHANGELOG.md',
           bumpFiles: [
