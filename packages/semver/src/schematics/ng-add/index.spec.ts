@@ -83,9 +83,7 @@ describe('ng-add schematic', () => {
     beforeEach(async () => {
       appTree = await runSchematic('lib', { name: 'another-lib' }, appTree);
 
-      (inquirer as any).prompt = jest.fn(() =>
-        Promise.resolve({ projects: ['lib'] })
-      );
+      jest.spyOn(inquirer, 'prompt').mockResolvedValue({ projects: ['lib'] });
     });
 
     it('should prompt user to select which projects should be versioned', async () => {
