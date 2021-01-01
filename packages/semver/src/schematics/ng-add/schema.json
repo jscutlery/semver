@@ -9,10 +9,6 @@
       "type": "boolean",
       "default": false,
       "x-prompt": "Lock/sync versions between packages?"
-    },
-    "projectName": {
-      "description": "The project to target for independent versions",
-      "type": "string"
     }
   },
   "required": []

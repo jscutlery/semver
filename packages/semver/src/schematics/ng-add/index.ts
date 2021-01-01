@@ -1,10 +1,53 @@
-import { chain, Rule, SchematicsException } from '@angular-devkit/schematics';
-import { updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
+import { workspaces } from '@angular-devkit/core';
+import { chain, Rule, Tree } from '@angular-devkit/schematics';
+import { getWorkspace, updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
+import * as inquirer from 'inquirer';
 
 import { SchemaOptions } from './schema';
 
+type ProjectDefinition = workspaces.ProjectDefinition & { projectName: string };
+
+async function listProjects(tree: Tree): Promise<ProjectDefinition[]> {
+  const { projects } = await getWorkspace(tree);
+  return Array.from(projects.entries()).map(([projectName, project]) => ({
+    projectName,
+    ...project,
+  }));
+}
+
+function createPrompt(
+  projects: ProjectDefinition[]
+): Promise<{ projects: string[] }> {
+  return inquirer.prompt({
+    name: 'projects',
+    type: 'checkbox',
+    message: 'Which projects would you like to version independently?',
+    choices: projects.map(({ projectName }) => ({
+      name: projectName,
+      checked: true,
+    })),
+  });
+}
+
+async function updateWorkspaceFromPrompt(tree: Tree): Promise<Rule> {
+  const projects = await listProjects(tree);
+  const answers = await createPrompt(projects);
+
+  return updateWorkspace((workspace) => {
+    workspace.projects.forEach((project, projectName) => {
+      if (answers.projects.includes(projectName)) {
+        project.targets.add({
+          name: 'version',
+          builder: '@jscutlery/semver:version',
+          options: { syncVersions: false },
+        });
+      }
+    });
+  });
+}
+
 export function ngAdd(options: SchemaOptions): Rule {
-  return () => {
+  return async (tree: Tree) => {
     return chain([
       ...(options.syncVersions
         ? /* Synced versioning. */
@@ -31,24 +74,7 @@ export function ngAdd(options: SchemaOptions): Rule {
             })),
           ]
         : /* Independent versioning. */
-          [
-            updateWorkspace((workspace) => {
-              /* Otherwise configure the 'version' builder for the given project. */
-              if (options.projectName == null) {
-                throw new SchematicsException(
-                  'Missing option --project-name should be passed for independent versions.'
-                );
-              }
-
-              const { targets } = workspace.projects.get(options.projectName);
-
-              targets.add({
-                name: 'version',
-                builder: '@jscutlery/semver:version',
-                options: { syncVersions: false },
-              });
-            }),
-          ]),
+          [await updateWorkspaceFromPrompt(tree)]),
     ]);
   };
 }
