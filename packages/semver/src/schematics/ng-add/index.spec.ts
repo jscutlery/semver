@@ -1,10 +1,6 @@
 import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
-import {
-  readJsonInTree,
-  readNxJsonInTree,
-  readWorkspace,
-} from '@nrwl/workspace';
+import { readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
 import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
 import * as path from 'path';
 
@@ -15,7 +11,6 @@ const collectionPath = path.join(__dirname, '../../../collection.json');
 const libOptions = { name: 'lib' };
 
 const defaultOptions: SchemaOptions = {
-  projectName: 'lib',
   syncVersions: false,
   push: true,
   branch: 'main',
@@ -80,22 +75,7 @@ describe('ng-add schematic', () => {
     const options = {
       ...defaultOptions,
       syncVersions: false,
-      projectName: 'lib',
     };
-
-    it('should throw if --project-name is not defined', async () => {
-      try {
-        await schematicRunner
-          .runSchematicAsync(
-            'ng-add',
-            { ...options, projectName: undefined },
-            appTree
-          )
-          .toPromise();
-      } catch (error) {
-        expect(error.message).toContain('Missing option --project-name');
-      }
-    });
 
     it('should add version builder to the given project', async () => {
       const tree = await schematicRunner
