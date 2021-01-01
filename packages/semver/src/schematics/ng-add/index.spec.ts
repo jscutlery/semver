@@ -2,9 +2,12 @@ import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import { readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
 import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
+import * as inquirer from 'inquirer';
 import * as path from 'path';
 
 import { SchemaOptions } from './schema';
+
+jest.mock('inquirer');
 
 const collectionPath = path.join(__dirname, '../../../collection.json');
 
@@ -77,13 +80,29 @@ describe('ng-add schematic', () => {
       syncVersions: false,
     };
 
-    it('should add version builder to the given project', async () => {
+    beforeEach(async () => {
+      appTree = await runSchematic('lib', { name: 'another-lib' }, appTree);
+
+      (inquirer as any).prompt = jest.fn(() =>
+        Promise.resolve({ projects: ['lib'] })
+      );
+    });
+
+    it('should prompt user to select which projects should be versioned', async () => {
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
       const workspace = readWorkspace(tree);
 
+      expect(inquirer.prompt).toBeCalledWith(
+        expect.objectContaining({
+          name: 'projects',
+          type: 'checkbox',
+          choices: expect.arrayContaining([{ name: 'lib', checked: true }]),
+        })
+      );
+      /* Project "lib" selected by the prompt. */
       expect(workspace.projects.lib.architect).toEqual(
         expect.objectContaining({
           version: {
@@ -92,6 +111,10 @@ describe('ng-add schematic', () => {
           },
         })
       );
+      /* Project "another-lib" not selected by the prompt. */
+      expect(
+        workspace.projects['another-lib'].architect.version
+      ).toBeUndefined();
     });
 
     it('should not touch nx.json', async () => {

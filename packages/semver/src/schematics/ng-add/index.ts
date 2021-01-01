@@ -5,24 +5,27 @@ import * as inquirer from 'inquirer';
 
 import { SchemaOptions } from './schema';
 
-type ProjectDefinition = workspaces.ProjectDefinition & { name: string };
+type ProjectDefinition = workspaces.ProjectDefinition & { projectName: string };
 
 async function listProjects(tree: Tree): Promise<ProjectDefinition[]> {
   const { projects } = await getWorkspace(tree);
-  return Array.from(projects.entries()).map(([key, project]) => ({
-    name: key,
+  return Array.from(projects.entries()).map(([projectName, project]) => ({
+    projectName,
     ...project,
   }));
 }
 
 function createPrompt(
   projects: ProjectDefinition[]
-): Promise<inquirer.Answers> {
+): Promise<{ projects: string[] }> {
   return inquirer.prompt({
     name: 'projects',
-    message: 'Which projects would you like to version independently?',
-    choices: projects.map(({ name }) => ({ name, checked: true })),
     type: 'checkbox',
+    message: 'Which projects would you like to version independently?',
+    choices: projects.map(({ projectName }) => ({
+      name: projectName,
+      checked: true,
+    })),
   });
 }
 
