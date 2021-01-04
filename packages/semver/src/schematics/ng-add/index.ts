@@ -29,13 +29,10 @@ function createPrompt(
   });
 }
 
-async function updateWorkspaceFromPrompt(tree: Tree): Promise<Rule> {
-  const projects = await listProjects(tree);
-  const answers = await createPrompt(projects);
-
+function updateProjects(predicate: (projectName: string) => boolean): Rule {
   return updateWorkspace((workspace) => {
     workspace.projects.forEach((project, projectName) => {
-      if (answers.projects.includes(projectName)) {
+      if (predicate(projectName)) {
         project.targets.add({
           name: 'version',
           builder: '@jscutlery/semver:version',
@@ -44,6 +41,21 @@ async function updateWorkspaceFromPrompt(tree: Tree): Promise<Rule> {
       }
     });
   });
+}
+
+async function updateWorkspaceFromPrompt(tree: Tree): Promise<Rule> {
+  const projects = await listProjects(tree);
+  const answers = await createPrompt(projects);
+
+  return updateProjects((projectName) =>
+    answers.projects.includes(projectName)
+  );
+}
+
+function updateWorkspaceFromSchema(options: SchemaOptions): Rule {
+  return updateProjects((projectName) =>
+    options.projects.includes(projectName)
+  );
 }
 
 export function ngAdd(options: SchemaOptions): Rule {
@@ -74,7 +86,11 @@ export function ngAdd(options: SchemaOptions): Rule {
             })),
           ]
         : /* Independent versioning. */
-          [await updateWorkspaceFromPrompt(tree)]),
+          [
+            options.projects.length > 0
+              ? updateWorkspaceFromSchema(options)
+              : await updateWorkspaceFromPrompt(tree),
+          ]),
     ]);
   };
 }

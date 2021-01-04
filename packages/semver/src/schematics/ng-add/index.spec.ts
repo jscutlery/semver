@@ -86,6 +86,12 @@ describe('ng-add schematic', () => {
       jest.spyOn(inquirer, 'prompt').mockResolvedValue({ projects: ['lib'] });
     });
 
+    afterEach(() =>
+      (inquirer.prompt as jest.MockedFunction<
+        typeof inquirer.prompt
+      >).mockRestore()
+    );
+
     it('should prompt user to select which projects should be versioned', async () => {
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
@@ -113,6 +119,29 @@ describe('ng-add schematic', () => {
       expect(
         workspace.projects['another-lib'].architect.version
       ).toBeUndefined();
+    });
+
+    it('should use --projects option', async () => {
+      const tree = await schematicRunner
+        .runSchematicAsync(
+          'ng-add',
+          { ...options, projects: ['another-lib'] },
+          appTree
+        )
+        .toPromise();
+
+      const workspace = readWorkspace(tree);
+
+      expect(inquirer.prompt).not.toBeCalled();
+      expect(workspace.projects.lib.architect.version).toBeUndefined();
+      expect(workspace.projects['another-lib'].architect).toEqual(
+        expect.objectContaining({
+          version: {
+            builder: '@jscutlery/semver:version',
+            options: { syncVersions: false },
+          },
+        })
+      );
     });
 
     it('should not touch nx.json', async () => {

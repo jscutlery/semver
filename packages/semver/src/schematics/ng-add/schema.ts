@@ -3,4 +3,5 @@ export interface SchemaOptions {
   push: boolean;
   remote: string;
   branch: string;
+  projects?: string[];
 }

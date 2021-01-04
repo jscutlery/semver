@@ -9,6 +9,10 @@
       "type": "boolean",
       "default": false,
       "x-prompt": "Lock/sync versions between packages?"
+    },
+    "projects": {
+      "description": "Which projects should be versioned independently",
+      "type": "array"
     }
   },
   "required": []
