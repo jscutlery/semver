@@ -1,4 +1,8 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import {
+  BuilderContext,
+  BuilderOutput,
+  createBuilder,
+} from '@angular-devkit/architect';
 import { noop } from '@angular-devkit/schematics';
 import { resolve } from 'path';
 import { from, Observable, of } from 'rxjs';
@@ -38,7 +42,7 @@ export function runBuilder(
         dryRun,
         noVerify,
         firstRelease,
-        tagPrefix: syncVersions === false ? context.target.project : null,
+        tagPrefix: syncVersions === false ? `${context.target.project}-` : null,
         infile: resolve(projectRoot, 'CHANGELOG.md'),
         packageFiles: [resolve(projectRoot, 'package.json')],
         bumpFiles,

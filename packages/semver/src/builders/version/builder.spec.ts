@@ -133,7 +133,7 @@ describe('@jscutlery/semver:version', () => {
           dryRun: false,
           noVerify: false,
           firstRelease: false,
-          tagPrefix: 'lib',
+          tagPrefix: 'lib-',
           path: '/root/packages/lib',
           infile: '/root/packages/lib/CHANGELOG.md',
           bumpFiles: ['/root/packages/lib/package.json'],
