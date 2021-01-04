@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [1.0.0](https://github.com/jscutlery/semver/compare/semver-0.4.0...semver-1.0.0) (2021-01-04)
+
+
+### Features
+
+* ✅ add `-` separator after prefix ([c871d1f](https://github.com/jscutlery/semver/commit/c871d1f728a5f5a69723303e37a533841e202432))
+
+
+### BREAKING CHANGES
+
+* this will break the changelog without renaming the last tag as standard-version will not be able to find the last tag
+
+
+
 # 0.4.0 (2021-01-04)
 
 
