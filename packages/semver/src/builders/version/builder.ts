@@ -1,11 +1,14 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import {
+  BuilderContext,
+  BuilderOutput,
+  createBuilder,
+} from '@angular-devkit/architect';
 import { noop } from '@angular-devkit/schematics';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { from, Observable, of } from 'rxjs';
 import { catchError, map, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
-import { release } from './release';
-
+import * as standardVersion from 'standard-version';
 import { VersionBuilderSchema } from './schema';
 import { getPackageFiles, getProjectRoot, tryPushToGitRemote } from './utils';
 
@@ -13,14 +16,7 @@ export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  const {
-    push,
-    remote,
-    dryRun,
-    baseBranch,
-    noVerify,
-    syncVersions,
-  } = options;
+  const { push, remote, dryRun, baseBranch, noVerify, syncVersions } = options;
 
   return from(getProjectRoot(context)).pipe(
     switchMap((projectRoot) =>
@@ -35,7 +31,7 @@ export function runBuilder(
       const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
       const firstRelease = existsSync(changelogPath) === false;
 
-      return release({
+      return standardVersion({
         silent: false,
         path: projectRoot,
         dryRun,

@@ -1,13 +1,13 @@
 import * as childProcess from '@lerna/child-process';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as fs from 'fs';
-
 import { runBuilder } from './builder';
-import * as release from './release';
 import { VersionBuilderSchema } from './schema';
 import { getMockContext } from './testing';
+import * as standardVersion from 'standard-version';
 
 jest.mock('@lerna/child-process');
+jest.mock('standard-version', () => jest.fn());
 
 const options: VersionBuilderSchema = {
   dryRun: false,
@@ -30,6 +30,12 @@ describe('@jscutlery/semver:version', () => {
       .fn()
       .mockResolvedValue({ root: '/root/packages/lib' });
 
+    /* Mock standardVersion. */
+    (standardVersion as jest.MockedFunction<
+      typeof standardVersion
+    >).mockResolvedValue(undefined);
+
+    /* Mock readFileSync. */
     fakeReadFileSync = jest.fn().mockReturnValue(
       JSON.stringify({
         version: 1,
@@ -54,14 +60,17 @@ describe('@jscutlery/semver:version', () => {
           callback(e);
         }
       });
+
+    /* Mock existsSync. */
     jest.spyOn(fs, 'existsSync').mockImplementation(() => true);
-    jest.spyOn(release, 'release').mockImplementation(() => Promise.resolve())
   });
 
   afterEach(() => {
     (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore();
     (fs.existsSync as jest.MockedFunction<typeof fs.existsSync>).mockRestore();
-    (release.release as jest.MockedFunction<typeof release.release>).mockReset();
+    (standardVersion as jest.MockedFunction<
+      typeof standardVersion
+    >).mockRestore();
   });
 
   it('should not push to Git by default', async () => {
@@ -125,12 +134,12 @@ describe('@jscutlery/semver:version', () => {
 
   it('should detect first release', async () => {
     /* Mock the absence of CHANGELOG file */
-    jest.spyOn(fs, 'existsSync').mockImplementation(() => false);
+    jest.spyOn(fs, 'existsSync').mockReturnValue(false);
 
     await runBuilder(options, context).toPromise();
 
-    expect(release.release).toBeCalledTimes(1)
-    expect(release.release).toBeCalledWith(
+    expect(standardVersion).toBeCalledTimes(1);
+    expect(standardVersion).toBeCalledWith(
       expect.objectContaining({ firstRelease: true })
     );
   });
@@ -140,7 +149,7 @@ describe('@jscutlery/semver:version', () => {
       const output = await runBuilder(options, context).toPromise();
 
       expect(output).toEqual(expect.objectContaining({ success: true }));
-      expect(release.release).toBeCalledWith(
+      expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
           preset: expect.stringContaining('conventional-changelog-angular'),
@@ -181,7 +190,7 @@ describe('@jscutlery/semver:version', () => {
         'utf-8',
         expect.any(Function)
       );
-      expect(release.release).toBeCalledWith(
+      expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
           preset: expect.stringContaining('conventional-changelog-angular'),
