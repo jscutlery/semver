@@ -15,11 +15,6 @@
       "type": "boolean",
       "default": false
     },
-    "firstRelease": {
-      "description": "Generate your CHANGELOG for your first release.",
-      "type": "boolean",
-      "default": false
-    },
     "push": {
       "description": "Pushes to the git remote.",
       "type": "boolean",

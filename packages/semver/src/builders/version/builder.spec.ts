@@ -1,19 +1,17 @@
 import * as childProcess from '@lerna/child-process';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as fs from 'fs';
-import * as standardVersion from 'standard-version';
 
-import { getMockContext } from './testing';
 import { runBuilder } from './builder';
+import * as release from './release';
 import { VersionBuilderSchema } from './schema';
+import { getMockContext } from './testing';
 
 jest.mock('@lerna/child-process');
-jest.mock('standard-version', () => jest.fn(() => Promise.resolve()));
 
 const options: VersionBuilderSchema = {
   dryRun: false,
   noVerify: false,
-  firstRelease: false,
   push: false,
   remote: 'origin',
   baseBranch: 'main',
@@ -56,11 +54,15 @@ describe('@jscutlery/semver:version', () => {
           callback(e);
         }
       });
+    jest.spyOn(fs, 'existsSync').mockImplementation(() => true);
+    jest.spyOn(release, 'release').mockImplementation(() => Promise.resolve())
   });
 
-  afterEach(() =>
-    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore()
-  );
+  afterEach(() => {
+    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore();
+    (fs.existsSync as jest.MockedFunction<typeof fs.existsSync>).mockRestore();
+    (release.release as jest.MockedFunction<typeof release.release>).mockReset();
+  });
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
@@ -121,18 +123,29 @@ describe('@jscutlery/semver:version', () => {
     expect(output).toEqual(expect.objectContaining({ success: false }));
   });
 
+  it('should detect first release', async () => {
+    /* Mock the absence of CHANGELOG file */
+    jest.spyOn(fs, 'existsSync').mockImplementation(() => false);
+
+    await runBuilder(options, context).toPromise();
+
+    expect(release.release).toBeCalledTimes(1)
+    expect(release.release).toBeCalledWith(
+      expect.objectContaining({ firstRelease: true })
+    );
+  });
+
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
       const output = await runBuilder(options, context).toPromise();
 
       expect(output).toEqual(expect.objectContaining({ success: true }));
-      expect(standardVersion).toBeCalledWith(
+      expect(release.release).toBeCalledWith(
         expect.objectContaining({
           silent: false,
           preset: expect.stringContaining('conventional-changelog-angular'),
           dryRun: false,
           noVerify: false,
-          firstRelease: false,
           tagPrefix: 'lib-',
           path: '/root/packages/lib',
           infile: '/root/packages/lib/CHANGELOG.md',
@@ -168,13 +181,12 @@ describe('@jscutlery/semver:version', () => {
         'utf-8',
         expect.any(Function)
       );
-      expect(standardVersion).toBeCalledWith(
+      expect(release.release).toBeCalledWith(
         expect.objectContaining({
           silent: false,
           preset: expect.stringContaining('conventional-changelog-angular'),
           dryRun: false,
           noVerify: false,
-          firstRelease: false,
           tagPrefix: null,
           path: '/root',
           infile: '/root/CHANGELOG.md',
