@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { getWorkspaceDefinition } from './utils';
+import { getPackageFiles } from './utils';
 
 describe('getWorkspaceDefinition', () => {
   let fakeReadFileSync: jest.Mock;
@@ -35,6 +35,34 @@ describe('getWorkspaceDefinition', () => {
     (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore()
   );
 
+  it('should read workspace definition from workspace.json', async () => {
+    fakeReadFileSync.mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        projects: {
+          a: {
+            root: 'packages/a',
+          },
+          b: {
+            root: 'packages/b',
+          },
+        },
+      })
+    );
+
+    expect(await getPackageFiles('/root').toPromise()).toEqual([
+      '/root/packages/a/package.json',
+      '/root/packages/b/package.json',
+    ]);
+
+    expect(fs.readFile).toBeCalledTimes(1);
+    expect(fs.readFile).toBeCalledWith(
+      '/root/workspace.json',
+      'utf-8',
+      expect.any(Function)
+    );
+  });
+
   it('should fallback to angular.json if workspace.json is not found', async () => {
     fakeReadFileSync.mockImplementationOnce(() => {
       throw new Error('ENOENT, no such file or directory');
@@ -52,18 +80,11 @@ describe('getWorkspaceDefinition', () => {
         },
       })
     );
-    expect(await getWorkspaceDefinition('/root').toPromise()).toEqual(
-      expect.objectContaining({
-        projects: {
-          a: {
-            root: 'packages/a',
-          },
-          b: {
-            root: 'packages/b',
-          },
-        },
-      })
-    );
+
+    expect(await getPackageFiles('/root').toPromise()).toEqual([
+      '/root/packages/a/package.json',
+      '/root/packages/b/package.json',
+    ]);
     expect(fs.readFile).toBeCalledTimes(2);
     expect(fs.readFile).toHaveBeenNthCalledWith(
       1,

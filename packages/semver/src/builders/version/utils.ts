@@ -28,20 +28,12 @@ export function hasChangelog(projectRoot: string) {
 }
 
 export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
-  return getWorkspaceDefinition(workspaceRoot).pipe(
+  return _getWorkspaceDefinition(workspaceRoot).pipe(
     map((workspaceDefinition) =>
       Object.values(workspaceDefinition.projects).map((project) =>
         resolve(workspaceRoot, project.root, 'package.json')
       )
     )
-  );
-}
-
-export function getWorkspaceDefinition(
-  workspaceRoot: string
-): Observable<WorkspaceDefinition> {
-  return _readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
-    catchError(() => _readJsonFile(resolve(workspaceRoot, 'angular.json')))
   );
 }
 
@@ -117,6 +109,14 @@ export function tryPushToGitRemote({
       noVerify,
       context,
     })
+  );
+}
+
+export function _getWorkspaceDefinition(
+  workspaceRoot: string
+): Observable<WorkspaceDefinition> {
+  return _readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
+    catchError(() => _readJsonFile(resolve(workspaceRoot, 'angular.json')))
   );
 }
 

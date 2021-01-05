@@ -1,18 +1,18 @@
 import * as childProcess from '@lerna/child-process';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
-import * as fs from 'fs';
+import { of } from 'rxjs';
+import * as standardVersion from 'standard-version';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { getMockContext } from './testing';
-import * as standardVersion from 'standard-version';
 import * as utils from './utils';
+import { getPackageFiles, hasChangelog } from './utils';
 
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 
 describe('@jscutlery/semver:version', () => {
   let context: MockBuilderContext;
-  let fakeReadFileSync: jest.Mock;
 
   const options: VersionBuilderSchema = {
     dryRun: false,
@@ -26,10 +26,10 @@ describe('@jscutlery/semver:version', () => {
   beforeEach(async () => {
     context = await getMockContext();
     context.logger.error = jest.fn();
-    context.target.project = 'lib';
+    context.target.project = 'a';
     context.getProjectMetadata = jest
       .fn()
-      .mockResolvedValue({ root: '/root/packages/lib' });
+      .mockResolvedValue({ root: '/root/packages/a' });
 
     /* Mock standardVersion. */
     (standardVersion as jest.MockedFunction<
@@ -39,46 +39,37 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(utils, 'hasChangelog').mockReturnValue(true);
 
     /* Mock readFileSync. */
-    fakeReadFileSync = jest.fn().mockReturnValue(
-      JSON.stringify({
-        version: 1,
-        projects: {
-          a: {
-            root: 'packages/a',
-          },
-          b: {
-            root: 'packages/b',
-          },
-        },
-      })
-    );
     jest
-      .spyOn(fs, 'readFile')
-      .mockImplementation((...args: Parameters<typeof fs.readFile>) => {
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        const callback = args[args.length - 1] as Function;
-        try {
-          callback(null, fakeReadFileSync(args));
-        } catch (e) {
-          callback(e);
-        }
-      });
+      .spyOn(utils, 'getPackageFiles')
+      .mockReturnValue(
+        of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
+      );
   });
 
   afterEach(() => {
-    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore();
-    (utils.hasChangelog as jest.MockedFunction<
-      typeof utils.hasChangelog
-    >).mockRestore();
-    (standardVersion as jest.MockedFunction<
-      typeof standardVersion
-    >).mockRestore();
+    (standardVersion as jest.Mock).mockRestore();
+    (hasChangelog as jest.Mock).mockRestore();
+    (getPackageFiles as jest.Mock).mockRestore();
   });
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
 
     expect(childProcess.exec).not.toHaveBeenCalled();
+  });
+
+  it('should call getPackageFiles with the right root project path', async () => {
+    await runBuilder(options, context).toPromise();
+
+    expect(getPackageFiles).toBeCalledTimes(1);
+    expect(getPackageFiles).toBeCalledWith('/root');
+  });
+
+  it('should call getPackageFiles with the right root project path', async () => {
+    await runBuilder(options, context).toPromise();
+
+    expect(hasChangelog).toBeCalledTimes(1);
+    expect(hasChangelog).toBeCalledWith('/root/packages/a');
   });
 
   it('should push to Git with right options', async () => {
@@ -157,11 +148,11 @@ describe('@jscutlery/semver:version', () => {
           preset: expect.stringContaining('conventional-changelog-angular'),
           dryRun: false,
           noVerify: false,
-          tagPrefix: 'lib-',
-          path: '/root/packages/lib',
-          infile: '/root/packages/lib/CHANGELOG.md',
-          bumpFiles: ['/root/packages/lib/package.json'],
-          packageFiles: ['/root/packages/lib/package.json'],
+          tagPrefix: 'a-',
+          path: '/root/packages/a',
+          infile: '/root/packages/a/CHANGELOG.md',
+          bumpFiles: ['/root/packages/a/package.json'],
+          packageFiles: ['/root/packages/a/package.json'],
         })
       );
     });
@@ -186,12 +177,6 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(fs.readFile).toBeCalledTimes(1);
-      expect(fs.readFile).toBeCalledWith(
-        '/root/workspace.json',
-        'utf-8',
-        expect.any(Function)
-      );
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
