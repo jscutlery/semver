@@ -5,22 +5,23 @@ import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { getMockContext } from './testing';
 import * as standardVersion from 'standard-version';
+import * as utils from './utils';
 
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 
-const options: VersionBuilderSchema = {
-  dryRun: false,
-  noVerify: false,
-  push: false,
-  remote: 'origin',
-  baseBranch: 'main',
-  syncVersions: false,
-};
-
 describe('@jscutlery/semver:version', () => {
   let context: MockBuilderContext;
   let fakeReadFileSync: jest.Mock;
+
+  const options: VersionBuilderSchema = {
+    dryRun: false,
+    noVerify: false,
+    push: false,
+    remote: 'origin',
+    baseBranch: 'main',
+    syncVersions: false,
+  };
 
   beforeEach(async () => {
     context = await getMockContext();
@@ -34,6 +35,8 @@ describe('@jscutlery/semver:version', () => {
     (standardVersion as jest.MockedFunction<
       typeof standardVersion
     >).mockResolvedValue(undefined);
+
+    jest.spyOn(utils, 'hasChangelog').mockReturnValue(true);
 
     /* Mock readFileSync. */
     fakeReadFileSync = jest.fn().mockReturnValue(
@@ -60,14 +63,13 @@ describe('@jscutlery/semver:version', () => {
           callback(e);
         }
       });
-
-    /* Mock existsSync. */
-    jest.spyOn(fs, 'existsSync').mockImplementation(() => true);
   });
 
   afterEach(() => {
     (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore();
-    (fs.existsSync as jest.MockedFunction<typeof fs.existsSync>).mockRestore();
+    (utils.hasChangelog as jest.MockedFunction<
+      typeof utils.hasChangelog
+    >).mockRestore();
     (standardVersion as jest.MockedFunction<
       typeof standardVersion
     >).mockRestore();
@@ -134,7 +136,7 @@ describe('@jscutlery/semver:version', () => {
 
   it('should detect first release', async () => {
     /* Mock the absence of CHANGELOG file */
-    jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+    jest.spyOn(utils, 'hasChangelog').mockReturnValue(false);
 
     await runBuilder(options, context).toPromise();
 

@@ -10,7 +10,13 @@ import { from, Observable, of } from 'rxjs';
 import { catchError, map, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 import { VersionBuilderSchema } from './schema';
-import { getPackageFiles, getProjectRoot, tryPushToGitRemote } from './utils';
+import {
+  getChangelogPath,
+  getPackageFiles,
+  getProjectRoot,
+  hasChangelog,
+  tryPushToGitRemote,
+} from './utils';
 
 export function runBuilder(
   options: VersionBuilderSchema,
@@ -28,8 +34,8 @@ export function runBuilder(
       const bumpFiles = syncVersions
         ? packageFiles
         : [resolve(projectRoot, 'package.json')];
-      const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
-      const firstRelease = existsSync(changelogPath) === false;
+      const changelogPath = getChangelogPath(projectRoot);
+      const firstRelease = hasChangelog(projectRoot) === false;
 
       return standardVersion({
         silent: false,
