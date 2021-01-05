@@ -59,7 +59,7 @@ export function runBuilder(
             context,
           })
         )
-      : mapTo(noop()),
+      : mapTo(undefined),
     mapTo({ success: true }),
     catchError((error) => {
       context.logger.error(error);
