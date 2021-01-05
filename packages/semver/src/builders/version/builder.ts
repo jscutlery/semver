@@ -3,11 +3,9 @@ import {
   BuilderOutput,
   createBuilder,
 } from '@angular-devkit/architect';
-import { noop } from '@angular-devkit/schematics';
-import { existsSync } from 'fs';
 import { resolve } from 'path';
-import { from, Observable, of } from 'rxjs';
-import { catchError, map, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
+import { combineLatest, from, Observable, of } from 'rxjs';
+import { catchError, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 import { VersionBuilderSchema } from './schema';
 import {
@@ -24,16 +22,13 @@ export function runBuilder(
 ): Observable<BuilderOutput> {
   const { push, remote, dryRun, baseBranch, noVerify, syncVersions } = options;
 
-  return from(getProjectRoot(context)).pipe(
-    switchMap((projectRoot) =>
-      getPackageFiles(context.workspaceRoot).pipe(
-        map((packageFiles) => ({ projectRoot, packageFiles }))
-      )
-    ),
-    switchMap(({ projectRoot, packageFiles }) => {
-      const bumpFiles = syncVersions
-        ? packageFiles
-        : [resolve(projectRoot, 'package.json')];
+  const projectRoot$ = from(getProjectRoot(context));
+  const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
+
+  return combineLatest([projectRoot$, availablePackageFiles$]).pipe(
+    switchMap(([projectRoot, availablePackageFiles]) => {
+      const packageFiles = [resolve(projectRoot, 'package.json')];
+      const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
       const changelogPath = getChangelogPath(projectRoot);
       const firstRelease = hasChangelog(projectRoot) === false;
 
@@ -45,7 +40,7 @@ export function runBuilder(
         firstRelease,
         tagPrefix: syncVersions === false ? `${context.target.project}-` : null,
         infile: changelogPath,
-        packageFiles: [resolve(projectRoot, 'package.json')],
+        packageFiles,
         bumpFiles,
         preset: require.resolve('conventional-changelog-angular'),
       });
