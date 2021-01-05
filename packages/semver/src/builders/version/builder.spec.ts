@@ -1,19 +1,17 @@
 import * as childProcess from '@lerna/child-process';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as fs from 'fs';
-import * as standardVersion from 'standard-version';
-
-import { getMockContext } from './testing';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
+import { getMockContext } from './testing';
+import * as standardVersion from 'standard-version';
 
 jest.mock('@lerna/child-process');
-jest.mock('standard-version', () => jest.fn(() => Promise.resolve()));
+jest.mock('standard-version', () => jest.fn());
 
 const options: VersionBuilderSchema = {
   dryRun: false,
   noVerify: false,
-  firstRelease: false,
   push: false,
   remote: 'origin',
   baseBranch: 'main',
@@ -32,6 +30,12 @@ describe('@jscutlery/semver:version', () => {
       .fn()
       .mockResolvedValue({ root: '/root/packages/lib' });
 
+    /* Mock standardVersion. */
+    (standardVersion as jest.MockedFunction<
+      typeof standardVersion
+    >).mockResolvedValue(undefined);
+
+    /* Mock readFileSync. */
     fakeReadFileSync = jest.fn().mockReturnValue(
       JSON.stringify({
         version: 1,
@@ -56,11 +60,18 @@ describe('@jscutlery/semver:version', () => {
           callback(e);
         }
       });
+
+    /* Mock existsSync. */
+    jest.spyOn(fs, 'existsSync').mockImplementation(() => true);
   });
 
-  afterEach(() =>
-    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore()
-  );
+  afterEach(() => {
+    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore();
+    (fs.existsSync as jest.MockedFunction<typeof fs.existsSync>).mockRestore();
+    (standardVersion as jest.MockedFunction<
+      typeof standardVersion
+    >).mockRestore();
+  });
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
@@ -121,6 +132,18 @@ describe('@jscutlery/semver:version', () => {
     expect(output).toEqual(expect.objectContaining({ success: false }));
   });
 
+  it('should detect first release', async () => {
+    /* Mock the absence of CHANGELOG file */
+    jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+
+    await runBuilder(options, context).toPromise();
+
+    expect(standardVersion).toBeCalledTimes(1);
+    expect(standardVersion).toBeCalledWith(
+      expect.objectContaining({ firstRelease: true })
+    );
+  });
+
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
       const output = await runBuilder(options, context).toPromise();
@@ -132,7 +155,6 @@ describe('@jscutlery/semver:version', () => {
           preset: expect.stringContaining('conventional-changelog-angular'),
           dryRun: false,
           noVerify: false,
-          firstRelease: false,
           tagPrefix: 'lib-',
           path: '/root/packages/lib',
           infile: '/root/packages/lib/CHANGELOG.md',
@@ -174,7 +196,6 @@ describe('@jscutlery/semver:version', () => {
           preset: expect.stringContaining('conventional-changelog-angular'),
           dryRun: false,
           noVerify: false,
-          firstRelease: false,
           tagPrefix: null,
           path: '/root',
           infile: '/root/CHANGELOG.md',

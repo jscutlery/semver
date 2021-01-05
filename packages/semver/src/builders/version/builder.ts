@@ -4,6 +4,7 @@ import {
   createBuilder,
 } from '@angular-devkit/architect';
 import { noop } from '@angular-devkit/schematics';
+import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { from, Observable, of } from 'rxjs';
 import { catchError, map, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
@@ -15,15 +16,7 @@ export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  const {
-    push,
-    remote,
-    dryRun,
-    baseBranch,
-    noVerify,
-    firstRelease,
-    syncVersions,
-  } = options;
+  const { push, remote, dryRun, baseBranch, noVerify, syncVersions } = options;
 
   return from(getProjectRoot(context)).pipe(
     switchMap((projectRoot) =>
@@ -35,6 +28,8 @@ export function runBuilder(
       const bumpFiles = syncVersions
         ? packageFiles
         : [resolve(projectRoot, 'package.json')];
+      const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
+      const firstRelease = existsSync(changelogPath) === false;
 
       return standardVersion({
         silent: false,
@@ -43,7 +38,7 @@ export function runBuilder(
         noVerify,
         firstRelease,
         tagPrefix: syncVersions === false ? `${context.target.project}-` : null,
-        infile: resolve(projectRoot, 'CHANGELOG.md'),
+        infile: changelogPath,
         packageFiles: [resolve(projectRoot, 'package.json')],
         bumpFiles,
         preset: require.resolve('conventional-changelog-angular'),
