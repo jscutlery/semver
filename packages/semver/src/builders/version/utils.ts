@@ -93,7 +93,7 @@ export function tryPushToGitRemote({
   branch: string;
   context: BuilderContext;
   noVerify: boolean;
-}): Observable<any> {
+}): Observable<void> {
   if (remote == null || branch == null) {
     return throwError(
       'Missing configuration for Git push, please provide --remote and --branch options, see: https://github.com/jscutlery/semver#configure' +
