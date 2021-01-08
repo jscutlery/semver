@@ -8,7 +8,10 @@
       "schematics": {},
       "architect": {
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "syncVersions": false
+          }
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
