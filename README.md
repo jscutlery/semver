@@ -76,7 +76,6 @@ nx run workspace:version [...options]
 | --------------------- | ---------- | ---------- | ----------------------------------- |
 | **`--dry-run`**       | `boolean`  | `false`    | run with dry mode                   |
 | **`--no-verify`**     | `boolean`  | `false`    | skip git hooks                      |
-| **`--first-release`** | `boolean`  | `false`    | generate the CHANGELOG file         |
 | **`--push`**          | `boolean`  | `false`    | push the release                    |
 | **`--origin`**        | `string`   | `'origin'` | push against git remote repository  |
 | **`--base-branch`**   | `string`   | `'main'`   | push against git base branch        |
