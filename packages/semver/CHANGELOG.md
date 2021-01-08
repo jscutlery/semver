@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [1.1.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-1.0.0...semver-1.1.0) (2021-01-08)
+
+
+### Bug Fixes
+
+* 📦 update dependency @angular-devkit/build-angular to v0.1100.6 ([0515ab0](https://github.com/jscutlery/nx-plugin-semver/commit/0515ab0cff27cc2cedb77c607d855bd55fa14861))
+
+
+### Features
+
+* ✅ autodetect first release, remove related option ([a9b7107](https://github.com/jscutlery/nx-plugin-semver/commit/a9b7107b978024707ff14debc8c9c2991f17ab1a)), closes [#1](https://github.com/jscutlery/nx-plugin-semver/issues/1)
+
+
+
 # [1.0.0](https://github.com/jscutlery/semver/compare/semver-0.4.0...semver-1.0.0) (2021-01-04)
 
 
