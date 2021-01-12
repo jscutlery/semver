@@ -36,7 +36,8 @@ jobs:
     - run: yarn
     - run: yarn nx affected:lint --base=origin/main --head=${{ github.event.pull_request.head.ref }}
     - run: yarn nx affected:build --base=origin/main --head=${{ github.event.pull_request.head.ref }}
-    - run: yarn nx affected:test --code-coverage --base=origin/main --head=${{ github.event.pull_request.head.ref }}
+    # @NOTICE find a way to use affected:test with --code-coverage flag (if that possible??)
+    - run: yarn nx test semver --code-coverage
     - run: yarn nx affected:e2e --headless --base=origin/main --head=${{ github.event.pull_request.head.ref }}
     - name: Codecov upload
       uses: codecov/codecov-action@v1
