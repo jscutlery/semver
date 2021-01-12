@@ -61,10 +61,10 @@ nx run workspace:version [...options]
 
 #### When run, this command does the following:
 
-1. Retrieve the current version(s) of affected `package.json` file(s).
-2. Bump the version(s) based on your commits.
-3. Generates the CHANGELOG(s) based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
-4. Creates a new `commit` including your package.json file(s) and updated CHANGELOG.
+1. Retrieve the current version of affected `package.json` project(s).
+2. Bump the version based on your commits.
+3. Generates the CHANGELOG based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
+4. Creates a new `commit` including your `package.json` file and updated CHANGELOG.
 5. Creates a new `tag` with the new version number.
 6. Push the release(s) if enabled.
 
