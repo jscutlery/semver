@@ -2,8 +2,8 @@
   <img src="https://badgen.net/npm/v/@jscutlery/semver" alt="@jscutlery/semver NPM package">
 </a>
 
-<a href="https://coveralls.io/github/jscutlery/semver?branch=main" rel="nofollow">
-  <img src="https://coveralls.io/repos/github/jscutlery/semver/badge.svg?branch=main" alt="@jscutlery/semver coverage status" />
+<a href="https://codecov.io/gh/jscutlery/semver" rel="nofollow">
+  <img src="https://codecov.io/gh/jscutlery/semver/branch/main/graph/badge.svg?token=6LFY2EJ6UG" alt="@jscutlery/semver coverage status" />
 </a>
 
 # @jscutlery/semver

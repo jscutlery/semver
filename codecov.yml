@@ -1,0 +1,20 @@
+coverage:
+  precision: 2
+  round: down
+  status:
+    project:
+      semver:
+        target: 90%
+        flags: semver
+    patch:
+      default:
+        enabled: no
+        if_not_found: success
+    changes:
+      default:
+        enabled: no
+        if_not_found: success
+flags:
+  semver:
+    paths:
+      - packages/semver/src
