@@ -10,7 +10,7 @@
 
 ### Install
 
-Without Angular
+Without Angular:
 ```sh
 npm install -D @jscutlery/semver
 nx g @jscutlery/semver:install
@@ -29,11 +29,9 @@ Allow multiple projects to be versioned independently. This way you release only
 
 #### Synced mode
 
-Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together.
+Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together. This mode is useful when you are working with only one product.
 
 > One issue with this approach is that a major change in any project will result in all projects having a new major version.
-
-This mode is useful when you are working with one product.
 
 ## Usage
 
@@ -64,11 +62,11 @@ nx run workspace:version [...options]
 #### When run, this command does the following:
 
 1. Retrieve the current version(s) of affected `package.json` file(s).
-2. Bump the version based on your commits.
-3. Generates a changelog based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
-4. Creates a new `commit` including your package.json file and updated CHANGELOG.
+2. Bump the version(s) based on your commits.
+3. Generates the CHANGELOG(s) based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
+4. Creates a new `commit` including your package.json file(s) and updated CHANGELOG.
 5. Creates a new `tag` with the new version number.
-6. Push the release if enabled.
+6. Push the release(s) if enabled.
 
 #### Available options:
 
