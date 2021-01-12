@@ -1,5 +1,9 @@
 <a href="https://www.npmjs.com/package/@jscutlery/semver" rel="nofollow">
-  <img src="https://badgen.net/npm/v/@jscutlery/semver">
+  <img src="https://badgen.net/npm/v/@jscutlery/semver" alt="@jscutlery/semver NPM package">
+</a>
+
+<a href="https://coveralls.io/github/jscutlery/semver?branch=main" rel="nofollow">
+  <img src="https://coveralls.io/repos/github/jscutlery/semver/badge.svg?branch=main" alt="@jscutlery/semver coverage status" />
 </a>
 
 # @jscutlery/semver
