@@ -2,14 +2,16 @@ import * as childProcess from '@lerna/child-process';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
+import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { getMockContext } from './testing';
 import * as utils from './utils';
-import { getPackageFiles, hasChangelog } from './utils';
+import { getPackageFiles, hasChangelog, getChangelogFiles } from './utils';
 
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
+jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 
 describe('@jscutlery/semver:version', () => {
   let context: MockBuilderContext;
@@ -21,6 +23,7 @@ describe('@jscutlery/semver:version', () => {
     remote: 'origin',
     baseBranch: 'main',
     syncVersions: false,
+    rootChangelog: true,
   };
 
   beforeEach(async () => {
@@ -38,18 +41,30 @@ describe('@jscutlery/semver:version', () => {
 
     jest.spyOn(utils, 'hasChangelog').mockReturnValue(true);
 
-    /* Mock readFileSync. */
+    /* Mock getPackageFiles. */
     jest
       .spyOn(utils, 'getPackageFiles')
       .mockReturnValue(
         of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
       );
+
+    /* Mock getChangelogFiles. */
+    jest
+      .spyOn(utils, 'getChangelogFiles')
+      .mockReturnValue(
+        of([
+          { changelogFile: '/root/packages/a/CHANGELOG.md', projectRoot: '/root/packages/a' },
+          { changelogFile: '/root/packages/b/CHANGELOG.md', projectRoot: '/root/packages/b' },
+        ])
+      );
   });
 
   afterEach(() => {
     (standardVersion as jest.Mock).mockRestore();
+    (changelog as jest.Mock).mockRestore();
     (hasChangelog as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
+    (getChangelogFiles as jest.Mock).mockRestore();
   });
 
   it('should not push to Git by default', async () => {
@@ -183,7 +198,6 @@ describe('@jscutlery/semver:version', () => {
           preset: expect.stringContaining('conventional-changelog-angular'),
           dryRun: false,
           noVerify: false,
-          tagPrefix: null,
           path: '/root',
           infile: '/root/CHANGELOG.md',
           bumpFiles: [
@@ -193,7 +207,44 @@ describe('@jscutlery/semver:version', () => {
           packageFiles: ['/root/package.json'],
         })
       );
+      expect(changelog).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          dryRun: false,
+          infile: '/root/packages/a/CHANGELOG.md',
+        })
+      );
+      expect(changelog).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          dryRun: false,
+          infile: '/root/packages/b/CHANGELOG.md',
+        })
+      );
       expect(output).toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('should generate root CHANGELOG only when requested', async () => {
+      await runBuilder(
+        {
+          ...options,
+          syncVersions: true,
+          /* Disable root CHANGELOG */
+          rootChangelog: false,
+        },
+        context
+      ).toPromise();
+
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          bumpFiles: [
+            '/root/packages/a/package.json',
+            '/root/packages/b/package.json',
+          ],
+          packageFiles: ['/root/package.json'],
+          infile: undefined,
+        })
+      );
     });
   });
 });

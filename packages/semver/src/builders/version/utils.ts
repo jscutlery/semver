@@ -4,6 +4,7 @@ import { existsSync, readFile } from 'fs';
 import { resolve } from 'path';
 import { defer, from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { promisify } from 'util';
 
 export interface WorkspaceDefinition {
@@ -27,12 +28,43 @@ export function hasChangelog(projectRoot: string) {
   return existsSync(getChangelogPath(projectRoot));
 }
 
-export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
+export function _getPackageJsonPath(projectRoot: string) {
+  return resolve(projectRoot, 'package.json');
+}
+
+export function _hasPackageJson(projectRoot: string) {
+  return existsSync(_getPackageJsonPath(projectRoot));
+}
+
+export function _getAllProjectRoots(
+  workspaceRoot: string
+): Observable<string[]> {
   return _getWorkspaceDefinition(workspaceRoot).pipe(
     map((workspaceDefinition) =>
       Object.values(workspaceDefinition.projects).map((project) =>
-        resolve(workspaceRoot, project.root, 'package.json')
+        resolve(workspaceRoot, project.root)
       )
+    )
+  );
+}
+
+export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
+  return _getAllProjectRoots(workspaceRoot).pipe(
+    map((projectRoots) =>
+      projectRoots.map((projectRoot) => resolve(projectRoot, 'package.json'))
+    )
+  );
+}
+
+export function getChangelogFiles(
+  workspaceRoot: string
+): Observable<{ projectRoot: string; changelogFile: string }[]> {
+  return _getAllProjectRoots(workspaceRoot).pipe(
+    map((projectRoots) =>
+      projectRoots.filter(_hasPackageJson).map((projectRoot) => ({
+        projectRoot,
+        changelogFile: resolve(projectRoot, 'CHANGELOG.md'),
+      }))
     )
   );
 }
@@ -124,4 +156,25 @@ export function _readJsonFile(filePath: string) {
   return from(promisify(readFile)(filePath, 'utf-8')).pipe(
     map((data) => JSON.parse(data))
   );
+}
+
+export function generateSubChangelogs({ preset, dryRun }) {
+  return async (
+    options: { projectRoot: string; changelogFile: string }[]
+  ): Promise<void> => {
+    try {
+      for (const { projectRoot, changelogFile } of options) {
+        await changelog({
+          path: projectRoot,
+          preset,
+          dryRun,
+          tagPrefix: 'testPrefix',
+          infile: changelogFile,
+          skip: {} /* Needed to avoid changelog accessing a property of undefined :( */,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }
