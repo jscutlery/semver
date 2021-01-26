@@ -10,7 +10,7 @@ import * as standardVersion from 'standard-version';
 
 import { VersionBuilderSchema } from './schema';
 import {
-  generateSubChangelogs,
+  generateSubChangelog,
   getChangelogFiles,
   getChangelogPath,
   getPackageFiles,
@@ -18,6 +18,7 @@ import {
   hasChangelog,
   tryPushToGitRemote,
 } from './utils';
+import { tryBump } from './utils/try-bump';
 
 export function runBuilder(
   options: VersionBuilderSchema,
@@ -39,6 +40,8 @@ export function runBuilder(
     rootChangelog,
   } = options;
 
+  const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
+
   function createStandardVersionOpts({
     projectRoot,
     availablePackageFiles,
@@ -52,7 +55,7 @@ export function runBuilder(
     const firstRelease = hasChangelog(projectRoot) === false;
     const infile = !syncVersions || rootChangelog ? changelogPath : undefined;
 
-    const options: standardVersion.Options = {
+    return {
       silent: false,
       path: projectRoot,
       dryRun,
@@ -62,24 +65,33 @@ export function runBuilder(
       packageFiles,
       bumpFiles,
       preset,
+      tagPrefix,
     };
-
-    if (syncVersions === false) {
-      options.tagPrefix = `${context.target.project}-`;
-    }
-
-    return options;
   }
 
   const projectRoot$ = from(getProjectRoot(context));
   const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
   const availableChangelogFiles$ = getChangelogFiles(context.workspaceRoot);
-  const preset = require.resolve('conventional-changelog-angular');
+  const newVersion$ = projectRoot$.pipe(
+    switchMap((projectRoot) => tryBump({ projectRoot, tagPrefix }))
+  );
+  const preset = 'angular';
 
   const generateSubChangelogs$ = iif(
     () => syncVersions,
-    from(availableChangelogFiles$).pipe(
-      switchMap(generateSubChangelogs({ preset, dryRun }))
+    forkJoin([newVersion$, availableChangelogFiles$]).pipe(
+      switchMap(([newVersion, availableChangelogFiles]) => {
+        return concat(
+          ...availableChangelogFiles.map(({ projectRoot, changelogFile }) => {
+            return generateSubChangelog({
+              dryRun,
+              projectRoot,
+              changelogFile,
+              newVersion,
+            });
+          })
+        );
+      })
     ),
     of(undefined)
   );

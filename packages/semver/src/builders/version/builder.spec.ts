@@ -8,12 +8,17 @@ import { VersionBuilderSchema } from './schema';
 import { getMockContext } from './testing';
 import * as utils from './utils';
 import { getPackageFiles, hasChangelog, getChangelogFiles } from './utils';
+import { tryBump } from './utils/try-bump';
 
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
+jest.mock('./utils/try-bump');
 
 describe('@jscutlery/semver:version', () => {
+  const mockChangelog = changelog as jest.Mock;
+  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
+
   let context: MockBuilderContext;
 
   const options: VersionBuilderSchema = {
@@ -33,6 +38,9 @@ describe('@jscutlery/semver:version', () => {
     context.getProjectMetadata = jest
       .fn()
       .mockResolvedValue({ root: '/root/packages/a' });
+
+    mockChangelog.mockResolvedValue(undefined);
+    mockTryBump.mockReturnValue(of('2.1.0'));
 
     /* Mock standardVersion. */
     (standardVersion as jest.MockedFunction<
@@ -69,6 +77,7 @@ describe('@jscutlery/semver:version', () => {
     (hasChangelog as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getChangelogFiles as jest.Mock).mockRestore();
+    (tryBump as jest.Mock).mockRestore();
   });
 
   it('should not push to Git by default', async () => {
@@ -164,7 +173,7 @@ describe('@jscutlery/semver:version', () => {
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
-          preset: expect.stringContaining('conventional-changelog-angular'),
+          preset: 'angular',
           dryRun: false,
           noVerify: false,
           tagPrefix: 'a-',
@@ -196,10 +205,31 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
+      expect(output).toEqual(expect.objectContaining({ success: true }));
+
+      expect(changelog).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          header: expect.any(String),
+          dryRun: false,
+          infile: '/root/packages/a/CHANGELOG.md',
+        }),
+        '2.1.0'
+      );
+      expect(changelog).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          header: expect.any(String),
+          dryRun: false,
+          infile: '/root/packages/b/CHANGELOG.md',
+        }),
+        '2.1.0'
+      );
+
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
-          preset: expect.stringContaining('conventional-changelog-angular'),
+          preset: 'angular',
           dryRun: false,
           noVerify: false,
           path: '/root',
@@ -211,23 +241,6 @@ describe('@jscutlery/semver:version', () => {
           packageFiles: ['/root/package.json'],
         })
       );
-      expect(changelog).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
-          header: expect.any(String),
-          dryRun: false,
-          infile: '/root/packages/a/CHANGELOG.md',
-        })
-      );
-      expect(changelog).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
-          header: expect.any(String),
-          dryRun: false,
-          infile: '/root/packages/b/CHANGELOG.md',
-        })
-      );
-      expect(output).toEqual(expect.objectContaining({ success: true }));
     });
 
     it('should generate root CHANGELOG only when requested', async () => {

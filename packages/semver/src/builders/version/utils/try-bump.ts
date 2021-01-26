@@ -7,7 +7,7 @@ import { getCurrentVersion } from './get-current-version';
 import { getCommits } from './git';
 
 /**
- * @deprecated 🚧 Work in progress.
+ * Return new version or null if nothing changed.
  */
 export function tryBump({
   preset = 'angular',

@@ -2,8 +2,9 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { exec } from '@lerna/child-process';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import { defer, Observable, throwError } from 'rxjs';
+import { defer, from, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { readJsonFile } from './utils/filesystem';
 import { hasPackageJson } from './utils/project';
@@ -145,24 +146,22 @@ export function _getWorkspaceDefinition(
   );
 }
 
-export function generateSubChangelogs({ preset, dryRun }) {
-  return async (
-    options: { projectRoot: string; changelogFile: string }[]
-  ): Promise<void> => {
-    try {
-      for (const { projectRoot, changelogFile } of options) {
-        await changelog({
-          header: `# Changelog\n`,
-          path: projectRoot,
-          preset,
-          dryRun,
-          tagPrefix: 'testPrefix',
-          infile: changelogFile,
-          skip: {} /* Needed to avoid changelog accessing a property of undefined :( */,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+export function generateSubChangelog({
+  changelogFile,
+  projectRoot,
+  dryRun,
+  newVersion,
+}) {
+  return from(
+    changelog(
+      {
+        ...standardVersionDefaults,
+        path: projectRoot,
+        preset: 'angular',
+        dryRun,
+        infile: changelogFile,
+      },
+      newVersion
+    )
+  );
 }
