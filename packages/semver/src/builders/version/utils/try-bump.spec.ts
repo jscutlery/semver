@@ -33,7 +33,7 @@ function tryBump({
     switchMap((version) =>
       getCommits({
         projectRoot,
-        since: `${tagPrefix}${version}`,
+        since: version !== '0.0.0' ? `${tagPrefix}${version}` : null,
       })
     )
   );
@@ -109,6 +109,22 @@ describe('tryBump', () => {
     );
   });
 
+  it('should call getCommits with "since: null" if version is 0.0.0', async () => {
+    mockCurrentVersion.mockReturnValue(of('0.0.0'));
+    mockGetCommits.mockReturnValue(of([]));
+
+    await tryBump({
+      projectRoot: '/libs/demo',
+      tagPrefix: 'demo-',
+    }).toPromise();
+
+    expect(mockGetCommits).toBeCalledTimes(1);
+    expect(mockGetCommits).toBeCalledWith({
+      projectRoot: '/libs/demo',
+      since: null,
+    });
+  });
+
   it('should return null if there are no changes in current path', async () => {
     mockGetCommits.mockReturnValue(of([]));
 
@@ -123,6 +139,4 @@ describe('tryBump', () => {
       since: 'demo-2.1.0',
     });
   });
-
-  it.todo('🚧 should call getCommits with "since: null" if version is 0.0.0');
 });
