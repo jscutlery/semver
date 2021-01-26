@@ -165,6 +165,7 @@ export function generateSubChangelogs({ preset, dryRun }) {
     try {
       for (const { projectRoot, changelogFile } of options) {
         await changelog({
+          header: `# Changelog\n`,
           path: projectRoot,
           preset,
           dryRun,

@@ -49,14 +49,18 @@ describe('@jscutlery/semver:version', () => {
       );
 
     /* Mock getChangelogFiles. */
-    jest
-      .spyOn(utils, 'getChangelogFiles')
-      .mockReturnValue(
-        of([
-          { changelogFile: '/root/packages/a/CHANGELOG.md', projectRoot: '/root/packages/a' },
-          { changelogFile: '/root/packages/b/CHANGELOG.md', projectRoot: '/root/packages/b' },
-        ])
-      );
+    jest.spyOn(utils, 'getChangelogFiles').mockReturnValue(
+      of([
+        {
+          changelogFile: '/root/packages/a/CHANGELOG.md',
+          projectRoot: '/root/packages/a',
+        },
+        {
+          changelogFile: '/root/packages/b/CHANGELOG.md',
+          projectRoot: '/root/packages/b',
+        },
+      ])
+    );
   });
 
   afterEach(() => {
@@ -210,6 +214,7 @@ describe('@jscutlery/semver:version', () => {
       expect(changelog).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
+          header: expect.any(String),
           dryRun: false,
           infile: '/root/packages/a/CHANGELOG.md',
         })
@@ -217,6 +222,7 @@ describe('@jscutlery/semver:version', () => {
       expect(changelog).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
+          header: expect.any(String),
           dryRun: false,
           infile: '/root/packages/b/CHANGELOG.md',
         })
