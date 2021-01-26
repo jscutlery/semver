@@ -42,9 +42,9 @@ export function runBuilder(
   }): standardVersion.Options {
     const packageFiles = [resolve(projectRoot, 'package.json')];
     const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
-    const rootChangelogPath = getChangelogPath(projectRoot);
+    const changelogPath = getChangelogPath(projectRoot);
     const firstRelease = hasChangelog(projectRoot) === false;
-    const infile = rootChangelog ? rootChangelogPath : undefined;
+    const infile = !syncVersions || rootChangelog ? changelogPath : undefined;
 
     const options: standardVersion.Options = {
       silent: false,
