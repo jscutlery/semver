@@ -31,11 +31,11 @@ describe('getCurrentVersion', () => {
       })
     );
     const version = await getCurrentVersion({
-      projectRoot: '/root',
+      projectRoot: '/libs/demo',
     }).toPromise();
 
     expect(version).toEqual('2.1.0');
-    expect(readPackageJson).toBeCalledWith('/root');
+    expect(readPackageJson).toBeCalledWith('/libs/demo');
   });
 
   it('should compute current version from tags if package.json is not present', async () => {
@@ -47,7 +47,7 @@ describe('getCurrentVersion', () => {
     ]);
 
     const version = await getCurrentVersion({
-      projectRoot: '/root',
+      projectRoot: '/libs/demo',
       tagPrefix: 'demo-',
     }).toPromise();
 
@@ -60,10 +60,10 @@ describe('getCurrentVersion', () => {
     mockGitSemverTags.mockResolvedValue([]);
 
     const version = await getCurrentVersion({
-      projectRoot: '/root',
+      projectRoot: '/libs/demo',
     }).toPromise();
 
     expect(version).toEqual('0.0.0');
-    expect(hasPackageJson).toBeCalledWith('/root');
+    expect(hasPackageJson).toBeCalledWith('/libs/demo');
   });
 });
