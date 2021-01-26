@@ -1,65 +1,13 @@
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { Observable, defer, of, forkJoin } from 'rxjs';
-import { shareReplay, switchMap } from 'rxjs/operators';
-import { callbackify, promisify } from 'util';
+import { of } from 'rxjs';
+import { callbackify } from 'util';
 import { getCurrentVersion } from './get-current-version';
 import { getCommits } from './git';
-import * as semver from 'semver';
+import { tryBump } from './try-bump';
 
 jest.mock('conventional-recommended-bump');
 jest.mock('./get-current-version');
 jest.mock('./git');
-
-function tryBump({
-  preset = 'angular',
-  projectRoot,
-  tagPrefix,
-}: {
-  preset?: string;
-  projectRoot: string;
-  tagPrefix: string;
-}): Observable<string> {
-  const version$ = getCurrentVersion({
-    projectRoot,
-    tagPrefix,
-  }).pipe(
-    shareReplay({
-      refCount: true,
-      bufferSize: 1,
-    })
-  );
-
-  const commits$ = version$.pipe(
-    switchMap((version) =>
-      getCommits({
-        projectRoot,
-        since: version !== '0.0.0' ? `${tagPrefix}${version}` : null,
-      })
-    )
-  );
-
-  return forkJoin([version$, commits$]).pipe(
-    switchMap(([version, commits]) => {
-      /* No commits since last release so don't bump. */
-      if (commits.length === 0) {
-        return of(null);
-      }
-
-      /* Compute new version. */
-      return defer(async () => {
-        /* Compute release type depending on commits. */
-        const { releaseType } = await promisify(conventionalRecommendedBump)({
-          path: projectRoot,
-          preset,
-          tagPrefix,
-        });
-
-        /* Compute new version depending on release type. */
-        return semver.inc(version, releaseType);
-      });
-    })
-  );
-}
 
 describe('tryBump', () => {
   const mockConventionalRecommendedBump = conventionalRecommendedBump as jest.MockedFunction<
