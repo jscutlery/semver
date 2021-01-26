@@ -23,6 +23,12 @@ export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
+  // @todo handling both sync and independent mode is getting hacky
+  // we should split this into two distinct functions sharing common functions
+  // @todo call bump
+  // if bump returns null => noop
+  // otherwise, use the returned version with `generateSubChangelogs`
+  // in sync mode
   const {
     push,
     remote,
