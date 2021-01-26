@@ -3,12 +3,8 @@ import { map } from 'rxjs/operators';
 import { readPackageJson } from './project';
 import * as projectUtils from './project';
 
-function getCurrentVersion({
-  projectRoot,
-}: {
-  projectRoot: string;
-}): Observable<string> {
-  return readPackageJson({ projectRoot }).pipe(
+function getCurrentVersion(projectRoot: string): Observable<string> {
+  return readPackageJson(projectRoot).pipe(
     map((packageInfo) => packageInfo.version as string)
   );
 }
@@ -22,13 +18,9 @@ describe('getCurrentVersion', () => {
         version: '2.1.0',
       })
     );
-    const version = await getCurrentVersion({
-      projectRoot: '/root',
-    }).toPromise();
+    const version = await getCurrentVersion('/root').toPromise();
     expect(version).toEqual('2.1.0');
-    expect(readPackageJson).toBeCalledWith({
-      projectRoot: '/root',
-    });
+    expect(readPackageJson).toBeCalledWith('/root');
   });
 
   it.todo(

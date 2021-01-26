@@ -1,11 +1,12 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { exec } from '@lerna/child-process';
-import { existsSync, readFile } from 'fs';
+import { existsSync } from 'fs';
 import { resolve } from 'path';
-import { defer, from, Observable, throwError } from 'rxjs';
+import { defer, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { promisify } from 'util';
+import { readJsonFile } from './utils/filesystem';
+import { hasPackageJson } from './utils/project';
 
 export interface WorkspaceDefinition {
   projects: {
@@ -26,14 +27,6 @@ export function getChangelogPath(projectRoot: string) {
 
 export function hasChangelog(projectRoot: string) {
   return existsSync(getChangelogPath(projectRoot));
-}
-
-export function _getPackageJsonPath(projectRoot: string) {
-  return resolve(projectRoot, 'package.json');
-}
-
-export function _hasPackageJson(projectRoot: string) {
-  return existsSync(_getPackageJsonPath(projectRoot));
 }
 
 export function _getAllProjectRoots(
@@ -61,7 +54,7 @@ export function getChangelogFiles(
 ): Observable<{ projectRoot: string; changelogFile: string }[]> {
   return _getAllProjectRoots(workspaceRoot).pipe(
     map((projectRoots) =>
-      projectRoots.filter(_hasPackageJson).map((projectRoot) => ({
+      projectRoots.filter(hasPackageJson).map((projectRoot) => ({
         projectRoot,
         changelogFile: resolve(projectRoot, 'CHANGELOG.md'),
       }))
@@ -147,14 +140,8 @@ export function tryPushToGitRemote({
 export function _getWorkspaceDefinition(
   workspaceRoot: string
 ): Observable<WorkspaceDefinition> {
-  return _readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
-    catchError(() => _readJsonFile(resolve(workspaceRoot, 'angular.json')))
-  );
-}
-
-export function _readJsonFile(filePath: string) {
-  return from(promisify(readFile)(filePath, 'utf-8')).pipe(
-    map((data) => JSON.parse(data))
+  return readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
+    catchError(() => readJsonFile(resolve(workspaceRoot, 'angular.json')))
   );
 }
 
