@@ -1,21 +1,23 @@
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { hasPackageJson, readPackageJson } from './project';
+import * as gitSemverTags from 'git-semver-tags';
+import { of } from 'rxjs';
+import { callbackify } from 'util';
+import { getCurrentVersion } from './get-current-version';
 import * as projectUtils from './project';
+import { hasPackageJson, readPackageJson } from './project';
 
+jest.mock('git-semver-tags', () => jest.fn());
 jest.mock('./project');
 
-function getCurrentVersion(projectRoot: string): Observable<string> {
-  if (hasPackageJson(projectRoot)) {
-    return readPackageJson(projectRoot).pipe(
-      map((packageInfo) => packageInfo.version as string)
-    );
-  }
-
-  return of('0.0.0');
-}
-
 describe('getCurrentVersion', () => {
+  let mockGitSemverTags: jest.Mock;
+
+  beforeEach(() => {
+    mockGitSemverTags = jest.fn();
+    (gitSemverTags as jest.Mock).mockImplementation(
+      callbackify(mockGitSemverTags)
+    );
+  });
+
   afterEach(() => {
     (hasPackageJson as jest.Mock).mockRestore();
     (readPackageJson as jest.Mock).mockRestore();
@@ -28,19 +30,39 @@ describe('getCurrentVersion', () => {
         version: '2.1.0',
       })
     );
-    const version = await getCurrentVersion('/root').toPromise();
+    const version = await getCurrentVersion({
+      projectRoot: '/root',
+    }).toPromise();
+
     expect(version).toEqual('2.1.0');
     expect(readPackageJson).toBeCalledWith('/root');
   });
 
-  /* Cf. https://github.com/conventional-changelog/standard-version/blob/master/lib/latest-semver-tag.js */
-  it.todo(
-    '🚧 should compute current version from tags if package.json is not present'
-  );
+  it('should compute current version from tags if package.json is not present', async () => {
+    jest.spyOn(projectUtils, 'hasPackageJson').mockReturnValue(false);
+    mockGitSemverTags.mockResolvedValue([
+      'demo-2.1.0',
+      'demo-2.0.0',
+      'demo-1.0.0',
+    ]);
+
+    const version = await getCurrentVersion({
+      projectRoot: '/root',
+      tagPrefix: 'demo-',
+    }).toPromise();
+
+    expect(version).toEqual('2.1.0');
+    expect(mockGitSemverTags).toBeCalledWith({ tagPrefix: 'demo-' });
+  });
 
   it('should default to 0.0.0', async () => {
     jest.spyOn(projectUtils, 'hasPackageJson').mockReturnValue(false);
-    const version = await getCurrentVersion('/root').toPromise();
+    mockGitSemverTags.mockResolvedValue([]);
+
+    const version = await getCurrentVersion({
+      projectRoot: '/root',
+    }).toPromise();
+
     expect(version).toEqual('0.0.0');
     expect(hasPackageJson).toBeCalledWith('/root');
   });
