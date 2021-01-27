@@ -198,7 +198,7 @@ $`)
       );
     });
 
-    xit('🚧 should generate root changelog', async () => {
+    it('should generate root changelog', async () => {
       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 

@@ -2,12 +2,11 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { exec } from '@lerna/child-process';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import { defer, from, Observable, throwError } from 'rxjs';
+import { defer, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { readJsonFile } from './utils/filesystem';
-import { hasPackageJson } from './utils/project';
 
 export interface WorkspaceDefinition {
   projects: {
@@ -30,9 +29,7 @@ export function hasChangelog(projectRoot: string) {
   return existsSync(getChangelogPath(projectRoot));
 }
 
-export function _getAllProjectRoots(
-  workspaceRoot: string
-): Observable<string[]> {
+export function getProjectRoots(workspaceRoot: string): Observable<string[]> {
   return _getWorkspaceDefinition(workspaceRoot).pipe(
     map((workspaceDefinition) =>
       Object.values(workspaceDefinition.projects).map((project) =>
@@ -43,7 +40,7 @@ export function _getAllProjectRoots(
 }
 
 export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
-  return _getAllProjectRoots(workspaceRoot).pipe(
+  return getProjectRoots(workspaceRoot).pipe(
     map((projectRoots) =>
       projectRoots.map((projectRoot) => resolve(projectRoot, 'package.json'))
     )
@@ -53,7 +50,7 @@ export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
 export function getChangelogFiles(
   workspaceRoot: string
 ): Observable<{ projectRoot: string; changelogFile: string }[]> {
-  return _getAllProjectRoots(workspaceRoot).pipe(
+  return getProjectRoots(workspaceRoot).pipe(
     map((projectRoots) =>
       projectRoots.map((projectRoot) => ({
         projectRoot,
@@ -146,12 +143,7 @@ export function _getWorkspaceDefinition(
   );
 }
 
-export function updateChangelog({
-  changelogFile,
-  projectRoot,
-  dryRun,
-  newVersion,
-}) {
+export function updateChangelog({ projectRoot, dryRun, newVersion }) {
   return defer(() =>
     changelog(
       {
@@ -159,7 +151,7 @@ export function updateChangelog({
         path: projectRoot,
         preset: 'angular',
         dryRun,
-        infile: changelogFile,
+        infile: resolve(projectRoot, 'CHANGELOG.md'),
       },
       newVersion
     )

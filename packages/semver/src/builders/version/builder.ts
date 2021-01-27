@@ -10,13 +10,12 @@ import * as standardVersion from 'standard-version';
 
 import { VersionBuilderSchema } from './schema';
 import {
-  updateChangelog,
   getChangelogFiles,
   getChangelogPath,
   getPackageFiles,
   getProjectRoot,
-  hasChangelog,
   tryPushToGitRemote,
+  updateChangelog,
 } from './utils';
 import { tryBump } from './utils/try-bump';
 
@@ -61,14 +60,17 @@ export function runBuilder(
     forkJoin([newVersion$, availableChangelogFiles$]).pipe(
       switchMap(([newVersion, availableChangelogFiles]) => {
         return concat(
-          ...availableChangelogFiles.map(({ projectRoot, changelogFile }) => {
-            return updateChangelog({
-              dryRun,
-              projectRoot,
-              changelogFile,
-              newVersion,
-            });
-          })
+          ...availableChangelogFiles
+            /* Don't update the workspace's changelog as it will be
+             * dealt with by `standardVersion`. */
+            .filter(({ projectRoot }) => projectRoot !== context.workspaceRoot)
+            .map(({ projectRoot }) => {
+              return updateChangelog({
+                dryRun,
+                projectRoot,
+                newVersion,
+              });
+            })
         );
       })
     ),
