@@ -70,11 +70,11 @@ describe('@jscutlery/semver:version', () => {
   });
 
   afterEach(() => {
-    (standardVersion as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
     mockChangelog.mockRestore();
     mockExecFile.mockRestore();
+    mockStandardVersion.mockRestore();
     mockTryBump.mockRestore();
   });
 
