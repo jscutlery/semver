@@ -274,25 +274,25 @@ $`)
 
     afterAll(() => testingWorkspace.tearDown());
 
-    xit('🚧 should return success', () => {
+    it('should return success', () => {
       expect(result).toEqual({ success: true });
     });
 
-    xit('🚧 should bump root package.json', async () => {
+    it('should bump root package.json', async () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
     });
 
-    xit(`🚧 should bump "a"'s package.json`, async () => {
+    it(`should bump "a"'s package.json`, async () => {
       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
         '0.1.0'
       );
     });
 
-    xit('🚧 should not generate root changelog', () => {
+    it('should not generate root changelog', () => {
       expect(fileExists('CHANGELOG.md')).toBe(false);
     });
 
-    xit('🚧 should generate sub-changelogs', async () => {
+    it('should generate sub-changelogs', async () => {
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 

@@ -88,10 +88,7 @@ export function runBuilder(
       return standardVersion({
         bumpFiles: syncVersions ? availablePackageFiles : packageFiles,
         dryRun,
-        infile:
-          !syncVersions || rootChangelog
-            ? getChangelogPath(projectRoot)
-            : undefined,
+        infile: getChangelogPath(projectRoot),
         /* Control version to avoid different results between the value
          * returned by `tryBump` and the one computed by standard-version. */
         releaseAs: newVersion,
@@ -101,6 +98,9 @@ export function runBuilder(
         path: projectRoot,
         preset,
         tagPrefix,
+        skip: {
+          changelog: syncVersions && !rootChangelog,
+        },
       });
     })
   );

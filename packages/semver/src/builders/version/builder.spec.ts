@@ -222,6 +222,9 @@ describe('@jscutlery/semver:version', () => {
             '/root/packages/b/package.json',
           ],
           packageFiles: ['/root/package.json'],
+          skip: {
+            changelog: false,
+          },
         })
       );
     });
@@ -239,12 +242,9 @@ describe('@jscutlery/semver:version', () => {
 
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
-          bumpFiles: [
-            '/root/packages/a/package.json',
-            '/root/packages/b/package.json',
-          ],
-          packageFiles: ['/root/package.json'],
-          infile: undefined,
+          skip: {
+            changelog: true,
+          },
         })
       );
     });
