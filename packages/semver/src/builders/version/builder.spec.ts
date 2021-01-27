@@ -156,6 +156,16 @@ describe('@jscutlery/semver:version', () => {
         })
       );
     });
+
+    it('should not version if no commits since last release', async () => {
+      mockTryBump.mockReturnValue(of(null));
+
+      const { success } = await runBuilder(options, context).toPromise();
+
+      expect(success).toBe(true);
+
+      expect(standardVersion).not.toBeCalled();
+    });
   });
 
   describe('Sync versions', () => {
@@ -236,6 +246,22 @@ describe('@jscutlery/semver:version', () => {
           },
         })
       );
+    });
+
+    it('should not version if no commits since last release', async () => {
+      mockTryBump.mockReturnValue(of(null));
+
+      const { success } = await runBuilder(
+        {
+          ...options,
+          syncVersions: true,
+        },
+        context
+      ).toPromise();
+
+      expect(success).toBe(true);
+
+      expect(standardVersion).not.toBeCalled();
     });
   });
 });

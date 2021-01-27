@@ -28,7 +28,6 @@ export function runBuilder(
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  // @todo: if tryBump returns null => noop
   const { workspaceRoot } = context;
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
@@ -38,8 +37,12 @@ export function runBuilder(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
 
-  const runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
+  const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) => {
+      if (newVersion == null) {
+        return of(undefined);
+      }
+
       const options: CommonVersionOptions = {
         dryRun,
         newVersion,
@@ -48,27 +51,29 @@ export function runBuilder(
         projectRoot,
         tagPrefix,
       };
-      return syncVersions
+      const runStandardVersion$ = syncVersions
         ? versionWorkspace({
             ...options,
             rootChangelog,
             workspaceRoot,
           })
         : versionProject(options);
+
+      const pushToGitRemote$ = tryPushToGitRemote({
+        branch: baseBranch,
+        context,
+        noVerify,
+        remote,
+      });
+
+      return concat(
+        runStandardVersion$,
+        ...(push && dryRun === false ? [pushToGitRemote$] : [])
+      );
     })
   );
 
-  const pushToGitRemote$ = tryPushToGitRemote({
-    branch: baseBranch,
-    context,
-    noVerify,
-    remote,
-  });
-
-  return concat(
-    runStandardVersion$,
-    ...(push && dryRun === false ? [pushToGitRemote$] : [])
-  ).pipe(
+  return action$.pipe(
     mapTo({ success: true }),
     catchError((error) => {
       context.logger.error(error);
