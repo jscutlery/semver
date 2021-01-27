@@ -160,6 +160,8 @@ export function updateChangelog({ projectRoot, dryRun, newVersion }) {
       },
       newVersion
     );
-    await promisify(execFile)('git', ['add', changelogPath]);
+    if (!dryRun) {
+      await promisify(execFile)('git', ['add', changelogPath]);
+    }
   });
 }
