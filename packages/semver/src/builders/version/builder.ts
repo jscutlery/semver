@@ -10,7 +10,11 @@ import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import { versionProject, versionWorkspace } from './version';
+import {
+  CommonVersionOptions,
+  versionProject,
+  versionWorkspace,
+} from './version';
 
 export function runBuilder(
   {
@@ -24,8 +28,6 @@ export function runBuilder(
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  // @todo handling both sync and independent mode is getting hacky
-  // we should split this into two distinct functions sharing common functions
   // @todo call bump
   // if bump returns null => noop
   const { workspaceRoot } = context;
@@ -38,27 +40,23 @@ export function runBuilder(
   );
 
   const runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
-    switchMap(([projectRoot, newVersion]) =>
-      syncVersions
+    switchMap(([projectRoot, newVersion]) => {
+      const options: CommonVersionOptions = {
+        dryRun,
+        newVersion,
+        noVerify,
+        preset,
+        projectRoot,
+        tagPrefix,
+      };
+      return syncVersions
         ? versionWorkspace({
-            dryRun,
-            newVersion,
-            noVerify,
-            preset,
-            projectRoot,
+            ...options,
             rootChangelog,
-            tagPrefix,
             workspaceRoot,
           })
-        : versionProject({
-            dryRun,
-            newVersion,
-            noVerify,
-            preset,
-            projectRoot,
-            tagPrefix,
-          })
-    )
+        : versionProject(options);
+    })
   );
 
   const pushToGitRemote$ = tryPushToGitRemote({
