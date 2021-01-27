@@ -45,13 +45,11 @@ export function runBuilder(
   // we should split this into two distinct functions sharing common functions
   // @todo call bump
   // if bump returns null => noop
-
   const { workspaceRoot } = context;
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
   const projectRoot$ = getProjectRoot(context);
-  const availablePackageFiles$ = getPackageFiles(workspaceRoot);
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
@@ -82,31 +80,23 @@ export function runBuilder(
   const runStandardVersion$ = forkJoin([
     projectRoot$,
     newVersion$,
-    availablePackageFiles$,
+    getPackageFiles(workspaceRoot),
   ]).pipe(
     switchMap(([projectRoot, newVersion, availablePackageFiles]) => {
       const packageFiles = [resolve(projectRoot, 'package.json')];
+      const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
+      const skipChangelog = syncVersions && !rootChangelog;
 
-      return standardVersion({
-        bumpFiles: syncVersions ? availablePackageFiles : packageFiles,
-        /* Make sure that we commit the manually generated changelogs that
-         * we staged. */
-        commitAll: true,
-        dryRun,
-        header: defaultHeader,
-        infile: getChangelogPath(projectRoot),
-        /* Control version to avoid different results between the value
-         * returned by `tryBump` and the one computed by standard-version. */
-        releaseAs: newVersion,
-        silent: false,
-        noVerify,
-        packageFiles,
-        path: projectRoot,
-        preset,
-        tagPrefix,
-        skip: {
-          changelog: syncVersions && !rootChangelog,
-        },
+      return _runStandardVersion({
+        bumpFiles: bumpFiles,
+        dryRun: dryRun,
+        projectRoot: projectRoot,
+        newVersion: newVersion,
+        noVerify: noVerify,
+        packageFiles: packageFiles,
+        preset: preset,
+        tagPrefix: tagPrefix,
+        skipChangelog: skipChangelog,
       });
     })
   );
@@ -134,6 +124,50 @@ export function runBuilder(
       return of({ success: false });
     })
   );
+}
+
+function _runStandardVersion({
+  bumpFiles,
+  dryRun,
+  projectRoot,
+  newVersion,
+  noVerify,
+  packageFiles,
+  preset,
+  tagPrefix,
+  skipChangelog,
+}: {
+  bumpFiles: string[];
+  dryRun: boolean;
+  projectRoot: string;
+  newVersion: string;
+  noVerify: boolean;
+  packageFiles: string[];
+  preset: string;
+  tagPrefix: string;
+  skipChangelog: boolean;
+}) {
+  return standardVersion({
+    bumpFiles,
+    /* Make sure that we commit the manually generated changelogs that
+     * we staged. */
+    commitAll: true,
+    dryRun,
+    header: defaultHeader,
+    infile: getChangelogPath(projectRoot),
+    /* Control version to avoid different results between the value
+     * returned by `tryBump` and the one computed by standard-version. */
+    releaseAs: newVersion,
+    silent: false,
+    noVerify,
+    packageFiles,
+    path: projectRoot,
+    preset,
+    tagPrefix,
+    skip: {
+      changelog: skipChangelog,
+    },
+  });
 }
 
 export default createBuilder(runBuilder);
