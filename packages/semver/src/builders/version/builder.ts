@@ -48,33 +48,6 @@ export function runBuilder(
 
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
-  function createStandardVersionOpts({
-    projectRoot,
-    availablePackageFiles,
-  }: {
-    projectRoot: string;
-    availablePackageFiles: string[];
-  }): standardVersion.Options {
-    const packageFiles = [resolve(projectRoot, 'package.json')];
-    const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
-    const changelogPath = getChangelogPath(projectRoot);
-    const firstRelease = hasChangelog(projectRoot) === false;
-    const infile = !syncVersions || rootChangelog ? changelogPath : undefined;
-
-    return {
-      silent: false,
-      path: projectRoot,
-      dryRun,
-      infile,
-      noVerify,
-      firstRelease,
-      packageFiles,
-      bumpFiles,
-      preset,
-      tagPrefix,
-    };
-  }
-
   const projectRoot$ = from(getProjectRoot(context));
   const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
   const availableChangelogFiles$ = getChangelogFiles(context.workspaceRoot);
@@ -104,16 +77,30 @@ export function runBuilder(
 
   const runStandardVersion$ = forkJoin([
     projectRoot$,
+    newVersion$,
     availablePackageFiles$,
   ]).pipe(
-    switchMap(([projectRoot, availablePackageFiles]) =>
-      standardVersion(
-        createStandardVersionOpts({
-          projectRoot,
-          availablePackageFiles,
-        })
-      )
-    )
+    switchMap(([projectRoot, newVersion, availablePackageFiles]) => {
+      const packageFiles = [resolve(projectRoot, 'package.json')];
+
+      return standardVersion({
+        bumpFiles: syncVersions ? availablePackageFiles : packageFiles,
+        dryRun,
+        infile:
+          !syncVersions || rootChangelog
+            ? getChangelogPath(projectRoot)
+            : undefined,
+        /* Control version to avoid different results between the value
+         * returned by `tryBump` and the one computed by standard-version. */
+        releaseAs: newVersion,
+        silent: false,
+        noVerify,
+        packageFiles,
+        path: projectRoot,
+        preset,
+        tagPrefix,
+      });
+    })
   );
 
   const pushToGitRemote$ = iif(

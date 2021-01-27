@@ -85,7 +85,7 @@ describe('@jscutlery/semver:version', () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
     });
 
-    xit(`🚧 should bump a's package.json`, async () => {
+    it(`should bump a's package.json`, async () => {
       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
         '0.1.0'
       );
@@ -95,7 +95,7 @@ describe('@jscutlery/semver:version', () => {
       expect(fileExists('CHANGELOG.md')).toBe(false);
     });
 
-    xit(`🚧 should generate "a"'s changelog`, async () => {
+    it(`should generate "a"'s changelog`, async () => {
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
@@ -144,13 +144,13 @@ $`)
       expect(fileExists('CHANGELOG.md')).toBe(false);
     });
 
-    xit(`🚧 should generate "b"'s changelog`, async () => {
+    it(`should generate "b"'s changelog`, async () => {
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
 All notable changes to this project will be documented in this file. See .* for commit guidelines.
 
-# 0.0.1 \\(.*\\)
+## 0.0.1 \\(.*\\)
 
 
 ### Bug Fixes

@@ -95,13 +95,6 @@ describe('@jscutlery/semver:version', () => {
     expect(getPackageFiles).toBeCalledWith('/root');
   });
 
-  it('should call getPackageFiles with the right root project path', async () => {
-    await runBuilder(options, context).toPromise();
-
-    expect(hasChangelog).toBeCalledTimes(1);
-    expect(hasChangelog).toBeCalledWith('/root/packages/a');
-  });
-
   it('should push to Git with right options', async () => {
     await runBuilder(
       { ...options, push: true, remote: 'origin', baseBranch: 'main' },
@@ -153,18 +146,6 @@ describe('@jscutlery/semver:version', () => {
       expect.stringContaining('Missing configuration')
     );
     expect(output).toEqual(expect.objectContaining({ success: false }));
-  });
-
-  it('should detect first release', async () => {
-    /* Mock the absence of CHANGELOG file */
-    jest.spyOn(utils, 'hasChangelog').mockReturnValue(false);
-
-    await runBuilder(options, context).toPromise();
-
-    expect(standardVersion).toBeCalledTimes(1);
-    expect(standardVersion).toBeCalledWith(
-      expect.objectContaining({ firstRelease: true })
-    );
   });
 
   describe('Independent version', () => {
