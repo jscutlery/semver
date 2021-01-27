@@ -28,8 +28,7 @@ export function runBuilder(
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  // @todo call bump
-  // if bump returns null => noop
+  // @todo: if tryBump returns null => noop
   const { workspaceRoot } = context;
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
