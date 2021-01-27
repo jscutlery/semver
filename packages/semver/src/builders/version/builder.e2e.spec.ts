@@ -82,9 +82,8 @@ describe('@jscutlery/semver:version e2e', () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
     });
 
-    it('should not generate sub-changelogs', async () => {
-      expect(fileExists('packages/a/CHANGELOG.md')).toBe(false);
-      expect(fileExists('packages/b/CHANGELOG.md')).toBe(false);
+    xit('🚧 should generate sub-changelogs', async () => {
+      throw new Error('🚧 work in progress!');
     });
 
     xit('🚧 should generate root changelog', async () => {
