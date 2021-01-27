@@ -77,11 +77,11 @@ describe('@jscutlery/semver:version', () => {
 
     afterAll(() => testingWorkspace.tearDown());
 
-    xit('🚧 should return success', () => {
+    it('should return success', () => {
       expect(result).toEqual({ success: true });
     });
 
-    xit('🚧 should not bump root package.json', async () => {
+    it('should not bump root package.json', async () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
     });
 
@@ -91,7 +91,7 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    xit('🚧 should not generate root changelog', () => {
+    it('should not generate root changelog', () => {
       expect(fileExists('CHANGELOG.md')).toBe(false);
     });
 
@@ -132,20 +132,20 @@ $`)
 
     afterAll(() => testingWorkspace.tearDown());
 
-    xit('🚧 should return success', () => {
+    it('should return success', () => {
       expect(result).toEqual({ success: true });
     });
 
-    xit('🚧 should not bump root package.json', async () => {
+    it('should not bump root package.json', async () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
     });
 
-    xit('🚧 should not generate root changelog', () => {
+    it('should not generate root changelog', () => {
       expect(fileExists('CHANGELOG.md')).toBe(false);
     });
 
     xit(`🚧 should generate "b"'s changelog`, async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
 All notable changes to this project will be documented in this file. See .* for commit guidelines.
