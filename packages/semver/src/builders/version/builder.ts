@@ -1,8 +1,4 @@
-import {
-  BuilderContext,
-  BuilderOutput,
-  createBuilder,
-} from '@angular-devkit/architect';
+import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
 import { resolve } from 'path';
 import { concat, forkJoin, iif, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
@@ -10,13 +6,12 @@ import * as standardVersion from 'standard-version';
 
 import { VersionBuilderSchema } from './schema';
 import {
-  getChangelogFiles,
   getChangelogPath,
   getPackageFiles,
   getProjectRoot,
   getProjectRoots,
   tryPushToGitRemote,
-  updateChangelog,
+  updateChangelog
 } from './utils';
 import { defaultHeader } from './utils/changelog';
 import { tryBump } from './utils/try-bump';
@@ -29,14 +24,7 @@ export function _enableWip() {
 }
 
 export function runBuilder(
-  options: VersionBuilderSchema,
-  context: BuilderContext
-): Observable<BuilderOutput> {
-  // @todo handling both sync and independent mode is getting hacky
-  // we should split this into two distinct functions sharing common functions
-  // @todo call bump
-  // if bump returns null => noop
-  const {
+  {
     push,
     remote,
     dryRun,
@@ -44,7 +32,13 @@ export function runBuilder(
     noVerify,
     syncVersions,
     rootChangelog,
-  } = options;
+  }: VersionBuilderSchema,
+  context: BuilderContext
+): Observable<BuilderOutput> {
+  // @todo handling both sync and independent mode is getting hacky
+  // we should split this into two distinct functions sharing common functions
+  // @todo call bump
+  // if bump returns null => noop
 
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
