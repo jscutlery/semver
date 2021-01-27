@@ -4,7 +4,7 @@ import {
   createBuilder,
 } from '@angular-devkit/architect';
 import { concat, forkJoin, Observable, of } from 'rxjs';
-import { catchError, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
@@ -32,7 +32,9 @@ export function runBuilder(
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
-  const projectRoot$ = getProjectRoot(context);
+  const projectRoot$ = getProjectRoot(context).pipe(
+    shareReplay({ refCount: true, bufferSize: 1 })
+  );
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
