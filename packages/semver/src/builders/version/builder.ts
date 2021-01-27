@@ -14,10 +14,10 @@ import {
   getPackageFiles,
   getProjectRoot,
   getProjectRoots,
-  tryPushToGitRemote,
   updateChangelog,
 } from './utils';
 import { defaultHeader } from './utils/changelog';
+import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 
 // @todo get rid of this
