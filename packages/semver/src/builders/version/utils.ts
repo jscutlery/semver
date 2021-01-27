@@ -8,6 +8,7 @@ import { catchError, map } from 'rxjs/operators';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { promisify } from 'util';
+import { defaultHeader } from './utils/changelog';
 import { readJsonFile } from './utils/filesystem';
 
 export interface WorkspaceDefinition {
@@ -151,6 +152,7 @@ export function updateChangelog({ projectRoot, dryRun, newVersion }) {
     await changelog(
       {
         ...standardVersionDefaults,
+        header: defaultHeader,
         path: projectRoot,
         preset: 'angular',
         dryRun,

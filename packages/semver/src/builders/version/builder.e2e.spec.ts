@@ -103,7 +103,7 @@ describe('@jscutlery/semver:version', () => {
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
@@ -156,7 +156,7 @@ $`)
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 ## 0.0.1 \\(.*\\)
 
@@ -196,7 +196,7 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
-    it('🚧 should commit all changes', () => {
+    it('should commit all changes', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
@@ -214,7 +214,7 @@ $`)
       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
@@ -235,7 +235,7 @@ $`)
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
@@ -249,7 +249,7 @@ $`)
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
@@ -290,7 +290,7 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
-    it('🚧 should commit all changes', () => {
+    it('should commit all changes', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
@@ -312,7 +312,7 @@ $`)
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
@@ -326,7 +326,7 @@ $`)
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
-All notable changes to this project will be documented in this file. See .* for commit guidelines.
+This file was generated.*
 
 # 0.1.0 \\(.*\\)
 

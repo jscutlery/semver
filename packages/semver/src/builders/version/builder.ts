@@ -17,6 +17,7 @@ import {
   tryPushToGitRemote,
   updateChangelog,
 } from './utils';
+import { defaultHeader } from './utils/changelog';
 import { tryBump } from './utils/try-bump';
 
 // @todo get rid of this
@@ -89,6 +90,7 @@ export function runBuilder(
          * we staged. */
         commitAll: true,
         dryRun,
+        header: defaultHeader,
         infile: getChangelogPath(projectRoot),
         /* Control version to avoid different results between the value
          * returned by `tryBump` and the one computed by standard-version. */
