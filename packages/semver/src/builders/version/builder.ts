@@ -1,4 +1,8 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import {
+  BuilderContext,
+  BuilderOutput,
+  createBuilder,
+} from '@angular-devkit/architect';
 import { resolve } from 'path';
 import { concat, forkJoin, iif, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
@@ -11,7 +15,7 @@ import {
   getProjectRoot,
   getProjectRoots,
   tryPushToGitRemote,
-  updateChangelog
+  updateChangelog,
 } from './utils';
 import { defaultHeader } from './utils/changelog';
 import { tryBump } from './utils/try-bump';
@@ -40,34 +44,35 @@ export function runBuilder(
   // @todo call bump
   // if bump returns null => noop
 
+  const { workspaceRoot } = context;
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
   const projectRoot$ = getProjectRoot(context);
-  const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
+  const availablePackageFiles$ = getPackageFiles(workspaceRoot);
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
 
   const generateSubChangelogs$ = iif(
     () => syncVersions && _isWip,
-    forkJoin([newVersion$, getProjectRoots(context.workspaceRoot)]).pipe(
-      switchMap(([newVersion, projectRoots]) => {
-        return concat(
+    forkJoin([newVersion$, getProjectRoots(workspaceRoot)]).pipe(
+      switchMap(([newVersion, projectRoots]) =>
+        concat(
           ...projectRoots
             /* Don't update the workspace's changelog as it will be
              * dealt with by `standardVersion`. */
-            .filter((projectRoot) => projectRoot !== context.workspaceRoot)
-            .map((projectRoot) => {
-              return updateChangelog({
+            .filter((projectRoot) => projectRoot !== workspaceRoot)
+            .map((projectRoot) =>
+              updateChangelog({
                 dryRun,
                 preset,
                 projectRoot,
                 newVersion,
-              });
-            })
-        );
-      })
+              })
+            )
+        )
+      )
     ),
     of(undefined)
   );
