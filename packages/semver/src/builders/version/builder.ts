@@ -20,6 +20,12 @@ import {
 } from './utils';
 import { tryBump } from './utils/try-bump';
 
+// @todo get rid of this
+let _isWip = process.env['JSCUTLERY_SEMVER_WIP'] === 'true';
+export function _enableWip() {
+  _isWip = true;
+}
+
 export function runBuilder(
   options: VersionBuilderSchema,
   context: BuilderContext
@@ -78,7 +84,7 @@ export function runBuilder(
   const preset = 'angular';
 
   const generateSubChangelogs$ = iif(
-    () => syncVersions,
+    () => syncVersions && _isWip,
     forkJoin([newVersion$, availableChangelogFiles$]).pipe(
       switchMap(([newVersion, availableChangelogFiles]) => {
         return concat(

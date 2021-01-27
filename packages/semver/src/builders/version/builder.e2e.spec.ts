@@ -12,6 +12,9 @@ import {
 } from './testing';
 import { readPackageJson } from './utils/project';
 
+// @todo get rid of this
+_enableWip();
+
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
     dryRun: false,

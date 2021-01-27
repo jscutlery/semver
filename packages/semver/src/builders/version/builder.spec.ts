@@ -3,7 +3,7 @@ import * as childProcess from '@lerna/child-process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { runBuilder } from './builder';
+import { _enableWip, runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as utils from './utils';
@@ -14,6 +14,9 @@ jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 jest.mock('./utils/try-bump');
+
+// @todo get rid of this
+_enableWip();
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
