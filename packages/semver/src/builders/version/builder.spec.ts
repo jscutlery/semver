@@ -9,8 +9,10 @@ import { _enableWip, runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as utils from './utils';
-import { getPackageFiles, getProjectRoots, hasChangelog } from './utils';
+import { hasChangelog } from './utils';
 import { tryBump } from './utils/try-bump';
+import * as workspace from './utils/workspace';
+import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 jest.mock('child_process');
 jest.mock('@lerna/child-process');
@@ -62,14 +64,14 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock getPackageFiles. */
     jest
-      .spyOn(utils, 'getPackageFiles')
+      .spyOn(workspace, 'getPackageFiles')
       .mockReturnValue(
         of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
       );
 
     /* Mock getProjectRoots. */
     jest
-      .spyOn(utils, 'getProjectRoots')
+      .spyOn(workspace, 'getProjectRoots')
       .mockReturnValue(of(['/root/packages/a', '/root/packages/b']));
   });
 

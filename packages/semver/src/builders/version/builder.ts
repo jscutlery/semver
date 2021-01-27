@@ -9,16 +9,15 @@ import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
 import { VersionBuilderSchema } from './schema';
-import {
-  getChangelogPath,
-  getPackageFiles,
-  getProjectRoot,
-  getProjectRoots,
-  updateChangelog,
-} from './utils';
+import { getChangelogPath, updateChangelog } from './utils';
 import { defaultHeader } from './utils/changelog';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
+import {
+  getPackageFiles,
+  getProjectRoot,
+  getProjectRoots,
+} from './utils/workspace';
 
 // @todo get rid of this
 let _isWip = process.env['JSCUTLERY_SEMVER_WIP'] === 'true';

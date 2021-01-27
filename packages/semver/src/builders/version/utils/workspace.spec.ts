@@ -1,7 +1,7 @@
 import * as fs from 'fs';
-import { getPackageFiles } from './utils';
+import { getPackageFiles } from './workspace';
 
-describe('getWorkspaceDefinition', () => {
+describe('getPackageFiles', () => {
   let fakeReadFileSync: jest.Mock;
 
   beforeEach(() => {
