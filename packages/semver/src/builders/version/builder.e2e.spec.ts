@@ -262,6 +262,114 @@ $`)
     });
   });
 
+  describe('on workspace with --sync-versions=true (--root-changelog=true), after changing lib "b"', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      await runBuilder(
+        {
+          ...defaultBuilderOptions,
+          syncVersions: true,
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+
+      /* Change b and commit. */
+      execSync(`
+        echo b > packages/b/b
+        git add packages/b/b
+        git commit -m "feat(b): b"
+      `);
+
+      result = await runBuilder(
+        {
+          ...defaultBuilderOptions,
+          syncVersions: true,
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it('should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    it('should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
+    it('should bump root package.json', async () => {
+      expect((await readPackageJson('.').toPromise()).version).toEqual('0.2.0');
+    });
+
+    /* In sync mode, we bump "a" even if change concerns "b". */
+    it(`should bump "a"'s package.json`, async () => {
+      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+        '0.2.0'
+      );
+    });
+
+    it('should update root changelog', async () => {
+      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`
+# \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*b:\\*\\* b .*
+
+
+
+# 0.1.0 \\(.*\\)
+`)
+      );
+    });
+
+    it(`should update "a"'s changelog without listing "b"'s feature`, async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`
+# \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+
+
+
+# 0.1.0 \\(.*\\)
+`)
+      );
+    });
+
+    it(`should update "b"'s changelog with new feature`, async () => {
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`
+# \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*b:\\*\\* b .*
+
+
+
+# 0.1.0 \\(.*\\)
+`)
+      );
+    });
+  });
+
   describe('workspace with --sync-versions=true --root-changelog=false`', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
@@ -338,10 +446,11 @@ $`)
       );
     });
   });
+});
 
-  function commitChanges() {
-    execSync(
-      `
+function commitChanges() {
+  execSync(
+    `
         git init; 
 
         # These are needed by CI.
@@ -357,15 +466,14 @@ $`)
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
       `
-    );
-  }
+  );
+}
 
-  function uncommitedChanges() {
-    return (
-      execSync('git status --porcelain', { encoding: 'utf-8' })
-        .split('\n')
-        /* Remove empty line. */
-        .filter((line) => line.length !== 0)
-    );
-  }
-});
+function uncommitedChanges() {
+  return (
+    execSync('git status --porcelain', { encoding: 'utf-8' })
+      .split('\n')
+      /* Remove empty line. */
+      .filter((line) => line.length !== 0)
+  );
+}
