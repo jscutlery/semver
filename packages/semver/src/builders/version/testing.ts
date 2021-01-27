@@ -1,25 +1,67 @@
-import { Architect } from '@angular-devkit/architect';
-import { TestingArchitectHost } from '@angular-devkit/architect/testing';
-import { schema } from '@angular-devkit/core';
-import { MockBuilderContext } from '@nrwl/workspace/testing';
-import { join } from 'path';
+import { BuilderContext } from '@angular-devkit/architect';
+import { mkdirSync, writeFileSync } from 'fs';
+import { dirname, resolve } from 'path';
+import * as rimraf from 'rimraf';
+import * as tmp from 'tmp';
+import { promisify } from 'util';
 
-export async function getTestArchitect() {
-  const architectHost = new TestingArchitectHost('/root', '/root');
-  const registry = new schema.CoreSchemaRegistry();
-  registry.addPostTransform(schema.transforms.addUndefinedDefaults);
-
-  const architect = new Architect(architectHost, registry);
-
-  await architectHost.addBuilderFromPackage(join(__dirname, '../../..'));
-
-  return [architect, architectHost] as [Architect, TestingArchitectHost];
+export interface TestingWorkspace {
+  tearDown(): Promise<void>;
+  root: string;
 }
 
-export async function getMockContext() {
-  const [architect, architectHost] = await getTestArchitect();
+export function setupTestingWorkspace(
+  files: Map<string, string>
+): TestingWorkspace {
+  /* Create a temporary directory. */
+  const tmpDir = tmp.dirSync();
 
-  const context = new MockBuilderContext(architect, architectHost);
-  await context.addBuilderFromPackage(join(__dirname, '../../..'));
-  return context;
+  for (const [fileRelativePath, content] of files.entries()) {
+    const filePath = resolve(tmpDir.name, fileRelativePath);
+    const directory = dirname(filePath);
+    /* Create path. */
+    mkdirSync(directory, { recursive: true });
+    /* Create file. */
+    writeFileSync(filePath, content, 'utf-8');
+  }
+
+  const originalCwd = process.cwd();
+  process.chdir(tmpDir.name);
+
+  /* Retrieving path from `process.cwd()`
+   * because for some strange reasons it returns a different value.
+   * Cf. https://github.com/nodejs/node/issues/7545 */
+  const workspaceRoot = process.cwd();
+
+  return {
+    /**
+     * Destroy and restore cwd.
+     */
+    async tearDown() {
+      await promisify(rimraf)(workspaceRoot);
+      process.chdir(originalCwd);
+    },
+    root: workspaceRoot,
+  };
+}
+
+export function createFakeContext({
+  project,
+  projectRoot,
+  workspaceRoot,
+}: {
+  project: string;
+  projectRoot: string;
+  workspaceRoot: string;
+}): BuilderContext {
+  return {
+    getProjectMetadata: jest.fn().mockReturnValue({ root: projectRoot }),
+    logger: { error: jest.fn() },
+    reportStatus: jest.fn(),
+    target: {
+      project,
+    },
+    workspaceRoot,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  } as any;
 }

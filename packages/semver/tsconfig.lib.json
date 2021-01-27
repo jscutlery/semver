@@ -6,6 +6,9 @@
     "declaration": true,
     "types": ["node"]
   },
-  "exclude": ["**/*.spec.ts"],
+  "exclude": [
+    "src/builders/version/testing.ts",
+    "**/*.spec.ts"
+  ],
   "include": ["**/*.ts"]
 }

@@ -1,13 +1,13 @@
+import { BuilderContext } from '@angular-devkit/architect';
 import * as childProcess from '@lerna/child-process';
-import { MockBuilderContext } from '@nrwl/workspace/testing';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
-import { getMockContext } from './testing';
+import { createFakeContext } from './testing';
 import * as utils from './utils';
-import { getPackageFiles, hasChangelog, getChangelogFiles } from './utils';
+import { getChangelogFiles, getPackageFiles, hasChangelog } from './utils';
 import { tryBump } from './utils/try-bump';
 
 jest.mock('@lerna/child-process');
@@ -19,7 +19,7 @@ describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
   const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
 
-  let context: MockBuilderContext;
+  let context: BuilderContext;
 
   const options: VersionBuilderSchema = {
     dryRun: false,
@@ -32,12 +32,11 @@ describe('@jscutlery/semver:version', () => {
   };
 
   beforeEach(async () => {
-    context = await getMockContext();
-    context.logger.error = jest.fn();
-    context.target.project = 'a';
-    context.getProjectMetadata = jest
-      .fn()
-      .mockResolvedValue({ root: '/root/packages/a' });
+    context = createFakeContext({
+      project: 'a',
+      projectRoot: '/root/packages/a',
+      workspaceRoot: '/root',
+    });
 
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
