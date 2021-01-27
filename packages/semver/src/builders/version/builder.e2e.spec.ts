@@ -3,7 +3,7 @@ import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { _enableWip, runBuilder } from './builder';
+import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import {
   createFakeContext,
@@ -11,6 +11,7 @@ import {
   TestingWorkspace,
 } from './testing';
 import { readPackageJson } from './utils/project';
+import { _enableWip } from './version';
 
 // @todo get rid of this
 _enableWip();

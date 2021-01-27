@@ -5,12 +5,13 @@ import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { callbackify } from 'util';
-import { _enableWip, runBuilder } from './builder';
+import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
+import { _enableWip } from './version';
 
 jest.mock('child_process');
 jest.mock('@lerna/child-process');
