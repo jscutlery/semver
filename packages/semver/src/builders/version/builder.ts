@@ -54,56 +54,50 @@ export function runBuilder(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
 
-  let runStandardVersion$: Observable<unknown>;
-
   /* @todo wip splitting into two functions. */
-  if (syncVersions) {
-    runStandardVersion$ = concat(
-      iif(
-        () => _isWip,
-        forkJoin([newVersion$, getProjectRoots(workspaceRoot)]).pipe(
-          switchMap(([newVersion, projectRoots]) =>
-            concat(
-              ...projectRoots
-                /* Don't update the workspace's changelog as it will be
-                 * dealt with by `standardVersion`. */
-                .filter((projectRoot) => projectRoot !== workspaceRoot)
-                .map((projectRoot) =>
-                  updateChangelog({
-                    dryRun,
-                    preset,
-                    projectRoot,
-                    newVersion,
-                  })
+  const runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
+    switchMap(([projectRoot, newVersion]) => {
+      if (syncVersions) {
+        return concat(
+          ...[
+            _isWip
+              ? getProjectRoots(workspaceRoot).pipe(
+                  switchMap((projectRoots) =>
+                    concat(
+                      ...projectRoots
+                        /* Don't update the workspace's changelog as it will be
+                         * dealt with by `standardVersion`. */
+                        .filter((projectRoot) => projectRoot !== workspaceRoot)
+                        .map((projectRoot) =>
+                          updateChangelog({
+                            dryRun,
+                            preset,
+                            projectRoot,
+                            newVersion,
+                          })
+                        )
+                    )
+                  )
                 )
-            )
-          )
-        ),
-        of(undefined)
-      ),
-      forkJoin([
-        projectRoot$,
-        newVersion$,
-        getPackageFiles(workspaceRoot),
-      ]).pipe(
-        switchMap(([projectRoot, newVersion, availablePackageFiles]) =>
-          _runStandardVersion({
-            bumpFiles: availablePackageFiles,
-            dryRun: dryRun,
-            projectRoot: projectRoot,
-            newVersion: newVersion,
-            noVerify: noVerify,
-            packageFiles: [resolve(projectRoot, 'package.json')],
-            preset: preset,
-            tagPrefix: tagPrefix,
-            skipChangelog: !rootChangelog,
-          })
-        )
-      )
-    );
-  } else {
-    runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
-      switchMap(([projectRoot, newVersion]) => {
+              : [],
+            getPackageFiles(workspaceRoot).pipe(
+              switchMap((packageFiles) =>
+                _runStandardVersion({
+                  bumpFiles: packageFiles,
+                  dryRun: dryRun,
+                  projectRoot: projectRoot,
+                  newVersion: newVersion,
+                  noVerify: noVerify,
+                  packageFiles: [resolve(projectRoot, 'package.json')],
+                  preset: preset,
+                  tagPrefix: tagPrefix,
+                  skipChangelog: !rootChangelog,
+                })
+              )
+            ),
+          ]
+        );
+      } else {
         const packageFiles = [resolve(projectRoot, 'package.json')];
 
         return _runStandardVersion({
@@ -117,22 +111,21 @@ export function runBuilder(
           tagPrefix: tagPrefix,
           skipChangelog: false,
         });
-      })
-    );
-  }
-
-  const pushToGitRemote$ = iif(
-    () => push && dryRun === false,
-    tryPushToGitRemote({
-      branch: baseBranch,
-      remote,
-      noVerify,
-      context,
-    }),
-    of(undefined)
+      }
+    })
   );
 
-  return concat(runStandardVersion$, pushToGitRemote$).pipe(
+  const pushToGitRemote$ = tryPushToGitRemote({
+    branch: baseBranch,
+    remote,
+    noVerify,
+    context,
+  });
+
+  return concat(
+    runStandardVersion$,
+    ...(push && dryRun === false ? [pushToGitRemote$] : [])
+  ).pipe(
     mapTo({ success: true }),
     catchError((error) => {
       context.logger.error(error);

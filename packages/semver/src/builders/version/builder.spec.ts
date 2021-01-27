@@ -86,13 +86,6 @@ describe('@jscutlery/semver:version', () => {
     expect(lernaChildProcess.exec).not.toHaveBeenCalled();
   });
 
-  it('should call getPackageFiles with the right root project path', async () => {
-    await runBuilder(options, context).toPromise();
-
-    expect(getPackageFiles).toBeCalledTimes(1);
-    expect(getPackageFiles).toBeCalledWith('/root');
-  });
-
   it('should push to Git with right options', async () => {
     await runBuilder(
       { ...options, push: true, remote: 'origin', baseBranch: 'main' },
