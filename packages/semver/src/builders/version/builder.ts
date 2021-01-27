@@ -54,52 +54,78 @@ export function runBuilder(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
 
-  const generateSubChangelogs$ = iif(
-    () => syncVersions && _isWip,
-    forkJoin([newVersion$, getProjectRoots(workspaceRoot)]).pipe(
-      switchMap(([newVersion, projectRoots]) =>
-        concat(
-          ...projectRoots
-            /* Don't update the workspace's changelog as it will be
-             * dealt with by `standardVersion`. */
-            .filter((projectRoot) => projectRoot !== workspaceRoot)
-            .map((projectRoot) =>
-              updateChangelog({
-                dryRun,
-                preset,
-                projectRoot,
-                newVersion,
-              })
+  let runStandardVersion$: Observable<unknown>;
+
+  /* @todo wip splitting into two functions. */
+  if (syncVersions) {
+    runStandardVersion$ = concat(
+      iif(
+        () => _isWip,
+        forkJoin([newVersion$, getProjectRoots(workspaceRoot)]).pipe(
+          switchMap(([newVersion, projectRoots]) =>
+            concat(
+              ...projectRoots
+                /* Don't update the workspace's changelog as it will be
+                 * dealt with by `standardVersion`. */
+                .filter((projectRoot) => projectRoot !== workspaceRoot)
+                .map((projectRoot) =>
+                  updateChangelog({
+                    dryRun,
+                    preset,
+                    projectRoot,
+                    newVersion,
+                  })
+                )
             )
+          )
+        ),
+        of(undefined)
+      ),
+      forkJoin([
+        projectRoot$,
+        newVersion$,
+        getPackageFiles(workspaceRoot),
+      ]).pipe(
+        switchMap(([projectRoot, newVersion, availablePackageFiles]) =>
+          _runStandardVersion({
+            bumpFiles: availablePackageFiles,
+            dryRun: dryRun,
+            projectRoot: projectRoot,
+            newVersion: newVersion,
+            noVerify: noVerify,
+            packageFiles: [resolve(projectRoot, 'package.json')],
+            preset: preset,
+            tagPrefix: tagPrefix,
+            skipChangelog: !rootChangelog,
+          })
         )
       )
-    ),
-    of(undefined)
-  );
+    );
+  } else {
+    runStandardVersion$ = forkJoin([
+      projectRoot$,
+      newVersion$,
+      getPackageFiles(workspaceRoot),
+    ]).pipe(
+      switchMap(([projectRoot, newVersion, availablePackageFiles]) => {
+        const packageFiles = [resolve(projectRoot, 'package.json')];
+        const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
+        const skipChangelog = syncVersions && !rootChangelog;
 
-  const runStandardVersion$ = forkJoin([
-    projectRoot$,
-    newVersion$,
-    getPackageFiles(workspaceRoot),
-  ]).pipe(
-    switchMap(([projectRoot, newVersion, availablePackageFiles]) => {
-      const packageFiles = [resolve(projectRoot, 'package.json')];
-      const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
-      const skipChangelog = syncVersions && !rootChangelog;
-
-      return _runStandardVersion({
-        bumpFiles: bumpFiles,
-        dryRun: dryRun,
-        projectRoot: projectRoot,
-        newVersion: newVersion,
-        noVerify: noVerify,
-        packageFiles: packageFiles,
-        preset: preset,
-        tagPrefix: tagPrefix,
-        skipChangelog: skipChangelog,
-      });
-    })
-  );
+        return _runStandardVersion({
+          bumpFiles: bumpFiles,
+          dryRun: dryRun,
+          projectRoot: projectRoot,
+          newVersion: newVersion,
+          noVerify: noVerify,
+          packageFiles: packageFiles,
+          preset: preset,
+          tagPrefix: tagPrefix,
+          skipChangelog: skipChangelog,
+        });
+      })
+    );
+  }
 
   const pushToGitRemote$ = iif(
     () => push && dryRun === false,
@@ -112,11 +138,7 @@ export function runBuilder(
     of(undefined)
   );
 
-  return concat(
-    generateSubChangelogs$,
-    runStandardVersion$,
-    pushToGitRemote$
-  ).pipe(
+  return concat(runStandardVersion$, pushToGitRemote$).pipe(
     mapTo({ success: true }),
     catchError((error) => {
       context.logger.error(error);
