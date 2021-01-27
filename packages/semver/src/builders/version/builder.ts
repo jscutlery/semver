@@ -4,7 +4,7 @@ import {
   createBuilder,
 } from '@angular-devkit/architect';
 import { resolve } from 'path';
-import { concat, forkJoin, iif, Observable, of } from 'rxjs';
+import { concat, forkJoin, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -56,63 +56,27 @@ export function runBuilder(
 
   /* @todo wip splitting into two functions. */
   const runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
-    switchMap(([projectRoot, newVersion]) => {
-      if (syncVersions) {
-        return concat(
-          ...[
-            _isWip
-              ? getProjectRoots(workspaceRoot).pipe(
-                  switchMap((projectRoots) =>
-                    concat(
-                      ...projectRoots
-                        /* Don't update the workspace's changelog as it will be
-                         * dealt with by `standardVersion`. */
-                        .filter((projectRoot) => projectRoot !== workspaceRoot)
-                        .map((projectRoot) =>
-                          updateChangelog({
-                            dryRun,
-                            preset,
-                            projectRoot,
-                            newVersion,
-                          })
-                        )
-                    )
-                  )
-                )
-              : [],
-            getPackageFiles(workspaceRoot).pipe(
-              switchMap((packageFiles) =>
-                _runStandardVersion({
-                  bumpFiles: packageFiles,
-                  dryRun: dryRun,
-                  projectRoot: projectRoot,
-                  newVersion: newVersion,
-                  noVerify: noVerify,
-                  packageFiles: [resolve(projectRoot, 'package.json')],
-                  preset: preset,
-                  tagPrefix: tagPrefix,
-                  skipChangelog: !rootChangelog,
-                })
-              )
-            ),
-          ]
-        );
-      } else {
-        const packageFiles = [resolve(projectRoot, 'package.json')];
-
-        return _runStandardVersion({
-          bumpFiles: packageFiles,
-          dryRun: dryRun,
-          projectRoot: projectRoot,
-          newVersion: newVersion,
-          noVerify: noVerify,
-          packageFiles,
-          preset: preset,
-          tagPrefix: tagPrefix,
-          skipChangelog: false,
-        });
-      }
-    })
+    switchMap(([projectRoot, newVersion]) =>
+      syncVersions
+        ? _versionWorkspace({
+            dryRun,
+            newVersion,
+            noVerify,
+            preset,
+            projectRoot,
+            rootChangelog,
+            tagPrefix,
+            workspaceRoot,
+          })
+        : _versionProject({
+            dryRun,
+            projectRoot,
+            newVersion,
+            noVerify,
+            preset,
+            tagPrefix,
+          })
+    )
   );
 
   const pushToGitRemote$ = tryPushToGitRemote({
@@ -133,6 +97,96 @@ export function runBuilder(
       return of({ success: false });
     })
   );
+}
+
+function _versionWorkspace({
+  workspaceRoot,
+  dryRun,
+  preset,
+  newVersion,
+  projectRoot,
+  noVerify,
+  tagPrefix,
+  rootChangelog,
+}: {
+  workspaceRoot: string;
+  dryRun: boolean;
+  preset: string;
+  newVersion: string;
+  projectRoot: string;
+  noVerify: boolean;
+  tagPrefix: string;
+  rootChangelog: boolean;
+}) {
+  return concat(
+    ...[
+      _isWip
+        ? getProjectRoots(workspaceRoot).pipe(
+            switchMap((projectRoots) =>
+              concat(
+                ...projectRoots
+                  /* Don't update the workspace's changelog as it will be
+                   * dealt with by `standardVersion`. */
+                  .filter((projectRoot) => projectRoot !== workspaceRoot)
+                  .map((projectRoot) =>
+                    updateChangelog({
+                      dryRun,
+                      preset,
+                      projectRoot,
+                      newVersion,
+                    })
+                  )
+              )
+            )
+          )
+        : [],
+      getPackageFiles(workspaceRoot).pipe(
+        switchMap((packageFiles) =>
+          _runStandardVersion({
+            bumpFiles: packageFiles,
+            dryRun: dryRun,
+            projectRoot: projectRoot,
+            newVersion: newVersion,
+            noVerify: noVerify,
+            packageFiles: [resolve(projectRoot, 'package.json')],
+            preset: preset,
+            tagPrefix: tagPrefix,
+            skipChangelog: !rootChangelog,
+          })
+        )
+      ),
+    ]
+  );
+}
+
+function _versionProject({
+  projectRoot,
+  dryRun,
+  newVersion,
+  noVerify,
+  preset,
+  tagPrefix,
+}: {
+  projectRoot: string;
+  dryRun: boolean;
+  newVersion: string;
+  noVerify: boolean;
+  preset: string;
+  tagPrefix: string;
+}) {
+  const packageFiles = [resolve(projectRoot, 'package.json')];
+
+  return _runStandardVersion({
+    bumpFiles: packageFiles,
+    dryRun: dryRun,
+    projectRoot: projectRoot,
+    newVersion: newVersion,
+    noVerify: noVerify,
+    packageFiles,
+    preset: preset,
+    tagPrefix: tagPrefix,
+    skipChangelog: false,
+  });
 }
 
 function _runStandardVersion({
