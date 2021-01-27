@@ -146,7 +146,17 @@ export function _getWorkspaceDefinition(
   );
 }
 
-export function updateChangelog({ projectRoot, dryRun, newVersion }) {
+export function updateChangelog({
+  projectRoot,
+  dryRun,
+  preset,
+  newVersion,
+}: {
+  projectRoot: string;
+  dryRun: boolean;
+  preset: string;
+  newVersion: string;
+}) {
   return defer(async () => {
     const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
     await changelog(
@@ -154,7 +164,7 @@ export function updateChangelog({ projectRoot, dryRun, newVersion }) {
         ...standardVersionDefaults,
         header: defaultHeader,
         path: projectRoot,
-        preset: 'angular',
+        preset,
         dryRun,
         infile: changelogPath,
       },

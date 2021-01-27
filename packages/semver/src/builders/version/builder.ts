@@ -22,6 +22,7 @@ import { tryBump } from './utils/try-bump';
 
 // @todo get rid of this
 let _isWip = process.env['JSCUTLERY_SEMVER_WIP'] === 'true';
+
 export function _enableWip() {
   _isWip = true;
 }
@@ -44,15 +45,15 @@ export function runBuilder(
     rootChangelog,
   } = options;
 
+  const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
   const projectRoot$ = from(getProjectRoot(context));
   const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
   const availableChangelogFiles$ = getChangelogFiles(context.workspaceRoot);
   const newVersion$ = projectRoot$.pipe(
-    switchMap((projectRoot) => tryBump({ projectRoot, tagPrefix }))
+    switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
-  const preset = 'angular';
 
   const generateSubChangelogs$ = iif(
     () => syncVersions && _isWip,
@@ -66,6 +67,7 @@ export function runBuilder(
             .map(({ projectRoot }) => {
               return updateChangelog({
                 dryRun,
+                preset,
                 projectRoot,
                 newVersion,
               });

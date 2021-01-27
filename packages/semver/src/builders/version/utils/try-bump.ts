@@ -10,11 +10,11 @@ import { getCommits } from './git';
  * Return new version or null if nothing changed.
  */
 export function tryBump({
-  preset = 'angular',
+  preset,
   projectRoot,
   tagPrefix,
 }: {
-  preset?: string;
+  preset: string;
   projectRoot: string;
   tagPrefix: string;
 }): Observable<string> {

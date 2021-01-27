@@ -34,6 +34,7 @@ describe('tryBump', () => {
     );
 
     const newVersion = await tryBump({
+      preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'demo-',
     }).toPromise();
@@ -62,6 +63,7 @@ describe('tryBump', () => {
     mockGetCommits.mockReturnValue(of([]));
 
     await tryBump({
+      preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'demo-',
     }).toPromise();
@@ -77,6 +79,7 @@ describe('tryBump', () => {
     mockGetCommits.mockReturnValue(of([]));
 
     const newVersion = await tryBump({
+      preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'demo-',
     }).toPromise();
