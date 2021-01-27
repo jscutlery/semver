@@ -21,6 +21,9 @@ jest.mock('./utils/try-bump');
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
   const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
+  const mockStandardVersion = standardVersion as jest.MockedFunction<
+    typeof standardVersion
+  >;
   const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
 
   let context: BuilderContext;
@@ -46,9 +49,7 @@ describe('@jscutlery/semver:version', () => {
     mockTryBump.mockReturnValue(of('2.1.0'));
 
     /* Mock standardVersion. */
-    (standardVersion as jest.MockedFunction<
-      typeof standardVersion
-    >).mockResolvedValue(undefined);
+    mockStandardVersion.mockResolvedValue(undefined);
 
     mockExecFile.mockImplementation(
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
