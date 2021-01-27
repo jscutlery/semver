@@ -85,6 +85,9 @@ export function runBuilder(
 
       return standardVersion({
         bumpFiles: syncVersions ? availablePackageFiles : packageFiles,
+        /* Make sure that we commit the manually generated changelogs that
+         * we staged. */
+        commitAll: true,
         dryRun,
         infile: getChangelogPath(projectRoot),
         /* Control version to avoid different results between the value

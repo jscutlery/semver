@@ -1,11 +1,13 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { exec } from '@lerna/child-process';
+import { execFile } from 'child_process';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { defer, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import { promisify } from 'util';
 import { readJsonFile } from './utils/filesystem';
 
 export interface WorkspaceDefinition {
@@ -144,16 +146,18 @@ export function _getWorkspaceDefinition(
 }
 
 export function updateChangelog({ projectRoot, dryRun, newVersion }) {
-  return defer(() =>
-    changelog(
+  return defer(async () => {
+    const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
+    await changelog(
       {
         ...standardVersionDefaults,
         path: projectRoot,
         preset: 'angular',
         dryRun,
-        infile: resolve(projectRoot, 'CHANGELOG.md'),
+        infile: changelogPath,
       },
       newVersion
-    )
-  );
+    );
+    await promisify(execFile)('git', ['add', changelogPath]);
+  });
 }

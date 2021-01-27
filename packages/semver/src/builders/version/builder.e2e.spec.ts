@@ -196,7 +196,7 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
-    xit('🚧 should commit all changes', () => {
+    it('🚧 should commit all changes', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
@@ -290,7 +290,7 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
-    xit('🚧 should commit all changes', () => {
+    it('🚧 should commit all changes', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
 

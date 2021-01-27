@@ -1,8 +1,11 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import * as childProcess from '@lerna/child-process';
+import * as lernaChildProcess from '@lerna/child-process';
+import { execFile } from 'child_process';
+import * as childProcess from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import { callbackify } from 'util';
 import { _enableWip, runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
@@ -10,6 +13,7 @@ import * as utils from './utils';
 import { getChangelogFiles, getPackageFiles, hasChangelog } from './utils';
 import { tryBump } from './utils/try-bump';
 
+jest.mock('child_process');
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
@@ -20,6 +24,7 @@ _enableWip();
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
+  const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
   const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
 
   let context: BuilderContext;
@@ -49,6 +54,11 @@ describe('@jscutlery/semver:version', () => {
       typeof standardVersion
     >).mockResolvedValue(undefined);
 
+    mockExecFile.mockImplementation(
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      callbackify(jest.fn().mockResolvedValue('')) as any
+    );
+
     jest.spyOn(utils, 'hasChangelog').mockReturnValue(true);
 
     /* Mock getPackageFiles. */
@@ -75,17 +85,18 @@ describe('@jscutlery/semver:version', () => {
 
   afterEach(() => {
     (standardVersion as jest.Mock).mockRestore();
-    (changelog as jest.Mock).mockRestore();
     (hasChangelog as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getChangelogFiles as jest.Mock).mockRestore();
-    (tryBump as jest.Mock).mockRestore();
+    mockChangelog.mockRestore();
+    mockExecFile.mockRestore();
+    mockTryBump.mockRestore();
   });
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
 
-    expect(childProcess.exec).not.toHaveBeenCalled();
+    expect(lernaChildProcess.exec).not.toHaveBeenCalled();
   });
 
   it('should call getPackageFiles with the right root project path', async () => {
@@ -101,7 +112,7 @@ describe('@jscutlery/semver:version', () => {
       context
     ).toPromise();
 
-    expect(childProcess.exec).toHaveBeenCalledWith(
+    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
       'git',
       expect.arrayContaining([
         'push',
@@ -123,7 +134,7 @@ describe('@jscutlery/semver:version', () => {
       context
     ).toPromise();
 
-    expect(childProcess.exec).toHaveBeenCalledWith(
+    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
       'git',
       expect.arrayContaining([
         'push',
