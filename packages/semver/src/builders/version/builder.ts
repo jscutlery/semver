@@ -33,8 +33,6 @@ export function runBuilder(
   // we should split this into two distinct functions sharing common functions
   // @todo call bump
   // if bump returns null => noop
-  // otherwise, use the returned version with `generateSubChangelogs`
-  // in sync mode
   const {
     push,
     remote,

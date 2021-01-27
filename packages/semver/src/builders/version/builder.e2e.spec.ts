@@ -81,6 +81,10 @@ describe('@jscutlery/semver:version', () => {
       expect(result).toEqual({ success: true });
     });
 
+    it('should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
     it('should not bump root package.json', async () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
     });
@@ -136,6 +140,10 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
+    it('should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
     it('should not bump root package.json', async () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
     });
@@ -186,6 +194,10 @@ $`)
 
     it('should return success', () => {
       expect(result).toEqual({ success: true });
+    });
+
+    xit('🚧 should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
     });
 
     it('should bump root package.json', async () => {
@@ -278,6 +290,10 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
+    xit('🚧 should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
     it('should bump root package.json', async () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
     });
@@ -341,6 +357,15 @@ $`)
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
       `
+    );
+  }
+
+  function uncommitedChanges() {
+    return (
+      execSync('git status --porcelain', { encoding: 'utf-8' })
+        .split('\n')
+        /* Remove empty line. */
+        .filter((line) => line.length !== 0)
     );
   }
 });
