@@ -4,7 +4,7 @@ import {
   createBuilder,
 } from '@angular-devkit/architect';
 import { resolve } from 'path';
-import { concat, forkJoin, from, iif, Observable, of } from 'rxjs';
+import { concat, forkJoin, iif, Observable, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -14,6 +14,7 @@ import {
   getChangelogPath,
   getPackageFiles,
   getProjectRoot,
+  getProjectRoots,
   tryPushToGitRemote,
   updateChangelog,
 } from './utils';
@@ -50,21 +51,20 @@ export function runBuilder(
 
   const projectRoot$ = getProjectRoot(context);
   const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
-  const availableChangelogFiles$ = getChangelogFiles(context.workspaceRoot);
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
 
   const generateSubChangelogs$ = iif(
     () => syncVersions && _isWip,
-    forkJoin([newVersion$, availableChangelogFiles$]).pipe(
-      switchMap(([newVersion, availableChangelogFiles]) => {
+    forkJoin([newVersion$, getProjectRoots(context.workspaceRoot)]).pipe(
+      switchMap(([newVersion, projectRoots]) => {
         return concat(
-          ...availableChangelogFiles
+          ...projectRoots
             /* Don't update the workspace's changelog as it will be
              * dealt with by `standardVersion`. */
-            .filter(({ projectRoot }) => projectRoot !== context.workspaceRoot)
-            .map(({ projectRoot }) => {
+            .filter((projectRoot) => projectRoot !== context.workspaceRoot)
+            .map((projectRoot) => {
               return updateChangelog({
                 dryRun,
                 preset,

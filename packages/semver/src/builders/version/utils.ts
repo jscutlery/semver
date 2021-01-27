@@ -51,19 +51,6 @@ export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
   );
 }
 
-export function getChangelogFiles(
-  workspaceRoot: string
-): Observable<{ projectRoot: string; changelogFile: string }[]> {
-  return getProjectRoots(workspaceRoot).pipe(
-    map((projectRoots) =>
-      projectRoots.map((projectRoot) => ({
-        projectRoot,
-        changelogFile: resolve(projectRoot, 'CHANGELOG.md'),
-      }))
-    )
-  );
-}
-
 export function pushToGitRemote({
   remote,
   branch,

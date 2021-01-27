@@ -1,7 +1,6 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import * as lernaChildProcess from '@lerna/child-process';
 import { execFile } from 'child_process';
-import * as childProcess from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
@@ -10,7 +9,7 @@ import { _enableWip, runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as utils from './utils';
-import { getChangelogFiles, getPackageFiles, hasChangelog } from './utils';
+import { getPackageFiles, getProjectRoots, hasChangelog } from './utils';
 import { tryBump } from './utils/try-bump';
 
 jest.mock('child_process');
@@ -68,26 +67,17 @@ describe('@jscutlery/semver:version', () => {
         of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
       );
 
-    /* Mock getChangelogFiles. */
-    jest.spyOn(utils, 'getChangelogFiles').mockReturnValue(
-      of([
-        {
-          changelogFile: '/root/packages/a/CHANGELOG.md',
-          projectRoot: '/root/packages/a',
-        },
-        {
-          changelogFile: '/root/packages/b/CHANGELOG.md',
-          projectRoot: '/root/packages/b',
-        },
-      ])
-    );
+    /* Mock getProjectRoots. */
+    jest
+      .spyOn(utils, 'getProjectRoots')
+      .mockReturnValue(of(['/root/packages/a', '/root/packages/b']));
   });
 
   afterEach(() => {
     (standardVersion as jest.Mock).mockRestore();
     (hasChangelog as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
-    (getChangelogFiles as jest.Mock).mockRestore();
+    (getProjectRoots as jest.Mock).mockRestore();
     mockChangelog.mockRestore();
     mockExecFile.mockRestore();
     mockTryBump.mockRestore();
