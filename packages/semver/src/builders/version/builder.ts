@@ -143,11 +143,11 @@ function _versionWorkspace({
         switchMap((packageFiles) =>
           _runStandardVersion({
             bumpFiles: packageFiles,
-            dryRun: dryRun,
-            projectRoot: projectRoot,
-            newVersion: newVersion,
-            noVerify: noVerify,
-            preset: preset,
+            dryRun,
+            projectRoot,
+            newVersion,
+            noVerify,
+            preset,
             tagPrefix: tagPrefix,
             skipChangelog: !rootChangelog,
           })
@@ -174,12 +174,12 @@ function _versionProject({
 }) {
   return _runStandardVersion({
     bumpFiles: [resolve(projectRoot, 'package.json')],
-    dryRun: dryRun,
-    projectRoot: projectRoot,
-    newVersion: newVersion,
-    noVerify: noVerify,
-    preset: preset,
-    tagPrefix: tagPrefix,
+    dryRun,
+    projectRoot,
+    newVersion,
+    noVerify,
+    preset,
+    tagPrefix,
     skipChangelog: false,
   });
 }
