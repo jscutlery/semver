@@ -147,7 +147,6 @@ function _versionWorkspace({
             projectRoot: projectRoot,
             newVersion: newVersion,
             noVerify: noVerify,
-            packageFiles: [resolve(projectRoot, 'package.json')],
             preset: preset,
             tagPrefix: tagPrefix,
             skipChangelog: !rootChangelog,
@@ -173,15 +172,12 @@ function _versionProject({
   projectRoot: string;
   tagPrefix: string;
 }) {
-  const packageFiles = [resolve(projectRoot, 'package.json')];
-
   return _runStandardVersion({
-    bumpFiles: packageFiles,
+    bumpFiles: [resolve(projectRoot, 'package.json')],
     dryRun: dryRun,
     projectRoot: projectRoot,
     newVersion: newVersion,
     noVerify: noVerify,
-    packageFiles,
     preset: preset,
     tagPrefix: tagPrefix,
     skipChangelog: false,
@@ -194,7 +190,6 @@ function _runStandardVersion({
   projectRoot,
   newVersion,
   noVerify,
-  packageFiles,
   preset,
   tagPrefix,
   skipChangelog,
@@ -204,7 +199,6 @@ function _runStandardVersion({
   projectRoot: string;
   newVersion: string;
   noVerify: boolean;
-  packageFiles: string[];
   preset: string;
   tagPrefix: string;
   skipChangelog: boolean;
@@ -222,7 +216,7 @@ function _runStandardVersion({
     releaseAs: newVersion,
     silent: false,
     noVerify,
-    packageFiles,
+    packageFiles: [resolve(projectRoot, 'package.json')],
     path: projectRoot,
     preset,
     tagPrefix,
