@@ -102,26 +102,20 @@ export function runBuilder(
       )
     );
   } else {
-    runStandardVersion$ = forkJoin([
-      projectRoot$,
-      newVersion$,
-      getPackageFiles(workspaceRoot),
-    ]).pipe(
-      switchMap(([projectRoot, newVersion, availablePackageFiles]) => {
+    runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
+      switchMap(([projectRoot, newVersion]) => {
         const packageFiles = [resolve(projectRoot, 'package.json')];
-        const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
-        const skipChangelog = syncVersions && !rootChangelog;
 
         return _runStandardVersion({
-          bumpFiles: bumpFiles,
+          bumpFiles: packageFiles,
           dryRun: dryRun,
           projectRoot: projectRoot,
           newVersion: newVersion,
           noVerify: noVerify,
-          packageFiles: packageFiles,
+          packageFiles,
           preset: preset,
           tagPrefix: tagPrefix,
-          skipChangelog: skipChangelog,
+          skipChangelog: false,
         });
       })
     );
