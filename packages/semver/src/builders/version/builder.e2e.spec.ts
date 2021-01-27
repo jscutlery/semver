@@ -219,7 +219,7 @@ $`)
       );
     });
 
-    xit('🚧 should generate sub-changelogs', async () => {
+    it('should generate sub-changelogs', async () => {
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 

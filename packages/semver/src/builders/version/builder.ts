@@ -10,7 +10,7 @@ import * as standardVersion from 'standard-version';
 
 import { VersionBuilderSchema } from './schema';
 import {
-  generateSubChangelog,
+  updateChangelog,
   getChangelogFiles,
   getChangelogPath,
   getPackageFiles,
@@ -62,7 +62,7 @@ export function runBuilder(
       switchMap(([newVersion, availableChangelogFiles]) => {
         return concat(
           ...availableChangelogFiles.map(({ projectRoot, changelogFile }) => {
-            return generateSubChangelog({
+            return updateChangelog({
               dryRun,
               projectRoot,
               changelogFile,

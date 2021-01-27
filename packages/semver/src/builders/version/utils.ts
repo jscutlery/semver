@@ -55,7 +55,7 @@ export function getChangelogFiles(
 ): Observable<{ projectRoot: string; changelogFile: string }[]> {
   return _getAllProjectRoots(workspaceRoot).pipe(
     map((projectRoots) =>
-      projectRoots.filter(hasPackageJson).map((projectRoot) => ({
+      projectRoots.map((projectRoot) => ({
         projectRoot,
         changelogFile: resolve(projectRoot, 'CHANGELOG.md'),
       }))
@@ -146,13 +146,13 @@ export function _getWorkspaceDefinition(
   );
 }
 
-export function generateSubChangelog({
+export function updateChangelog({
   changelogFile,
   projectRoot,
   dryRun,
   newVersion,
 }) {
-  return from(
+  return defer(() =>
     changelog(
       {
         ...standardVersionDefaults,
