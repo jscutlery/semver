@@ -9,13 +9,6 @@ import {
 } from './utils/changelog';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
-// @todo get rid of this
-let _isWip = process.env['JSCUTLERY_SEMVER_WIP'] === 'true';
-
-export function _enableWip() {
-  _isWip = true;
-}
-
 export interface CommonVersionOptions {
   dryRun: boolean;
   newVersion: string;
@@ -35,26 +28,24 @@ export function versionWorkspace({
 } & CommonVersionOptions) {
   return concat(
     ...[
-      _isWip
-        ? getProjectRoots(workspaceRoot).pipe(
-            switchMap((projectRoots) =>
-              concat(
-                ...projectRoots
-                  /* Don't update the workspace's changelog as it will be
-                   * dealt with by `standardVersion`. */
-                  .filter((projectRoot) => projectRoot !== workspaceRoot)
-                  .map((projectRoot) =>
-                    updateChangelog({
-                      dryRun: options.dryRun,
-                      preset: options.preset,
-                      projectRoot,
-                      newVersion: options.newVersion,
-                    })
-                  )
+      getProjectRoots(workspaceRoot).pipe(
+        switchMap((projectRoots) =>
+          concat(
+            ...projectRoots
+              /* Don't update the workspace's changelog as it will be
+               * dealt with by `standardVersion`. */
+              .filter((projectRoot) => projectRoot !== workspaceRoot)
+              .map((projectRoot) =>
+                updateChangelog({
+                  dryRun: options.dryRun,
+                  preset: options.preset,
+                  projectRoot,
+                  newVersion: options.newVersion,
+                })
               )
-            )
           )
-        : [],
+        )
+      ),
       getPackageFiles(workspaceRoot).pipe(
         switchMap((packageFiles) =>
           _runStandardVersion({

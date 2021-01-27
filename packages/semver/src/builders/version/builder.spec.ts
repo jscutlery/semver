@@ -11,16 +11,12 @@ import { createFakeContext } from './testing';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
-import { _enableWip } from './version';
 
 jest.mock('child_process');
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 jest.mock('./utils/try-bump');
-
-// @todo get rid of this
-_enableWip();
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;

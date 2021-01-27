@@ -11,10 +11,6 @@ import {
   TestingWorkspace,
 } from './testing';
 import { readPackageJson } from './utils/project';
-import { _enableWip } from './version';
-
-// @todo get rid of this
-_enableWip();
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
