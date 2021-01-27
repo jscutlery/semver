@@ -48,7 +48,7 @@ export function runBuilder(
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
-  const projectRoot$ = from(getProjectRoot(context));
+  const projectRoot$ = getProjectRoot(context);
   const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
   const availableChangelogFiles$ = getChangelogFiles(context.workspaceRoot);
   const newVersion$ = projectRoot$.pipe(

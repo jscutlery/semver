@@ -4,7 +4,7 @@ import { execFile } from 'child_process';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { defer, Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { promisify } from 'util';
@@ -19,9 +19,10 @@ export interface WorkspaceDefinition {
   };
 }
 
-export async function getProjectRoot(context: BuilderContext): Promise<string> {
-  const metadata = await context.getProjectMetadata(context.target.project);
-  return metadata.root as string;
+export function getProjectRoot(context: BuilderContext): Observable<string> {
+  return defer(
+    async () => await context.getProjectMetadata(context.target.project)
+  ).pipe(map(({ root }) => root as string));
 }
 
 export function getChangelogPath(projectRoot: string) {
