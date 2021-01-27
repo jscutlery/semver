@@ -2,7 +2,9 @@ import { BuilderOutput } from '@angular-devkit/architect';
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
-import { runBuilder } from './builder';
+import { resolve } from 'path';
+import { _enableWip, runBuilder } from './builder';
+import { VersionBuilderSchema } from './schema';
 import {
   createFakeContext,
   setupTestingWorkspace,
@@ -10,58 +12,163 @@ import {
 } from './testing';
 import { readPackageJson } from './utils/project';
 
-describe('@jscutlery/semver:version e2e', () => {
-  beforeAll(() => jest.spyOn(console, 'info').mockImplementation());
+describe('@jscutlery/semver:version', () => {
+  const defaultBuilderOptions: VersionBuilderSchema = {
+    dryRun: false,
+    noVerify: false,
+    push: false,
+    remote: 'origin',
+    baseBranch: 'main',
+    rootChangelog: true,
+    syncVersions: false,
+  };
 
+  const commonWorkspaceFiles: [string, string][] = [
+    ['package.json', JSON.stringify({ version: '0.0.0' })],
+    [
+      'workspace.json',
+      JSON.stringify({
+        projects: {
+          workspace: {
+            root: '.',
+          },
+          a: {
+            root: 'packages/a',
+          },
+          b: {
+            root: 'packages/b',
+          },
+        },
+      }),
+    ],
+    ['packages/a/.gitkeep', ''],
+    /* "a" has a package.json */
+    ['packages/a/package.json', JSON.stringify({ version: '0.0.0' })],
+    /* but "b" doesn't. */
+    ['packages/b/.gitkeep', ''],
+  ];
+
+  let result: BuilderOutput;
+  let testingWorkspace: TestingWorkspace;
+
+  beforeAll(() => jest.spyOn(console, 'info').mockImplementation());
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
-  describe('Sync mode with --rootChangelog true`', () => {
-    let result: BuilderOutput;
-    let testingWorkspace: TestingWorkspace;
-
+  describe('package "a" with (--sync-versions=false)', () => {
     beforeAll(async () => {
-      testingWorkspace = setupTestingWorkspace(
-        new Map([
-          ['package.json', JSON.stringify({ version: '0.0.0' })],
-          [
-            'workspace.json',
-            JSON.stringify({
-              projects: {
-                workspace: {
-                  root: '.',
-                },
-                a: {
-                  root: 'packages/a',
-                },
-                b: {
-                  root: 'packages/b',
-                },
-              },
-            }),
-          ],
-          ['packages/a/.gitkeep', ''],
-          ['packages/b/.gitkeep', ''],
-        ])
-      );
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
       /* Commit changes. */
-      execSync(
-        `
-          git init; 
-          git add .; 
-          git commit -m "feat: 🐣"; 
-        `
+      commitChanges();
+
+      /* Run builder. */
+      result = await runBuilder(
+        defaultBuilderOptions,
+        createFakeContext({
+          project: 'a',
+          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    xit('🚧 should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    xit('🚧 should not bump root package.json', async () => {
+      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
+    });
+
+    xit(`🚧 should bump a's package.json`, async () => {
+      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+        '0.1.0'
       );
+    });
+
+    xit('🚧 should not generate root changelog', () => {
+      expect(fileExists('CHANGELOG.md')).toBe(false);
+    });
+
+    xit(`🚧 should generate "a"'s changelog`, async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+All notable changes to this project will be documented in this file. See .* for commit guidelines.
+
+# 0.1.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+    });
+  });
+
+  describe('package "b" with (--sync-versions=false)', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await runBuilder(
+        defaultBuilderOptions,
+        createFakeContext({
+          project: 'b',
+          projectRoot: resolve(testingWorkspace.root, 'packages/b'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    xit('🚧 should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    xit('🚧 should not bump root package.json', async () => {
+      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
+    });
+
+    xit('🚧 should not generate root changelog', () => {
+      expect(fileExists('CHANGELOG.md')).toBe(false);
+    });
+
+    xit(`🚧 should generate "b"'s changelog`, async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+All notable changes to this project will be documented in this file. See .* for commit guidelines.
+
+# 0.0.1 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+$`)
+      );
+    });
+  });
+
+  describe('workspace with --sync-versions=true (--root-changelog=true)', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
 
       /* Run builder. */
       result = await runBuilder(
         {
-          dryRun: false,
-          noVerify: false,
-          push: false,
-          remote: 'origin',
-          baseBranch: 'main',
-          rootChangelog: true,
+          ...defaultBuilderOptions,
           syncVersions: true,
         },
         createFakeContext({
@@ -82,8 +189,10 @@ describe('@jscutlery/semver:version e2e', () => {
       expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
     });
 
-    xit('🚧 should generate sub-changelogs', async () => {
-      throw new Error('🚧 work in progress!');
+    it(`should bump "a"'s package.json`, async () => {
+      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+        '0.1.0'
+      );
     });
 
     xit('🚧 should generate root changelog', async () => {
@@ -95,11 +204,135 @@ All notable changes to this project will be documented in this file. See .* for 
 # 0.1.0 \\(.*\\)
 
 
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+
+
 ### Features
 
-\\* 🐣 .*
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+    });
+
+    xit('🚧 should generate sub-changelogs', async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+All notable changes to this project will be documented in this file. See .* for commit guidelines.
+
+# 0.1.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+All notable changes to this project will be documented in this file. See .* for commit guidelines.
+
+# 0.1.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
 $`)
       );
     });
   });
+
+  describe('workspace with --sync-versions=true --root-changelog=false`', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await runBuilder(
+        {
+          ...defaultBuilderOptions,
+          rootChangelog: false,
+          syncVersions: true,
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    xit('🚧 should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    xit('🚧 should bump root package.json', async () => {
+      expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
+    });
+
+    xit(`🚧 should bump "a"'s package.json`, async () => {
+      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+        '0.1.0'
+      );
+    });
+
+    xit('🚧 should not generate root changelog', () => {
+      expect(fileExists('CHANGELOG.md')).toBe(false);
+    });
+
+    xit('🚧 should generate sub-changelogs', async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+All notable changes to this project will be documented in this file. See .* for commit guidelines.
+
+# 0.1.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+All notable changes to this project will be documented in this file. See .* for commit guidelines.
+
+# 0.1.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+$`)
+      );
+    });
+  });
+
+  function commitChanges() {
+    execSync(
+      `
+          git init; 
+          git add .; 
+          git commit -m "🐣"; 
+          echo a > packages/a/a.txt
+          git add .
+          git commit -m "feat(a): 🚀 new feature"
+          echo b > packages/b/b.txt
+          git add .
+          git commit -m "fix(b): 🐞 fix emptiness"
+        `
+    );
+  }
 });
