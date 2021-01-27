@@ -8,8 +8,6 @@ import { callbackify } from 'util';
 import { _enableWip, runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
-import * as utils from './utils';
-import { hasChangelog } from './utils';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -60,8 +58,6 @@ describe('@jscutlery/semver:version', () => {
       callbackify(jest.fn().mockResolvedValue('')) as any
     );
 
-    jest.spyOn(utils, 'hasChangelog').mockReturnValue(true);
-
     /* Mock getPackageFiles. */
     jest
       .spyOn(workspace, 'getPackageFiles')
@@ -77,7 +73,6 @@ describe('@jscutlery/semver:version', () => {
 
   afterEach(() => {
     (standardVersion as jest.Mock).mockRestore();
-    (hasChangelog as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
     mockChangelog.mockRestore();

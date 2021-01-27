@@ -9,8 +9,11 @@ import { catchError, mapTo, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
 import { VersionBuilderSchema } from './schema';
-import { getChangelogPath, updateChangelog } from './utils';
-import { defaultHeader } from './utils/changelog';
+import {
+  defaultHeader,
+  getChangelogPath,
+  updateChangelog,
+} from './utils/changelog';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import {
