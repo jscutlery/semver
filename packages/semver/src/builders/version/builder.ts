@@ -54,7 +54,6 @@ export function runBuilder(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
 
-  /* @todo wip splitting into two functions. */
   const runStandardVersion$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) =>
       syncVersions
@@ -70,10 +69,10 @@ export function runBuilder(
           })
         : _versionProject({
             dryRun,
-            projectRoot,
             newVersion,
             noVerify,
             preset,
+            projectRoot,
             tagPrefix,
           })
     )
@@ -81,9 +80,9 @@ export function runBuilder(
 
   const pushToGitRemote$ = tryPushToGitRemote({
     branch: baseBranch,
-    remote,
-    noVerify,
     context,
+    noVerify,
+    remote,
   });
 
   return concat(
@@ -100,23 +99,23 @@ export function runBuilder(
 }
 
 function _versionWorkspace({
-  workspaceRoot,
   dryRun,
-  preset,
   newVersion,
-  projectRoot,
   noVerify,
-  tagPrefix,
+  preset,
+  projectRoot,
   rootChangelog,
+  tagPrefix,
+  workspaceRoot,
 }: {
-  workspaceRoot: string;
   dryRun: boolean;
-  preset: string;
   newVersion: string;
-  projectRoot: string;
   noVerify: boolean;
-  tagPrefix: string;
+  preset: string;
+  projectRoot: string;
   rootChangelog: boolean;
+  tagPrefix: string;
+  workspaceRoot: string;
 }) {
   return concat(
     ...[
@@ -160,18 +159,18 @@ function _versionWorkspace({
 }
 
 function _versionProject({
-  projectRoot,
   dryRun,
   newVersion,
   noVerify,
   preset,
+  projectRoot,
   tagPrefix,
 }: {
-  projectRoot: string;
   dryRun: boolean;
   newVersion: string;
   noVerify: boolean;
   preset: string;
+  projectRoot: string;
   tagPrefix: string;
 }) {
   const packageFiles = [resolve(projectRoot, 'package.json')];
