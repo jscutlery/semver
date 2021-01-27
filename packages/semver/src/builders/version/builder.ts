@@ -148,7 +148,7 @@ function _versionWorkspace({
             newVersion,
             noVerify,
             preset,
-            tagPrefix: tagPrefix,
+            tagPrefix,
             skipChangelog: !rootChangelog,
           })
         )
