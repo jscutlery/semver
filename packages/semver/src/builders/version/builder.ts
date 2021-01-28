@@ -3,58 +3,79 @@ import {
   BuilderOutput,
   createBuilder,
 } from '@angular-devkit/architect';
-import { resolve } from 'path';
-import { combineLatest, from, Observable, of } from 'rxjs';
-import { catchError, mapTo, switchMap, switchMapTo } from 'rxjs/operators';
-import * as standardVersion from 'standard-version';
+import { concat, forkJoin, Observable, of } from 'rxjs';
+import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
+
 import { VersionBuilderSchema } from './schema';
+import { tryPushToGitRemote } from './utils/git';
+import { tryBump } from './utils/try-bump';
+import { getProjectRoot } from './utils/workspace';
 import {
-  getChangelogPath,
-  getPackageFiles,
-  getProjectRoot,
-  hasChangelog,
-  tryPushToGitRemote,
-} from './utils';
+  CommonVersionOptions,
+  versionProject,
+  versionWorkspace,
+} from './version';
 
 export function runBuilder(
-  options: VersionBuilderSchema,
+  {
+    push,
+    remote,
+    dryRun,
+    baseBranch,
+    noVerify,
+    syncVersions,
+    rootChangelog,
+  }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  const { push, remote, dryRun, baseBranch, noVerify, syncVersions } = options;
+  const { workspaceRoot } = context;
+  const preset = 'angular';
+  const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
 
-  const projectRoot$ = from(getProjectRoot(context));
-  const availablePackageFiles$ = getPackageFiles(context.workspaceRoot);
+  const projectRoot$ = getProjectRoot(context).pipe(
+    shareReplay({ refCount: true, bufferSize: 1 })
+  );
+  const newVersion$ = projectRoot$.pipe(
+    switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
+  );
 
-  return combineLatest([projectRoot$, availablePackageFiles$]).pipe(
-    switchMap(([projectRoot, availablePackageFiles]) => {
-      const packageFiles = [resolve(projectRoot, 'package.json')];
-      const bumpFiles = syncVersions ? availablePackageFiles : packageFiles;
-      const changelogPath = getChangelogPath(projectRoot);
-      const firstRelease = hasChangelog(projectRoot) === false;
+  const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
+    switchMap(([projectRoot, newVersion]) => {
+      if (newVersion == null) {
+        return of(undefined);
+      }
 
-      return standardVersion({
-        silent: false,
-        path: projectRoot,
+      const options: CommonVersionOptions = {
         dryRun,
+        newVersion,
         noVerify,
-        firstRelease,
-        tagPrefix: syncVersions === false ? `${context.target.project}-` : null,
-        infile: changelogPath,
-        packageFiles,
-        bumpFiles,
-        preset: require.resolve('conventional-changelog-angular'),
-      });
-    }),
-    push && dryRun === false
-      ? switchMapTo(
-          tryPushToGitRemote({
-            branch: baseBranch,
-            remote,
-            noVerify,
-            context,
+        preset,
+        projectRoot,
+        tagPrefix,
+      };
+      const runStandardVersion$ = syncVersions
+        ? versionWorkspace({
+            ...options,
+            rootChangelog,
+            workspaceRoot,
           })
-        )
-      : mapTo(undefined),
+        : versionProject(options);
+
+      const pushToGitRemote$ = tryPushToGitRemote({
+        branch: baseBranch,
+        context,
+        noVerify,
+        remote,
+      });
+
+      return concat(
+        runStandardVersion$,
+        ...(push && dryRun === false ? [pushToGitRemote$] : [])
+      );
+    })
+  );
+
+  return action$.pipe(
     mapTo({ success: true }),
     catchError((error) => {
       context.logger.error(error);

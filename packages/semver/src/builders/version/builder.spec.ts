@@ -1,18 +1,32 @@
-import * as childProcess from '@lerna/child-process';
-import { MockBuilderContext } from '@nrwl/workspace/testing';
+import { BuilderContext } from '@angular-devkit/architect';
+import * as lernaChildProcess from '@lerna/child-process';
+import { execFile } from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
+import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import { callbackify } from 'util';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
-import { getMockContext } from './testing';
-import * as utils from './utils';
-import { getPackageFiles, hasChangelog } from './utils';
+import { createFakeContext } from './testing';
+import { tryBump } from './utils/try-bump';
+import * as workspace from './utils/workspace';
+import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
+jest.mock('child_process');
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
+jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
+jest.mock('./utils/try-bump');
 
 describe('@jscutlery/semver:version', () => {
-  let context: MockBuilderContext;
+  const mockChangelog = changelog as jest.Mock;
+  const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
+  const mockStandardVersion = standardVersion as jest.MockedFunction<
+    typeof standardVersion
+  >;
+  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
+
+  let context: BuilderContext;
 
   const options: VersionBuilderSchema = {
     dryRun: false,
@@ -21,55 +35,53 @@ describe('@jscutlery/semver:version', () => {
     remote: 'origin',
     baseBranch: 'main',
     syncVersions: false,
+    rootChangelog: true,
   };
 
   beforeEach(async () => {
-    context = await getMockContext();
-    context.logger.error = jest.fn();
-    context.target.project = 'a';
-    context.getProjectMetadata = jest
-      .fn()
-      .mockResolvedValue({ root: '/root/packages/a' });
+    context = createFakeContext({
+      project: 'a',
+      projectRoot: '/root/packages/a',
+      workspaceRoot: '/root',
+    });
+
+    mockChangelog.mockResolvedValue(undefined);
+    mockTryBump.mockReturnValue(of('2.1.0'));
 
     /* Mock standardVersion. */
-    (standardVersion as jest.MockedFunction<
-      typeof standardVersion
-    >).mockResolvedValue(undefined);
+    mockStandardVersion.mockResolvedValue(undefined);
 
-    jest.spyOn(utils, 'hasChangelog').mockReturnValue(true);
+    mockExecFile.mockImplementation(
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      callbackify(jest.fn().mockResolvedValue('')) as any
+    );
 
-    /* Mock readFileSync. */
+    /* Mock getPackageFiles. */
     jest
-      .spyOn(utils, 'getPackageFiles')
+      .spyOn(workspace, 'getPackageFiles')
       .mockReturnValue(
         of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
       );
+
+    /* Mock getProjectRoots. */
+    jest
+      .spyOn(workspace, 'getProjectRoots')
+      .mockReturnValue(of(['/root/packages/a', '/root/packages/b']));
   });
 
   afterEach(() => {
-    (standardVersion as jest.Mock).mockRestore();
-    (hasChangelog as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
+    (getProjectRoots as jest.Mock).mockRestore();
+    mockChangelog.mockRestore();
+    mockExecFile.mockRestore();
+    mockStandardVersion.mockRestore();
+    mockTryBump.mockRestore();
   });
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
 
-    expect(childProcess.exec).not.toHaveBeenCalled();
-  });
-
-  it('should call getPackageFiles with the right root project path', async () => {
-    await runBuilder(options, context).toPromise();
-
-    expect(getPackageFiles).toBeCalledTimes(1);
-    expect(getPackageFiles).toBeCalledWith('/root');
-  });
-
-  it('should call getPackageFiles with the right root project path', async () => {
-    await runBuilder(options, context).toPromise();
-
-    expect(hasChangelog).toBeCalledTimes(1);
-    expect(hasChangelog).toBeCalledWith('/root/packages/a');
+    expect(lernaChildProcess.exec).not.toHaveBeenCalled();
   });
 
   it('should push to Git with right options', async () => {
@@ -78,7 +90,7 @@ describe('@jscutlery/semver:version', () => {
       context
     ).toPromise();
 
-    expect(childProcess.exec).toHaveBeenCalledWith(
+    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
       'git',
       expect.arrayContaining([
         'push',
@@ -100,7 +112,7 @@ describe('@jscutlery/semver:version', () => {
       context
     ).toPromise();
 
-    expect(childProcess.exec).toHaveBeenCalledWith(
+    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
       'git',
       expect.arrayContaining([
         'push',
@@ -125,18 +137,6 @@ describe('@jscutlery/semver:version', () => {
     expect(output).toEqual(expect.objectContaining({ success: false }));
   });
 
-  it('should detect first release', async () => {
-    /* Mock the absence of CHANGELOG file */
-    jest.spyOn(utils, 'hasChangelog').mockReturnValue(false);
-
-    await runBuilder(options, context).toPromise();
-
-    expect(standardVersion).toBeCalledTimes(1);
-    expect(standardVersion).toBeCalledWith(
-      expect.objectContaining({ firstRelease: true })
-    );
-  });
-
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
       const output = await runBuilder(options, context).toPromise();
@@ -145,7 +145,7 @@ describe('@jscutlery/semver:version', () => {
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
-          preset: expect.stringContaining('conventional-changelog-angular'),
+          preset: 'angular',
           dryRun: false,
           noVerify: false,
           tagPrefix: 'a-',
@@ -156,15 +156,26 @@ describe('@jscutlery/semver:version', () => {
         })
       );
     });
+
+    it('should not version if no commits since last release', async () => {
+      mockTryBump.mockReturnValue(of(null));
+
+      const { success } = await runBuilder(options, context).toPromise();
+
+      expect(success).toBe(true);
+
+      expect(standardVersion).not.toBeCalled();
+    });
   });
 
   describe('Sync versions', () => {
     beforeEach(() => {
       /* With the sync versions, the builder runs on the workspace. */
-      (context.getProjectMetadata as jest.MockedFunction<
-        typeof context.getProjectMetadata
-      >).mockResolvedValue({ root: '/root' });
-      context.target.project = 'workspace';
+      context = createFakeContext({
+        project: 'workspace',
+        projectRoot: '/root',
+        workspaceRoot: '/root',
+      });
     });
 
     it('should run standard-version on multiple projects', async () => {
@@ -177,13 +188,33 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
+      expect(output).toEqual(expect.objectContaining({ success: true }));
+
+      expect(changelog).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          header: expect.any(String),
+          dryRun: false,
+          infile: '/root/packages/a/CHANGELOG.md',
+        }),
+        '2.1.0'
+      );
+      expect(changelog).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          header: expect.any(String),
+          dryRun: false,
+          infile: '/root/packages/b/CHANGELOG.md',
+        }),
+        '2.1.0'
+      );
+
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
-          preset: expect.stringContaining('conventional-changelog-angular'),
+          preset: 'angular',
           dryRun: false,
           noVerify: false,
-          tagPrefix: null,
           path: '/root',
           infile: '/root/CHANGELOG.md',
           bumpFiles: [
@@ -191,9 +222,47 @@ describe('@jscutlery/semver:version', () => {
             '/root/packages/b/package.json',
           ],
           packageFiles: ['/root/package.json'],
+          skip: {
+            changelog: false,
+          },
         })
       );
-      expect(output).toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('should generate root CHANGELOG only when requested', async () => {
+      await runBuilder(
+        {
+          ...options,
+          syncVersions: true,
+          /* Disable root CHANGELOG */
+          rootChangelog: false,
+        },
+        context
+      ).toPromise();
+
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          skip: {
+            changelog: true,
+          },
+        })
+      );
+    });
+
+    it('should not version if no commits since last release', async () => {
+      mockTryBump.mockReturnValue(of(null));
+
+      const { success } = await runBuilder(
+        {
+          ...options,
+          syncVersions: true,
+        },
+        context
+      ).toPromise();
+
+      expect(success).toBe(true);
+
+      expect(standardVersion).not.toBeCalled();
     });
   });
 });

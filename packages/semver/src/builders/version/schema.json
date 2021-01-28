@@ -34,6 +34,11 @@
       "description": "Sync all package versions.",
       "type": "boolean",
       "default": false
+    },
+    "rootChangelog": {
+      "description": "Generate root CHANGELOG file containing all monorepo changes.",
+      "type": "boolean",
+      "default": true
     }
   },
   "required": []
