@@ -56,6 +56,9 @@ describe('@jscutlery/semver:version', () => {
       callbackify(jest.fn().mockResolvedValue('')) as any
     );
 
+    /* Mock console.info. */
+    jest.spyOn(console, 'info').mockImplementation();
+
     /* Mock getPackageFiles. */
     jest
       .spyOn(workspace, 'getPackageFiles')
@@ -70,6 +73,7 @@ describe('@jscutlery/semver:version', () => {
   });
 
   afterEach(() => {
+    (console.info as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
     mockChangelog.mockRestore();
@@ -164,6 +168,9 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
 
+      expect(console.info).toBeCalledWith(
+        '⏹ nothing changed since last release'
+      );
       expect(standardVersion).not.toBeCalled();
     });
   });
@@ -262,6 +269,9 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
 
+      expect(console.info).toBeCalledWith(
+        '⏹ nothing changed since last release'
+      );
       expect(standardVersion).not.toBeCalled();
     });
   });

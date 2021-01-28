@@ -42,6 +42,7 @@ export function runBuilder(
   const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) => {
       if (newVersion == null) {
+        console.info('⏹ nothing changed since last release');
         return of(undefined);
       }
 
