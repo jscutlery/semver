@@ -15,12 +15,14 @@
 ### Install
 
 Without Angular:
+
 ```sh
 npm install -D @jscutlery/semver
 nx g @jscutlery/semver:install
 ```
 
 or if you are using Angular:
+
 ```sh
 ng add @jscutlery/semver
 ```
@@ -65,25 +67,24 @@ nx run workspace:version [...options]
 
 #### When run, this command does the following:
 
-1. Retrieve the current version of affected `package.json` project(s).
-2. Bump the version based on your commits.
-3. Generates the CHANGELOG based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
-4. Creates a new `commit` including your `package.json` file and updated CHANGELOG.
-5. Creates a new `tag` with the new version number.
-6. Push the release(s) if enabled.
+1. Retrieve the current version of affected `package.json` projects.
+2. Bump versions based on your commits.
+3. Generates CHANGELOGs based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
+4. Creates a new commit including your `package.json` files and updated CHANGELOGs.
+5. Creates new tags with the new versions number.
+6. Push the releases (if enabled).
 
 #### Available options:
 
-| name                  | type       | default    | description                         |
-| --------------------- | ---------- | ---------- | ----------------------------------- |
-| **`--dry-run`**       | `boolean`  | `false`    | run with dry mode                   |
-| **`--no-verify`**     | `boolean`  | `false`    | skip git hooks                      |
-| **`--push`**          | `boolean`  | `false`    | push the release                    |
-| **`--origin`**        | `string`   | `'origin'` | push against git remote repository  |
-| **`--base-branch`**   | `string`   | `'main'`   | push against git base branch        |
-| **`--sync-versions`** | `boolean`  | `false`    | lock/sync versions between projects |
-| **`--projects`**      | `string[]` | `[]`       | version projects independently      |
-
+| name                  | type       | default    | description                                    |
+| --------------------- | ---------- | ---------- | ---------------------------------------------- |
+| **`--dry-run`**       | `boolean`  | `false`    | run with dry mode                              |
+| **`--no-verify`**     | `boolean`  | `false`    | skip git hooks                                 |
+| **`--push`**          | `boolean`  | `false`    | push the release                               |
+| **`--sync-versions`** | `boolean`  | `false`    | lock/sync versions between projects            |
+| **`--rootChangelog`** | `boolean`  | `true`     | generate root CHANGELOG containing all changes |
+| **`--origin`**        | `string`   | `'origin'` | push against git remote repository             |
+| **`--base-branch`**   | `string`   | `'main'`   | push against git base branch                   |
 
 ## Changelog
 
