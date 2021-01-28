@@ -448,14 +448,15 @@ $`)
 function commitChanges() {
   execSync(
     `
-        git init; 
+        git init;
 
         # These are needed by CI.
         git config user.email "bot@jest.io"
         git config user.name "Test Bot"
-        
-        git add .; 
-        git commit -m "🐣"; 
+        git config commit.gpgsign false
+
+        git add .;
+        git commit -m "🐣";
         echo a > packages/a/a.txt
         git add .
         git commit -m "feat(a): 🚀 new feature"
