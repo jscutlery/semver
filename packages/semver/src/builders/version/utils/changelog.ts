@@ -1,5 +1,4 @@
 import { execFile } from 'child_process';
-import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { defer } from 'rxjs';
 import { promisify } from 'util';
