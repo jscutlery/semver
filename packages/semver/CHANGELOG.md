@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.3.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-1.2.0...semver-1.3.0) (2021-01-29)
+
+
+### Features
+
+* ✅ parallelize changelogs generation ([de6418a](https://github.com/jscutlery/nx-plugin-semver/commit/de6418a4f143a5414cbca17e6e0fcc484eb5eae6))
+
+
+
 # [1.2.0](https://github.com/jscutlery/semver/compare/semver-1.1.0...semver-1.2.0) (2021-01-28)
 
 
