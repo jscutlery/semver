@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { concat } from 'rxjs';
+import { concat, forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 import {
@@ -30,8 +30,8 @@ export function versionWorkspace({
     ...[
       getProjectRoots(workspaceRoot).pipe(
         switchMap((projectRoots) =>
-          concat(
-            ...projectRoots
+          forkJoin(
+            projectRoots
               /* Don't update the workspace's changelog as it will be
                * dealt with by `standardVersion`. */
               .filter((projectRoot) => projectRoot !== workspaceRoot)
