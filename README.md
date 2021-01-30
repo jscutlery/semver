@@ -76,15 +76,15 @@ nx run workspace:version [...options]
 
 #### Available options:
 
-| name                  | type       | default    | description                                    |
-| --------------------- | ---------- | ---------- | ---------------------------------------------- |
-| **`--dry-run`**       | `boolean`  | `false`    | run with dry mode                              |
-| **`--no-verify`**     | `boolean`  | `false`    | skip git hooks                                 |
-| **`--push`**          | `boolean`  | `false`    | push the release                               |
-| **`--sync-versions`** | `boolean`  | `false`    | lock/sync versions between projects            |
-| **`--rootChangelog`** | `boolean`  | `true`     | generate root CHANGELOG containing all changes |
-| **`--origin`**        | `string`   | `'origin'` | push against git remote repository             |
-| **`--base-branch`**   | `string`   | `'main'`   | push against git base branch                   |
+| name                   | type      | default    | description                                    |
+| ---------------------- | --------- | ---------- | ---------------------------------------------- |
+| **`--dry-run`**        | `boolean` | `false`    | run with dry mode                              |
+| **`--no-verify`**      | `boolean` | `false`    | skip git hooks                                 |
+| **`--push`**           | `boolean` | `false`    | push the release                               |
+| **`--sync-versions`**  | `boolean` | `false`    | lock/sync versions between projects            |
+| **`--root-changelog`** | `boolean` | `true`     | generate root CHANGELOG containing all changes |
+| **`--origin`**         | `string`  | `'origin'` | push against git remote repository             |
+| **`--base-branch`**    | `string`  | `'main'`   | push against git base branch                   |
 
 ## Changelog
 
