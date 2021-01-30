@@ -22,7 +22,6 @@ const defaultOptions: SchemaOptions = {
 
 describe('ng-add schematic', () => {
   let appTree: Tree;
-
   let schematicRunner: SchematicTestRunner;
 
   beforeEach(async () => {
@@ -31,8 +30,7 @@ describe('ng-add schematic', () => {
       collectionPath
     );
 
-    appTree = Tree.empty();
-    appTree = createEmptyWorkspace(appTree);
+    appTree = createEmptyWorkspace(Tree.empty());
     appTree = await runSchematic('lib', libOptions, appTree);
   });
 
