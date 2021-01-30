@@ -1,0 +1,41 @@
+{
+  "projectName": "semver",
+  "projectOwner": "jscutlery",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "yjaaidi",
+      "name": "Younes Jaaidi",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2674658?v=4",
+      "profile": "https://marmicode.io/",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "example",
+        "ideas"
+      ]
+    },
+    {
+      "login": "edbzn",
+      "name": "Edouard Bozon",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8522558?v=4",
+      "profile": "https://www.codamit.dev/",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "example",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

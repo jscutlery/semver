@@ -23,7 +23,9 @@
     "update": "nx migrate latest",
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "private": true,
   "devDependencies": {
@@ -38,6 +40,7 @@
     "@types/node": "^14.14.22",
     "@typescript-eslint/eslint-plugin": "4.14.1",
     "@typescript-eslint/parser": "4.14.1",
+    "all-contributors-cli": "^6.19.0",
     "dotenv": "8.2.0",
     "eslint": "7.18.0",
     "eslint-config-prettier": "7.2.0",
