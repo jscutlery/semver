@@ -1,5 +1,7 @@
 import { JsonObject } from '@angular-devkit/core';
 
+import { PluginDef } from './plugin';
+
 export interface VersionBuilderSchema extends JsonObject {
   dryRun?: boolean;
   noVerify?: boolean;
@@ -8,5 +10,6 @@ export interface VersionBuilderSchema extends JsonObject {
   baseBranch?: string;
   syncVersions?: boolean;
   rootChangelog?: boolean;
-  plugins?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plugins?: PluginDef[];
 }

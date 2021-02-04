@@ -18,7 +18,7 @@ jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 
 jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
-  virtual: true
+  virtual: true,
 });
 jest.mock('@custom-plugin/github', () => ({ publish: jest.fn() }), {
   virtual: true,
@@ -172,6 +172,39 @@ describe('@jscutlery/semver:version', () => {
 
     expect(npmPublish).toBeCalled();
     expect(githubPublish).toBeCalled();
+    expect(output).toEqual(expect.objectContaining({ success: true }));
+  });
+
+  it('should handle plugin configuration', async () => {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const { publish: npmPublish } = require('@custom-plugin/npm');
+    const { publish: githubPublish } = require('@custom-plugin/github');
+    /* eslint-enable @typescript-eslint/no-var-requires */
+
+    const output = await runBuilder(
+      {
+        ...options,
+        plugins: [
+          '@custom-plugin/npm',
+          [
+            '@custom-plugin/github',
+            {
+              remoteUrl: 'remote',
+            },
+          ],
+        ],
+      },
+      context
+    ).toPromise();
+
+    expect(npmPublish).toBeCalledWith(
+      undefined
+    );
+    expect(githubPublish).toBeCalledWith(
+      expect.objectContaining({
+        remoteUrl: 'remote'
+      })
+    );
     expect(output).toEqual(expect.objectContaining({ success: true }));
   });
 

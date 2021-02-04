@@ -2,7 +2,7 @@ import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/ar
 import { concat, defer, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
-import { SemverPlugin } from './plugin';
+import { PluginsMap } from './plugin';
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
@@ -32,8 +32,14 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
-  const loadPlugins$ = of(plugins).pipe(
-    map((plugins) => plugins.map<SemverPlugin>((plugin) => require(plugin)))
+  const loadPlugins$: Observable<PluginsMap> = of(plugins).pipe(
+    map((plugins) =>
+      plugins.map((plugin) =>
+        typeof plugin === 'string'
+          ? [ require(plugin), undefined ]
+          : [ require(plugin[0]), plugin[1] ]
+      )
+    )
   );
 
   const action$ = forkJoin([projectRoot$, newVersion$, loadPlugins$]).pipe(
@@ -67,8 +73,8 @@ export function runBuilder(
       });
 
       const runPublishHooks$ = defer(async () => {
-        for (const { publish } of plugins) {
-          publish && await publish()
+        for (const [ plugin, options ] of plugins) {
+          plugin.publish && (await plugin.publish(options));
         }
       });
 
