@@ -150,62 +150,63 @@ describe('@jscutlery/semver:version', () => {
     expect(output).toEqual(expect.objectContaining({ success: false }));
   });
 
-  it('should load plugins', async () => {
-    const output = await runBuilder(
-      { ...options, plugins: ['@custom-plugin/npm', '@custom-plugin/github'] },
-      context
-    ).toPromise();
-
-    expect(output).toEqual(expect.objectContaining({ success: true }));
-  });
-
-  it('should run publish hook', async () => {
+  describe('Plugins', () => {
     /* eslint-disable @typescript-eslint/no-var-requires */
     const { publish: npmPublish } = require('@custom-plugin/npm');
     const { publish: githubPublish } = require('@custom-plugin/github');
     /* eslint-enable @typescript-eslint/no-var-requires */
 
-    const output = await runBuilder(
-      { ...options, plugins: ['@custom-plugin/npm', '@custom-plugin/github'] },
-      context
-    ).toPromise();
+    it('should load plugins', async () => {
+      const output = await runBuilder(
+        {
+          ...options,
+          plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+        },
+        context
+      ).toPromise();
 
-    expect(npmPublish).toBeCalled();
-    expect(githubPublish).toBeCalled();
-    expect(output).toEqual(expect.objectContaining({ success: true }));
-  });
+      expect(output).toEqual(expect.objectContaining({ success: true }));
+    });
 
-  it('should handle plugin configuration', async () => {
-    /* eslint-disable @typescript-eslint/no-var-requires */
-    const { publish: npmPublish } = require('@custom-plugin/npm');
-    const { publish: githubPublish } = require('@custom-plugin/github');
-    /* eslint-enable @typescript-eslint/no-var-requires */
+    it('should run publish hook', async () => {
+      const output = await runBuilder(
+        {
+          ...options,
+          plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+        },
+        context
+      ).toPromise();
 
-    const output = await runBuilder(
-      {
-        ...options,
-        plugins: [
-          '@custom-plugin/npm',
-          [
-            '@custom-plugin/github',
-            {
-              remoteUrl: 'remote',
-            },
+      expect(npmPublish).toBeCalled();
+      expect(githubPublish).toBeCalled();
+      expect(output).toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('should handle plugin configuration', async () => {
+      const output = await runBuilder(
+        {
+          ...options,
+          plugins: [
+            '@custom-plugin/npm',
+            [
+              '@custom-plugin/github',
+              {
+                remoteUrl: 'remote',
+              },
+            ],
           ],
-        ],
-      },
-      context
-    ).toPromise();
+        },
+        context
+      ).toPromise();
 
-    expect(npmPublish).toBeCalledWith(
-      undefined
-    );
-    expect(githubPublish).toBeCalledWith(
-      expect.objectContaining({
-        remoteUrl: 'remote'
-      })
-    );
-    expect(output).toEqual(expect.objectContaining({ success: true }));
+      expect(npmPublish).toBeCalledWith(undefined);
+      expect(githubPublish).toBeCalledWith(
+        expect.objectContaining({
+          remoteUrl: 'remote',
+        })
+      );
+      expect(output).toEqual(expect.objectContaining({ success: true }));
+    });
   });
 
   describe('Independent version', () => {

@@ -41,7 +41,7 @@
       "default": true
     },
     "plugins": {
-      "description": "Configurable plugins to extend the builder capabilities.",
+      "description": "Configurable plugins to extend release capabilities.",
       "type": "array",
       "default": []
     }
