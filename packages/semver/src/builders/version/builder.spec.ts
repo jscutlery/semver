@@ -17,10 +17,10 @@ jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 
-jest.mock('@custom-plugin/npm', () => ({ fn: jest.fn() }), {
+jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
   virtual: true
 });
-jest.mock('@custom-plugin/github', () => ({ fn: jest.fn() }), {
+jest.mock('@custom-plugin/github', () => ({ publish: jest.fn() }), {
   virtual: true,
 });
 
@@ -156,6 +156,22 @@ describe('@jscutlery/semver:version', () => {
       context
     ).toPromise();
 
+    expect(output).toEqual(expect.objectContaining({ success: true }));
+  });
+
+  it('should run publish hook', async () => {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const { publish: npmPublish } = require('@custom-plugin/npm');
+    const { publish: githubPublish } = require('@custom-plugin/github');
+    /* eslint-enable @typescript-eslint/no-var-requires */
+
+    const output = await runBuilder(
+      { ...options, plugins: ['@custom-plugin/npm', '@custom-plugin/github'] },
+      context
+    ).toPromise();
+
+    expect(npmPublish).toBeCalled();
+    expect(githubPublish).toBeCalled();
     expect(output).toEqual(expect.objectContaining({ success: true }));
   });
 
