@@ -2,7 +2,7 @@ import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/ar
 import { concat, defer, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
-import { PluginsMap } from './plugin';
+import { PluginMap } from './plugin';
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
@@ -32,7 +32,7 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
-  const loadPlugins$: Observable<PluginsMap> = of(plugins).pipe(
+  const loadPlugins$: Observable<PluginMap> = of(plugins).pipe(
     map((plugins) =>
       plugins.map((plugin) =>
         typeof plugin === 'string'
@@ -72,7 +72,7 @@ export function runBuilder(
         remote,
       });
 
-      const runPublishHooks$ = defer(async () => {
+      const runPublishHook$ = defer(async () => {
         for (const [ plugin, options ] of plugins) {
           plugin.publish && (await plugin.publish(options));
         }
@@ -80,7 +80,7 @@ export function runBuilder(
 
       return concat(
         runStandardVersion$,
-        runPublishHooks$,
+        runPublishHook$,
         ...(push && dryRun === false ? [pushToGitRemote$] : [])
       );
     })

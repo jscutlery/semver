@@ -10,6 +10,5 @@ export interface VersionBuilderSchema extends JsonObject {
   baseBranch?: string;
   syncVersions?: boolean;
   rootChangelog?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   plugins?: PluginDef[];
 }
