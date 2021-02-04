@@ -1,21 +1,13 @@
-import {
-  BuilderContext,
-  BuilderOutput,
-  createBuilder,
-} from '@angular-devkit/architect';
-import { concat, defer, forkJoin, Observable, of } from 'rxjs';
-import { catchError, map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
+import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import { concat, forkJoin, Observable, of } from 'rxjs';
+import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
-import { PluginHandler, PluginMap } from './plugin';
+import { PluginHandler } from './plugin';
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import {
-  CommonVersionOptions,
-  versionProject,
-  versionWorkspace,
-} from './version';
+import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
 
 export function runBuilder(
   {

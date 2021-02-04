@@ -1,5 +1,5 @@
 import { JsonObject } from '@angular-devkit/core';
-import { defer } from 'rxjs';
+import { defer, Observable } from 'rxjs';
 
 export class PluginHandler {
   private plugins: PluginMap;
@@ -8,20 +8,21 @@ export class PluginHandler {
     this.plugins = this._load(plugins);
   }
 
-  publish() {
-    return defer(async () => this._run('publish'));
+  publish(): Observable<void> {
+    return defer(() => this._run('publish'));
   }
 
   private async _run(hook: keyof Plugin): Promise<void> {
     const plugins = this.plugins;
     for (const [plugin, options] of plugins) {
       const hookFn = plugin[hook];
+      // @todo pass context and right options
       hookFn && (await hookFn(options));
     }
   }
 
   private _load(plugins: PluginDef[]): PluginMap {
-    return plugins.map<PluginMap[0]>((plugin) =>
+    return plugins.map<[Plugin, unknown]>((plugin) =>
       typeof plugin === 'string'
         ? [require(plugin), undefined]
         : [require(plugin[0]), plugin[1]]

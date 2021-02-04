@@ -156,18 +156,6 @@ describe('@jscutlery/semver:version', () => {
     const { publish: githubPublish } = require('@custom-plugin/github');
     /* eslint-enable @typescript-eslint/no-var-requires */
 
-    it('should load plugins', async () => {
-      const output = await runBuilder(
-        {
-          ...options,
-          plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
-        },
-        context
-      ).toPromise();
-
-      expect(output).toEqual(expect.objectContaining({ success: true }));
-    });
-
     it('should run publish hook', async () => {
       const output = await runBuilder(
         {
@@ -177,8 +165,8 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(npmPublish).toBeCalled();
-      expect(githubPublish).toBeCalled();
+      expect(npmPublish).toBeCalledTimes(1);
+      expect(githubPublish).toBeCalledTimes(1);
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
 
@@ -188,23 +176,18 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           plugins: [
             '@custom-plugin/npm',
-            [
-              '@custom-plugin/github',
-              {
-                remoteUrl: 'remote',
-              },
-            ],
+            ['@custom-plugin/github', { remoteUrl: 'remote' }],
           ],
         },
         context
       ).toPromise();
 
-      expect(npmPublish).toBeCalledWith(undefined);
       expect(githubPublish).toBeCalledWith(
         expect.objectContaining({
           remoteUrl: 'remote',
         })
       );
+      expect(npmPublish).toBeCalledWith(undefined);
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
   });
