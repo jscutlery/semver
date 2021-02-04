@@ -17,6 +17,7 @@ export function runBuilder(
     noVerify,
     syncVersions,
     rootChangelog,
+    plugins
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {

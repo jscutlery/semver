@@ -39,6 +39,11 @@
       "description": "Generate root CHANGELOG file containing all monorepo changes.",
       "type": "boolean",
       "default": true
+    },
+    "plugins": {
+      "description": "Configurable plugins to extend the builder capabilities.",
+      "type": "array",
+      "default": []
     }
   },
   "required": []

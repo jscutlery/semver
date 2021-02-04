@@ -8,4 +8,5 @@ export interface VersionBuilderSchema extends JsonObject {
   baseBranch?: string;
   syncVersions?: boolean;
   rootChangelog?: boolean;
+  plugins?: string[];
 }
