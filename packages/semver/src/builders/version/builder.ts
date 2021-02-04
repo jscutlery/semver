@@ -1,8 +1,4 @@
-import {
-  BuilderContext,
-  BuilderOutput,
-  createBuilder,
-} from '@angular-devkit/architect';
+import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
@@ -10,11 +6,7 @@ import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import {
-  CommonVersionOptions,
-  versionProject,
-  versionWorkspace,
-} from './version';
+import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
 
 export function runBuilder(
   {
@@ -79,7 +71,7 @@ export function runBuilder(
   return action$.pipe(
     mapTo({ success: true }),
     catchError((error) => {
-      context.logger.error(error);
+      context.logger.error(error.stack ?? error.toString());
       context.reportStatus('Error');
       return of({ success: false });
     })
