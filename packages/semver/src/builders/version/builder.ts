@@ -1,6 +1,6 @@
 import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
 import { concat, forkJoin, Observable, of } from 'rxjs';
-import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
+import { catchError, mapTo, shareReplay, switchMap, map } from 'rxjs/operators';
 
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
@@ -31,9 +31,12 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
+  const loadPlugins$ = of(plugins).pipe(
+    map((plugins) => plugins.map((plugin) => require(plugin)))
+  );
 
-  const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
-    switchMap(([projectRoot, newVersion]) => {
+  const action$ = forkJoin([projectRoot$, newVersion$, loadPlugins$]).pipe(
+    switchMap(([projectRoot, newVersion, plugins]) => {
       if (newVersion == null) {
         console.info('⏹ nothing changed since last release');
         return of(undefined);

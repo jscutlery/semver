@@ -21,6 +21,7 @@ describe('@jscutlery/semver:version', () => {
     baseBranch: 'main',
     rootChangelog: true,
     syncVersions: false,
+    plugins: [],
   };
 
   const commonWorkspaceFiles: [string, string][] = [

@@ -16,6 +16,14 @@ jest.mock('child_process');
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
+
+jest.mock('@custom-plugin/npm', () => ({ fn: jest.fn() }), {
+  virtual: true
+});
+jest.mock('@custom-plugin/github', () => ({ fn: jest.fn() }), {
+  virtual: true,
+});
+
 jest.mock('./utils/try-bump');
 
 describe('@jscutlery/semver:version', () => {
@@ -36,6 +44,7 @@ describe('@jscutlery/semver:version', () => {
     baseBranch: 'main',
     syncVersions: false,
     rootChangelog: true,
+    plugins: [],
   };
 
   beforeEach(async () => {
@@ -139,6 +148,15 @@ describe('@jscutlery/semver:version', () => {
       expect.stringContaining('Missing configuration')
     );
     expect(output).toEqual(expect.objectContaining({ success: false }));
+  });
+
+  it('should load plugins', async () => {
+    const output = await runBuilder(
+      { ...options, plugins: ['@custom-plugin/npm', '@custom-plugin/github'] },
+      context
+    ).toPromise();
+
+    expect(output).toEqual(expect.objectContaining({ success: true }));
   });
 
   describe('Independent version', () => {
