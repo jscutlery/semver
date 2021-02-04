@@ -1,4 +1,8 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import {
+  BuilderContext,
+  BuilderOutput,
+  createBuilder,
+} from '@angular-devkit/architect';
 import { concat, defer, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
@@ -7,7 +11,11 @@ import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
+import {
+  CommonVersionOptions,
+  versionProject,
+  versionWorkspace,
+} from './version';
 
 export function runBuilder(
   {
@@ -32,19 +40,10 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
-  const loadPlugins$ = of(plugins).pipe(
-    map((plugins) =>
-      plugins.map<PluginMap[0]>((plugin) =>
-        typeof plugin === 'string'
-          ? [require(plugin), undefined]
-          : [require(plugin[0]), plugin[1]]
-      )
-    ),
-    map(plugins => new PluginHandler({ plugins }))
-  );
+  const pluginHandler = new PluginHandler({ plugins });
 
-  const action$ = forkJoin([projectRoot$, newVersion$, loadPlugins$]).pipe(
-    switchMap(([projectRoot, newVersion, PluginHandler]) => {
+  const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
+    switchMap(([projectRoot, newVersion]) => {
       if (newVersion == null) {
         console.info('⏹ nothing changed since last release');
         return of(undefined);
@@ -75,7 +74,7 @@ export function runBuilder(
 
       return concat(
         runStandardVersion$,
-        PluginHandler.runPublish(),
+        pluginHandler.publish(),
         ...(push && dryRun === false ? [pushToGitRemote$] : [])
       );
     })

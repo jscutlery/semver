@@ -4,11 +4,11 @@ import { defer } from 'rxjs';
 export class PluginHandler {
   private plugins: PluginMap;
 
-  constructor({ plugins }: { plugins: PluginMap }) {
-    this.plugins = plugins;
+  constructor({ plugins }: { plugins: PluginDef[] }) {
+    this.plugins = this._load(plugins);
   }
 
-  runPublish() {
+  publish() {
     return defer(async () => this._run('publish'));
   }
 
@@ -18,6 +18,14 @@ export class PluginHandler {
       const hookFn = plugin[hook];
       hookFn && (await hookFn(options));
     }
+  }
+
+  private _load(plugins: PluginDef[]): PluginMap {
+    return plugins.map<PluginMap[0]>((plugin) =>
+      typeof plugin === 'string'
+        ? [require(plugin), undefined]
+        : [require(plugin[0]), plugin[1]]
+    );
   }
 }
 
