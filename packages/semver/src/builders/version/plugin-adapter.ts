@@ -31,20 +31,16 @@ export class SemanticReleasePluginAdapter implements Plugin {
   constructor(private _plugin: SemanticReleasePlugin) {}
 
   async publish(
-    _: PluginOptions,
+    _pluginOptions: PluginOptions,
     options: CommonVersionOptions,
     context: BuilderContext
   ) {
-    await this._plugin.addChannel(
-      ...(await _createSemanticReleaseOptions(options, context))
-    );
-    return this._plugin.publish(
-      ...(await _createSemanticReleaseOptions(options, context))
-    );
+    await this._plugin.addChannel(...(await _createOptions(options, context)));
+    return this._plugin.publish(...(await _createOptions(options, context)));
   }
 }
 
-export async function _createSemanticReleaseOptions(
+export async function _createOptions(
   options: CommonVersionOptions,
   context: BuilderContext
 ): Promise<SemanticReleasePluginOptions> {
@@ -53,7 +49,7 @@ export async function _createSemanticReleaseOptions(
     ((await context.getTargetOptions({
       project: context.target.project,
       target: 'build',
-      configuration: 'production',
+      configuration: 'production', // @todo check if it's required
     })) as { outputPath: string }).outputPath
   );
 
@@ -63,7 +59,7 @@ export async function _createSemanticReleaseOptions(
       npmPublish: options.dryRun === false,
       pkgRoot,
     },
-    { name: context.target.project }, // @todo use package.name instead
+    { name: context.target.project }, // @todo use name from package.json
     {
       cwd: process.cwd(), // @todo check if it's correct
       env: process.env,

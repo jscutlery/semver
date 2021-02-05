@@ -10,5 +10,3 @@ export interface Plugin {
 export type PluginDef = [string, JsonObject] | string;
 
 export type PluginOptions = Record<string, unknown>;
-
-export type PluginMap = [Plugin, PluginOptions][];

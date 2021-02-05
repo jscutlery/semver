@@ -1,9 +1,11 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { defer, Observable } from 'rxjs';
 
-import { Plugin, PluginDef, PluginMap, PluginOptions } from './plugin';
+import { Plugin, PluginDef, PluginOptions } from './plugin';
 import { adapt } from './plugin-adapter';
 import { CommonVersionOptions } from './version';
+
+export type PluginMap = [Plugin, PluginOptions][];
 
 export class PluginHandler {
   private _plugins: PluginMap;
