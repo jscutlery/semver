@@ -2,7 +2,7 @@ import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/ar
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
-import { PluginHandler } from './plugin';
+import { createPluginHandler } from './plugin-handler';
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
@@ -32,7 +32,7 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
-  const pluginHandler = new PluginHandler({ plugins });
+  const pluginHandler = createPluginHandler({ plugins });
 
   const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) => {

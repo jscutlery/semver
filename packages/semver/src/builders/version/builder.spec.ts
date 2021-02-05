@@ -177,7 +177,7 @@ describe('@jscutlery/semver:version', () => {
       githubPublish.mockRestore();
       semanticPublish.mockRestore();
       semanticAddChannel.mockRestore();
-    })
+    });
 
     it('should run publish hook', async () => {
       const output = await runBuilder(
@@ -190,7 +190,9 @@ describe('@jscutlery/semver:version', () => {
 
       expect(npmPublish).toBeCalledTimes(1);
       expect(githubPublish).toBeCalledTimes(1);
-      expect(semanticPublish).not.toBeCalled(); /* @semantic-release/npm not declared and not called. */
+      expect(
+        semanticPublish /* @semantic-release/npm not declared and not called. */
+      ).not.toBeCalled();
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
 
@@ -219,11 +221,7 @@ describe('@jscutlery/semver:version', () => {
       const output = await runBuilder(
         {
           ...options,
-          plugins: [
-            '@semantic-release/npm',
-            '@custom-plugin/npm',
-            '@custom-plugin/github',
-          ],
+          plugins: ['@semantic-release/npm'],
         },
         context
       ).toPromise();
