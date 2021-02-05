@@ -17,6 +17,11 @@ jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 
+jest.mock(
+  '@semantic-release/npm',
+  () => ({ publish: jest.fn(), addChannel: jest.fn() }),
+  { virtual: true }
+);
 jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
   virtual: true,
 });
@@ -154,7 +159,25 @@ describe('@jscutlery/semver:version', () => {
     /* eslint-disable @typescript-eslint/no-var-requires */
     const { publish: npmPublish } = require('@custom-plugin/npm');
     const { publish: githubPublish } = require('@custom-plugin/github');
+    const {
+      publish: semanticPublish,
+      addChannel: semanticAddChannel,
+    } = require('@semantic-release/npm');
     /* eslint-enable @typescript-eslint/no-var-requires */
+
+    beforeEach(() => {
+      npmPublish.mockResolvedValue('');
+      githubPublish.mockResolvedValue('');
+      semanticPublish.mockResolvedValue('');
+      semanticAddChannel.mockResolvedValue('');
+    });
+
+    afterEach(() => {
+      npmPublish.mockRestore();
+      githubPublish.mockRestore();
+      semanticPublish.mockRestore();
+      semanticAddChannel.mockRestore();
+    })
 
     it('should run publish hook', async () => {
       const output = await runBuilder(
@@ -167,6 +190,7 @@ describe('@jscutlery/semver:version', () => {
 
       expect(npmPublish).toBeCalledTimes(1);
       expect(githubPublish).toBeCalledTimes(1);
+      expect(semanticPublish).not.toBeCalled(); /* @semantic-release/npm not declared and not called. */
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
 
@@ -187,7 +211,26 @@ describe('@jscutlery/semver:version', () => {
           remoteUrl: 'remote',
         })
       );
-      expect(npmPublish).toBeCalledWith(undefined);
+      expect(npmPublish).toBeCalledWith({});
+      expect(output).toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('should handle semantic-release plugins', async () => {
+      const output = await runBuilder(
+        {
+          ...options,
+          plugins: [
+            '@semantic-release/npm',
+            '@custom-plugin/npm',
+            '@custom-plugin/github',
+          ],
+        },
+        context
+      ).toPromise();
+
+      /* Ensure the adapter calls the semantic-release hooks. */
+      expect(semanticPublish).toBeCalled();
+      expect(semanticAddChannel).toBeCalled();
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
   });
