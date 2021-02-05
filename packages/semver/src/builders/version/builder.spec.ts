@@ -211,9 +211,15 @@ describe('@jscutlery/semver:version', () => {
       expect(githubPublish).toBeCalledWith(
         expect.objectContaining({
           remoteUrl: 'remote',
-        })
+        }),
+        expect.objectContaining({}),
+        expect.objectContaining({}),
       );
-      expect(npmPublish).toBeCalledWith({});
+      expect(npmPublish).toBeCalledWith(
+        {},
+        expect.objectContaining({}),
+        expect.objectContaining({})
+      );
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
 
@@ -227,8 +233,28 @@ describe('@jscutlery/semver:version', () => {
       ).toPromise();
 
       /* Ensure the adapter calls the semantic-release hooks. */
-      expect(semanticPublish).toBeCalled();
-      expect(semanticAddChannel).toBeCalled();
+      expect(semanticPublish).toBeCalledWith(
+        '/root/.npmrc',
+        expect.objectContaining({
+          pkgRoot: '/root/dist/packages/lib',
+          npmPublish: true,
+        }),
+        expect.objectContaining({
+          name: 'a'
+        }),
+        expect.objectContaining({})
+      );
+      expect(semanticAddChannel).toBeCalledWith(
+        '/root/.npmrc',
+        expect.objectContaining({
+          pkgRoot: '/root/dist/packages/lib',
+          npmPublish: true,
+        }),
+        expect.objectContaining({
+          name: 'a'
+        }),
+        expect.objectContaining({})
+      );
       expect(output).toEqual(expect.objectContaining({ success: true }));
     });
   });

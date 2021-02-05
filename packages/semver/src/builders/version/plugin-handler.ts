@@ -1,12 +1,26 @@
+import { BuilderContext } from '@angular-devkit/architect';
 import { defer, Observable } from 'rxjs';
 
 import { Plugin, PluginDef, PluginMap, PluginOptions } from './plugin';
-import { _adapt } from './plugin-adapter';
+import { adapt } from './plugin-adapter';
+import { CommonVersionOptions } from './version';
 
 export class PluginHandler {
   private _plugins: PluginMap;
+  private _options: CommonVersionOptions;
+  private _context: BuilderContext;
 
-  constructor({ plugins }: { plugins: PluginDef[] }) {
+  constructor({
+    plugins,
+    options,
+    context,
+  }: {
+    plugins: PluginDef[];
+    options: CommonVersionOptions;
+    context: BuilderContext;
+  }) {
+    this._options = options;
+    this._context = context;
     this._plugins = _loadPlugins(plugins);
   }
 
@@ -18,16 +32,24 @@ export class PluginHandler {
     return defer(() => {
       const plugins = this._plugins;
       return Promise.all(
-        plugins
-          .filter(([plugin]) => typeof plugin[hook] === 'function')
-          .map(([plugin, options]) => plugin[hook](options))
+        plugins.map(([plugin, options]) =>
+          plugin[hook](options, this._options, this._context)
+        )
       );
     });
   }
 }
 
-export function createPluginHandler({ plugins }: { plugins: PluginDef[] }) {
-  return new PluginHandler({ plugins });
+export function createPluginHandler({
+  plugins,
+  options,
+  context,
+}: {
+  plugins: PluginDef[];
+  options: CommonVersionOptions;
+  context: BuilderContext;
+}) {
+  return new PluginHandler({ plugins, options, context });
 }
 
 export function _loadPlugins(pluginDefinition: PluginDef[]): PluginMap {
@@ -48,5 +70,5 @@ export function _getPluginOptions(pluginDef: PluginDef): PluginOptions {
 export function _load(pluginDef: PluginDef): Plugin {
   const pluginName = _getPluginName(pluginDef);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  return _adapt(pluginName, require(pluginName));
+  return adapt(pluginName, require(pluginName));
 }

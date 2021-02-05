@@ -1,21 +1,81 @@
+import { BuilderContext } from '@angular-devkit/architect';
+import { resolve } from 'path';
+
 import { Plugin, PluginOptions } from './plugin';
+import { CommonVersionOptions } from './version';
 
 export const SUPPORTED_SEMANTIC_RELEASE_PLUGINS = ['@semantic-release/npm'];
 
-export interface SemanticReleasePlugin extends Plugin {
-  addChannel?(options: PluginOptions): Promise<unknown>;
+export interface SemanticReleasePlugin {
+  addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
+  publish?(...args: SemanticReleasePluginOptions): Promise<unknown>;
 }
+
+export interface SemanticReleaseContext {
+  cwd: string;
+  env: NodeJS.ProcessEnv;
+  stdout: NodeJS.WriteStream;
+  stderr: NodeJS.WriteStream;
+  nextRelease: { version: string | undefined; channel: string | undefined };
+  logger: { log(msg: string): void };
+}
+
+export type SemanticReleasePluginOptions = [
+  npmrc: string,
+  config: { npmPublish: boolean; pkgRoot: string },
+  pkg: { name: string },
+  context: SemanticReleaseContext
+];
 
 export class SemanticReleasePluginAdapter implements Plugin {
   constructor(private _plugin: SemanticReleasePlugin) {}
 
-  publish(options: PluginOptions) {
-    this._plugin.addChannel(options);
-    return this._plugin.publish(options);
+  async publish(
+    _: PluginOptions,
+    options: CommonVersionOptions,
+    context: BuilderContext
+  ) {
+    await this._plugin.addChannel(
+      ...(await _createSemanticReleaseOptions(options, context))
+    );
+    return this._plugin.publish(
+      ...(await _createSemanticReleaseOptions(options, context))
+    );
   }
 }
 
-export function _adapt(pluginName: string, plugin: Plugin): Plugin {
+export async function _createSemanticReleaseOptions(
+  options: CommonVersionOptions,
+  context: BuilderContext
+): Promise<SemanticReleasePluginOptions> {
+  const pkgRoot = resolve(
+    context.workspaceRoot,
+    ((await context.getTargetOptions({
+      project: context.target.project,
+      target: 'build',
+      configuration: 'production',
+    })) as { outputPath: string }).outputPath
+  );
+
+  return [
+    resolve(context.workspaceRoot, '.npmrc'),
+    {
+      npmPublish: options.dryRun === false,
+      pkgRoot,
+    },
+    { name: context.target.project }, // @todo use package.name instead
+    {
+      cwd: process.cwd(), // @todo check if it's correct
+      env: process.env,
+      stdout: process.stdout,
+      stderr: process.stderr,
+      nextRelease: { version: undefined, channel: undefined }, // @todo map these options
+      logger: { log: context.logger.info },
+    },
+  ];
+}
+
+export function adapt(pluginName: string, plugin: Plugin): Plugin {
   return SUPPORTED_SEMANTIC_RELEASE_PLUGINS.includes(pluginName)
     ? new SemanticReleasePluginAdapter(plugin)
     : plugin;

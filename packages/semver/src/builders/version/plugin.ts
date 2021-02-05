@@ -1,7 +1,7 @@
 import { JsonObject } from '@angular-devkit/core';
 
 export interface Plugin {
-  publish?(options: PluginOptions): Promise<unknown>;
+  publish?(...args: unknown[]): Promise<unknown>;
 }
 
 /**

@@ -56,6 +56,7 @@ export function createFakeContext({
 }): BuilderContext {
   return {
     getProjectMetadata: jest.fn().mockReturnValue({ root: projectRoot }),
+    getTargetOptions: jest.fn().mockResolvedValue({ outputPath: 'dist/packages/lib' }),
     logger: { error: jest.fn() },
     reportStatus: jest.fn(),
     target: {

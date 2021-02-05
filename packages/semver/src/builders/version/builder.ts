@@ -32,7 +32,6 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
   );
-  const pluginHandler = createPluginHandler({ plugins });
 
   const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) => {
@@ -49,6 +48,9 @@ export function runBuilder(
         projectRoot,
         tagPrefix,
       };
+
+      const pluginHandler = createPluginHandler({ plugins, options, context });
+
       const runStandardVersion$ = syncVersions
         ? versionWorkspace({
             ...options,
