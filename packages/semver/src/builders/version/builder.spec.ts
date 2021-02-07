@@ -285,7 +285,7 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('Plugin', () => {
+  describe('Plugins', () => {
     it('should publish with (--dry-run=false)', async () => {
       await runBuilder(
         { ...options, dryRun: false, plugins: ['@custom-plugin/npm'] },
@@ -304,7 +304,7 @@ describe('@jscutlery/semver:version', () => {
       expect(publish).not.toBeCalled();
     });
 
-    it('should release before publish', async () => {
+    it('should release before publishing', async () => {
       await runBuilder(
         { ...options, plugins: ['@custom-plugin/npm'] },
         context

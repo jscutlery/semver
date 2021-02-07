@@ -9,7 +9,7 @@ import { CommonVersionOptions } from './version';
 
 export const SUPPORTED_SEMANTIC_RELEASE_PLUGINS = ['@semantic-release/npm'];
 
-export interface SemanticReleasePlugin {
+export interface RawSemanticReleasePlugin {
   addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
   publish?(...args: SemanticReleasePluginOptions): Promise<unknown>;
 }
@@ -30,8 +30,8 @@ export type SemanticReleasePluginOptions = [
   context: SemanticReleaseContext
 ];
 
-export class SemanticReleasePluginAdapter implements Plugin {
-  constructor(private _plugin: SemanticReleasePlugin) {}
+export class SemanticReleasePlugin implements Plugin {
+  constructor(private _plugin: RawSemanticReleasePlugin) {}
 
   publish(
     _: PluginOptions,
@@ -87,8 +87,10 @@ export async function _createOptions(
   ];
 }
 
-export function adapt(pluginName: string, plugin: Plugin): Plugin {
-  return SUPPORTED_SEMANTIC_RELEASE_PLUGINS.includes(pluginName)
-    ? new SemanticReleasePluginAdapter(plugin as SemanticReleasePlugin)
-    : plugin;
+export class SemanticReleasePluginAdapter {
+  static adapt(pluginName: string, plugin: Plugin): Plugin {
+    return SUPPORTED_SEMANTIC_RELEASE_PLUGINS.includes(pluginName)
+      ? new SemanticReleasePlugin(plugin as RawSemanticReleasePlugin)
+      : plugin;
+  }
 }

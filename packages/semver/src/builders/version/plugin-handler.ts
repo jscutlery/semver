@@ -3,7 +3,7 @@ import { defer, from, isObservable, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { Plugin, PluginDef, PluginOptions } from './plugin';
-import { adapt } from './plugin-adapter';
+import { SemanticReleasePluginAdapter } from './plugin-adapter';
 import { CommonVersionOptions } from './version';
 
 export type PluginMap = [Plugin, PluginOptions][];
@@ -73,5 +73,7 @@ export function _getPluginOptions(pluginDef: PluginDef): PluginOptions {
 export function _load(pluginDef: PluginDef): Plugin {
   const pluginName = _getPluginName(pluginDef);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  return adapt(pluginName, require(pluginName));
+  const plugin = require(pluginName);
+
+  return SemanticReleasePluginAdapter.adapt(pluginName, plugin);
 }
