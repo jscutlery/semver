@@ -3,8 +3,6 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { createPluginHandler } from './plugin-handler';
 import { createFakeContext } from './testing';
 import { CommonVersionOptions } from './version';
-import { readJsonFile } from './utils/filesystem';
-import { of } from 'rxjs';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { publish: npmPublish } = require('@custom-plugin/npm');
@@ -54,10 +52,6 @@ describe('PluginHandler', () => {
     (context.getTargetOptions as jest.Mock).mockResolvedValue({
       outputPath: 'dist/packages/lib',
     });
-
-    (readJsonFile as jest.Mock).mockReturnValue(
-      of({ name: '@my-package', version: '0.0.0' })
-    );
   });
 
   afterEach(() => {

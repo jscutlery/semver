@@ -4,7 +4,6 @@ import { concat, from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { PluginOptions, PluginType, SemverPlugin } from './plugin';
-import { readJsonFile } from './utils/filesystem';
 import { CommonVersionOptions } from './version';
 
 export interface RawSemanticReleasePlugin {
@@ -22,9 +21,7 @@ export interface SemanticReleaseContext {
 }
 
 export type SemanticReleasePluginOptions = [
-  npmrc: string,
-  config: { npmPublish: boolean; pkgRoot: string },
-  pkg: { name: string },
+  pluginOptions: { npmPublish: boolean; pkgRoot: string },
   context: SemanticReleaseContext
 ];
 
@@ -78,17 +75,12 @@ export async function _createOptions(
     context.target.project
   );
   const projectRoot = projectMetadata.root as string;
-  const packageJson = await readJsonFile(
-    resolve(projectRoot, 'package.json')
-  ).toPromise();
 
   return [
-    resolve(context.workspaceRoot, '.npmrc'),
     {
       npmPublish: options.dryRun === false,
       pkgRoot,
     },
-    packageJson,
     {
       cwd: projectRoot,
       env: process.env,

@@ -1,9 +1,8 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { PluginAdapter } from './plugin-adapter';
 import { createFakeContext } from './testing';
-import { readJsonFile } from './utils/filesystem';
 import { CommonVersionOptions } from './version';
 
 jest.mock('./utils/filesystem');
@@ -36,10 +35,6 @@ describe('PluginAdapter', () => {
     (context.getTargetOptions as jest.Mock).mockResolvedValue({
       outputPath: 'dist/packages/lib',
     });
-
-    (readJsonFile as jest.Mock).mockReturnValue(
-      of({ name: '@semantic-release/spy-plugin', version: '0.0.0' })
-    );
 
     semanticPluginSpy.publish.mockResolvedValue(undefined);
     semanticPluginSpy.addChannel.mockResolvedValue(undefined);
@@ -78,14 +73,9 @@ describe('PluginAdapter', () => {
     ) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.publish).toBeCalledWith(
-      '/root/.npmrc',
       expect.objectContaining({
         npmPublish: true,
         pkgRoot: '/root/dist/packages/lib',
-      }),
-      expect.objectContaining({
-        name: '@semantic-release/spy-plugin',
-        version: '0.0.0',
       }),
       expect.objectContaining({
         cwd: '/root/packages/lib',
@@ -115,14 +105,9 @@ describe('PluginAdapter', () => {
     ) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.addChannel).toBeCalledWith(
-      '/root/.npmrc',
       expect.objectContaining({
         pkgRoot: '/root/dist/packages/lib',
         npmPublish: true,
-      }),
-      expect.objectContaining({
-        name: '@semantic-release/spy-plugin',
-        version: '0.0.0',
       }),
       expect.objectContaining({
         cwd: '/root/packages/lib',
