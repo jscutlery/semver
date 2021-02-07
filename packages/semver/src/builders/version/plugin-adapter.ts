@@ -12,7 +12,7 @@ export class PluginAdapter {
         return plugin;
 
       default:
-        throw new Error(`Plugin not supported: ${plugin}`);
+        throw new Error(`Plugin not supported`);
     }
   }
 }

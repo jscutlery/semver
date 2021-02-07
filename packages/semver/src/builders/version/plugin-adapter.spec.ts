@@ -8,7 +8,7 @@ import { CommonVersionOptions } from './version';
 
 jest.mock('./utils/filesystem');
 
-describe('SemanticPluginAdapter', () => {
+describe('PluginAdapter', () => {
   const options: CommonVersionOptions = {
     dryRun: false,
     noVerify: false,
@@ -38,7 +38,7 @@ describe('SemanticPluginAdapter', () => {
     });
 
     (readJsonFile as jest.Mock).mockReturnValue(
-      of({ name: '@my-package', version: '0.0.0' })
+      of({ name: '@semantic-release/spy-plugin', version: '0.0.0' })
     );
 
     semanticPluginSpy.publish.mockResolvedValue(undefined);
@@ -48,7 +48,7 @@ describe('SemanticPluginAdapter', () => {
 
   it(`should call semantic-release 'addChannel' and 'publish' hooks`, async () => {
     const plugin = PluginAdapter.adapt({
-      name: '@semantic-release/npm',
+      name: '@semantic-release/spy-plugin',
       plugin: semanticPluginSpy,
     });
 
@@ -67,7 +67,7 @@ describe('SemanticPluginAdapter', () => {
 
   it(`should call semantic-release 'publish' hook with right options`, async () => {
     const plugin = PluginAdapter.adapt({
-      name: '@semantic-release/npm',
+      name: '@semantic-release/spy-plugin',
       plugin: semanticPluginSpy,
     });
 
@@ -83,7 +83,10 @@ describe('SemanticPluginAdapter', () => {
         npmPublish: true,
         pkgRoot: '/root/dist/packages/lib',
       }),
-      expect.objectContaining({ name: '@my-package', version: '0.0.0' }),
+      expect.objectContaining({
+        name: '@semantic-release/spy-plugin',
+        version: '0.0.0',
+      }),
       expect.objectContaining({
         cwd: '/root/packages/lib',
         env: expect.any(Object),
@@ -101,7 +104,7 @@ describe('SemanticPluginAdapter', () => {
 
   it(`should call semantic-release 'addChannel' hook with right options`, async () => {
     const plugin = PluginAdapter.adapt({
-      name: '@semantic-release/npm',
+      name: '@semantic-release/spy-plugin',
       plugin: semanticPluginSpy,
     });
 
@@ -117,7 +120,10 @@ describe('SemanticPluginAdapter', () => {
         pkgRoot: '/root/dist/packages/lib',
         npmPublish: true,
       }),
-      expect.objectContaining({ name: '@my-package', version: '0.0.0' }),
+      expect.objectContaining({
+        name: '@semantic-release/spy-plugin',
+        version: '0.0.0',
+      }),
       expect.objectContaining({
         cwd: '/root/packages/lib',
         env: expect.any(Object),
@@ -131,5 +137,18 @@ describe('SemanticPluginAdapter', () => {
         }),
       })
     );
+  });
+
+  it(`should fail for unsupported plugin`, async () => {
+    try {
+      PluginAdapter.adapt({
+        name: '@semantic-release/spy-plugin',
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        plugin: { publish() {} },
+      });
+      fail();
+    } catch (error) {
+      expect(error.message).toContain('Plugin not supported')
+    }
   });
 });
