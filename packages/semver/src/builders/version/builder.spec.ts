@@ -305,5 +305,14 @@ describe('@jscutlery/semver:version', () => {
 
       expect(publish).not.toBeCalled();
     });
+
+    it('should release before publish', async () => {
+      await runBuilder(
+        { ...options, plugins: ['@custom-plugin/npm'] },
+        context
+      ).toPromise();
+
+      expect(standardVersion).toHaveBeenCalledBefore(publish);
+    });
   });
 });
