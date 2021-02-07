@@ -28,10 +28,10 @@ export class PluginHandler {
   }
 
   publish(): Observable<unknown> {
-    return this._run('publish');
+    return this._handle('publish');
   }
 
-  private _run(hook: keyof Plugin): Observable<unknown> {
+  private _handle(hook: keyof Plugin): Observable<unknown> {
     return defer(() =>
       from(this._plugins).pipe(
         concatMap(([plugin, options]) => {

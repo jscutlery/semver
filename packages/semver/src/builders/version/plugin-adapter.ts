@@ -4,6 +4,7 @@ import { concat, from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { Plugin, PluginOptions } from './plugin';
+import { readJsonFile } from './utils/filesystem';
 import { CommonVersionOptions } from './version';
 
 export const SUPPORTED_SEMANTIC_RELEASE_PLUGINS = ['@semantic-release/npm'];
@@ -18,7 +19,7 @@ export interface SemanticReleaseContext {
   env: NodeJS.ProcessEnv;
   stdout: NodeJS.WriteStream;
   stderr: NodeJS.WriteStream;
-  nextRelease: { version: string | undefined; channel: string | undefined };
+  nextRelease: { version: string; channel?: string };
   logger: { log(msg: string): void };
 }
 
@@ -33,7 +34,7 @@ export class SemanticReleasePluginAdapter implements Plugin {
   constructor(private _plugin: SemanticReleasePlugin) {}
 
   publish(
-    _pluginOptions: PluginOptions,
+    _: PluginOptions,
     options: CommonVersionOptions,
     context: BuilderContext
   ): Observable<unknown> {
@@ -52,6 +53,7 @@ export async function _createOptions(
   options: CommonVersionOptions,
   context: BuilderContext
 ): Promise<SemanticReleasePluginOptions> {
+  // @todo: refactor the following lines
   const pkgRoot = resolve(
     context.workspaceRoot,
     ((await context.getTargetOptions({
@@ -59,6 +61,13 @@ export async function _createOptions(
       target: 'build',
     })) as { outputPath: string }).outputPath
   );
+  const projectMetadata = await context.getProjectMetadata(
+    context.target.project
+  );
+  const projectRoot = projectMetadata.root as string;
+  const packageJson = await readJsonFile(
+    resolve(projectRoot, 'package.json')
+  ).toPromise();
 
   return [
     resolve(context.workspaceRoot, '.npmrc'),
@@ -66,13 +75,13 @@ export async function _createOptions(
       npmPublish: options.dryRun === false,
       pkgRoot,
     },
-    { name: context.target.project }, // @todo use name from package.json
+    packageJson,
     {
-      cwd: process.cwd(), // @todo check if it's correct
+      cwd: projectRoot,
       env: process.env,
       stdout: process.stdout,
       stderr: process.stderr,
-      nextRelease: { version: undefined, channel: undefined }, // @todo map these options
+      nextRelease: { version: options.newVersion }, // @todo check what's "channel" prop, default "latest"
       logger: { log: context.logger.info },
     },
   ];

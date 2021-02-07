@@ -3,6 +3,8 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { createPluginHandler } from './plugin-handler';
 import { createFakeContext } from './testing';
 import { CommonVersionOptions } from './version';
+import { readJsonFile } from './utils/filesystem';
+import { of } from 'rxjs'
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { publish: npmPublish } = require('@custom-plugin/npm');
@@ -12,6 +14,8 @@ const {
   addChannel: semanticAddChannel,
 } = require('@semantic-release/npm');
 /* eslint-enable @typescript-eslint/no-var-requires */
+
+jest.mock('./utils/filesystem')
 
 jest.mock(
   '@semantic-release/npm',
@@ -54,6 +58,11 @@ describe('Plugin', () => {
     (context.getTargetOptions as jest.Mock).mockResolvedValue({
       outputPath: 'dist/packages/lib',
     });
+
+    (readJsonFile as jest.Mock).mockReturnValue(
+      // @todo handle dist-tag, registry ... see https://github.com/semantic-release/npm/blob/94679aeb0d22b665aa8fd8c7ea69be5d1828887b/test/integration.test.js#L239
+      of({ name: '@my-package', version: '0.0.0' })
+    );
   });
 
   afterEach(() => {
@@ -110,16 +119,15 @@ describe('Plugin', () => {
       .publish()
       .toPromise();
 
-    /* Ensure the adapter calls the semantic-release hooks with right context. */
     expect(semanticPublish).toBeCalledWith(
       '/root/.npmrc',
       expect.objectContaining({
         npmPublish: true,
         pkgRoot: '/root/dist/packages/lib',
       }),
-      expect.objectContaining({ name: 'lib' }),
+      expect.objectContaining({ name: '@my-package', version: '0.0.0' }),
       expect.objectContaining({
-        cwd: expect.any(String), // @todo
+        cwd: '/root/packages/lib',
         env: expect.any(Object),
         stderr: expect.anything(),
         stdout: expect.anything(),
@@ -127,8 +135,7 @@ describe('Plugin', () => {
           log: expect.any(Function),
         }),
         nextRelease: expect.objectContaining({
-          channel: undefined, // @todo
-          version: undefined, // @todo
+          version: '0.0.1',
         }),
       })
     );
@@ -138,9 +145,9 @@ describe('Plugin', () => {
         pkgRoot: '/root/dist/packages/lib',
         npmPublish: true,
       }),
-      expect.objectContaining({ name: 'lib' }),
+      expect.objectContaining({ name: '@my-package', version: '0.0.0' }),
       expect.objectContaining({
-        cwd: expect.any(String), // @todo
+        cwd: '/root/packages/lib',
         env: expect.any(Object),
         stderr: expect.anything(),
         stdout: expect.anything(),
@@ -148,8 +155,7 @@ describe('Plugin', () => {
           log: expect.any(Function),
         }),
         nextRelease: expect.objectContaining({
-          channel: undefined, // @todo
-          version: undefined, // @todo
+          version: '0.0.1',
         }),
       })
     );
