@@ -1,7 +1,8 @@
 import { JsonObject } from '@angular-devkit/core';
+import { Observable } from 'rxjs';
 
 export interface Plugin {
-  publish?(...args: unknown[]): Promise<unknown>;
+  publish?(...args: unknown[]): Promise<unknown> | Observable<unknown>;
 }
 
 /**

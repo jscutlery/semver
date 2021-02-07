@@ -1,5 +1,6 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { defer, Observable } from 'rxjs';
+import { defer, from, isObservable, Observable } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 
 import { Plugin, PluginDef, PluginOptions } from './plugin';
 import { adapt } from './plugin-adapter';
@@ -31,14 +32,14 @@ export class PluginHandler {
   }
 
   private _run(hook: keyof Plugin): Observable<unknown> {
-    return defer(() => {
-      const plugins = this._plugins;
-      return Promise.all(
-        plugins.map(([plugin, options]) =>
-          plugin[hook](options, this._options, this._context)
-        )
-      );
-    });
+    return defer(() =>
+      from(this._plugins).pipe(
+        concatMap(([plugin, options]) => {
+          const result = plugin[hook](options, this._options, this._context);
+          return isObservable(result) ? result : from(result);
+        })
+      )
+    );
   }
 }
 
@@ -57,7 +58,7 @@ export function createPluginHandler({
 export function _loadPlugins(pluginDefinition: PluginDef[]): PluginMap {
   return pluginDefinition.map<[Plugin, PluginOptions]>((pluginDef) => [
     _load(pluginDef),
-    _getPluginOptions(pluginDef), // @todo pass right context
+    _getPluginOptions(pluginDef),
   ]);
 }
 

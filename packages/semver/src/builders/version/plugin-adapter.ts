@@ -1,5 +1,7 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { resolve } from 'path';
+import { concat, from, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { Plugin, PluginOptions } from './plugin';
 import { CommonVersionOptions } from './version';
@@ -30,13 +32,19 @@ export type SemanticReleasePluginOptions = [
 export class SemanticReleasePluginAdapter implements Plugin {
   constructor(private _plugin: SemanticReleasePlugin) {}
 
-  async publish(
+  publish(
     _pluginOptions: PluginOptions,
     options: CommonVersionOptions,
     context: BuilderContext
-  ) {
-    await this._plugin.addChannel(...(await _createOptions(options, context)));
-    return this._plugin.publish(...(await _createOptions(options, context)));
+  ): Observable<unknown> {
+    return from(_createOptions(options, context)).pipe(
+      switchMap((options) =>
+        concat(
+          this._plugin.addChannel(...options),
+          this._plugin.publish(...options)
+        )
+      )
+    );
   }
 }
 
@@ -49,7 +57,6 @@ export async function _createOptions(
     ((await context.getTargetOptions({
       project: context.target.project,
       target: 'build',
-      configuration: 'production', // @todo check if it's required
     })) as { outputPath: string }).outputPath
   );
 
@@ -73,6 +80,6 @@ export async function _createOptions(
 
 export function adapt(pluginName: string, plugin: Plugin): Plugin {
   return SUPPORTED_SEMANTIC_RELEASE_PLUGINS.includes(pluginName)
-    ? new SemanticReleasePluginAdapter(plugin)
+    ? new SemanticReleasePluginAdapter(plugin as SemanticReleasePlugin)
     : plugin;
 }
