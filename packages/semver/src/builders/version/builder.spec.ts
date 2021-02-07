@@ -12,6 +12,14 @@ import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { publish } = require('@custom-plugin/npm');
+/* eslint-enable @typescript-eslint/no-var-requires */
+
+jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
+  virtual: true,
+});
+
 jest.mock('child_process');
 jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
@@ -82,6 +90,7 @@ describe('@jscutlery/semver:version', () => {
     mockExecFile.mockRestore();
     mockStandardVersion.mockRestore();
     mockTryBump.mockRestore();
+    publish.mockRestore();
   });
 
   it('should not push to Git by default', async () => {
@@ -275,6 +284,26 @@ describe('@jscutlery/semver:version', () => {
         '⏹ nothing changed since last release'
       );
       expect(standardVersion).not.toBeCalled();
+    });
+  });
+
+  describe('Plugin', () => {
+    it('should publish with (--dry-run=false)', async () => {
+      await runBuilder(
+        { ...options, dryRun: false, plugins: ['@custom-plugin/npm'] },
+        context
+      ).toPromise();
+
+      expect(publish).toBeCalled();
+    });
+
+    it('should not publish with (--dry-run=true)', async () => {
+      await runBuilder(
+        { ...options, dryRun: true, plugins: ['@custom-plugin/npm'] },
+        context
+      ).toPromise();
+
+      expect(publish).not.toBeCalled();
     });
   });
 });

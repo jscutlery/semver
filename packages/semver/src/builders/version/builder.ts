@@ -69,7 +69,7 @@ export function runBuilder(
       return concat(
         runStandardVersion$,
         ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        pluginHandler.publish() // @todo handle dryRun
+        ...(dryRun === false ? [pluginHandler.publish()] : [])
       );
     })
   );
