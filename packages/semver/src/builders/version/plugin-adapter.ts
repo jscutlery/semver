@@ -100,15 +100,15 @@ export async function _createOptions(
   ];
 }
 
-export class SemanticReleasePluginAdapter {
+export class PluginAdapter {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static adapt({ name, plugin }: { name: string; plugin: any }): SemverPlugin {
     switch (true) {
       case _isSemanticPlugin(plugin):
-      return new SemanticReleasePlugin({ name, plugin });
+        return new SemanticReleasePlugin({ name, plugin });
 
       case _isSemverPlugin(plugin):
-      return plugin;
+        return plugin;
 
       default:
         throw new Error(`Plugin not supported: ${plugin}`);
@@ -117,8 +117,13 @@ export class SemanticReleasePluginAdapter {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function _isSemanticPlugin(plugin: any): plugin is RawSemanticReleasePlugin {
-  return typeof plugin.publish === 'function' && typeof plugin.verifyCondition === 'function';
+export function _isSemanticPlugin(
+  plugin: any
+): plugin is RawSemanticReleasePlugin {
+  return (
+    typeof plugin.publish === 'function' &&
+    typeof plugin.verifyCondition === 'function'
+  );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -2,8 +2,8 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { defer, from, isObservable, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
-import { SemverPlugin, PluginDef, PluginOptions } from './plugin';
-import { SemanticReleasePluginAdapter } from './plugin-adapter';
+import { PluginDef, PluginOptions, SemverPlugin } from './plugin';
+import { PluginAdapter } from './plugin-adapter';
 import { CommonVersionOptions } from './version';
 
 export type PluginMap = [SemverPlugin, PluginOptions][];
@@ -77,5 +77,5 @@ export function _load(pluginDef: PluginDef): SemverPlugin {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const plugin = require(name);
 
-  return SemanticReleasePluginAdapter.adapt({ name, plugin });
+  return PluginAdapter.adapt({ name, plugin });
 }

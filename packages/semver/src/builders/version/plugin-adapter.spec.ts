@@ -1,7 +1,7 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { Observable, of } from 'rxjs';
 
-import { SemanticReleasePluginAdapter } from './plugin-adapter';
+import { PluginAdapter } from './plugin-adapter';
 import { createFakeContext } from './testing';
 import { readJsonFile } from './utils/filesystem';
 import { CommonVersionOptions } from './version';
@@ -47,7 +47,7 @@ describe('SemanticPluginAdapter', () => {
   });
 
   it(`should call semantic-release 'addChannel' and 'publish' hooks`, async () => {
-    const plugin = SemanticReleasePluginAdapter.adapt({
+    const plugin = PluginAdapter.adapt({
       name: '@semantic-release/npm',
       plugin: semanticPluginSpy,
     });
@@ -66,7 +66,7 @@ describe('SemanticPluginAdapter', () => {
   });
 
   it(`should call semantic-release 'publish' hook with right options`, async () => {
-    const plugin = SemanticReleasePluginAdapter.adapt({
+    const plugin = PluginAdapter.adapt({
       name: '@semantic-release/npm',
       plugin: semanticPluginSpy,
     });
@@ -100,7 +100,7 @@ describe('SemanticPluginAdapter', () => {
   });
 
   it(`should call semantic-release 'addChannel' hook with right options`, async () => {
-    const plugin = SemanticReleasePluginAdapter.adapt({
+    const plugin = PluginAdapter.adapt({
       name: '@semantic-release/npm',
       plugin: semanticPluginSpy,
     });

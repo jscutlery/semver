@@ -3,13 +3,10 @@ import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
-import {
-  createFakeContext,
-  setupTestingWorkspace,
-  TestingWorkspace,
-} from './testing';
+import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
 import { readPackageJson } from './utils/project';
 
 describe('@jscutlery/semver:version', () => {
