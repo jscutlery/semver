@@ -9,19 +9,9 @@ import { of } from 'rxjs';
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { publish: npmPublish } = require('@custom-plugin/npm');
 const { publish: githubPublish } = require('@custom-plugin/github');
-const {
-  publish: semanticPublish,
-  addChannel: semanticAddChannel,
-} = require('@semantic-release/npm');
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 jest.mock('./utils/filesystem');
-
-jest.mock(
-  '@semantic-release/npm',
-  () => ({ publish: jest.fn(), addChannel: jest.fn() }),
-  { virtual: true }
-);
 
 jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
   virtual: true,
@@ -46,8 +36,6 @@ describe('PluginHandler', () => {
   beforeEach(() => {
     npmPublish.mockResolvedValue('');
     githubPublish.mockResolvedValue('');
-    semanticPublish.mockResolvedValue('');
-    semanticAddChannel.mockResolvedValue('');
 
     context = createFakeContext({
       project: 'lib',
@@ -69,6 +57,19 @@ describe('PluginHandler', () => {
     githubPublish.mockRestore();
   });
 
+  it('should handle one plugin', async () => {
+    await createPluginHandler({
+      options,
+      plugins: ['@custom-plugin/npm'],
+      context,
+    })
+      .publish()
+      .toPromise();
+
+    expect(npmPublish).toBeCalledTimes(1);
+    expect(githubPublish).not.toBeCalled();
+  });
+
   it('should handle multiple plugins', async () => {
     await createPluginHandler({
       options,
@@ -80,9 +81,7 @@ describe('PluginHandler', () => {
 
     expect(npmPublish).toBeCalledTimes(1);
     expect(githubPublish).toBeCalledTimes(1);
-    expect(
-      semanticPublish /* <- '@semantic-release/npm' not declared and not called. */
-    ).not.toBeCalled();
+    expect(npmPublish).toHaveBeenCalledBefore(githubPublish);
   });
 
   it('should handle plugin configuration', async () => {

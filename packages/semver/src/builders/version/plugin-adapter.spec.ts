@@ -53,8 +53,11 @@ describe('SemanticPluginAdapter', () => {
       context
     ) as Observable<unknown>).toPromise();
 
-    expect(semanticPluginSpy.publish).toBeCalled();
     expect(semanticPluginSpy.addChannel).toBeCalled();
+    expect(semanticPluginSpy.publish).toBeCalled();
+    expect(semanticPluginSpy.addChannel).toHaveBeenCalledBefore(
+      semanticPluginSpy.publish
+    );
   });
 
   it(`should call semantic-release 'publish' hook with right options`, async () => {
