@@ -3,11 +3,9 @@ import { resolve } from 'path';
 import { concat, from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { Plugin, PluginOptions } from './plugin';
+import { PluginOptions, PluginType, SemverPlugin } from './plugin';
 import { readJsonFile } from './utils/filesystem';
 import { CommonVersionOptions } from './version';
-
-export const SUPPORTED_SEMANTIC_RELEASE_PLUGINS = ['@semantic-release/npm'];
 
 export interface RawSemanticReleasePlugin {
   addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
@@ -30,8 +28,23 @@ export type SemanticReleasePluginOptions = [
   context: SemanticReleaseContext
 ];
 
-export class SemanticReleasePlugin implements Plugin {
-  constructor(private _plugin: RawSemanticReleasePlugin) {}
+export class SemanticReleasePlugin implements SemverPlugin {
+  name: string;
+
+  type: PluginType = '@semantic-release';
+
+  private _plugin: RawSemanticReleasePlugin;
+
+  constructor({
+    name,
+    plugin,
+  }: {
+    name: string;
+    plugin: RawSemanticReleasePlugin;
+  }) {
+    this.name = name;
+    this._plugin = plugin;
+  }
 
   publish(
     _: PluginOptions,
@@ -88,9 +101,27 @@ export async function _createOptions(
 }
 
 export class SemanticReleasePluginAdapter {
-  static adapt(pluginName: string, plugin: Plugin): Plugin {
-    return SUPPORTED_SEMANTIC_RELEASE_PLUGINS.includes(pluginName)
-      ? new SemanticReleasePlugin(plugin as RawSemanticReleasePlugin)
-      : plugin;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static adapt({ name, plugin }: { name: string; plugin: any }): SemverPlugin {
+    switch (true) {
+      case _isSemanticPlugin(plugin):
+      return new SemanticReleasePlugin({ name, plugin });
+
+      case _isSemverPlugin(plugin):
+      return plugin;
+
+      default:
+        throw new Error(`Plugin not supported: ${plugin}`);
+    }
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function _isSemanticPlugin(plugin: any): plugin is RawSemanticReleasePlugin {
+  return typeof plugin.publish === 'function' && typeof plugin.verifyCondition === 'function';
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function _isSemverPlugin(plugin: any): plugin is SemverPlugin {
+  return plugin.type === '@jscutlery/semver-plugin';
 }

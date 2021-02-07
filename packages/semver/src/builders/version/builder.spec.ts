@@ -16,9 +16,13 @@ import { getPackageFiles, getProjectRoots } from './utils/workspace';
 const { publish } = require('@custom-plugin/npm');
 /* eslint-enable @typescript-eslint/no-var-requires */
 
-jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
-  virtual: true,
-});
+jest.mock(
+  '@custom-plugin/npm',
+  () => ({ publish: jest.fn(), type: '@jscutlery/semver-plugin' }),
+  {
+    virtual: true,
+  }
+);
 
 jest.mock('child_process');
 jest.mock('@lerna/child-process');

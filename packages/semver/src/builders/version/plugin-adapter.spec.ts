@@ -20,7 +20,11 @@ describe('SemanticPluginAdapter', () => {
 
   let context: BuilderContext;
 
-  const semanticPluginSpy = { publish: jest.fn(), addChannel: jest.fn() };
+  const semanticPluginSpy = {
+    publish: jest.fn(),
+    addChannel: jest.fn(),
+    verifyCondition: jest.fn(),
+  };
 
   beforeEach(() => {
     context = createFakeContext({
@@ -37,15 +41,16 @@ describe('SemanticPluginAdapter', () => {
       of({ name: '@my-package', version: '0.0.0' })
     );
 
-    semanticPluginSpy.publish.mockResolvedValue('');
-    semanticPluginSpy.addChannel.mockResolvedValue('');
+    semanticPluginSpy.publish.mockResolvedValue(undefined);
+    semanticPluginSpy.addChannel.mockResolvedValue(undefined);
+    semanticPluginSpy.verifyCondition.mockResolvedValue(undefined);
   });
 
   it(`should call semantic-release 'addChannel' and 'publish' hooks`, async () => {
-    const plugin = SemanticReleasePluginAdapter.adapt(
-      '@semantic-release/npm',
-      semanticPluginSpy
-    );
+    const plugin = SemanticReleasePluginAdapter.adapt({
+      name: '@semantic-release/npm',
+      plugin: semanticPluginSpy,
+    });
 
     await (plugin.publish(
       {},
@@ -61,10 +66,10 @@ describe('SemanticPluginAdapter', () => {
   });
 
   it(`should call semantic-release 'publish' hook with right options`, async () => {
-    const plugin = SemanticReleasePluginAdapter.adapt(
-      '@semantic-release/npm',
-      semanticPluginSpy
-    );
+    const plugin = SemanticReleasePluginAdapter.adapt({
+      name: '@semantic-release/npm',
+      plugin: semanticPluginSpy,
+    });
 
     await (plugin.publish(
       {},
@@ -95,10 +100,10 @@ describe('SemanticPluginAdapter', () => {
   });
 
   it(`should call semantic-release 'addChannel' hook with right options`, async () => {
-    const plugin = SemanticReleasePluginAdapter.adapt(
-      '@semantic-release/npm',
-      semanticPluginSpy
-    );
+    const plugin = SemanticReleasePluginAdapter.adapt({
+      name: '@semantic-release/npm',
+      plugin: semanticPluginSpy,
+    });
 
     await (plugin.publish(
       {},

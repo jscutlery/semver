@@ -13,13 +13,21 @@ const { publish: githubPublish } = require('@custom-plugin/github');
 
 jest.mock('./utils/filesystem');
 
-jest.mock('@custom-plugin/npm', () => ({ publish: jest.fn() }), {
-  virtual: true,
-});
+jest.mock(
+  '@custom-plugin/npm',
+  () => ({ publish: jest.fn(), type: '@jscutlery/semver-plugin' }),
+  {
+    virtual: true,
+  }
+);
 
-jest.mock('@custom-plugin/github', () => ({ publish: jest.fn() }), {
-  virtual: true,
-});
+jest.mock(
+  '@custom-plugin/github',
+  () => ({ publish: jest.fn(), type: '@jscutlery/semver-plugin' }),
+  {
+    virtual: true,
+  }
+);
 
 describe('PluginHandler', () => {
   const options: CommonVersionOptions = {
@@ -102,7 +110,7 @@ describe('PluginHandler', () => {
       })
     );
     expect(npmPublish.mock.calls[0][0]).toEqual(
-      {}, // <- Empty options
+      {} // <- Empty options
     );
   });
 });

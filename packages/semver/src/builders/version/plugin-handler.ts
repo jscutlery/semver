@@ -2,11 +2,13 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { defer, from, isObservable, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
-import { Plugin, PluginDef, PluginOptions } from './plugin';
+import { SemverPlugin, PluginDef, PluginOptions } from './plugin';
 import { SemanticReleasePluginAdapter } from './plugin-adapter';
 import { CommonVersionOptions } from './version';
 
-export type PluginMap = [Plugin, PluginOptions][];
+export type PluginMap = [SemverPlugin, PluginOptions][];
+
+export type Hook = Extract<keyof SemverPlugin, 'publish'>;
 
 export class PluginHandler {
   private _plugins: PluginMap;
@@ -31,7 +33,7 @@ export class PluginHandler {
     return this._handle('publish');
   }
 
-  private _handle(hook: keyof Plugin): Observable<unknown> {
+  private _handle(hook: Hook): Observable<unknown> {
     return defer(() =>
       from(this._plugins).pipe(
         concatMap(([plugin, options]) => {
@@ -56,7 +58,7 @@ export function createPluginHandler({
 }
 
 export function _loadPlugins(pluginDefinition: PluginDef[]): PluginMap {
-  return pluginDefinition.map<[Plugin, PluginOptions]>((pluginDef) => [
+  return pluginDefinition.map<[SemverPlugin, PluginOptions]>((pluginDef) => [
     _load(pluginDef),
     _getPluginOptions(pluginDef),
   ]);
@@ -70,10 +72,10 @@ export function _getPluginOptions(pluginDef: PluginDef): PluginOptions {
   return typeof pluginDef === 'string' ? {} : pluginDef[1];
 }
 
-export function _load(pluginDef: PluginDef): Plugin {
-  const pluginName = _getPluginName(pluginDef);
+export function _load(pluginDef: PluginDef): SemverPlugin {
+  const name = _getPluginName(pluginDef);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const plugin = require(pluginName);
+  const plugin = require(name);
 
-  return SemanticReleasePluginAdapter.adapt(pluginName, plugin);
+  return SemanticReleasePluginAdapter.adapt({ name, plugin });
 }
