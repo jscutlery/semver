@@ -141,22 +141,22 @@ describe('@jscutlery/semver:version', () => {
   });
 
   it('should fail if Git config is missing', async () => {
-    const output = await runBuilder(
+    const { success } = await runBuilder(
       { ...options, push: true, remote: undefined, baseBranch: undefined },
       context
     ).toPromise();
 
+    expect(success).toBe(false);
     expect(context.logger.error).toBeCalledWith(
       expect.stringContaining('Missing configuration')
     );
-    expect(output).toEqual(expect.objectContaining({ success: false }));
   });
 
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
-      const output = await runBuilder(options, context).toPromise();
+      const { success } = await runBuilder(options, context).toPromise();
 
-      expect(output).toEqual(expect.objectContaining({ success: true }));
+      expect(success).toBe(true);
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
@@ -178,7 +178,6 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
-
       expect(console.info).toBeCalledWith(
         '⏹ nothing changed since last release'
       );
@@ -197,7 +196,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version on multiple projects', async () => {
-      const output = await runBuilder(
+      const { success } = await runBuilder(
         {
           ...options,
           /* Enable sync versions. */
@@ -206,8 +205,7 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(output).toEqual(expect.objectContaining({ success: true }));
-
+      expect(success).toBe(true);
       expect(changelog).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
