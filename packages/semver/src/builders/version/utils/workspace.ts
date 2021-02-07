@@ -26,6 +26,16 @@ export function getProjectRoot(context: BuilderContext): Observable<string> {
   ).pipe(map(({ root }) => root as string));
 }
 
+export function getOutputPath(context: BuilderContext): Observable<string> {
+  return defer(async () => resolve(
+    context.workspaceRoot,
+    ((await context.getTargetOptions({
+      project: context.target.project,
+      target: 'build',
+    })) as { outputPath: string }).outputPath
+  ));
+}
+
 export function getProjectRoots(workspaceRoot: string): Observable<string[]> {
   return _getWorkspaceDefinition(workspaceRoot).pipe(
     map((workspaceDefinition) =>

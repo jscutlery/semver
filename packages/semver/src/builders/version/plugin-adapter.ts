@@ -1,5 +1,88 @@
-import { SemverPlugin } from './plugin';
-import { RawSemanticReleasePlugin, SemanticReleasePlugin } from './semantic-release-plugin';
+import { BuilderContext } from '@angular-devkit/architect';
+import { resolve } from 'path';
+import { concat, from, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import { PluginOptions, PluginType, SemverPlugin } from './plugin';
+import { getOutputPath, getProjectRoot } from './utils/workspace';
+import { CommonVersionOptions } from './version';
+
+export interface RawSemanticReleasePlugin {
+  addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
+  publish?(...args: SemanticReleasePluginOptions): Promise<unknown>;
+}
+
+export interface SemanticReleaseContext {
+  cwd: string;
+  env: NodeJS.ProcessEnv;
+  stdout: NodeJS.WriteStream;
+  stderr: NodeJS.WriteStream;
+  nextRelease: { version: string; channel?: string };
+  logger: { log(msg: string): void };
+}
+
+export type SemanticReleasePluginOptions = [
+  pluginOptions: { npmPublish: boolean; pkgRoot: string },
+  context: SemanticReleaseContext
+];
+
+export class SemanticReleasePlugin implements SemverPlugin {
+  name: string;
+
+  type: PluginType = '@semantic-release';
+
+  private _plugin: RawSemanticReleasePlugin;
+
+  constructor({
+    name,
+    plugin,
+  }: {
+    name: string;
+    plugin: RawSemanticReleasePlugin;
+  }) {
+    this.name = name;
+    this._plugin = plugin;
+  }
+
+  publish(
+    _: PluginOptions,
+    options: CommonVersionOptions,
+    context: BuilderContext
+  ): Observable<unknown> {
+    return from(_createOptions(options, context)).pipe(
+      switchMap((options) =>
+        concat(
+          this._plugin.addChannel(...options),
+          this._plugin.publish(...options)
+        )
+      )
+    );
+  }
+}
+
+export async function _createOptions(
+  options: CommonVersionOptions,
+  context: BuilderContext
+): Promise<SemanticReleasePluginOptions> {
+  const pkgRoot = await getOutputPath(context).toPromise();
+  const projectRoot = await getProjectRoot(context).toPromise();
+
+  return [
+    {
+      npmPublish: options.dryRun === false,
+      pkgRoot,
+    },
+    {
+      cwd: projectRoot,
+      env: process.env,
+      stdout: process.stdout,
+      stderr: process.stderr,
+      nextRelease: { version: options.newVersion }, // @todo handle channel option
+      logger: { log: context.logger.info },
+    },
+  ];
+}
+
 
 export class PluginAdapter {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
