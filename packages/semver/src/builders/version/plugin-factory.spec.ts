@@ -1,8 +1,6 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { exception } from 'console';
 import { Observable } from 'rxjs';
-
-import { PluginAdapter } from './plugin-adapter';
+import { PluginFactory } from './plugin-factory';
 import { createFakeContext } from './testing';
 import { CommonVersionOptions } from './version';
 
@@ -43,7 +41,7 @@ describe('PluginAdapter', () => {
   });
 
   it(`should call semantic-release 'addChannel' and 'publish' hooks`, async () => {
-    const plugin = PluginAdapter.adapt({
+    const plugin = PluginFactory.create({
       name: '@semantic-release/spy-plugin',
       plugin: semanticPluginSpy,
     });
@@ -62,7 +60,7 @@ describe('PluginAdapter', () => {
   });
 
   it(`should call semantic-release 'publish' hook with right options`, async () => {
-    const plugin = PluginAdapter.adapt({
+    const plugin = PluginFactory.create({
       name: '@semantic-release/spy-plugin',
       plugin: semanticPluginSpy,
     });
@@ -94,7 +92,7 @@ describe('PluginAdapter', () => {
   });
 
   it(`should call semantic-release 'addChannel' hook with right options`, async () => {
-    const plugin = PluginAdapter.adapt({
+    const plugin = PluginFactory.create({
       name: '@semantic-release/spy-plugin',
       plugin: semanticPluginSpy,
     });
@@ -127,7 +125,7 @@ describe('PluginAdapter', () => {
 
   it(`should fail for unsupported plugin`, async () => {
     expect(() =>
-      PluginAdapter.adapt({
+      PluginFactory.create({
         name: '@semantic-release/spy-plugin',
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         plugin: { publish() {} },

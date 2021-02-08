@@ -83,10 +83,9 @@ export async function _createOptions(
   ];
 }
 
-
-export class PluginAdapter {
+export class PluginFactory {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static adapt({ name, plugin }: { name: string; plugin: any }): SemverPlugin {
+  static create({ name, plugin }: { name: string; plugin: any }): SemverPlugin {
     switch (true) {
       case _isSemanticPlugin(plugin):
         return new SemanticReleasePlugin({ name, plugin });

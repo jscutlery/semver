@@ -3,7 +3,7 @@ import { EMPTY, from, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { PluginDef, PluginOptions, SemverPlugin } from './plugin';
-import { PluginAdapter } from './plugin-adapter';
+import { PluginFactory } from './plugin-factory';
 import { CommonVersionOptions } from './version';
 
 export type PluginMap = [SemverPlugin, PluginOptions][];
@@ -78,5 +78,5 @@ export function _load(pluginDef: PluginDef): SemverPlugin {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const plugin = require(name);
 
-  return PluginAdapter.adapt({ name, plugin });
+  return PluginFactory.create({ name, plugin });
 }
