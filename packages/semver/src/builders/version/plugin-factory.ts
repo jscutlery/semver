@@ -1,10 +1,10 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { concat, from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
 import { PluginOptions, PluginType, SemverPlugin } from './plugin';
 import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
-
 
 export interface RawSemanticReleasePlugin {
   addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
@@ -51,8 +51,8 @@ export class SemanticReleasePlugin implements SemverPlugin {
     return from(_createOptions(options, context)).pipe(
       switchMap((options) =>
         concat(
+          this._plugin.publish(...options),
           this._plugin.addChannel(...options),
-          this._plugin.publish(...options)
         )
       )
     );
@@ -102,10 +102,13 @@ export function _isSemanticPlugin(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   plugin: any
 ): plugin is RawSemanticReleasePlugin {
-  return (
-    typeof plugin.publish === 'function' &&
-    typeof plugin.verifyCondition === 'function'
-  );
+  const hasHookFn = (typeof plugin.verifyConditions === 'function' ||
+      typeof plugin.verifyRelease === 'function' ||
+      typeof plugin.generateNotes === 'function' ||
+      typeof plugin.publish === 'function' ||
+      typeof plugin.addChannel === 'function');
+
+  return _isSemverPlugin(plugin) === false && hasHookFn;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

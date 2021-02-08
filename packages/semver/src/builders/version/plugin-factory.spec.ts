@@ -21,7 +21,7 @@ describe('PluginFactory', () => {
   const semanticPluginSpy = {
     publish: jest.fn(),
     addChannel: jest.fn(),
-    verifyCondition: jest.fn(),
+    verifyConditions: jest.fn(),
   };
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('PluginFactory', () => {
 
     semanticPluginSpy.publish.mockResolvedValue(undefined);
     semanticPluginSpy.addChannel.mockResolvedValue(undefined);
-    semanticPluginSpy.verifyCondition.mockResolvedValue(undefined);
+    semanticPluginSpy.verifyConditions.mockResolvedValue(undefined);
   });
 
   it(`should call semantic-release 'addChannel' and 'publish' hooks`, async () => {
@@ -54,8 +54,8 @@ describe('PluginFactory', () => {
 
     expect(semanticPluginSpy.addChannel).toBeCalled();
     expect(semanticPluginSpy.publish).toBeCalled();
-    expect(semanticPluginSpy.addChannel).toHaveBeenCalledBefore(
-      semanticPluginSpy.publish
+    expect(semanticPluginSpy.publish).toHaveBeenCalledBefore(
+      semanticPluginSpy.addChannel
     );
   });
 
@@ -128,7 +128,7 @@ describe('PluginFactory', () => {
       PluginFactory.create({
         name: '@semantic-release/spy-plugin',
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        plugin: { publish() {} },
+        plugin: { noop() {} },
       })
     ).toThrow('Plugin not supported');
   });
