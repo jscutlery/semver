@@ -1,4 +1,5 @@
 import { BuilderContext } from '@angular-devkit/architect';
+import { of } from 'rxjs';
 
 import { createPluginHandler } from './plugin-handler';
 import { createFakeContext } from './testing';
@@ -13,7 +14,11 @@ jest.mock('./utils/filesystem');
 
 jest.mock(
   '@custom-plugin/npm',
-  () => ({ publish: jest.fn(), type: '@jscutlery/semver-plugin' }),
+  () => ({
+    name: '@custom-plugin/npm',
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+  }),
   {
     virtual: true,
   }
@@ -21,7 +26,22 @@ jest.mock(
 
 jest.mock(
   '@custom-plugin/github',
-  () => ({ publish: jest.fn(), type: '@jscutlery/semver-plugin' }),
+  () => ({
+    name: '@custom-plugin/github',
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+  }),
+  {
+    virtual: true,
+  }
+);
+
+jest.mock(
+  '@custom-plugin/noop',
+  () => ({
+    name: '@custom-plugin/noop',
+    type: '@jscutlery/semver-plugin',
+  }),
   {
     virtual: true,
   }
@@ -40,8 +60,8 @@ describe('PluginHandler', () => {
   let context: BuilderContext;
 
   beforeEach(() => {
-    npmPublish.mockResolvedValue('');
-    githubPublish.mockResolvedValue('');
+    npmPublish.mockResolvedValue(undefined);
+    githubPublish.mockResolvedValue(undefined);
 
     context = createFakeContext({
       project: 'lib',
@@ -106,5 +126,75 @@ describe('PluginHandler', () => {
     expect(npmPublish.mock.calls[0][0]).toEqual(
       {} // <- Empty options
     );
+  });
+
+  it('should handle Observable', () => {
+    npmPublish.mockReturnValue(of('Plugin A'));
+    githubPublish.mockReturnValue(of('Plugin B'));
+
+    const observerSpy = jest.fn();
+
+    createPluginHandler({
+      options,
+      plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+      context,
+    })
+      .publish()
+      .subscribe(observerSpy, fail);
+
+    expect(observerSpy.mock.calls[0][0]).toEqual('Plugin A');
+    expect(observerSpy.mock.calls[1][0]).toEqual('Plugin B');
+  });
+
+  it('should handle Promise', (done) => {
+    npmPublish.mockResolvedValue('Plugin A');
+    githubPublish.mockResolvedValue('Plugin B');
+
+    const observerSpy = jest.fn();
+
+    createPluginHandler({
+      options,
+      plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+      context,
+    })
+      .publish()
+      .subscribe({
+        next: observerSpy,
+        error: fail,
+        complete: () => {
+          expect(observerSpy.mock.calls[0][0]).toEqual('Plugin A');
+          expect(observerSpy.mock.calls[1][0]).toEqual('Plugin B');
+          done();
+        },
+      });
+  });
+
+  it('should handle undefined hook', (done) => {
+    npmPublish.mockResolvedValue('Plugin A');
+    githubPublish.mockResolvedValue('Plugin B');
+
+    const observerSpy = jest.fn();
+
+    createPluginHandler({
+      options,
+      plugins: [
+        '@custom-plugin/npm',
+        '@custom-plugin/github',
+        '@custom-plugin/noop',
+      ],
+      context,
+    })
+      .publish()
+      .subscribe({
+        next: observerSpy,
+        error: fail,
+        complete: () => {
+          /* No publish hook defined for @custom-plugin/noop. */
+          expect(observerSpy).toBeCalledTimes(2);
+          expect(observerSpy).toHaveBeenNthCalledWith(1, 'Plugin A');
+          expect(observerSpy).toHaveBeenNthCalledWith(2, 'Plugin B');
+          done();
+        },
+      });
   });
 });

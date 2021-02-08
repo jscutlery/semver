@@ -1,5 +1,5 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { defer, from, isObservable, Observable } from 'rxjs';
+import { EMPTY, from, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { PluginDef, PluginOptions, SemverPlugin } from './plugin';
@@ -34,13 +34,14 @@ export class PluginHandler {
   }
 
   private _handle(hook: Hook): Observable<unknown> {
-    return defer(() =>
-      from(this._plugins).pipe(
-        concatMap(([plugin, options]) => {
-          const result = plugin[hook](options, this._options, this._context);
-          return isObservable(result) ? result : from(result);
-        })
-      )
+    return from(this._plugins).pipe(
+      concatMap(([plugin, options]) => {
+        const hookFn = plugin[hook];
+        if (typeof hookFn !== 'function') {
+          return EMPTY;
+        }
+        return hookFn(options, this._options, this._context);
+      })
     );
   }
 }
