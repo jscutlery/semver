@@ -95,12 +95,13 @@ export class PluginFactory {
 export function _isSemanticReleasePlugin(
   plugin: UnknownPlugin
 ): plugin is NativeSemanticReleasePlugin {
-  const hasHookFn =
-    typeof plugin.verifyConditions === 'function' ||
-    typeof plugin.verifyRelease === 'function' ||
-    typeof plugin.generateNotes === 'function' ||
-    typeof plugin.publish === 'function' ||
-    typeof plugin.addChannel === 'function';
+  const hasHookFn = [
+    'verifyConditions',
+    'verifyRelease',
+    'generateNotes',
+    'publish',
+    'addChannel',
+  ].some(hook => typeof plugin[hook] === 'function')
 
   return _isSemverPlugin(plugin) === false && hasHookFn;
 }
