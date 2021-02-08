@@ -6,7 +6,10 @@ import { PluginOptions, PluginType, SemverPlugin } from './plugin';
 import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
 
-export interface RawSemanticReleasePlugin {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UnknownPlugin = any;
+
+export interface NativeSemanticReleasePlugin {
   addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
   publish?(...args: SemanticReleasePluginOptions): Promise<unknown>;
 }
@@ -25,19 +28,19 @@ export type SemanticReleasePluginOptions = [
   context: SemanticReleaseContext
 ];
 
-export class SemanticReleasePlugin implements SemverPlugin {
+export class SemanticReleasePluginAdapter implements SemverPlugin {
   name: string;
 
   type: PluginType = '@semantic-release';
 
-  private _plugin: RawSemanticReleasePlugin;
+  private _plugin: NativeSemanticReleasePlugin;
 
   constructor({
     name,
     plugin,
   }: {
     name: string;
-    plugin: RawSemanticReleasePlugin;
+    plugin: NativeSemanticReleasePlugin;
   }) {
     this.name = name;
     this._plugin = plugin;
@@ -52,7 +55,7 @@ export class SemanticReleasePlugin implements SemverPlugin {
       switchMap((options) =>
         concat(
           this._plugin.publish(...options),
-          this._plugin.addChannel(...options),
+          this._plugin.addChannel(...options)
         )
       )
     );
@@ -83,35 +86,39 @@ export async function _createOptions(
 }
 
 export class PluginFactory {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static create({ name, plugin }: { name: string; plugin: any }): SemverPlugin {
+  static create({
+    name,
+    plugin,
+  }: {
+    name: string;
+    plugin: UnknownPlugin;
+  }): SemverPlugin {
     switch (true) {
-      case _isSemanticPlugin(plugin):
-        return new SemanticReleasePlugin({ name, plugin });
+      case _isSemanticReleasePlugin(plugin):
+        return new SemanticReleasePluginAdapter({ name, plugin });
 
       case _isSemverPlugin(plugin):
         return plugin;
 
       default:
-        throw new Error(`Plugin not supported`);
+        throw new Error(`Plugin not supported: ${name}`);
     }
   }
 }
 
-export function _isSemanticPlugin(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  plugin: any
-): plugin is RawSemanticReleasePlugin {
-  const hasHookFn = (typeof plugin.verifyConditions === 'function' ||
-      typeof plugin.verifyRelease === 'function' ||
-      typeof plugin.generateNotes === 'function' ||
-      typeof plugin.publish === 'function' ||
-      typeof plugin.addChannel === 'function');
+export function _isSemanticReleasePlugin(
+  plugin: UnknownPlugin
+): plugin is NativeSemanticReleasePlugin {
+  const hasHookFn =
+    typeof plugin.verifyConditions === 'function' ||
+    typeof plugin.verifyRelease === 'function' ||
+    typeof plugin.generateNotes === 'function' ||
+    typeof plugin.publish === 'function' ||
+    typeof plugin.addChannel === 'function';
 
   return _isSemverPlugin(plugin) === false && hasHookFn;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function _isSemverPlugin(plugin: any): plugin is SemverPlugin {
+export function _isSemverPlugin(plugin: UnknownPlugin): plugin is SemverPlugin {
   return plugin.type === '@jscutlery/semver-plugin';
 }
