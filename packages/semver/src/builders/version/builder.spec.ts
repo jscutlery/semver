@@ -10,7 +10,7 @@ import { callbackify } from 'util';
 
 import { createFakeContext } from './testing';
 import { tryBump } from './utils/try-bump';
-import * as cp from './utils/exec-async';
+import * as git from './utils/git';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
@@ -35,6 +35,9 @@ jest.mock('./utils/try-bump');
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
+  const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
+    typeof git.tryPushToGitRemote
+  >;
   const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
   const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
   const mockStandardVersion = standardVersion as jest.MockedFunction<
@@ -65,9 +68,7 @@ describe('@jscutlery/semver:version', () => {
     mockTryBump.mockReturnValue(of('2.1.0'));
 
     /* Mock Git execution */
-    jest
-      .spyOn(cp, 'execAsync')
-      .mockReturnValue(of({ stderr: '', stdout: 'success' }));
+    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -98,17 +99,12 @@ describe('@jscutlery/semver:version', () => {
     (console.info as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
-    (cp.execAsync as jest.Mock).mockRestore();
+    mockTryPushToGitRemote.mockRestore();
     mockExecFile.mockRestore();
     mockChangelog.mockRestore();
     mockStandardVersion.mockRestore();
     mockTryBump.mockRestore();
     publish.mockRestore();
-  });
-
-  it('should not push to Git by default', async () => {
-    await runBuilder(options, context).toPromise();
-    expect(cp.execAsync).not.toHaveBeenCalled();
   });
 
   describe('Independent version', () => {
@@ -241,6 +237,38 @@ describe('@jscutlery/semver:version', () => {
         '⏹ nothing changed since last release'
       );
       expect(standardVersion).not.toBeCalled();
+    });
+  });
+
+  describe('Git push', () => {
+    it('should push to Git', async () => {
+      mockTryPushToGitRemote.mockReturnValue(
+        of({ stderr: '', stdout: 'success' })
+      );
+
+      const { success } = await runBuilder(
+        { ...options, push: true },
+        context
+      ).toPromise();
+
+      expect(success).toBe(true);
+      expect(mockTryPushToGitRemote).toHaveBeenCalledWith(
+        expect.objectContaining({
+          remote: 'origin',
+          branch: 'main',
+          noVerify: false,
+        })
+      );
+    });
+
+    it('should not push to Git by default', async () => {
+      await runBuilder(options, context).toPromise();
+      expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
+    });
+
+    it('should not push to Git with (--dry-run=true)', async () => {
+      await runBuilder({ ...options, dryRun: true }, context).toPromise();
+      expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
   });
 

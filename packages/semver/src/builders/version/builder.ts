@@ -1,5 +1,9 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
-import { concat, forkJoin, Observable, of } from 'rxjs';
+import {
+  BuilderContext,
+  BuilderOutput,
+  createBuilder,
+} from '@angular-devkit/architect';
+import { concat, defer, forkJoin, Observable, of } from 'rxjs';
 import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
 import { createPluginHandler } from './plugin-handler';
@@ -7,7 +11,11 @@ import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
+import {
+  CommonVersionOptions,
+  versionProject,
+  versionWorkspace,
+} from './version';
 
 export function runBuilder(
   {
@@ -59,16 +67,20 @@ export function runBuilder(
           })
         : versionProject(options);
 
-      const pushToGitRemote$ = tryPushToGitRemote({
-        branch: baseBranch,
-        noVerify,
-        remote,
-      });
+      const pushToGitRemote$ = defer(() =>
+        tryPushToGitRemote({
+          branch: baseBranch,
+          noVerify,
+          remote,
+        })
+      );
+
+      const publish$ = defer(() => pluginHandler.publish());
 
       return concat(
         runStandardVersion$,
         ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        ...(dryRun === false ? [pluginHandler.publish()] : [])
+        ...(dryRun === false ? [publish$] : [])
       );
     })
   );
