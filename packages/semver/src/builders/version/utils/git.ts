@@ -74,7 +74,7 @@ export function tryPushToGitRemote({
           return execAsync('git', ['push', ...gitPushOptions, remote, branch]);
         }
 
-        return throwError(new Error(error));
+        return throwError(error);
       })
     );
   });

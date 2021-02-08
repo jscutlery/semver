@@ -36,7 +36,7 @@ describe('git.getCommits', () => {
   });
 
   describe('git.tryPushToGitRemote', () => {
-    it('should push to Git with right options', async () => {
+    it('should Git push with right options', async () => {
       jest
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'success' }));
@@ -59,7 +59,7 @@ describe('git.getCommits', () => {
       );
     });
 
-    it(`should push to Git and add '--no-verify' option when asked for`, async () => {
+    it(`should Git push and add '--no-verify' option when asked for`, async () => {
       jest
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'success' }));
@@ -83,7 +83,7 @@ describe('git.getCommits', () => {
       );
     });
 
-    it(`should retry push if Git '--atomic' option not supported`, async () => {
+    it(`should retry Git push if '--atomic' option not supported`, async () => {
       jest
         .spyOn(cp, 'execAsync')
         .mockReturnValueOnce(
@@ -110,6 +110,28 @@ describe('git.getCommits', () => {
         expect.not.arrayContaining(['--atomic'])
       );
       expect(console.warn).toBeCalled();
+    });
+
+    it(`should throw if Git push failed`, async () => {
+      jest
+        .spyOn(cp, 'execAsync')
+        .mockReturnValue(
+          throwError({ stderr: 'failed', stdout: '' })
+        );
+
+      try {
+        await tryPushToGitRemote({
+          remote: 'origin',
+          branch: 'master',
+          noVerify: false,
+        }).toPromise();
+        fail();
+      } catch (error) {
+        expect(cp.execAsync).toBeCalledTimes(1);
+        expect(error).toEqual(
+          expect.objectContaining({ stderr: 'failed', stdout: '' })
+        );
+      }
     });
 
     it('should fail if options are undefined', async () => {
