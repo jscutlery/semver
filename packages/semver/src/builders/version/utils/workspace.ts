@@ -2,6 +2,7 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { resolve } from 'path';
 import { defer, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { readJsonFile } from './filesystem';
 
 export interface WorkspaceDefinition {
@@ -27,13 +28,20 @@ export function getProjectRoot(context: BuilderContext): Observable<string> {
 }
 
 export function getOutputPath(context: BuilderContext): Observable<string> {
-  return defer(async () => resolve(
-    context.workspaceRoot,
-    ((await context.getTargetOptions({
+  return defer(async () => {
+    const targetOptions = (await context.getTargetOptions({
       project: context.target.project,
       target: 'build',
-    })) as { outputPath: string }).outputPath
-  ));
+    })) as Record<string, string>;
+
+    const outputPath = targetOptions.outputPath;
+
+    if (outputPath == null) {
+      throw new Error(`Could not find 'outputPath' option for target: ${context.target.project}:build`);
+    }
+
+    return resolve(context.workspaceRoot, outputPath);
+  });
 }
 
 export function getProjectRoots(workspaceRoot: string): Observable<string[]> {

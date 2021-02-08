@@ -1,10 +1,6 @@
-import { BuilderContext } from '@angular-devkit/architect';
-import { concat, from, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { concat, Observable, defer } from 'rxjs';
 
-import { PluginOptions, PluginType, SemverPlugin } from './plugin';
-import { getOutputPath, getProjectRoot } from './utils/workspace';
-import { CommonVersionOptions } from './version';
+import { PluginType, SemverOptions, SemverPlugin } from './plugin';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type UnknownPlugin = any;
@@ -33,7 +29,7 @@ export class SemanticReleasePluginAdapter implements SemverPlugin {
 
   type: PluginType = '@semantic-release';
 
-  private _plugin: NativeSemanticReleasePlugin;
+  private _nativePlugin: NativeSemanticReleasePlugin;
 
   constructor({
     name,
@@ -43,44 +39,34 @@ export class SemanticReleasePluginAdapter implements SemverPlugin {
     plugin: NativeSemanticReleasePlugin;
   }) {
     this.name = name;
-    this._plugin = plugin;
+    this._nativePlugin = plugin;
   }
 
-  publish(
-    _: PluginOptions,
-    options: CommonVersionOptions,
-    context: BuilderContext
-  ): Observable<unknown> {
-    return from(_createOptions(options, context)).pipe(
-      switchMap((options) =>
-        concat(
-          this._plugin.publish(...options),
-          this._plugin.addChannel(...options)
-        )
-      )
-    );
+  publish(semverOptions: SemverOptions): Observable<unknown> {
+    return defer(() => {
+      concat(
+        this._nativePlugin.publish(..._createOptions(semverOptions)),
+        this._nativePlugin.addChannel(..._createOptions(semverOptions))
+      );
+    });
   }
 }
 
-export async function _createOptions(
-  options: CommonVersionOptions,
-  context: BuilderContext
-): Promise<SemanticReleasePluginOptions> {
-  const pkgRoot = await getOutputPath(context).toPromise();
-  const projectRoot = await getProjectRoot(context).toPromise();
-
+export function _createOptions(
+  semverOptions: SemverOptions
+): SemanticReleasePluginOptions {
   return [
     {
-      npmPublish: options.dryRun === false,
-      pkgRoot,
+      npmPublish: semverOptions.dryRun === false,
+      pkgRoot: semverOptions.packageRoot,
     },
     {
-      cwd: projectRoot,
+      cwd: semverOptions.projectRoot,
       env: process.env,
       stdout: process.stdout,
       stderr: process.stderr,
-      nextRelease: { version: options.newVersion }, // @todo handle channel option
-      logger: { log: context.logger.info },
+      nextRelease: { version: semverOptions.newVersion }, // @todo handle channel option
+      logger: { log: console.info },
     },
   ];
 }

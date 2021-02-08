@@ -1,10 +1,20 @@
 import { JsonObject } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
-
 export interface SemverPlugin {
   name: string;
   type: PluginType;
-  publish?(...args: unknown[]): Promise<unknown> | Observable<unknown>;
+
+  publish?(
+    semverOptions: SemverOptions,
+    pluginOptions?: PluginOptions
+  ): Promise<unknown> | Observable<unknown>;
+}
+
+export interface SemverOptions {
+  packageRoot: string;
+  projectRoot: string;
+  newVersion: string;
+  dryRun: boolean;
 }
 
 export type PluginType = '@jscutlery/semver-plugin' | '@semantic-release';

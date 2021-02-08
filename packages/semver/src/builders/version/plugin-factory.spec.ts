@@ -1,22 +1,17 @@
-import { BuilderContext } from '@angular-devkit/architect';
 import { Observable } from 'rxjs';
+
+import { SemverOptions } from './plugin';
 import { PluginFactory } from './plugin-factory';
-import { createFakeContext } from './testing';
-import { CommonVersionOptions } from './version';
 
 jest.mock('./utils/filesystem');
 
 describe('PluginFactory', () => {
-  const options: CommonVersionOptions = {
-    dryRun: false,
-    noVerify: false,
-    newVersion: '0.0.1',
-    preset: 'angular',
+  const semverOptions: SemverOptions = {
     projectRoot: '/root/packages/lib',
-    tagPrefix: 'v',
+    packageRoot: '/root/dist/packages/lib',
+    newVersion: '0.0.1',
+    dryRun: false,
   };
-
-  let context: BuilderContext;
 
   const semanticPluginSpy = {
     publish: jest.fn(),
@@ -25,16 +20,6 @@ describe('PluginFactory', () => {
   };
 
   beforeEach(() => {
-    context = createFakeContext({
-      project: 'lib',
-      projectRoot: '/root/packages/lib',
-      workspaceRoot: '/root',
-    });
-
-    (context.getTargetOptions as jest.Mock).mockResolvedValue({
-      outputPath: 'dist/packages/lib',
-    });
-
     semanticPluginSpy.publish.mockResolvedValue(undefined);
     semanticPluginSpy.addChannel.mockResolvedValue(undefined);
     semanticPluginSpy.verifyConditions.mockResolvedValue(undefined);
@@ -46,11 +31,7 @@ describe('PluginFactory', () => {
       plugin: semanticPluginSpy,
     });
 
-    await (plugin.publish(
-      {},
-      options,
-      context
-    ) as Observable<unknown>).toPromise();
+    await(plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.addChannel).toBeCalled();
     expect(semanticPluginSpy.publish).toBeCalled();
@@ -65,11 +46,7 @@ describe('PluginFactory', () => {
       plugin: semanticPluginSpy,
     });
 
-    await (plugin.publish(
-      {},
-      options,
-      context
-    ) as Observable<unknown>).toPromise();
+    await(plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.publish).toBeCalledWith(
       expect.objectContaining({
@@ -97,11 +74,7 @@ describe('PluginFactory', () => {
       plugin: semanticPluginSpy,
     });
 
-    await (plugin.publish(
-      {},
-      options,
-      context
-    ) as Observable<unknown>).toPromise();
+    await(plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.addChannel).toBeCalledWith(
       expect.objectContaining({

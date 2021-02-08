@@ -1,9 +1,10 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { EMPTY, from, Observable } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { EMPTY, forkJoin, from, Observable } from 'rxjs';
+import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
 
-import { PluginDef, PluginOptions, SemverPlugin } from './plugin';
+import { PluginDef, PluginOptions, SemverOptions, SemverPlugin } from './plugin';
 import { PluginFactory } from './plugin-factory';
+import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
 
 export type PluginMap = [SemverPlugin, PluginOptions][];
@@ -34,14 +35,34 @@ export class PluginHandler {
   }
 
   private _handle(hook: Hook): Observable<unknown> {
-    return from(this._plugins).pipe(
-      concatMap(([plugin, options]) => {
-        const hookFn = plugin[hook];
-        if (typeof hookFn !== 'function') {
-          return EMPTY;
-        }
-        return hookFn(options, this._options, this._context);
-      })
+    return this._getSemverOptions().pipe(
+      mergeMap((semverOptions) =>
+        from(this._plugins).pipe(
+          concatMap(([plugin, pluginOptions]) => {
+            const hookFn = plugin[hook];
+            if (typeof hookFn !== 'function') {
+              return EMPTY;
+            }
+            return hookFn(semverOptions, pluginOptions);
+          })
+        )
+      )
+    );
+  }
+
+  private _getSemverOptions(): Observable<SemverOptions> {
+    const context = this._context;
+    const { newVersion, dryRun } = this._options;
+    const projectRoot$ = getProjectRoot(context);
+    const outputPath$ = getOutputPath(context);
+
+    return forkJoin([projectRoot$, outputPath$]).pipe(
+      map(([projectRoot, packageRoot]) => ({
+        packageRoot,
+        projectRoot,
+        dryRun,
+        newVersion,
+      }))
     );
   }
 }

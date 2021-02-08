@@ -52,7 +52,7 @@ describe('@jscutlery/semver:version', () => {
     plugins: [],
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     context = createFakeContext({
       project: 'a',
       projectRoot: '/root/packages/a',

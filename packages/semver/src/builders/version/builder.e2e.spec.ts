@@ -63,10 +63,10 @@ describe('@jscutlery/semver:version', () => {
       result = await runBuilder(
         defaultBuilderOptions,
         createFakeContext({
-          project: 'a',
-          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
-          workspaceRoot: testingWorkspace.root,
-        })
+        project: 'a',
+        projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+        workspaceRoot: testingWorkspace.root,
+      })
       ).toPromise();
     });
 

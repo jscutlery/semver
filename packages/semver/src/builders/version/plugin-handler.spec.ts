@@ -68,10 +68,6 @@ describe('PluginHandler', () => {
       projectRoot: '/root/packages/lib',
       workspaceRoot: '/root',
     });
-
-    (context.getTargetOptions as jest.Mock).mockResolvedValue({
-      outputPath: 'dist/packages/lib',
-    });
   });
 
   afterEach(() => {
@@ -118,17 +114,33 @@ describe('PluginHandler', () => {
       .publish()
       .toPromise();
 
-    expect(githubPublish.mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        remoteUrl: 'remote',
-      })
-    );
-    expect(npmPublish.mock.calls[0][0]).toEqual(
-      {} // <- Empty options
-    );
+      expect(npmPublish.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          projectRoot: '/root/packages/lib',
+          packageRoot: '/root/dist/packages/lib',
+          newVersion: '0.0.1',
+          dryRun: false,
+        })
+      );
+      expect(npmPublish.mock.calls[0][1]).toEqual(
+        {} // <- Empty options
+      );
+      expect(githubPublish.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          projectRoot: '/root/packages/lib',
+          packageRoot: '/root/dist/packages/lib',
+          newVersion: '0.0.1',
+          dryRun: false,
+        })
+      );
+      expect(githubPublish.mock.calls[0][1]).toEqual(
+        expect.objectContaining({
+          remoteUrl: 'remote',
+        })
+      );
   });
 
-  it('should handle Observable', () => {
+  it('should handle Observable', (done) => {
     npmPublish.mockReturnValue(of('Plugin A'));
     githubPublish.mockReturnValue(of('Plugin B'));
 
@@ -140,10 +152,13 @@ describe('PluginHandler', () => {
       context,
     })
       .publish()
-      .subscribe(observerSpy, fail);
+      .subscribe(observerSpy, fail, () => {
+        expect(observerSpy).toBeCalledTimes(2);
+        expect(observerSpy.mock.calls[0][0]).toEqual('Plugin A');
+        expect(observerSpy.mock.calls[1][0]).toEqual('Plugin B');
+        done();
+      });
 
-    expect(observerSpy.mock.calls[0][0]).toEqual('Plugin A');
-    expect(observerSpy.mock.calls[1][0]).toEqual('Plugin B');
   });
 
   it('should handle Promise', (done) => {
@@ -162,6 +177,7 @@ describe('PluginHandler', () => {
         next: observerSpy,
         error: fail,
         complete: () => {
+          expect(observerSpy).toBeCalledTimes(2);
           expect(observerSpy.mock.calls[0][0]).toEqual('Plugin A');
           expect(observerSpy.mock.calls[1][0]).toEqual('Plugin B');
           done();
