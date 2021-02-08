@@ -1,11 +1,10 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { resolve } from 'path';
 import { concat, from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-
 import { PluginOptions, PluginType, SemverPlugin } from './plugin';
 import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
+
 
 export interface RawSemanticReleasePlugin {
   addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;

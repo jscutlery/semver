@@ -6,7 +6,7 @@ import { CommonVersionOptions } from './version';
 
 jest.mock('./utils/filesystem');
 
-describe('PluginAdapter', () => {
+describe('PluginFactory', () => {
   const options: CommonVersionOptions = {
     dryRun: false,
     noVerify: false,
