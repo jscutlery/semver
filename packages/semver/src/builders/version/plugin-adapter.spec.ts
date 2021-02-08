@@ -1,4 +1,5 @@
 import { BuilderContext } from '@angular-devkit/architect';
+import { exception } from 'console';
 import { Observable } from 'rxjs';
 
 import { PluginAdapter } from './plugin-adapter';
@@ -125,15 +126,12 @@ describe('PluginAdapter', () => {
   });
 
   it(`should fail for unsupported plugin`, async () => {
-    try {
+    expect(() =>
       PluginAdapter.adapt({
         name: '@semantic-release/spy-plugin',
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         plugin: { publish() {} },
-      });
-      fail();
-    } catch (error) {
-      expect(error.message).toContain('Plugin not supported')
-    }
+      })
+    ).toThrow('Plugin not supported');
   });
 });
