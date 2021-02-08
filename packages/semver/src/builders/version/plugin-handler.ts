@@ -1,6 +1,6 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { EMPTY, forkJoin, from, Observable } from 'rxjs';
-import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
+import { concatMap, map, mergeMap } from 'rxjs/operators';
 
 import { PluginDef, PluginOptions, SemverOptions, SemverPlugin } from './plugin';
 import { PluginFactory } from './plugin-factory';

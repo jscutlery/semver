@@ -61,7 +61,6 @@ export function runBuilder(
 
       const pushToGitRemote$ = tryPushToGitRemote({
         branch: baseBranch,
-        context,
         noVerify,
         remote,
       });

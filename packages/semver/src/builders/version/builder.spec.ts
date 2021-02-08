@@ -1,14 +1,16 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import * as lernaChildProcess from '@lerna/child-process';
-import { execFile } from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { callbackify } from 'util';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
+import { execFile } from 'child_process';
+
+import { callbackify } from 'util';
+
 import { createFakeContext } from './testing';
 import { tryBump } from './utils/try-bump';
+import * as cp from './utils/exec-async';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
@@ -25,19 +27,19 @@ jest.mock(
 );
 
 jest.mock('child_process');
-jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
 
+jest.mock('./utils/git');
 jest.mock('./utils/try-bump');
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
+  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
   const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
   const mockStandardVersion = standardVersion as jest.MockedFunction<
     typeof standardVersion
   >;
-  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
 
   let context: BuilderContext;
 
@@ -62,13 +64,19 @@ describe('@jscutlery/semver:version', () => {
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
 
-    /* Mock standardVersion. */
-    mockStandardVersion.mockResolvedValue(undefined);
+    /* Mock Git execution */
+    jest
+      .spyOn(cp, 'execAsync')
+      .mockReturnValue(of({ stderr: '', stdout: 'success' }));
 
+    /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       callbackify(jest.fn().mockResolvedValue('')) as any
     );
+
+    /* Mock standardVersion. */
+    mockStandardVersion.mockResolvedValue(undefined);
 
     /* Mock console.info. */
     jest.spyOn(console, 'info').mockImplementation();
@@ -90,8 +98,9 @@ describe('@jscutlery/semver:version', () => {
     (console.info as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
-    mockChangelog.mockRestore();
+    (cp.execAsync as jest.Mock).mockRestore();
     mockExecFile.mockRestore();
+    mockChangelog.mockRestore();
     mockStandardVersion.mockRestore();
     mockTryBump.mockRestore();
     publish.mockRestore();
@@ -99,61 +108,7 @@ describe('@jscutlery/semver:version', () => {
 
   it('should not push to Git by default', async () => {
     await runBuilder(options, context).toPromise();
-
-    expect(lernaChildProcess.exec).not.toHaveBeenCalled();
-  });
-
-  it('should push to Git with right options', async () => {
-    await runBuilder(
-      { ...options, push: true, remote: 'origin', baseBranch: 'main' },
-      context
-    ).toPromise();
-
-    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
-      'git',
-      expect.arrayContaining([
-        'push',
-        '--follow-tags',
-        '--atomic',
-        'origin',
-        'main',
-      ])
-    );
-  });
-
-  it(`should push to Git and add '--no-verify' option when asked for`, async () => {
-    await runBuilder(
-      {
-        ...options,
-        push: true,
-        noVerify: true,
-      },
-      context
-    ).toPromise();
-
-    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
-      'git',
-      expect.arrayContaining([
-        'push',
-        '--follow-tags',
-        '--no-verify',
-        '--atomic',
-        'origin',
-        'main',
-      ])
-    );
-  });
-
-  it('should fail if Git config is missing', async () => {
-    const { success } = await runBuilder(
-      { ...options, push: true, remote: undefined, baseBranch: undefined },
-      context
-    ).toPromise();
-
-    expect(success).toBe(false);
-    expect(context.logger.error).toBeCalledWith(
-      expect.stringContaining('Missing configuration')
-    );
+    expect(cp.execAsync).not.toHaveBeenCalled();
   });
 
   describe('Independent version', () => {
