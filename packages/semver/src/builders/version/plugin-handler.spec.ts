@@ -6,16 +6,17 @@ import { createFakeContext } from './testing';
 import { CommonVersionOptions } from './version';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { publish: npmPublish } = require('@custom-plugin/npm');
-const { publish: githubPublish } = require('@custom-plugin/github');
+const { publish: mockPublishA } = require('@mock-plugin/A');
+const { publish: mockPublishB } = require('@mock-plugin/B');
+const { publish: mockPublishC } = require('@mock-plugin/C');
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 jest.mock('./utils/filesystem');
 
 jest.mock(
-  '@custom-plugin/npm',
+  '@mock-plugin/A',
   () => ({
-    name: '@custom-plugin/npm',
+    name: '@mock-plugin/A',
     type: '@jscutlery/semver-plugin',
     publish: jest.fn(),
   }),
@@ -25,9 +26,9 @@ jest.mock(
 );
 
 jest.mock(
-  '@custom-plugin/github',
+  '@mock-plugin/B',
   () => ({
-    name: '@custom-plugin/github',
+    name: '@mock-plugin/B',
     type: '@jscutlery/semver-plugin',
     publish: jest.fn(),
   }),
@@ -37,9 +38,21 @@ jest.mock(
 );
 
 jest.mock(
-  '@custom-plugin/noop',
+  '@mock-plugin/C',
   () => ({
-    name: '@custom-plugin/noop',
+    name: '@mock-plugin/C',
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+  }),
+  {
+    virtual: true,
+  }
+);
+
+jest.mock(
+  '@mock-plugin/noop',
+  () => ({
+    name: '@mock-plugin/noop',
     type: '@jscutlery/semver-plugin',
   }),
   {
@@ -60,8 +73,9 @@ describe('PluginHandler', () => {
   let context: BuilderContext;
 
   beforeEach(() => {
-    npmPublish.mockResolvedValue(undefined);
-    githubPublish.mockResolvedValue(undefined);
+    mockPublishA.mockResolvedValue(undefined);
+    mockPublishB.mockResolvedValue(undefined);
+    mockPublishC.mockResolvedValue(undefined);
 
     context = createFakeContext({
       project: 'lib',
@@ -71,50 +85,55 @@ describe('PluginHandler', () => {
   });
 
   afterEach(() => {
-    npmPublish.mockRestore();
-    githubPublish.mockRestore();
-  });
-
-  it('should handle one plugin', async () => {
-    await createPluginHandler({
-      options,
-      plugins: ['@custom-plugin/npm'],
-      context,
-    })
-      .publish()
-      .toPromise();
-
-    expect(npmPublish).toBeCalledTimes(1);
-    expect(githubPublish).not.toBeCalled();
+    mockPublishA.mockRestore();
+    mockPublishB.mockRestore();
+    mockPublishC.mockRestore();
   });
 
   it('should handle multiple plugins', async () => {
     await createPluginHandler({
       options,
-      plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+      plugins: ['@mock-plugin/A', '@mock-plugin/C'],
       context,
     })
       .publish()
       .toPromise();
 
-    expect(npmPublish).toBeCalledTimes(1);
-    expect(githubPublish).toBeCalledTimes(1);
-    expect(npmPublish).toHaveBeenCalledBefore(githubPublish);
+    expect(mockPublishA).toBeCalledTimes(1);
+    expect(mockPublishB).not.toBeCalled();
+    expect(mockPublishC).toBeCalledTimes(1);
   });
 
-  it('should handle plugin configuration', async () => {
+  it('should handle plugins in order', async () => {
+    await createPluginHandler({
+      options,
+      plugins: ['@mock-plugin/A', '@mock-plugin/B', '@mock-plugin/C'],
+      context,
+    })
+      .publish()
+      .toPromise();
+
+    expect(mockPublishA).toBeCalledTimes(1);
+    expect(mockPublishB).toBeCalledTimes(1);
+    expect(mockPublishC).toBeCalledTimes(1);
+    expect(mockPublishA).toHaveBeenCalledBefore(mockPublishB);
+    expect(mockPublishB).toHaveBeenCalledBefore(mockPublishC);
+  });
+
+  it('should handle plugin options', async () => {
     await createPluginHandler({
       options,
       plugins: [
-        '@custom-plugin/npm',
-        ['@custom-plugin/github', { remoteUrl: 'remote' }],
+        '@mock-plugin/A',
+        { module: '@mock-plugin/B', options: { remoteUrl: 'remote' }},
+        { module: '@mock-plugin/C' },
       ],
       context,
     })
       .publish()
       .toPromise();
 
-      expect(npmPublish.mock.calls[0][0]).toEqual(
+      expect(mockPublishA.mock.calls[0][0]).toEqual(
         expect.objectContaining({
           projectRoot: '/root/packages/lib',
           packageRoot: '/root/dist/packages/lib',
@@ -122,10 +141,10 @@ describe('PluginHandler', () => {
           dryRun: false,
         })
       );
-      expect(npmPublish.mock.calls[0][1]).toEqual(
+      expect(mockPublishA.mock.calls[0][1]).toEqual(
         {} // <- Empty options
       );
-      expect(githubPublish.mock.calls[0][0]).toEqual(
+      expect(mockPublishB.mock.calls[0][0]).toEqual(
         expect.objectContaining({
           projectRoot: '/root/packages/lib',
           packageRoot: '/root/dist/packages/lib',
@@ -133,22 +152,31 @@ describe('PluginHandler', () => {
           dryRun: false,
         })
       );
-      expect(githubPublish.mock.calls[0][1]).toEqual(
+      expect(mockPublishB.mock.calls[0][1]).toEqual(
         expect.objectContaining({
           remoteUrl: 'remote',
         })
       );
+      expect(mockPublishC.mock.calls[0][0]).toEqual({
+        projectRoot: '/root/packages/lib',
+        packageRoot: '/root/dist/packages/lib',
+        newVersion: '0.0.1',
+        dryRun: false,
+      });
+      expect(mockPublishC.mock.calls[0][1]).toEqual(
+        {} // <- Empty options
+      );
   });
 
-  it('should handle Observable', (done) => {
-    npmPublish.mockReturnValue(of('Plugin A'));
-    githubPublish.mockReturnValue(of('Plugin B'));
+  it('should handle Observable hook result', (done) => {
+    mockPublishA.mockReturnValue(of('Plugin A'));
+    mockPublishB.mockReturnValue(of('Plugin B'));
 
     const observerSpy = jest.fn();
 
     createPluginHandler({
       options,
-      plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+      plugins: ['@mock-plugin/A', '@mock-plugin/B'],
       context,
     })
       .publish()
@@ -161,15 +189,15 @@ describe('PluginHandler', () => {
 
   });
 
-  it('should handle Promise', (done) => {
-    npmPublish.mockResolvedValue('Plugin A');
-    githubPublish.mockResolvedValue('Plugin B');
+  it('should handle Promise hook result', (done) => {
+    mockPublishA.mockResolvedValue('Plugin A');
+    mockPublishB.mockResolvedValue('Plugin B');
 
     const observerSpy = jest.fn();
 
     createPluginHandler({
       options,
-      plugins: ['@custom-plugin/npm', '@custom-plugin/github'],
+      plugins: ['@mock-plugin/A', '@mock-plugin/B'],
       context,
     })
       .publish()
@@ -185,18 +213,18 @@ describe('PluginHandler', () => {
       });
   });
 
-  it('should handle undefined hook', (done) => {
-    npmPublish.mockResolvedValue('Plugin A');
-    githubPublish.mockResolvedValue('Plugin B');
+  it('should not fail with undefined hook', (done) => {
+    mockPublishA.mockResolvedValue('Plugin A');
+    mockPublishB.mockResolvedValue('Plugin B');
 
     const observerSpy = jest.fn();
 
     createPluginHandler({
       options,
       plugins: [
-        '@custom-plugin/npm',
-        '@custom-plugin/github',
-        '@custom-plugin/noop',
+        '@mock-plugin/A',
+        '@mock-plugin/B',
+        '@mock-plugin/noop',
       ],
       context,
     })
@@ -205,7 +233,7 @@ describe('PluginHandler', () => {
         next: observerSpy,
         error: fail,
         complete: () => {
-          /* No publish hook defined for @custom-plugin/noop. */
+          /* No publish hook defined for @mock-plugin/noop, it just pass to the next plugin. */
           expect(observerSpy).toBeCalledTimes(2);
           expect(observerSpy).toHaveBeenNthCalledWith(1, 'Plugin A');
           expect(observerSpy).toHaveBeenNthCalledWith(2, 'Plugin B');

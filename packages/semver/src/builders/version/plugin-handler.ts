@@ -86,16 +86,16 @@ export function _loadPlugins(pluginDefinition: PluginDef[]): PluginMap {
   ]);
 }
 
-export function _getPluginName(pluginDef: PluginDef): string {
-  return typeof pluginDef === 'string' ? pluginDef : pluginDef[0];
+export function _getModule(pluginDef: PluginDef): string {
+  return typeof pluginDef === 'string' ? pluginDef : pluginDef.module;
 }
 
 export function _getPluginOptions(pluginDef: PluginDef): PluginOptions {
-  return typeof pluginDef === 'string' ? {} : pluginDef[1];
+  return typeof pluginDef === 'string' ? {} : pluginDef.options ?? {};
 }
 
 export function _load(pluginDef: PluginDef): SemverPlugin {
-  const name = _getPluginName(pluginDef);
+  const name = _getModule(pluginDef);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const plugin = require(name);
 

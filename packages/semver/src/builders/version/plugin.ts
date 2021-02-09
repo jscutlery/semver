@@ -1,5 +1,5 @@
-import { JsonObject } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
+
 export interface SemverPlugin {
   name: string;
   type: PluginType;
@@ -19,9 +19,6 @@ export interface SemverOptions {
 
 export type PluginType = '@jscutlery/semver-plugin' | '@semantic-release';
 
-/**
- * Match workspace definition : ['@custom-plugin', { 'plugin-option': 'option' }] or '@custom-plugin'
- */
-export type PluginDef = [string, JsonObject] | string;
+export type PluginDef = string | { module: string; options?: PluginOptions };
 
-export type PluginOptions = Record<string, unknown>;
+export type PluginOptions = Record<string, string | number | boolean>;
