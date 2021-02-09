@@ -8,6 +8,7 @@ export type UnknownPlugin = any;
 export interface NativeSemanticReleasePlugin {
   addChannel?(...args: SemanticReleasePluginOptions): Promise<unknown>;
   publish?(...args: SemanticReleasePluginOptions): Promise<unknown>;
+  verifyConditions?(...args: SemanticReleasePluginOptions): Promise<boolean>;
 }
 
 export interface SemanticReleaseContext {
@@ -49,6 +50,12 @@ export class SemanticReleasePluginAdapter implements SemverPlugin {
         this._nativePlugin.addChannel(..._createOptions(semverOptions))
       );
     });
+  }
+
+  validate(semverOptions: SemverOptions): Observable<boolean> {
+    return defer(() =>
+      this._nativePlugin.verifyConditions(..._createOptions(semverOptions))
+    );
   }
 }
 

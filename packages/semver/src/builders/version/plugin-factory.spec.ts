@@ -13,13 +13,14 @@ describe('PluginFactory', () => {
     dryRun: false,
   };
 
-  const semanticPluginSpy = {
-    publish: jest.fn(),
-    addChannel: jest.fn(),
-    verifyConditions: jest.fn(),
-  };
+  let semanticPluginSpy;
 
   beforeEach(() => {
+    semanticPluginSpy = {
+      publish: jest.fn(),
+      addChannel: jest.fn(),
+      verifyConditions: jest.fn(),
+    };
     semanticPluginSpy.publish.mockResolvedValue(undefined);
     semanticPluginSpy.addChannel.mockResolvedValue(undefined);
     semanticPluginSpy.verifyConditions.mockResolvedValue(undefined);
@@ -31,7 +32,7 @@ describe('PluginFactory', () => {
       plugin: semanticPluginSpy,
     });
 
-    await(plugin.publish(semverOptions) as Observable<unknown>).toPromise();
+    await (plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.addChannel).toBeCalled();
     expect(semanticPluginSpy.publish).toBeCalled();
@@ -46,7 +47,7 @@ describe('PluginFactory', () => {
       plugin: semanticPluginSpy,
     });
 
-    await(plugin.publish(semverOptions) as Observable<unknown>).toPromise();
+    await (plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.publish).toBeCalledWith(
       expect.objectContaining({
@@ -74,9 +75,37 @@ describe('PluginFactory', () => {
       plugin: semanticPluginSpy,
     });
 
-    await(plugin.publish(semverOptions) as Observable<unknown>).toPromise();
+    await (plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
     expect(semanticPluginSpy.addChannel).toBeCalledWith(
+      expect.objectContaining({
+        pkgRoot: '/root/dist/packages/lib',
+        npmPublish: true,
+      }),
+      expect.objectContaining({
+        cwd: '/root/packages/lib',
+        env: expect.any(Object),
+        stderr: expect.anything(),
+        stdout: expect.anything(),
+        logger: expect.objectContaining({
+          log: expect.any(Function),
+        }),
+        nextRelease: expect.objectContaining({
+          version: '0.0.1', // @todo test dist tag / channel
+        }),
+      })
+    );
+  });
+
+  it(`should call semantic-release 'verifyOptions' hook with right options`, async () => {
+    const plugin = PluginFactory.create({
+      name: '@semantic-release/spy-plugin',
+      plugin: semanticPluginSpy,
+    });
+
+    await (plugin.validate(semverOptions) as Observable<boolean>).toPromise();
+
+    expect(semanticPluginSpy.verifyConditions).toBeCalledWith(
       expect.objectContaining({
         pkgRoot: '/root/dist/packages/lib',
         npmPublish: true,
