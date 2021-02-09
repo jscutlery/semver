@@ -15,12 +15,35 @@ import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { publish } = require('@custom-plugin/npm');
+const {
+  publish: mockPublishA,
+  validate: mockValidateA,
+} = require('@mock-plugin/A');
+const {
+  publish: mockPublishB,
+  validate: mockValidateB,
+} = require('@mock-plugin/B');
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 jest.mock(
-  '@custom-plugin/npm',
-  () => ({ publish: jest.fn(), type: '@jscutlery/semver-plugin' }),
+  '@mock-plugin/A',
+  () => ({
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+    validate: jest.fn(),
+  }),
+  {
+    virtual: true,
+  }
+);
+
+jest.mock(
+  '@mock-plugin/B',
+  () => ({
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+    validate: jest.fn(),
+  }),
   {
     virtual: true,
   }
@@ -104,7 +127,10 @@ describe('@jscutlery/semver:version', () => {
     mockChangelog.mockRestore();
     mockStandardVersion.mockRestore();
     mockTryBump.mockRestore();
-    publish.mockRestore();
+    mockPublishA.mockRestore();
+    mockValidateA.mockRestore();
+    mockValidateB.mockRestore();
+    mockPublishB.mockRestore();
   });
 
   describe('Independent version', () => {
@@ -273,31 +299,66 @@ describe('@jscutlery/semver:version', () => {
   });
 
   describe('Plugins', () => {
+    beforeEach(() => {
+      mockValidateA.mockResolvedValue(true);
+      mockPublishA.mockResolvedValue(undefined);
+      mockValidateB.mockResolvedValue(true);
+      mockPublishB.mockResolvedValue(undefined);
+    });
+
     it('should publish with (--dry-run=false)', async () => {
       await runBuilder(
-        { ...options, dryRun: false, plugins: ['@custom-plugin/npm'] },
+        { ...options, dryRun: false, plugins: ['@mock-plugin/A'] },
         context
       ).toPromise();
 
-      expect(publish).toBeCalled();
+      expect(mockPublishA).toBeCalled();
     });
 
     it('should not publish with (--dry-run=true)', async () => {
       await runBuilder(
-        { ...options, dryRun: true, plugins: ['@custom-plugin/npm'] },
+        { ...options, dryRun: true, plugins: ['@mock-plugin/A'] },
         context
       ).toPromise();
 
-      expect(publish).not.toBeCalled();
+      expect(mockPublishA).not.toBeCalled();
+    });
+
+    it('should validate before releasing', async () => {
+      await runBuilder(
+        { ...options, plugins: ['@mock-plugin/A'] },
+        context
+      ).toPromise();
+
+      expect(mockValidateA).toHaveBeenCalledBefore(
+        standardVersion as jest.Mock
+      );
+    });
+
+    it('should abort when validation hook failed', async () => {
+      mockValidateA.mockResolvedValue(false);
+
+      const { success } = await runBuilder(
+        { ...options, plugins: ['@mock-plugin/A', '@mock-plugin/B'] },
+        context
+      ).toPromise();
+
+      expect(success).toBe(false);
+      expect(standardVersion).not.toBeCalled();
+      expect(mockPublishA).not.toBeCalled();
+      expect(mockPublishB).not.toBeCalled();
+      expect(context.logger.error).toBeCalledWith(
+        expect.stringContaining('Error: Skipping version')
+      );
     });
 
     it('should release before publishing', async () => {
       await runBuilder(
-        { ...options, plugins: ['@custom-plugin/npm'] },
+        { ...options, plugins: ['@mock-plugin/A'] },
         context
       ).toPromise();
 
-      expect(standardVersion).toHaveBeenCalledBefore(publish);
+      expect(standardVersion).toHaveBeenCalledBefore(mockPublishA);
     });
   });
 });

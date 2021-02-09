@@ -1,15 +1,23 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { EMPTY, forkJoin, from, Observable } from 'rxjs';
+import { EMPTY, forkJoin, from, Observable, throwError, of } from 'rxjs';
 import { concatMap, map, mergeMap } from 'rxjs/operators';
 
-import { PluginDef, PluginOptions, SemverOptions, SemverPlugin } from './plugin';
+import {
+  PluginDef,
+  PluginOptions,
+  SemverOptions,
+  SemverPlugin,
+} from './plugin';
 import { PluginFactory } from './plugin-factory';
 import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
 
 export type PluginMap = [SemverPlugin, PluginOptions][];
 
-export type Hook = Extract<keyof SemverPlugin, 'publish'>;
+export type Hook = Extract<
+  keyof SemverPlugin,
+  'validate' | 'prepare' | 'publish'
+>;
 
 export class PluginHandler {
   private _plugins: PluginMap;
@@ -28,6 +36,24 @@ export class PluginHandler {
     this._options = options;
     this._context = context;
     this._plugins = _loadPlugins(plugins);
+  }
+
+  validate(): Observable<boolean> {
+    return this._handle('validate').pipe(
+      mergeMap((valid) =>
+        typeof valid !== 'boolean'
+          ? throwError(
+              new Error(
+                `Typeof result from 'validate' hook not expected, received: ${typeof valid}, expect boolean`
+              )
+            )
+          : of(valid)
+      )
+    );
+  }
+
+  prepare(): Observable<unknown> {
+    return this._handle('prepare');
   }
 
   publish(): Observable<unknown> {

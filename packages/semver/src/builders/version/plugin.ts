@@ -4,6 +4,16 @@ export interface SemverPlugin {
   name: string;
   type: PluginType;
 
+  validate?(
+    semverOptions: SemverOptions,
+    pluginOptions?: PluginOptions
+  ): Promise<boolean> | Observable<boolean>;
+
+  prepare?(
+    semverOptions: SemverOptions,
+    pluginOptions?: PluginOptions
+  ): Promise<unknown> | Observable<unknown>;
+
   publish?(
     semverOptions: SemverOptions,
     pluginOptions?: PluginOptions
