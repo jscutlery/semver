@@ -1,4 +1,5 @@
-import { concat, Observable, defer } from 'rxjs';
+import { concat, defer, Observable, of } from 'rxjs';
+import { catchError, mapTo } from 'rxjs/operators';
 
 import { PluginType, SemverOptions, SemverPlugin } from './plugin';
 
@@ -55,6 +56,9 @@ export class SemanticReleasePluginAdapter implements SemverPlugin {
   validate(semverOptions: SemverOptions): Observable<boolean> {
     return defer(() =>
       this._nativePlugin.verifyConditions(..._createOptions(semverOptions))
+    ).pipe(
+      mapTo(true),
+      catchError(() => of(false))
     );
   }
 }
@@ -108,7 +112,7 @@ export function _isSemanticReleasePlugin(
     'generateNotes',
     'publish',
     'addChannel',
-  ].some(hook => typeof plugin[hook] === 'function')
+  ].some((hook) => typeof plugin[hook] === 'function');
 
   return _isSemverPlugin(plugin) === false && hasHookFn;
 }
