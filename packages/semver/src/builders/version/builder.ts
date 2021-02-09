@@ -1,7 +1,8 @@
 import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
-import { concat, forkJoin, Observable, of } from 'rxjs';
-import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
+import { concat, defer, forkJoin, Observable, of, throwError } from 'rxjs';
+import { catchError, every, mapTo, mergeMap, shareReplay, switchMap } from 'rxjs/operators';
 
+import { createPluginHandler } from './plugin-handler';
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
@@ -17,6 +18,7 @@ export function runBuilder(
     noVerify,
     syncVersions,
     rootChangelog,
+    plugins,
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
@@ -46,24 +48,46 @@ export function runBuilder(
         projectRoot,
         tagPrefix,
       };
-      const runStandardVersion$ = syncVersions
-        ? versionWorkspace({
-            ...options,
-            rootChangelog,
-            workspaceRoot,
-          })
-        : versionProject(options);
 
-      const pushToGitRemote$ = tryPushToGitRemote({
-        branch: baseBranch,
-        context,
-        noVerify,
-        remote,
-      });
+      const pluginHandler = createPluginHandler({ plugins, options, context });
+
+      /* 1. Validate */
+      const validate$ = defer(() => pluginHandler.validate()).pipe(
+        every((valid) => valid === true),
+        mergeMap((valid) =>
+          valid === true
+            ? of(true)
+            : throwError(
+                new Error(`Skipping version, one 'validate' hook failed`)
+              )
+        )
+      );
+      /* 2. Version */
+      const runStandardVersion$ = defer(() =>
+        syncVersions
+          ? versionWorkspace({
+              ...options,
+              rootChangelog,
+              workspaceRoot,
+            })
+          : versionProject(options)
+      );
+      /* 3. Push */
+      const pushToGitRemote$ = defer(() =>
+        tryPushToGitRemote({
+          branch: baseBranch,
+          noVerify,
+          remote,
+        })
+      );
+      /* 4. Publish */
+      const publish$ = defer(() => pluginHandler.publish());
 
       return concat(
+        validate$,
         runStandardVersion$,
-        ...(push && dryRun === false ? [pushToGitRemote$] : [])
+        ...(push && dryRun === false ? [pushToGitRemote$] : []),
+        ...(dryRun === false ? [publish$] : [])
       );
     })
   );

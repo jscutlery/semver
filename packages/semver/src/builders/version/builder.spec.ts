@@ -1,30 +1,71 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import * as lernaChildProcess from '@lerna/child-process';
-import { execFile } from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { callbackify } from 'util';
 import { runBuilder } from './builder';
 import { VersionBuilderSchema } from './schema';
+import { execFile } from 'child_process';
+
+import { callbackify } from 'util';
+
 import { createFakeContext } from './testing';
 import { tryBump } from './utils/try-bump';
+import * as git from './utils/git';
 import * as workspace from './utils/workspace';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+const {
+  publish: mockPublishA,
+  validate: mockValidateA,
+} = require('@mock-plugin/A');
+const {
+  publish: mockPublishB,
+  validate: mockValidateB,
+} = require('@mock-plugin/B');
+/* eslint-enable @typescript-eslint/no-var-requires */
+
+jest.mock(
+  '@mock-plugin/A',
+  () => ({
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+    validate: jest.fn(),
+  }),
+  {
+    virtual: true,
+  }
+);
+
+jest.mock(
+  '@mock-plugin/B',
+  () => ({
+    type: '@jscutlery/semver-plugin',
+    publish: jest.fn(),
+    validate: jest.fn(),
+  }),
+  {
+    virtual: true,
+  }
+);
+
 jest.mock('child_process');
-jest.mock('@lerna/child-process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
+
+jest.mock('./utils/git');
 jest.mock('./utils/try-bump');
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
+  const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
+    typeof git.tryPushToGitRemote
+  >;
+  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
   const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
   const mockStandardVersion = standardVersion as jest.MockedFunction<
     typeof standardVersion
   >;
-  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
 
   let context: BuilderContext;
 
@@ -36,9 +77,10 @@ describe('@jscutlery/semver:version', () => {
     baseBranch: 'main',
     syncVersions: false,
     rootChangelog: true,
+    plugins: [],
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     context = createFakeContext({
       project: 'a',
       projectRoot: '/root/packages/a',
@@ -48,13 +90,17 @@ describe('@jscutlery/semver:version', () => {
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
 
-    /* Mock standardVersion. */
-    mockStandardVersion.mockResolvedValue(undefined);
+    /* Mock Git execution */
+    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
 
+    /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       callbackify(jest.fn().mockResolvedValue('')) as any
     );
+
+    /* Mock standardVersion. */
+    mockStandardVersion.mockResolvedValue(undefined);
 
     /* Mock console.info. */
     jest.spyOn(console, 'info').mockImplementation();
@@ -76,76 +122,22 @@ describe('@jscutlery/semver:version', () => {
     (console.info as jest.Mock).mockRestore();
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
-    mockChangelog.mockRestore();
+    mockTryPushToGitRemote.mockRestore();
     mockExecFile.mockRestore();
+    mockChangelog.mockRestore();
     mockStandardVersion.mockRestore();
     mockTryBump.mockRestore();
-  });
-
-  it('should not push to Git by default', async () => {
-    await runBuilder(options, context).toPromise();
-
-    expect(lernaChildProcess.exec).not.toHaveBeenCalled();
-  });
-
-  it('should push to Git with right options', async () => {
-    await runBuilder(
-      { ...options, push: true, remote: 'origin', baseBranch: 'main' },
-      context
-    ).toPromise();
-
-    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
-      'git',
-      expect.arrayContaining([
-        'push',
-        '--follow-tags',
-        '--atomic',
-        'origin',
-        'main',
-      ])
-    );
-  });
-
-  it(`should push to Git and add '--no-verify' option when asked for`, async () => {
-    await runBuilder(
-      {
-        ...options,
-        push: true,
-        noVerify: true,
-      },
-      context
-    ).toPromise();
-
-    expect(lernaChildProcess.exec).toHaveBeenCalledWith(
-      'git',
-      expect.arrayContaining([
-        'push',
-        '--follow-tags',
-        '--no-verify',
-        '--atomic',
-        'origin',
-        'main',
-      ])
-    );
-  });
-
-  it('should fail if Git config is missing', async () => {
-    const output = await runBuilder(
-      { ...options, push: true, remote: undefined, baseBranch: undefined },
-      context
-    ).toPromise();
-
-    expect(context.logger.error).toBeCalledWith(
-      expect.stringContaining('Missing configuration')
-    );
-    expect(output).toEqual(expect.objectContaining({ success: false }));
+    mockPublishA.mockRestore();
+    mockValidateA.mockRestore();
+    mockValidateB.mockRestore();
+    mockPublishB.mockRestore();
   });
 
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
-      const output = await runBuilder(options, context).toPromise();
+      const { success } = await runBuilder(options, context).toPromise();
 
-      expect(output).toEqual(expect.objectContaining({ success: true }));
+      expect(success).toBe(true);
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
@@ -167,7 +159,6 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
-
       expect(console.info).toBeCalledWith(
         '⏹ nothing changed since last release'
       );
@@ -186,7 +177,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version on multiple projects', async () => {
-      const output = await runBuilder(
+      const { success } = await runBuilder(
         {
           ...options,
           /* Enable sync versions. */
@@ -195,8 +186,7 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(output).toEqual(expect.objectContaining({ success: true }));
-
+      expect(success).toBe(true);
       expect(changelog).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
@@ -273,6 +263,102 @@ describe('@jscutlery/semver:version', () => {
         '⏹ nothing changed since last release'
       );
       expect(standardVersion).not.toBeCalled();
+    });
+  });
+
+  describe('Git push', () => {
+    it('should push to Git', async () => {
+      mockTryPushToGitRemote.mockReturnValue(
+        of({ stderr: '', stdout: 'success' })
+      );
+
+      const { success } = await runBuilder(
+        { ...options, push: true },
+        context
+      ).toPromise();
+
+      expect(success).toBe(true);
+      expect(mockTryPushToGitRemote).toHaveBeenCalledWith(
+        expect.objectContaining({
+          remote: 'origin',
+          branch: 'main',
+          noVerify: false,
+        })
+      );
+    });
+
+    it('should not push to Git by default', async () => {
+      await runBuilder(options, context).toPromise();
+      expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
+    });
+
+    it('should not push to Git with (--dry-run=true)', async () => {
+      await runBuilder({ ...options, dryRun: true }, context).toPromise();
+      expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Plugins', () => {
+    beforeEach(() => {
+      mockValidateA.mockResolvedValue(true);
+      mockPublishA.mockResolvedValue(undefined);
+      mockValidateB.mockResolvedValue(true);
+      mockPublishB.mockResolvedValue(undefined);
+    });
+
+    it('should publish with (--dry-run=false)', async () => {
+      await runBuilder(
+        { ...options, dryRun: false, plugins: ['@mock-plugin/A'] },
+        context
+      ).toPromise();
+
+      expect(mockPublishA).toBeCalled();
+    });
+
+    it('should not publish with (--dry-run=true)', async () => {
+      await runBuilder(
+        { ...options, dryRun: true, plugins: ['@mock-plugin/A'] },
+        context
+      ).toPromise();
+
+      expect(mockPublishA).not.toBeCalled();
+    });
+
+    it('should validate before releasing', async () => {
+      await runBuilder(
+        { ...options, plugins: ['@mock-plugin/A'] },
+        context
+      ).toPromise();
+
+      expect(mockValidateA).toHaveBeenCalledBefore(
+        standardVersion as jest.Mock
+      );
+    });
+
+    it('should abort when validation hook failed', async () => {
+      mockValidateA.mockResolvedValue(false);
+
+      const { success } = await runBuilder(
+        { ...options, plugins: ['@mock-plugin/A', '@mock-plugin/B'] },
+        context
+      ).toPromise();
+
+      expect(success).toBe(false);
+      expect(standardVersion).not.toBeCalled();
+      expect(mockPublishA).not.toBeCalled();
+      expect(mockPublishB).not.toBeCalled();
+      expect(context.logger.error).toBeCalledWith(
+        expect.stringContaining('Error: Skipping version')
+      );
+    });
+
+    it('should release before publishing', async () => {
+      await runBuilder(
+        { ...options, plugins: ['@mock-plugin/A'] },
+        context
+      ).toPromise();
+
+      expect(standardVersion).toHaveBeenCalledBefore(mockPublishA);
     });
   });
 });
