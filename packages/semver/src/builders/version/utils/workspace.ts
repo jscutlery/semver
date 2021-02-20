@@ -1,4 +1,4 @@
-import { BuilderContext } from '@angular-devkit/architect';
+import { BuilderContext, targetFromTargetString } from '@angular-devkit/architect';
 import { resolve } from 'path';
 import { defer, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -29,15 +29,24 @@ export function getProjectRoot(context: BuilderContext): Observable<string> {
 
 export function getOutputPath(context: BuilderContext): Observable<string> {
   return defer(async () => {
-    const targetOptions = (await context.getTargetOptions({
-      project: context.target.project,
-      target: 'build',
-    })) as Record<string, string>;
+    let targetOptions: Record<string, string>;
+
+    try {
+      targetOptions = (await context.getTargetOptions(
+        targetFromTargetString(`${context.target.project}:build`)
+      )) as Record<string, string>;
+    } catch (error) {
+      throw new Error(
+        `Could not find target: ${context.target.project}:build`
+      );
+    }
 
     const outputPath = targetOptions.outputPath;
 
     if (outputPath == null) {
-      throw new Error(`Could not find 'outputPath' option for target: ${context.target.project}:build`);
+      throw new Error(
+        `Could not find 'outputPath' option for target: ${context.target.project}:build`
+      );
     }
 
     return resolve(context.workspaceRoot, outputPath);
