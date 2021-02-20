@@ -1,14 +1,10 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { EMPTY, forkJoin, from, Observable, throwError, of } from 'rxjs';
+import { resolve } from 'path';
+import { EMPTY, forkJoin, from, Observable, of, throwError } from 'rxjs';
 import { concatMap, map, mergeMap } from 'rxjs/operators';
 
-import {
-  PluginDef,
-  PluginOptions,
-  SemverOptions,
-  SemverPlugin,
-} from './plugin';
-import { PluginFactory } from './plugin-factory';
+import { PluginDef, PluginOptions, SemverOptions, SemverPlugin } from './plugin';
+import { PluginFactory, UnknownPlugin } from './plugin-factory';
 import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
 
@@ -35,7 +31,7 @@ export class PluginHandler {
   }) {
     this._options = options;
     this._context = context;
-    this._plugins = _loadPlugins(plugins);
+    this._plugins = _loadPlugins(plugins, context);
   }
 
   validate(): Observable<boolean> {
@@ -105,9 +101,9 @@ export function createPluginHandler({
   return new PluginHandler({ plugins, options, context });
 }
 
-export function _loadPlugins(pluginDefinition: PluginDef[]): PluginMap {
+export function _loadPlugins(pluginDefinition: PluginDef[], context: BuilderContext): PluginMap {
   return pluginDefinition.map<[SemverPlugin, PluginOptions]>((pluginDef) => [
-    _load(pluginDef),
+    _load(pluginDef, context),
     _getPluginOptions(pluginDef),
   ]);
 }
@@ -120,10 +116,19 @@ export function _getPluginOptions(pluginDef: PluginDef): PluginOptions {
   return typeof pluginDef === 'string' ? {} : pluginDef.options ?? {};
 }
 
-export function _load(pluginDef: PluginDef): SemverPlugin {
+export function _load(pluginDef: PluginDef, { workspaceRoot }: { workspaceRoot: string }): SemverPlugin {
   const name = _getModule(pluginDef);
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const plugin = require(name);
+
+  let plugin: UnknownPlugin;
+  try {
+    plugin = require(name);
+  } catch (error) {
+    plugin = require(resolve(workspaceRoot, 'node_modules', name))
+  }
+
+  if (plugin == null) {
+    throw new Error(`Could not resolve plugin: ${name}`);
+  }
 
   return PluginFactory.create({ name, plugin });
 }
