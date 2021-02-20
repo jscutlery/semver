@@ -61,11 +61,14 @@ export class PluginHandler {
       mergeMap((semverOptions) =>
         from(this._plugins).pipe(
           concatMap(([plugin, pluginOptions]) => {
-            const hookFn = plugin[hook];
-            if (typeof hookFn !== 'function') {
+            if (typeof plugin[hook] !== 'function') {
               return EMPTY;
             }
-            return hookFn(semverOptions, pluginOptions);
+            const hookFn = plugin[hook].bind(plugin, [
+              semverOptions,
+              pluginOptions,
+            ]);
+            return from(hookFn());
           })
         )
       )
