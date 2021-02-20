@@ -1,11 +1,11 @@
 import { Observable } from 'rxjs';
 
 import { SemverOptions, SemverPlugin } from './plugin';
-import { PluginFactory } from './plugin-factory';
+import { PluginFactory, SemanticReleasePluginAdapter } from './plugin-factory';
 
 jest.mock('./utils/filesystem');
 
-describe('PluginFactory', () => {
+describe(PluginFactory.name, () => {
   const semverOptions: SemverOptions = {
     projectRoot: '/root/packages/lib',
     packageRoot: '/root/dist/packages/lib',
@@ -34,7 +34,7 @@ describe('PluginFactory', () => {
     });
   });
 
-  describe('SemanticReleasePluginAdapter.publish', () => {
+  describe(SemanticReleasePluginAdapter.name, () => {
     it(`should call semantic-release 'addChannel' and 'publish' hooks`, async () => {
       await (plugin.publish(semverOptions) as Observable<unknown>).toPromise();
 
@@ -92,49 +92,46 @@ describe('PluginFactory', () => {
     });
   });
 
-  describe('SemanticReleasePluginAdapter.validate', () => {
-    it(`should handle semantic-release 'verifyOptions' failure`, async () => {
-      semanticPluginSpy.verifyConditions.mockRejectedValue('failure');
+  it(`should handle semantic-release 'verifyOptions' failure`, async () => {
+    semanticPluginSpy.verifyConditions.mockRejectedValue('failure');
 
-      expect(
-        await (plugin.validate(
-          semverOptions
-        ) as Observable<boolean>).toPromise()
-      ).toBe(false);
-    });
+    try {
+      await(plugin.validate(semverOptions) as Observable<boolean>).toPromise();
+      fail();
+    } catch (error) {
+      expect(error).toBe('failure');
+    }
+  });
 
-    it(`should handle semantic-release 'verifyOptions' success`, async () => {
-      semanticPluginSpy.verifyConditions.mockResolvedValue('success');
+  it(`should handle semantic-release 'verifyOptions' success`, async () => {
+    semanticPluginSpy.verifyConditions.mockResolvedValue('success');
 
-      expect(
-        await (plugin.validate(
-          semverOptions
-        ) as Observable<boolean>).toPromise()
-      ).toBe(true);
-    });
+    expect(
+      await (plugin.validate(semverOptions) as Observable<boolean>).toPromise()
+    ).toBe('success');
+  });
 
-    it(`should call semantic-release 'verifyOptions' hook with right options`, async () => {
-      await (plugin.validate(semverOptions) as Observable<boolean>).toPromise();
+  it(`should call semantic-release 'verifyOptions' hook with right options`, async () => {
+    await (plugin.validate(semverOptions) as Observable<boolean>).toPromise();
 
-      expect(semanticPluginSpy.verifyConditions).toBeCalledWith(
-        expect.objectContaining({
-          pkgRoot: '/root/dist/packages/lib',
-          npmPublish: true,
+    expect(semanticPluginSpy.verifyConditions).toBeCalledWith(
+      expect.objectContaining({
+        pkgRoot: '/root/dist/packages/lib',
+        npmPublish: true,
+      }),
+      expect.objectContaining({
+        cwd: '/root/packages/lib',
+        env: expect.any(Object),
+        stderr: expect.anything(),
+        stdout: expect.anything(),
+        logger: expect.objectContaining({
+          log: expect.any(Function),
         }),
-        expect.objectContaining({
-          cwd: '/root/packages/lib',
-          env: expect.any(Object),
-          stderr: expect.anything(),
-          stdout: expect.anything(),
-          logger: expect.objectContaining({
-            log: expect.any(Function),
-          }),
-          nextRelease: expect.objectContaining({
-            version: '0.0.1', // @todo test dist tag / channel
-          }),
-        })
-      );
-    });
+        nextRelease: expect.objectContaining({
+          version: '0.0.1', // @todo test dist tag / channel
+        }),
+      })
+    );
   });
 
   it(`should fail for unsupported plugin`, async () => {

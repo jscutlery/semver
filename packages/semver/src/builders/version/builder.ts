@@ -1,6 +1,6 @@
 import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
-import { concat, defer, forkJoin, Observable, of, throwError } from 'rxjs';
-import { catchError, every, mapTo, mergeMap, shareReplay, switchMap } from 'rxjs/operators';
+import { concat, defer, forkJoin, Observable, of } from 'rxjs';
+import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
 import { createPluginHandler } from './plugin-handler';
 import { VersionBuilderSchema } from './schema';

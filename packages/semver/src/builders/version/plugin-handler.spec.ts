@@ -1,7 +1,7 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { of } from 'rxjs';
 
-import { createPluginHandler } from './plugin-handler';
+import { createPluginHandler, PluginHandler } from './plugin-handler';
 import { createFakeContext } from './testing';
 import { CommonVersionOptions } from './version';
 
@@ -75,7 +75,7 @@ jest.mock(
   }
 );
 
-describe('PluginHandler', () => {
+describe(PluginHandler.name, () => {
   const options: CommonVersionOptions = {
     dryRun: false,
     noVerify: false,

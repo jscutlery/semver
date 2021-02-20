@@ -64,10 +64,10 @@ export class PluginHandler {
             if (typeof plugin[hook] !== 'function') {
               return EMPTY;
             }
-            const hookFn = plugin[hook].bind(plugin, [
+            const hookFn = plugin[hook].bind(plugin,
               semverOptions,
               pluginOptions,
-            ]);
+            );
             return from(hookFn());
           })
         )

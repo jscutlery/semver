@@ -336,7 +336,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should abort when validation hook failed', async () => {
-      mockValidateA.mockResolvedValue(false);
+      mockValidateA.mockRejectedValue(new Error('Validation failure'));
 
       const { success } = await runBuilder(
         { ...options, plugins: ['@mock-plugin/A', '@mock-plugin/B'] },
@@ -348,7 +348,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockPublishA).not.toBeCalled();
       expect(mockPublishB).not.toBeCalled();
       expect(context.logger.error).toBeCalledWith(
-        expect.stringContaining('Error: Skipping version')
+        expect.stringContaining('Error: Validation failure')
       );
     });
 
