@@ -43,7 +43,28 @@
     "plugins": {
       "description": "Configurable plugins to extend release capabilities.",
       "type": "array",
-      "default": []
+      "default": [],
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "The module to import."
+          },
+          {
+            "type": "object",
+            "properties": {
+              "module": {
+                "type": "string",
+                "description": "The module to import."
+              },
+              "options": {
+                "type": "object",
+                "description": "The plugin option."
+              }
+            }
+          }
+        ]
+      }
     }
   },
   "required": []
