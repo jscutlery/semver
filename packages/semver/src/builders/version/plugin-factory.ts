@@ -1,5 +1,4 @@
-import { concat, defer, Observable, of } from 'rxjs';
-import { catchError, mapTo } from 'rxjs/operators';
+import { concat, defer, Observable } from 'rxjs';
 
 import { PluginType, SemverOptions, SemverPlugin } from './plugin';
 
@@ -19,6 +18,7 @@ export interface SemanticReleaseContext {
   stderr: NodeJS.WriteStream;
   nextRelease: { version: string; channel?: string };
   logger: { log(msg: string): void };
+  options: Record<string, string | number | boolean>;
 }
 
 export type SemanticReleasePluginOptions = [
@@ -56,9 +56,6 @@ export class SemanticReleasePluginAdapter implements SemverPlugin {
   validate(semverOptions: SemverOptions): Observable<boolean> {
     return defer(() =>
       this._nativePlugin.verifyConditions(..._createOptions(semverOptions))
-    ).pipe(
-      mapTo(true),
-      catchError(() => of(false))
     );
   }
 }
@@ -72,6 +69,7 @@ export function _createOptions(
       pkgRoot: semverOptions.packageRoot,
     },
     {
+      options: { publish: semverOptions.dryRun === false },
       cwd: semverOptions.projectRoot,
       env: process.env,
       stdout: process.stdout,

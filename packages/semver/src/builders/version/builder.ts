@@ -52,16 +52,8 @@ export function runBuilder(
       const pluginHandler = createPluginHandler({ plugins, options, context });
 
       /* 1. Validate */
-      const validate$ = defer(() => pluginHandler.validate()).pipe(
-        every((valid) => valid === true),
-        mergeMap((valid) =>
-          valid === true
-            ? of(true)
-            : throwError(
-                new Error(`Skipping version, one 'validate' hook failed`)
-              )
-        )
-      );
+      const validate$ = defer(() => pluginHandler.validate());
+
       /* 2. Version */
       const runStandardVersion$ = defer(() =>
         syncVersions
