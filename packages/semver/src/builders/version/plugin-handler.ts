@@ -3,7 +3,12 @@ import { resolve } from 'path';
 import { EMPTY, forkJoin, from, Observable, of, throwError } from 'rxjs';
 import { concatMap, map, mergeMap } from 'rxjs/operators';
 
-import { PluginDef, PluginOptions, SemverOptions, SemverPlugin } from './plugin';
+import {
+  PluginDef,
+  PluginOptions,
+  SemverOptions,
+  SemverPlugin,
+} from './plugin';
 import { PluginFactory, UnknownPlugin } from './plugin-factory';
 import { getOutputPath, getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions } from './version';
@@ -64,9 +69,10 @@ export class PluginHandler {
             if (typeof plugin[hook] !== 'function') {
               return EMPTY;
             }
-            const hookFn = plugin[hook].bind(plugin,
+            const hookFn = plugin[hook].bind(
+              plugin,
               semverOptions,
-              pluginOptions,
+              pluginOptions
             );
             return from(hookFn());
           })
@@ -104,7 +110,10 @@ export function createPluginHandler({
   return new PluginHandler({ plugins, options, context });
 }
 
-export function _loadPlugins(pluginDefinition: PluginDef[], context: BuilderContext): PluginMap {
+export function _loadPlugins(
+  pluginDefinition: PluginDef[],
+  context: BuilderContext
+): PluginMap {
   return pluginDefinition.map<[SemverPlugin, PluginOptions]>((pluginDef) => [
     _load(pluginDef, context),
     _getPluginOptions(pluginDef),
@@ -119,14 +128,17 @@ export function _getPluginOptions(pluginDef: PluginDef): PluginOptions {
   return typeof pluginDef === 'string' ? {} : pluginDef.options ?? {};
 }
 
-export function _load(pluginDef: PluginDef, { workspaceRoot }: { workspaceRoot: string }): SemverPlugin {
+export function _load(
+  pluginDef: PluginDef,
+  { workspaceRoot }: { workspaceRoot: string }
+): SemverPlugin {
   const name = _getModule(pluginDef);
 
   let plugin: UnknownPlugin;
   try {
     plugin = require(name);
-  } catch (error) {
-    plugin = require(resolve(workspaceRoot, 'node_modules', name))
+  } catch {
+    plugin = require(resolve(workspaceRoot, 'node_modules', name));
   }
 
   if (plugin == null) {
