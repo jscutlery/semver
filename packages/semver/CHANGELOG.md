@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.2](https://github.com/jscutlery/nx-plugin-semver/compare/semver-1.3.1...semver-1.3.2) (2021-02-22)
+
+
+### Bug Fixes
+
+* 🐞 don't silently fail when error is an object ([0e8199d](https://github.com/jscutlery/nx-plugin-semver/commit/0e8199de0f4890309930659e402f7145545689e8))
+* 📦 update dependency @angular-devkit/build-angular to v0.1101.4 ([bbe6d07](https://github.com/jscutlery/nx-plugin-semver/commit/bbe6d07d62891cc8e7dca7ae2886bbfd9b8f92da))
+
+
+
 ## [1.3.1](https://github.com/jscutlery/semver/compare/semver-1.3.0...semver-1.3.1) (2021-02-02)
 
 
