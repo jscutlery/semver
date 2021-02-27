@@ -14,7 +14,7 @@
     "save": "devDependencies"
   },
   "dependencies": {
-    "@angular-devkit/build-angular": "0.1102.1",
+    "@angular-devkit/build-angular": "0.1102.2",
     "inquirer": "^7.3.3",
     "standard-version": "^9.0.0"
   },
