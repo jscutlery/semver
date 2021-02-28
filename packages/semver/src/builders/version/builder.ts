@@ -19,6 +19,7 @@ export function runBuilder(
     syncVersions,
     rootChangelog,
     plugins,
+    version, preid,
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
@@ -30,7 +31,10 @@ export function runBuilder(
     shareReplay({ refCount: true, bufferSize: 1 })
   );
   const newVersion$ = projectRoot$.pipe(
-    switchMap((projectRoot) => tryBump({ preset, projectRoot, tagPrefix }))
+    switchMap((projectRoot) => tryBump({
+      preset, projectRoot, tagPrefix,
+      releaseType: version || null, preid: preid || null,
+    }))
   );
 
   const action$ = forkJoin([projectRoot$, newVersion$]).pipe(

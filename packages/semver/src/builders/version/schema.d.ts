@@ -11,4 +11,6 @@ export interface VersionBuilderSchema extends JsonObject {
   syncVersions?: boolean;
   rootChangelog?: boolean;
   plugins?: PluginDef[];
+  version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
+  preid?: string;
 }

@@ -13,10 +13,14 @@ export function tryBump({
   preset,
   projectRoot,
   tagPrefix,
+  releaseType,
+  preid,
 }: {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
+  releaseType: string;
+  preid: string;
 }): Observable<string> {
   const version$ = getCurrentVersion({
     projectRoot,
@@ -47,14 +51,21 @@ export function tryBump({
       /* Compute new version. */
       return defer(async () => {
         /* Compute release type depending on commits. */
-        const { releaseType } = await promisify(conventionalRecommendedBump)({
-          path: projectRoot,
-          preset,
-          tagPrefix,
-        });
+        if (!releaseType) {
+          const recommended = await promisify(conventionalRecommendedBump)({
+            path: projectRoot,
+            preset,
+            tagPrefix,
+          });
+          releaseType = recommended.releaseType;
+        }
 
         /* Compute new version depending on release type. */
-        return semver.inc(version, releaseType);
+        if (['premajor', 'preminor', 'prepatch', 'prerelease'].includes(releaseType) && preid) {
+          return semver.inc(version, releaseType, preid);
+        } else {
+          return semver.inc(version, releaseType);
+        }
       });
     })
   );
