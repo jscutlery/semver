@@ -44,6 +44,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "chigix",
+      "name": "Richard Lea",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2692787?v=4",
+      "profile": "http://chigix.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
