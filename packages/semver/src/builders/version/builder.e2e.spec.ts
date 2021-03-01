@@ -441,7 +441,197 @@ $`)
       );
     });
   });
+
+  describe('workspace with --version=major', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await runBuilder(
+        {
+          ...defaultBuilderOptions,
+          syncVersions: true,
+          version: 'major',
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it('should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    it('should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
+    it('should bump root package.json', async () => {
+      expect((await readPackageJson('.').toPromise()).version).toEqual('1.0.0');
+    });
+
+    it(`should bump "a"'s package.json`, async () => {
+      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+        '1.0.0'
+      );
+    });
+
+    it('should generate root changelog', async () => {
+      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+# 1.0.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+    });
+
+    it('should generate sub-changelogs', async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+# 1.0.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+# 1.0.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+$`)
+      );
+    });
+  });
+
+  describe('workspace with --version=prerelease --preid=beta', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await runBuilder(
+        {
+          ...defaultBuilderOptions,
+          syncVersions: true,
+          version: 'prerelease',
+          preid: 'beta',
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it('should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    it('should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
+    it('should bump root package.json', async () => {
+      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.1-beta.0');
+    });
+
+    it(`should bump "a"'s package.json`, async () => {
+      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+        '0.0.1-beta.0'
+      );
+    });
+
+    it('should generate root changelog', async () => {
+      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+## 0.0.1-beta.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+    });
+
+    it('should generate sub-changelogs', async () => {
+      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+## 0.0.1-beta.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+      );
+
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+## 0.0.1-beta.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+$`)
+      );
+    });
+  });
 });
+
 
 function commitChanges() {
   execSync(
