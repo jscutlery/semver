@@ -65,6 +65,19 @@ Release multiple projects at once:
 nx run workspace:version [...options]
 ```
 
+#### Specified Level Change
+
+Release a project with a version that is incremented by a specified level.
+Level can be one of: `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, or `prerelease`:
+
+```
+nx run workspace:version --version=major
+nx run workspace:version --version=minor
+nx run workspace:version --version=patch
+nx run workspace:version --version=prerelease --preid=alpha
+nx run workspace:version --version=prerelease --preid=beta
+```
+
 #### When run, this command does the following:
 
 1. Retrieve the current version of affected `package.json` projects.
@@ -85,6 +98,8 @@ nx run workspace:version [...options]
 | **`--root-changelog`** | `boolean` | `true`     | generate root CHANGELOG containing all changes |
 | **`--origin`**         | `string`  | `'origin'` | push against git remote repository             |
 | **`--base-branch`**    | `string`  | `'main'`   | push against git base branch                   |
+| **`--version`**    | `string`  | `null`   | The level of change                   |
+| **`--preid`**    | `string`  | `null`   | Prerelease identifier               |
 
 ## Changelog
 
