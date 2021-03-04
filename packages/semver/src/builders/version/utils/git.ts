@@ -79,3 +79,8 @@ export function tryPushToGitRemote({
     );
   });
 }
+
+export function gitAdd(paths: string[], dryRun = false): Observable<{ stderr: string, stdout: string}> {
+  console.log(paths);
+  return defer(() => execAsync('git', ['add', ...paths]));
+}

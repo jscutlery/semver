@@ -38,8 +38,6 @@ export function updateChangelog({
       },
       newVersion
     );
-    if (!dryRun) {
-      await promisify(execFile)('git', ['add', changelogPath]);
-    }
+    return changelogPath;
   });
 }
