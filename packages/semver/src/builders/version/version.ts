@@ -7,6 +7,7 @@ import {
   getChangelogPath,
   updateChangelog,
 } from './utils/changelog';
+import { gitAdd } from './utils/git';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 export interface CommonVersionOptions {
@@ -44,7 +45,8 @@ export function versionWorkspace({
                 })
               )
           )
-        )
+        ),
+        switchMap((changelogPaths) => gitAdd(changelogPaths))
       ),
       getPackageFiles(workspaceRoot).pipe(
         switchMap((packageFiles) =>
