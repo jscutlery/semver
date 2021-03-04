@@ -1,7 +1,5 @@
-import { execFile } from 'child_process';
 import { resolve } from 'path';
 import { defer } from 'rxjs';
-import { promisify } from 'util';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import * as standardVersionDefaults from 'standard-version/defaults';
 
