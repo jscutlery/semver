@@ -46,7 +46,8 @@ export function versionWorkspace({
               )
           )
         ),
-        switchMap((changelogPaths) => gitAdd(changelogPaths))
+        /* Run Git add only once, after changelogs get generated in parallel. */
+        switchMap((changelogPaths) => gitAdd(changelogPaths, options.dryRun))
       ),
       getPackageFiles(workspaceRoot).pipe(
         switchMap((packageFiles) =>

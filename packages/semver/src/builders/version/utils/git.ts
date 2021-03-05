@@ -82,7 +82,7 @@ export function tryPushToGitRemote({
 
 export function gitAdd(
   paths: string[],
-  dryRun = false
+  dryRun: boolean
 ): Observable<{ stderr: string; stdout: string }> {
   return defer(() => {
     const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
