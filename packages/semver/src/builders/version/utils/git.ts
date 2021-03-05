@@ -79,3 +79,13 @@ export function tryPushToGitRemote({
     );
   });
 }
+
+export function gitAdd(
+  paths: string[],
+  dryRun: boolean
+): Observable<{ stderr: string; stdout: string }> {
+  return defer(() => {
+    const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
+    return execAsync('git', ['add', ...gitAddOptions]);
+  });
+}

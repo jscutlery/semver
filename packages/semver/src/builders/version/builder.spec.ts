@@ -61,6 +61,9 @@ describe('@jscutlery/semver:version', () => {
   const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
     typeof git.tryPushToGitRemote
   >;
+  const mockGitAdd = git.gitAdd as jest.MockedFunction<
+    typeof git.gitAdd
+  >;
   const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
   const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
   const mockStandardVersion = standardVersion as jest.MockedFunction<
@@ -92,6 +95,7 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
+    jest.spyOn(git, 'gitAdd').mockReturnValue(of(undefined));
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -123,6 +127,7 @@ describe('@jscutlery/semver:version', () => {
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
     mockTryPushToGitRemote.mockRestore();
+    mockGitAdd.mockRestore();
     mockExecFile.mockRestore();
     mockChangelog.mockRestore();
     mockStandardVersion.mockRestore();
@@ -263,6 +268,25 @@ describe('@jscutlery/semver:version', () => {
         '⏹ nothing changed since last release'
       );
       expect(standardVersion).not.toBeCalled();
+    });
+
+    it('should add files to Git stage only once', async () => {
+      await runBuilder(
+        {
+          ...options,
+          syncVersions: true,
+        },
+        context
+      ).toPromise();
+
+      expect(mockGitAdd).toBeCalledTimes(1);
+      expect(mockGitAdd).toBeCalledWith(
+        expect.arrayContaining([
+          '/root/packages/a/CHANGELOG.md',
+          '/root/packages/b/CHANGELOG.md',
+        ]),
+        false
+      );
     });
   });
 
