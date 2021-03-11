@@ -62,6 +62,10 @@ export class PluginHandler {
   }
 
   private _handle(hook: Hook): Observable<unknown> {
+    if (this._plugins.length === 0) {
+      return EMPTY;
+    }
+
     return this._getSemverOptions().pipe(
       mergeMap((semverOptions) =>
         from(this._plugins).pipe(
