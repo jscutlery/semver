@@ -19,7 +19,8 @@ export function runBuilder(
     syncVersions,
     rootChangelog,
     plugins,
-    version, preid,
+    version,
+    preid,
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
@@ -33,7 +34,8 @@ export function runBuilder(
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({
       preset, projectRoot, tagPrefix,
-      releaseType: version || null, preid: preid || null,
+      releaseType: version,
+      preid
     }))
   );
 
