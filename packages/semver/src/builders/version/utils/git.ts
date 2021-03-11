@@ -1,6 +1,6 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { defer, Observable, throwError } from 'rxjs';
-import { catchError, last, scan, startWith } from 'rxjs/operators';
+import { defer, Observable, of, throwError } from 'rxjs';
+import { catchError, last, scan, startWith, switchMap, tap } from 'rxjs/operators';
 
 import { execAsync } from './exec-async';
 
@@ -39,13 +39,15 @@ export function tryPushToGitRemote({
   branch: string;
   noVerify: boolean;
 }): Observable<{
-    stderr: string;
-    stdout: string;
+  stderr: string;
+  stdout: string;
 }> {
   return defer(() => {
     if (remote == null || branch == null) {
       return throwError(
-        new Error('Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure')
+        new Error(
+          'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
+        )
       );
     }
 
@@ -65,11 +67,9 @@ export function tryPushToGitRemote({
         if (
           /atomic/.test(error.stderr) ||
           (process.env.GIT_REDIRECT_STDERR === '2>&1' &&
-          /atomic/.test(error.stdout))
-          ) {
-          console.warn(
-            'git push --atomic failed, attempting non-atomic push'
-          );
+            /atomic/.test(error.stdout))
+        ) {
+          console.warn('git push --atomic failed, attempting non-atomic push');
 
           return execAsync('git', ['push', ...gitPushOptions, remote, branch]);
         }
@@ -88,4 +88,22 @@ export function gitAdd(
     const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
     return execAsync('git', ['add', ...gitAddOptions]);
   });
+}
+
+export function getLastTag(): Observable<string> {
+  return execAsync('git', ['describe', '--tags', '--abbrev=0']).pipe(
+    switchMap(({ stdout }) =>
+      stdout ? of(stdout) : throwError(new Error('No tag found'))
+    ),
+    tap((tag) => {
+      console.warn(`🟠 No semver tag found, fallback since: ${tag}`);
+    })
+  );
+}
+
+export function getFirstCommit(): Observable<string> {
+  return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
+    /**                                 Remove line breaks. */
+    switchMap(({ stdout }) => of(stdout.replace(/\r?\n|\r/, '')))
+  );
 }

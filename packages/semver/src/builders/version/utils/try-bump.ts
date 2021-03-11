@@ -1,10 +1,11 @@
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import * as semver from 'semver';
-import { defer, forkJoin, Observable, of } from 'rxjs';
+import { defer, forkJoin, iif, Observable, of } from 'rxjs';
 import { shareReplay, switchMap } from 'rxjs/operators';
+import * as semver from 'semver';
 import { promisify } from 'util';
+
 import { getCurrentVersion } from './get-current-version';
-import { getCommits } from './git';
+import { getCommits, getFirstCommit } from './git';
 
 /**
  * Return new version or null if nothing changed.
@@ -22,8 +23,7 @@ export function tryBump({
   releaseType: string | null;
   preid: string | null;
 }): Observable<string> {
-  const version$ = getCurrentVersion({
-    projectRoot,
+  const since$ = getCurrentVersion({
     tagPrefix,
   }).pipe(
     shareReplay({
@@ -32,47 +32,81 @@ export function tryBump({
     })
   );
 
-  const commits$ = version$.pipe(
-    switchMap((version) =>
+  const sinceGitRef$ = since$.pipe(
+    /** 0.0.0 means no tag exist, so get the first commit ref. */
+    switchMap((since) =>  iif(() => since === '0.0.0', getFirstCommit(), of(since)))
+  );
+
+  const commits$ = sinceGitRef$.pipe(
+    switchMap((since) =>
       getCommits({
         projectRoot,
-        since: version !== '0.0.0' ? `${tagPrefix}${version}` : null,
+        since,
       })
     )
   );
 
-  return forkJoin([version$, commits$]).pipe(
-    switchMap(([version, commits]) => {
+  return forkJoin([since$, commits$]).pipe(
+    switchMap(([since, commits]) => {
       /* No commits since last release so don't bump. */
       if (commits.length === 0) {
         return of(null);
       }
 
-      /* Compute new version. */
-      return defer(async () => {
-        /* Compute release type depending on commits. */
-        if (releaseType == null) {
-          const recommended = await promisify(conventionalRecommendedBump)({
-            path: projectRoot,
-            preset,
-            tagPrefix,
-          });
+      if (releaseType !== null) {
+        return _manualBump({ since, releaseType, preid });
+      }
 
-          releaseType = recommended.releaseType;
-        }
-
-        /* Compute new version depending on release type. */
-        if (
-          ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
-            releaseType
-          ) &&
-          preid
-        ) {
-          return semver.inc(version, releaseType, preid);
-        } else {
-          return semver.inc(version, releaseType);
-        }
-      });
+      return _semverBump({ since, preset, projectRoot, tagPrefix });
     })
   );
+}
+
+export function _semverBump({
+  since,
+  preset,
+  projectRoot,
+  tagPrefix,
+}: {
+  since: string;
+  preset: string;
+  projectRoot: string;
+  tagPrefix: string;
+}): Observable<string> {
+  return defer(async () => {
+    const recommended = await promisify(conventionalRecommendedBump)({
+      path: projectRoot,
+      preset,
+      tagPrefix,
+    });
+    const { releaseType } = recommended;
+    const newVersion = semver.inc(since, releaseType);
+    console.log({ recommended, newVersion });
+    return newVersion;
+  });
+}
+
+export function _manualBump({
+  since,
+  releaseType,
+  preid,
+}: {
+  since: string;
+  releaseType: string;
+  preid: string;
+}): Observable<string> {
+  return defer<string>(() => {
+    const hasPreid =
+      ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
+        releaseType
+      ) && preid !== null;
+
+    const semverArgs: string[] = [
+      since,
+      releaseType,
+      ...(hasPreid ? [preid] : []),
+    ];
+
+    return semver.inc(...semverArgs);
+  });
 }
