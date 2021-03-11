@@ -33,7 +33,9 @@ export function runBuilder(
   );
   const newVersion$ = projectRoot$.pipe(
     switchMap((projectRoot) => tryBump({
-      preset, projectRoot, tagPrefix,
+      preset,
+      projectRoot,
+      tagPrefix,
       releaseType: version,
       preid
     }))
@@ -42,7 +44,7 @@ export function runBuilder(
   const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) => {
       if (newVersion == null) {
-        console.info('⏹ nothing changed since last release');
+        console.info('⏹ Nothing changed since last release.');
         return of(undefined);
       }
 
