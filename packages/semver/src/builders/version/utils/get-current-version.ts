@@ -1,3 +1,4 @@
+import { logging } from '@angular-devkit/core';
 import * as gitSemverTags from 'git-semver-tags';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
@@ -6,7 +7,11 @@ import { promisify } from 'util';
 
 import { getLastTag } from './git';
 
-export function getLastSemverTag({ tagPrefix }: { tagPrefix: string }): Observable<string> {
+export function getLastSemverTag({
+  tagPrefix,
+}: {
+  tagPrefix: string;
+}): Observable<string> {
   return from(promisify(gitSemverTags)({ tagPrefix })).pipe(
     switchMap((tags: string[]) => {
       const [version] = tags.sort(semver.rcompare);
@@ -23,26 +28,28 @@ export function getLastSemverTag({ tagPrefix }: { tagPrefix: string }): Observab
 export const defaultTag = 'v';
 
 export function getCurrentVersion({
+  logger,
   tagPrefix = defaultTag,
 }: {
+  logger: logging.LoggerApi;
   tagPrefix?: string;
 }): Observable<string> {
   /* Get last semver tags. */
   return getLastSemverTag({ tagPrefix }).pipe(
-
     /* Fallback to last Git tag. */
     catchError(() =>
       getLastTag().pipe(
         tap((tag) => {
-          console.warn(`🟠 No previous semver tag found, fallback since: ${tag}`);
+          logger.warn(`🟠 No previous semver tag found, fallback from: ${tag}`);
         })
       )
     ),
 
     /* Fallback to 0.0.0 */
     catchError(() => {
-      console.warn('🟠 No previous tag found, fallback to version 0.0.0');
-
+      logger.warn(
+        `🟠 No previous tag found, fallback to version ${tagPrefix}0.0.0`
+      );
       return of(`${tagPrefix}0.0.0`);
     })
   );
