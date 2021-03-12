@@ -80,9 +80,7 @@ export function _semverBump({
       tagPrefix,
     });
     const { releaseType } = recommended;
-    const newVersion = semver.inc(since, releaseType);
-    console.log({ recommended, newVersion });
-    return newVersion;
+    return semver.inc(since, releaseType);
   });
 }
 
