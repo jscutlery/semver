@@ -1,3 +1,4 @@
+import { logging } from '@angular-devkit/core';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, Observable, of } from 'rxjs';
 import { shareReplay, switchMap } from 'rxjs/operators';
@@ -5,7 +6,7 @@ import * as semver from 'semver';
 import { promisify } from 'util';
 
 import { getCurrentVersion } from './get-current-version';
-import { getCommits, getFirstCommit } from './git';
+import { getCommits, getFirstCommitRef } from './git';
 
 /**
  * Return new version or null if nothing changed.
@@ -14,6 +15,7 @@ export function tryBump({
   preset,
   projectRoot,
   tagPrefix,
+  logger,
   releaseType = null,
   preid = null,
 }: {
@@ -22,8 +24,10 @@ export function tryBump({
   tagPrefix: string;
   releaseType: string | null;
   preid: string | null;
+  logger: logging.LoggerApi;
 }): Observable<string> {
   const since$ = getCurrentVersion({
+    logger,
     tagPrefix,
   }).pipe(
     shareReplay({
@@ -33,8 +37,11 @@ export function tryBump({
   );
 
   const sinceGitRef$ = since$.pipe(
-    /** 0.0.0 means no tag exist, so get the first commit ref. */
-    switchMap((since) =>  iif(() => since === '0.0.0', getFirstCommit(), of(since)))
+    /** If since equals 0.0.0 it means no tag exist,
+      * then get the first commit ref to compute the initial version. */
+    switchMap((since) =>
+      iif(() => since === `0.0.0`, getFirstCommitRef(), of(since))
+    )
   );
 
   const commits$ = sinceGitRef$.pipe(
@@ -93,7 +100,7 @@ export function _manualBump({
   releaseType: string;
   preid: string;
 }): Observable<string> {
-  return defer<string>(() => {
+  return defer(() => {
     const hasPreid =
       ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
         releaseType
@@ -105,6 +112,6 @@ export function _manualBump({
       ...(hasPreid ? [preid] : []),
     ];
 
-    return semver.inc(...semverArgs);
+    return of<string>(semver.inc(...semverArgs));
   });
 }

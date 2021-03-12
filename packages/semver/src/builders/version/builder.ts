@@ -37,14 +37,15 @@ export function runBuilder(
       projectRoot,
       tagPrefix,
       releaseType: version,
-      preid
+      preid,
+      logger: context.logger,
     }))
   );
 
   const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
     switchMap(([projectRoot, newVersion]) => {
       if (newVersion == null) {
-        console.info('⏹ Nothing changed since last release.');
+        context.logger.info('⏹ Nothing changed since last release.');
         return of(undefined);
       }
 
