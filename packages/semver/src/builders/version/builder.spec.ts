@@ -164,8 +164,8 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
-      expect(console.info).toBeCalledWith(
-        '⏹ nothing changed since last release'
+      expect(context.logger.info).toBeCalledWith(
+        '⏹ Nothing changed since last release.'
       );
       expect(standardVersion).not.toBeCalled();
     });
@@ -264,8 +264,8 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
 
-      expect(console.info).toBeCalledWith(
-        '⏹ nothing changed since last release'
+      expect(context.logger.info).toBeCalledWith(
+        '⏹ Nothing changed since last release.'
       );
       expect(standardVersion).not.toBeCalled();
     });

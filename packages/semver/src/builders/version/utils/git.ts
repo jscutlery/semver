@@ -98,7 +98,7 @@ export function getLastTag(): Observable<string> {
   );
 }
 
-export function getFirstCommit(): Observable<string> {
+export function getFirstCommitRef(): Observable<string> {
   return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     /**                                 Remove line breaks. */
     switchMap(({ stdout }) => of(stdout.replace(/\r?\n|\r/, '')))

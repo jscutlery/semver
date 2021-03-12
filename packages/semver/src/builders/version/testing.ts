@@ -1,4 +1,5 @@
 import { BuilderContext } from '@angular-devkit/architect';
+import { logging } from '@angular-devkit/core';
 import { mkdirSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import * as rimraf from 'rimraf';
@@ -45,8 +46,16 @@ export function setupTestingWorkspace(
   };
 }
 
-export function createFakeLogger() {
-  return { error: jest.fn(), info: jest.fn(), warn: jest.fn() };
+export function createFakeLogger(): logging.LoggerApi {
+  return {
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    createChild: jest.fn(),
+    log: jest.fn(),
+    debug: jest.fn(),
+    fatal: jest.fn(),
+  };
 }
 
 export function createFakeContext({
@@ -60,7 +69,9 @@ export function createFakeContext({
 }): BuilderContext {
   return {
     getProjectMetadata: jest.fn().mockReturnValue({ root: projectRoot }),
-    getTargetOptions: jest.fn().mockResolvedValue({ outputPath: `dist/packages/${project}` }),
+    getTargetOptions: jest
+      .fn()
+      .mockResolvedValue({ outputPath: `dist/packages/${project}` }),
     logger: createFakeLogger(),
     reportStatus: jest.fn(),
     target: {

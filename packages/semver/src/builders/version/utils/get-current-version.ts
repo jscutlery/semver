@@ -27,6 +27,10 @@ export function getLastSemverTag({
 
 export const defaultTag = 'v';
 
+/**
+ * Returns a valid git tag that we can use as a ref for version comparison.
+ * Otherwise it returns '0.0.0'.
+ */
 export function getCurrentVersion({
   logger,
   tagPrefix = defaultTag,
@@ -48,9 +52,9 @@ export function getCurrentVersion({
     /* Fallback to 0.0.0 */
     catchError(() => {
       logger.warn(
-        `🟠 No previous tag found, fallback to version ${tagPrefix}0.0.0`
+        '🟠 No previous tag found, fallback to version 0.0.0'
       );
-      return of(`${tagPrefix}0.0.0`);
+      return of('0.0.0');
     })
   );
 }

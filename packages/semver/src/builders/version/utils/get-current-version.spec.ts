@@ -1,3 +1,4 @@
+import { logging } from '@angular-devkit/core';
 import * as gitSemverTags from 'git-semver-tags';
 import { of, throwError } from 'rxjs';
 import { callbackify } from 'util';
@@ -14,7 +15,7 @@ const tagPrefix = 'v';
 
 describe('getCurrentVersion', () => {
   let mockGitSemverTags: jest.Mock;
-  let logger;
+  let logger: logging.LoggerApi;
 
   beforeEach(() => {
     mockGitSemverTags = jest.fn();
@@ -52,6 +53,6 @@ describe('getCurrentVersion', () => {
     const version = await getCurrentVersion({ tagPrefix, logger }).toPromise();
 
     expect(logger.warn).toBeCalled();
-    expect(version).toEqual('v0.0.0');
+    expect(version).toEqual('0.0.0');
   });
 });
