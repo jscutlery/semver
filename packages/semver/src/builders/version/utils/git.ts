@@ -90,7 +90,6 @@ export function gitAdd(
   });
 }
 
-/* istanbul ignore function */
 export function getLastTag(): Observable<string> {
   return execAsync('git', ['describe', '--tags', '--abbrev=0']).pipe(
     switchMap(({ stdout }) =>
@@ -99,7 +98,6 @@ export function getLastTag(): Observable<string> {
   );
 }
 
-/* istanbul ignore function */
 export function getFirstCommitRef(): Observable<string> {
   return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     /**                                 Remove line breaks. */
