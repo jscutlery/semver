@@ -1,8 +1,9 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { PassThrough } from 'stream';
 import { of, throwError } from 'rxjs';
-import { getCommits, tryPushToGitRemote } from './git';
+import { PassThrough } from 'stream';
+
 import * as cp from './exec-async';
+import { getCommits, getFirstCommitRef, getLastTag, tryPushToGitRemote } from './git';
 
 jest.mock('git-raw-commits', () => jest.fn());
 jest.mock('./exec-async');
@@ -115,9 +116,7 @@ describe('git.getCommits', () => {
     it(`should throw if Git push failed`, async () => {
       jest
         .spyOn(cp, 'execAsync')
-        .mockReturnValue(
-          throwError({ stderr: 'failed', stdout: '' })
-        );
+        .mockReturnValue(throwError({ stderr: 'failed', stdout: '' }));
 
       try {
         await tryPushToGitRemote({
@@ -146,5 +145,51 @@ describe('git.getCommits', () => {
         expect(error.message).toContain('Missing Git options');
       }
     });
-  })
+  });
 });
+
+describe('git.getLastTag', () => {
+  it('should get last git commit', async () => {
+    jest
+      .spyOn(cp, 'execAsync')
+      .mockReturnValue(of({ stderr: '', stdout: '0.0.0' }));
+
+    const tag = await getLastTag().toPromise();
+
+    expect(tag).toBe('0.0.0');
+    expect(cp.execAsync).toBeCalledWith(
+      'git',
+      expect.arrayContaining(['describe', '--tags', '--abbrev=0'])
+    );
+  });
+
+  it('should throw on failure', async () => {
+    jest
+      .spyOn(cp, 'execAsync')
+      .mockReturnValue(of({ stderr: 'error', stdout: '' }));
+
+    try {
+      await getLastTag().toPromise();
+      fail();
+    } catch (error) {
+      expect(error.message).toBe('No tag found');
+    }
+  });
+});
+
+describe('git.getFirstCommitRef', () => {
+  it('should get last git commit', async () => {
+    jest
+      .spyOn(cp, 'execAsync')
+      .mockReturnValue(of({ stderr: '', stdout: 'sha1\n' }));
+
+    const tag = await getFirstCommitRef().toPromise();
+
+    expect(tag).toBe('sha1');
+    expect(cp.execAsync).toBeCalledWith(
+      'git',
+      expect.arrayContaining(['describe', '--tags', '--abbrev=0'])
+    );
+  });
+});
+
