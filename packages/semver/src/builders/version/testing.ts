@@ -45,6 +45,10 @@ export function setupTestingWorkspace(
   };
 }
 
+export function createFakeLogger() {
+  return { error: jest.fn(), info: jest.fn(), warn: jest.fn() };
+}
+
 export function createFakeContext({
   project,
   projectRoot,
@@ -57,7 +61,7 @@ export function createFakeContext({
   return {
     getProjectMetadata: jest.fn().mockReturnValue({ root: projectRoot }),
     getTargetOptions: jest.fn().mockResolvedValue({ outputPath: `dist/packages/${project}` }),
-    logger: { error: jest.fn(), info: jest.fn() },
+    logger: createFakeLogger(),
     reportStatus: jest.fn(),
     target: {
       project,

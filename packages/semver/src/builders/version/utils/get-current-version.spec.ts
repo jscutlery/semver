@@ -2,6 +2,7 @@ import * as gitSemverTags from 'git-semver-tags';
 import { of, throwError } from 'rxjs';
 import { callbackify } from 'util';
 
+import { createFakeLogger } from '../testing';
 import { getCurrentVersion } from './get-current-version';
 import * as gitUtils from './git';
 
@@ -13,19 +14,22 @@ const tagPrefix = 'v';
 
 describe('getCurrentVersion', () => {
   let mockGitSemverTags: jest.Mock;
+  let logger;
 
   beforeEach(() => {
     mockGitSemverTags = jest.fn();
     (gitSemverTags as jest.Mock).mockImplementation(
       callbackify(mockGitSemverTags)
     );
+    logger = createFakeLogger();
   });
 
   it('should compute current version from previous semver tag', async () => {
     mockGitSemverTags.mockResolvedValue(['v2.1.0', 'v2.0.0', 'v1.0.0']);
 
-    const version = await getCurrentVersion({ tagPrefix }).toPromise();
+    const version = await getCurrentVersion({ tagPrefix, logger }).toPromise();
 
+    expect(logger.warn).not.toBeCalled();
     expect(version).toEqual('v2.1.0');
   });
 
@@ -33,8 +37,9 @@ describe('getCurrentVersion', () => {
     mockGitSemverTags.mockResolvedValue([]);
     jest.spyOn(gitUtils, 'getLastTag').mockReturnValue(of('v2.1.0'));
 
-    const version = await getCurrentVersion({ tagPrefix }).toPromise();
+    const version = await getCurrentVersion({ tagPrefix, logger }).toPromise();
 
+    expect(logger.warn).toBeCalled();
     expect(version).toEqual('v2.1.0');
   });
 
@@ -44,8 +49,9 @@ describe('getCurrentVersion', () => {
       .spyOn(gitUtils, 'getLastTag')
       .mockReturnValue(throwError('No tag found'));
 
-    const version = await getCurrentVersion({ tagPrefix }).toPromise();
+    const version = await getCurrentVersion({ tagPrefix, logger }).toPromise();
 
+    expect(logger.warn).toBeCalled();
     expect(version).toEqual('v0.0.0');
   });
 });
