@@ -61,8 +61,8 @@ describe('@jscutlery/semver:version', () => {
   const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
     typeof git.tryPushToGitRemote
   >;
-  const mockGitAdd = git.gitAdd as jest.MockedFunction<
-    typeof git.gitAdd
+  const mockAddToStage = git.addToStage as jest.MockedFunction<
+    typeof git.addToStage
   >;
   const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
   const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
@@ -95,7 +95,7 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
-    jest.spyOn(git, 'gitAdd').mockReturnValue(of(undefined));
+    jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -127,7 +127,7 @@ describe('@jscutlery/semver:version', () => {
     (getPackageFiles as jest.Mock).mockRestore();
     (getProjectRoots as jest.Mock).mockRestore();
     mockTryPushToGitRemote.mockRestore();
-    mockGitAdd.mockRestore();
+    mockAddToStage.mockRestore();
     mockExecFile.mockRestore();
     mockChangelog.mockRestore();
     mockStandardVersion.mockRestore();
@@ -279,14 +279,14 @@ describe('@jscutlery/semver:version', () => {
         context
       ).toPromise();
 
-      expect(mockGitAdd).toBeCalledTimes(1);
-      expect(mockGitAdd).toBeCalledWith(
-        expect.arrayContaining([
+      expect(mockAddToStage).toBeCalledTimes(1);
+      expect(mockAddToStage).toBeCalledWith({
+        paths: expect.arrayContaining([
           '/root/packages/a/CHANGELOG.md',
           '/root/packages/b/CHANGELOG.md',
         ]),
-        false
-      );
+        dryRun: false,
+      });
     });
   });
 

@@ -80,10 +80,13 @@ export function tryPushToGitRemote({
   });
 }
 
-export function gitAdd(
-  paths: string[],
-  dryRun: boolean
-): Observable<{ stderr: string; stdout: string }> {
+export function addToStage({
+  paths,
+  dryRun,
+}: {
+  paths: string[];
+  dryRun: boolean;
+}): Observable<{ stderr: string; stdout: string }> {
   return defer(() => {
     const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
     return execAsync('git', ['add', ...gitAddOptions]);
@@ -94,7 +97,7 @@ export function getLastTag(): Observable<string> {
   return execAsync('git', ['describe', '--tags', '--abbrev=0']).pipe(
     switchMap(({ stdout }) =>
       stdout ? of(stdout) : throwError(new Error('No tag found'))
-    ),
+    )
   );
 }
 

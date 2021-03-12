@@ -4,6 +4,7 @@ import { PassThrough } from 'stream';
 
 import * as cp from './exec-async';
 import {
+  addToStage,
   getCommits,
   getFirstCommitRef,
   getLastTag,
@@ -142,8 +143,10 @@ describe('git', () => {
       it('should fail if options are undefined', async () => {
         try {
           await tryPushToGitRemote({
+            /* eslint-disable @typescript-eslint/no-explicit-any */
             remote: undefined as any,
             branch: undefined as any,
+            /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
           }).toPromise();
           fail();
@@ -151,6 +154,24 @@ describe('git', () => {
           expect(error.message).toContain('Missing Git options');
         }
       });
+    });
+  });
+
+  describe('addToStage', () => {
+    it('add to git stage', async () => {
+      jest
+        .spyOn(cp, 'execAsync')
+        .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
+
+      await addToStage({
+        paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
+        dryRun: false,
+      }).toPromise();
+
+      expect(cp.execAsync).toBeCalledWith(
+        'git',
+        expect.arrayContaining(['add', 'packages/demo/file.txt', 'packages/demo/other-file.ts'])
+      );
     });
   });
 
