@@ -1,6 +1,6 @@
 import * as gitRawCommits from 'git-raw-commits';
 import { defer, Observable, of, throwError } from 'rxjs';
-import { catchError, last, scan, startWith, switchMap, tap } from 'rxjs/operators';
+import { catchError, last, scan, startWith, switchMap } from 'rxjs/operators';
 
 import { execAsync } from './exec-async';
 
@@ -95,9 +95,6 @@ export function getLastTag(): Observable<string> {
     switchMap(({ stdout }) =>
       stdout ? of(stdout) : throwError(new Error('No tag found'))
     ),
-    tap((tag) => {
-      console.warn(`🟠 No semver tag found, fallback since: ${tag}`);
-    })
   );
 }
 
