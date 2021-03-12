@@ -7,7 +7,7 @@ import {
   getChangelogPath,
   updateChangelog,
 } from './utils/changelog';
-import { gitAdd } from './utils/git';
+import { addToStage } from './utils/git';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 export interface CommonVersionOptions {
@@ -47,7 +47,9 @@ export function versionWorkspace({
           )
         ),
         /* Run Git add only once, after changelogs get generated in parallel. */
-        switchMap((changelogPaths) => gitAdd(changelogPaths, options.dryRun))
+        switchMap((changelogPaths) =>
+          addToStage({ paths: changelogPaths, dryRun: options.dryRun })
+        )
       ),
       getPackageFiles(workspaceRoot).pipe(
         switchMap((packageFiles) =>

@@ -25,15 +25,13 @@ export function getLastSemverTag({
   );
 }
 
-export const defaultTag = 'v';
-
 /**
  * Returns a valid git tag that we can use as a ref for version comparison.
  * Otherwise it returns '0.0.0'.
  */
 export function getCurrentVersion({
   logger,
-  tagPrefix = defaultTag,
+  tagPrefix,
 }: {
   logger: logging.LoggerApi;
   tagPrefix?: string;
