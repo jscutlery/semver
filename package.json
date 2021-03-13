@@ -43,7 +43,7 @@
     "all-contributors-cli": "^6.19.0",
     "dotenv": "8.2.0",
     "eslint": "7.21.0",
-    "eslint-config-prettier": "7.2.0",
+    "eslint-config-prettier": "8.1.0",
     "jest": "26.6.3",
     "jest-extended": "^0.11.5",
     "prettier": "2.2.1",
