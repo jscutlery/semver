@@ -7,7 +7,6 @@ import {
   addToStage,
   getCommits,
   getFirstCommitRef,
-  getLastTag,
   tryPushToGitRemote,
 } from './git';
 
@@ -175,36 +174,7 @@ describe('git', () => {
     });
   });
 
-  describe('getLastTag', () => {
-    it('should get last git commit', async () => {
-      jest
-        .spyOn(cp, 'execAsync')
-        .mockReturnValue(of({ stderr: '', stdout: '0.0.0' }));
-
-      const tag = await getLastTag().toPromise();
-
-      expect(tag).toBe('0.0.0');
-      expect(cp.execAsync).toBeCalledWith(
-        'git',
-        expect.arrayContaining(['describe', '--tags', '--abbrev=0'])
-      );
-    });
-
-    it('should throw on failure', async () => {
-      jest
-        .spyOn(cp, 'execAsync')
-        .mockReturnValue(of({ stderr: 'error', stdout: '' }));
-
-      try {
-        await getLastTag().toPromise();
-        fail();
-      } catch (error) {
-        expect(error.message).toBe('No tag found');
-      }
-    });
-  });
-
-  describe('getFirstCommitRef', () => {
+    describe('getFirstCommitRef', () => {
     it('should get last git commit', async () => {
       jest
         .spyOn(cp, 'execAsync')

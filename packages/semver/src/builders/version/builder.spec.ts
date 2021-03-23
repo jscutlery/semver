@@ -360,7 +360,8 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should abort when validation hook failed', async () => {
-      mockValidateA.mockRejectedValue(new Error('Validation failure'));
+      context.logger.error = jest.fn();
+      mockValidateA.mockRejectedValue('Validation failure');
 
       const { success } = await runBuilder(
         { ...options, plugins: ['@mock-plugin/A', '@mock-plugin/B'] },
@@ -372,7 +373,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockPublishA).not.toBeCalled();
       expect(mockPublishB).not.toBeCalled();
       expect(context.logger.error).toBeCalledWith(
-        expect.stringContaining('Error: Validation failure')
+        expect.stringContaining('Validation failure')
       );
     });
 

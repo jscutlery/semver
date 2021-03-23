@@ -1,23 +1,23 @@
 import { logging } from '@angular-devkit/core';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { callbackify } from 'util';
 
 import { createFakeLogger } from '../testing';
-import { getCurrentVersion } from './get-current-version';
+import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 import { tryBump } from './try-bump';
 
 jest.mock('conventional-recommended-bump');
-jest.mock('./get-current-version');
+jest.mock('./get-last-version');
 jest.mock('./git');
 
 describe('tryBump', () => {
   const mockConventionalRecommendedBump = conventionalRecommendedBump as jest.MockedFunction<
     typeof conventionalRecommendedBump
   >;
-  const mockCurrentVersion = getCurrentVersion as jest.MockedFunction<
-    typeof getCurrentVersion
+  const mockGetLastVersion = getLastVersion as jest.MockedFunction<
+    typeof getLastVersion
   >;
   const mockGetCommits = getCommits as jest.MockedFunction<typeof getCommits>;
   const mockGetFirstCommitRef = getFirstCommitRef as jest.MockedFunction<typeof getFirstCommitRef>;
@@ -26,11 +26,11 @@ describe('tryBump', () => {
 
   beforeEach(() => {
     logger = createFakeLogger();
-    mockCurrentVersion.mockReturnValue(of('v2.1.0'))
+    mockGetLastVersion.mockReturnValue(of('2.1.0'))
   });
 
   afterEach(() => {
-    mockCurrentVersion.mockRestore();
+    mockGetLastVersion.mockRestore();
     mockConventionalRecommendedBump.mockRestore();
     mockGetCommits.mockRestore();
     mockGetFirstCommitRef.mockRestore();
@@ -38,7 +38,7 @@ describe('tryBump', () => {
 
   afterEach(() => (getCommits as jest.Mock).mockRestore());
 
-  it('should compute next version based on current version and changes', async () => {
+  it('should compute next version based on last version and changes', async () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
     /* Mock bump to return "minor". */
     mockConventionalRecommendedBump.mockImplementation(
@@ -112,7 +112,7 @@ describe('tryBump', () => {
   });
 
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
-    mockCurrentVersion.mockReturnValue(of('0.0.0'));
+    mockGetLastVersion.mockReturnValue(throwError('No version found'));
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
 
@@ -125,7 +125,7 @@ describe('tryBump', () => {
       logger,
     }).toPromise();
 
-
+    expect(logger.warn).toBeCalledWith(expect.stringContaining('No previous version tag found'))
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',

@@ -93,14 +93,6 @@ export function addToStage({
   });
 }
 
-export function getLastTag(): Observable<string> {
-  return execAsync('git', ['describe', '--tags', '--abbrev=0']).pipe(
-    switchMap(({ stdout }) =>
-      stdout ? of(stdout) : throwError(new Error('No tag found'))
-    )
-  );
-}
-
 export function getFirstCommitRef(): Observable<string> {
   return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     /**                                 Remove line breaks. */
