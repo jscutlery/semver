@@ -32,7 +32,7 @@ export function tryBump({
       logger.warn(
         `🟠 No previous version tag found, fallback to version 0.0.0.
 New version will be calculated based on all changes since first commit.
-If your project is already versioned, please tag the latest release commit with ${tagPrefix}-x.y.z and run this command again.`
+If your project is already versioned, please tag the latest release commit with ${tagPrefix}x.y.z and run this command again.`
       );
       return of(initialVersion);
     }),
@@ -43,7 +43,7 @@ If your project is already versioned, please tag the latest release commit with 
   );
 
   const lastVersionGitRef$ = lastVersion$.pipe(
-    /** If since equals 0.0.0 it means no tag exist,
+    /** If lastVersion equals 0.0.0 it means no tag exist,
      * then get the first commit ref to compute the initial version. */
     switchMap((lastVersion) =>
       iif(() => lastVersion === initialVersion, getFirstCommitRef(), of(`${tagPrefix}${lastVersion}`))
