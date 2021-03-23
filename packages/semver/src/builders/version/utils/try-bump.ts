@@ -1,11 +1,11 @@
 import { logging } from '@angular-devkit/core';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, Observable, of } from 'rxjs';
-import { shareReplay, switchMap } from 'rxjs/operators';
+import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 
-import { getCurrentVersion } from './get-current-version';
+import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 
 /**
@@ -26,45 +26,56 @@ export function tryBump({
   preid: string | null;
   logger: logging.LoggerApi;
 }): Observable<string> {
-  const since$ = getCurrentVersion({
-    logger,
-    tagPrefix,
-  }).pipe(
+  const initialVersion = '0.0.0';
+  const lastVersion$ = getLastVersion({ tagPrefix }).pipe(
+    catchError(() => {
+      logger.warn(
+        `🟠 No previous version tag found, fallback to version 0.0.0.
+New version will be calculated based on all changes since first commit.
+If your project is already versioned, please tag the latest release commit with ${tagPrefix}-x.y.z and run this command again.`
+      );
+      return of(initialVersion);
+    }),
     shareReplay({
       refCount: true,
       bufferSize: 1,
     })
   );
 
-  const sinceGitRef$ = since$.pipe(
+  const lastVersionGitRef$ = lastVersion$.pipe(
     /** If since equals 0.0.0 it means no tag exist,
-      * then get the first commit ref to compute the initial version. */
-    switchMap((since) =>
-      iif(() => since === `0.0.0`, getFirstCommitRef(), of(since))
+     * then get the first commit ref to compute the initial version. */
+    switchMap((lastVersion) =>
+      iif(() => lastVersion === initialVersion, getFirstCommitRef(), of(`${tagPrefix}${lastVersion}`))
     )
   );
 
-  const commits$ = sinceGitRef$.pipe(
-    switchMap((since) =>
+  const commits$ = lastVersionGitRef$.pipe(
+    switchMap((lastVersionGitRef) =>
       getCommits({
         projectRoot,
-        since,
+        since: lastVersionGitRef,
       })
     )
   );
 
-  return forkJoin([since$, commits$]).pipe(
-    switchMap(([since, commits]) => {
+  return forkJoin([lastVersion$, commits$]).pipe(
+    switchMap(([lastVersion, commits]) => {
       /* No commits since last release so don't bump. */
       if (commits.length === 0) {
         return of(null);
       }
 
       if (releaseType !== null) {
-        return _manualBump({ since, releaseType, preid });
+        return _manualBump({ since: lastVersion, releaseType, preid });
       }
 
-      return _semverBump({ since, preset, projectRoot, tagPrefix });
+      return _semverBump({
+        since: lastVersion,
+        preset,
+        projectRoot,
+        tagPrefix,
+      });
     })
   );
 }

@@ -48,7 +48,7 @@ export function setupTestingWorkspace(
 
 export function createFakeLogger(): logging.LoggerApi {
   return {
-    error: jest.fn(),
+    error: jest.fn((e) => console.error(e)),
     info: jest.fn(),
     warn: jest.fn(),
     createChild: jest.fn(),
