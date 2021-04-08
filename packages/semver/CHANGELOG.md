@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.4.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-1.3.1...semver-1.4.0) (2021-04-08)
+
+
+### Bug Fixes
+
+* 🐞 don't silently fail when error is an object ([0e8199d](https://github.com/jscutlery/nx-plugin-semver/commit/0e8199de0f4890309930659e402f7145545689e8))
+* 🐞 exec Git add only once to avoid file lock ([4dfce73](https://github.com/jscutlery/nx-plugin-semver/commit/4dfce73b399f404e1b568595e4af8d452a672a1c))
+* 🐞 release since first commit if no version found (resolve [#102](https://github.com/jscutlery/nx-plugin-semver/issues/102)) ([f882009](https://github.com/jscutlery/nx-plugin-semver/commit/f882009dfc93a18f29ca23d95767c9ba250c31b0))
+* 📦 update dependency @angular-devkit/build-angular to v0.1101.4 ([bbe6d07](https://github.com/jscutlery/nx-plugin-semver/commit/bbe6d07d62891cc8e7dca7ae2886bbfd9b8f92da))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.0 ([cd7af9d](https://github.com/jscutlery/nx-plugin-semver/commit/cd7af9dfd408c721fd8f325cff7573cc48bb7821))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.1 ([c5a0fd5](https://github.com/jscutlery/nx-plugin-semver/commit/c5a0fd558e2ecd48d514df5d55305878540e5a18))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.2 ([a2bccc7](https://github.com/jscutlery/nx-plugin-semver/commit/a2bccc75ed70a4e5e71f1d7d23bda80d07b55d44))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.3 ([121ab29](https://github.com/jscutlery/nx-plugin-semver/commit/121ab295cb984f7e52b81473184f844f5fd123f6))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.4 ([1484ff7](https://github.com/jscutlery/nx-plugin-semver/commit/1484ff733ee7075fd2d4edb242c037ba3bff9001))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.5 ([b1b5e85](https://github.com/jscutlery/nx-plugin-semver/commit/b1b5e85ad602f6306477b1d62f6eb94e849697b0))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.6 ([817572d](https://github.com/jscutlery/nx-plugin-semver/commit/817572de0870325a61c2b6cfadf8cfed13a87c49))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.7 ([4b20593](https://github.com/jscutlery/nx-plugin-semver/commit/4b2059355e08db6980626ebd5eac4993980f6b5d))
+
+
+### Features
+
+* ✅ bump version explicitly through parameters ([69aec3d](https://github.com/jscutlery/nx-plugin-semver/commit/69aec3d47b048359089fee13fc4fe911850e5465)), closes [#56](https://github.com/jscutlery/nx-plugin-semver/issues/56)
+
+
+
 ## [1.3.1](https://github.com/jscutlery/semver/compare/semver-1.3.0...semver-1.3.1) (2021-02-02)
 
 
