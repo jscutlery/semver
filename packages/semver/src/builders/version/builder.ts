@@ -17,7 +17,7 @@ export function runBuilder(
     baseBranch,
     noVerify,
     syncVersions,
-    rootChangelog,
+    skipRootChangelog,
     plugins,
     version,
     preid,
@@ -68,7 +68,7 @@ export function runBuilder(
         syncVersions
           ? versionWorkspace({
               ...options,
-              rootChangelog,
+              skipRootChangelog,
               workspaceRoot,
             })
           : versionProject(options)

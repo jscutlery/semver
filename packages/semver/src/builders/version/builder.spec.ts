@@ -79,7 +79,7 @@ describe('@jscutlery/semver:version', () => {
     remote: 'origin',
     baseBranch: 'main',
     syncVersions: false,
-    rootChangelog: true,
+    skipRootChangelog: false,
     plugins: [],
   };
 
@@ -231,13 +231,13 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should generate root CHANGELOG only when requested', async () => {
+    it('should skip root CHANGELOG generation (--skip-root-changelog=true)', async () => {
       await runBuilder(
         {
           ...options,
           syncVersions: true,
           /* Disable root CHANGELOG */
-          rootChangelog: false,
+          skipRootChangelog: true,
         },
         context
       ).toPromise();
