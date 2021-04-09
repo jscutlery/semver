@@ -16,7 +16,7 @@ describe('@jscutlery/semver:version', () => {
     push: false,
     remote: 'origin',
     baseBranch: 'main',
-    rootChangelog: true,
+    skipRootChangelog: false,
     syncVersions: false,
     plugins: [],
   };
@@ -376,7 +376,7 @@ $`)
       result = await runBuilder(
         {
           ...defaultBuilderOptions,
-          rootChangelog: false,
+          skipRootChangelog: true,
           syncVersions: true,
         },
         createFakeContext({

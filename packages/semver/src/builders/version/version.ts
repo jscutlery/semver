@@ -2,11 +2,8 @@ import { resolve } from 'path';
 import { concat, forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
-import {
-  defaultHeader,
-  getChangelogPath,
-  updateChangelog,
-} from './utils/changelog';
+
+import { defaultHeader, getChangelogPath, updateChangelog } from './utils/changelog';
 import { addToStage } from './utils/git';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
@@ -20,11 +17,11 @@ export interface CommonVersionOptions {
 }
 
 export function versionWorkspace({
-  rootChangelog,
+  skipRootChangelog,
   workspaceRoot,
   ...options
 }: {
-  rootChangelog: boolean;
+  skipRootChangelog: boolean;
   workspaceRoot: string;
 } & CommonVersionOptions) {
   return concat(
@@ -55,7 +52,7 @@ export function versionWorkspace({
         switchMap((packageFiles) =>
           _runStandardVersion({
             bumpFiles: packageFiles,
-            skipChangelog: !rootChangelog,
+            skipChangelog: skipRootChangelog,
             ...options,
           })
         )

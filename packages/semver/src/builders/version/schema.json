@@ -35,10 +35,10 @@
       "type": "boolean",
       "default": false
     },
-    "rootChangelog": {
-      "description": "Generate root CHANGELOG file containing all monorepo changes.",
+    "skipRootChangelog": {
+      "description": "Skip root CHANGELOG generation containing all monorepo changes (only with sync mode).",
       "type": "boolean",
-      "default": true
+      "default": false
     },
     "plugins": {
       "description": "Configurable plugins to extend release capabilities.",
