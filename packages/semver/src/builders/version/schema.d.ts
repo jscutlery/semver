@@ -10,6 +10,7 @@ export interface VersionBuilderSchema extends JsonObject {
   baseBranch?: string;
   syncVersions?: boolean;
   skipRootChangelog?: boolean;
+  skipProjectChangelog?: boolean;
   plugins?: PluginDef[];
   version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
   preid?: string;

@@ -80,6 +80,7 @@ describe('@jscutlery/semver:version', () => {
     baseBranch: 'main',
     syncVersions: false,
     skipRootChangelog: false,
+    skipProjectChangelog: false,
     plugins: [],
   };
 
@@ -248,6 +249,23 @@ describe('@jscutlery/semver:version', () => {
             changelog: true,
           },
         })
+      );
+    });
+
+    it('should skip project CHANGELOG generation (--skip-project-changelog=true)', async () => {
+      await runBuilder(
+        {
+          ...options,
+          syncVersions: true,
+          /* Disable project CHANGELOG */
+          skipProjectChangelog: true,
+        },
+        context
+      ).toPromise();
+
+      expect(mockChangelog).not.toBeCalled();
+      expect(mockAddToStage).toBeCalledWith(
+        expect.objectContaining({ paths: [] })
       );
     });
 

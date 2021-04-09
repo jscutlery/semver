@@ -1,5 +1,5 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { defer, Observable, of, throwError } from 'rxjs';
+import { defer, Observable, of, throwError, EMPTY } from 'rxjs';
 import { catchError, last, scan, startWith, switchMap } from 'rxjs/operators';
 
 import { execAsync } from './exec-async';
@@ -87,10 +87,12 @@ export function addToStage({
   paths: string[];
   dryRun: boolean;
 }): Observable<{ stderr: string; stdout: string }> {
-  return defer(() => {
-    const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
-    return execAsync('git', ['add', ...gitAddOptions]);
-  });
+  if (paths.length === 0) {
+    return EMPTY;
+  }
+
+  const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
+  return execAsync('git', ['add', ...gitAddOptions]);
 }
 
 export function getFirstCommitRef(): Observable<string> {
