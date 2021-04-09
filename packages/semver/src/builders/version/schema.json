@@ -40,6 +40,11 @@
       "type": "boolean",
       "default": false
     },
+    "skipProjectChangelog": {
+      "description": "Skip project CHANGELOG generation (only with sync mode).",
+      "type": "boolean",
+      "default": false
+    },
     "plugins": {
       "description": "Configurable plugins to extend release capabilities.",
       "type": "array",

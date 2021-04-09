@@ -157,7 +157,7 @@ describe('git', () => {
   });
 
   describe('addToStage', () => {
-    it('add to git stage', async () => {
+    it('should add to git stage', async () => {
       jest
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
@@ -171,6 +171,19 @@ describe('git', () => {
         'git',
         expect.arrayContaining(['add', 'packages/demo/file.txt', 'packages/demo/other-file.ts'])
       );
+    });
+
+    it('should skip git add if paths argument is empty', async () => {
+      jest
+        .spyOn(cp, 'execAsync')
+        .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
+
+      await addToStage({
+        paths: [],
+        dryRun: false,
+      }).toPromise();
+
+      expect(cp.execAsync).not.toBeCalled();
     });
   });
 

@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { concat, forkJoin } from 'rxjs';
+import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -22,26 +22,18 @@ export function versionWorkspace({
   ...options
 }: {
   skipRootChangelog: boolean;
+  skipProjectChangelog: boolean;
   workspaceRoot: string;
 } & CommonVersionOptions) {
   return concat(
     ...[
       getProjectRoots(workspaceRoot).pipe(
         switchMap((projectRoots) =>
-          forkJoin(
-            projectRoots
-              /* Don't update the workspace's changelog as it will be
-               * dealt with by `standardVersion`. */
-              .filter((projectRoot) => projectRoot !== workspaceRoot)
-              .map((projectRoot) =>
-                updateChangelog({
-                  dryRun: options.dryRun,
-                  preset: options.preset,
-                  projectRoot,
-                  newVersion: options.newVersion,
-                })
-              )
-          )
+          _generateProjectChangelogs({
+            workspaceRoot,
+            projectRoots,
+            ...options,
+          })
         ),
         /* Run Git add only once, after changelogs get generated in parallel. */
         switchMap((changelogPaths) =>
@@ -67,6 +59,39 @@ export function versionProject(options: CommonVersionOptions) {
     skipChangelog: false,
     ...options,
   });
+}
+
+/**
+ * Generate project's changelogs and return an array containing their path.
+ * Skip generation if --skip-project-changelog enabled and return an empty array.
+ */
+export function _generateProjectChangelogs({
+  projectRoots,
+  workspaceRoot,
+  ...options
+}: CommonVersionOptions & {
+  skipProjectChangelog: boolean;
+  projectRoots: string[];
+  workspaceRoot: string;
+}): Observable<string[]> {
+  if (options.skipProjectChangelog) {
+    return of([]);
+  }
+
+  return forkJoin(
+    projectRoots
+      /* Don't update the workspace's changelog as it will be
+       * dealt with by `standardVersion`. */
+      .filter((projectRoot) => projectRoot !== workspaceRoot)
+      .map((projectRoot) =>
+        updateChangelog({
+          dryRun: options.dryRun,
+          preset: options.preset,
+          projectRoot,
+          newVersion: options.newVersion,
+        })
+      )
+  );
 }
 
 export function _runStandardVersion({

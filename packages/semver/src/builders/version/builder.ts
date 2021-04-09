@@ -18,6 +18,7 @@ export function runBuilder(
     noVerify,
     syncVersions,
     skipRootChangelog,
+    skipProjectChangelog,
     plugins,
     version,
     preid,
@@ -69,6 +70,7 @@ export function runBuilder(
           ? versionWorkspace({
               ...options,
               skipRootChangelog,
+              skipProjectChangelog,
               workspaceRoot,
             })
           : versionProject(options)
