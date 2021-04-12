@@ -13,6 +13,10 @@
   "ng-add": {
     "save": "devDependencies"
   },
+  "ng-update": {
+    "requirements": {},
+    "migrations": "./migrations.json"
+  },
   "dependencies": {
     "@angular-devkit/build-angular": "0.1102.8",
     "inquirer": "^7.3.3",
