@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.0.0](https://github.com/jscutlery/semver/compare/semver-1.4.0...semver-2.0.0) (2021-04-13)
+
+
+### Bug Fixes
+
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.8 ([5493164](https://github.com/jscutlery/semver/commit/5493164d9322e43b4acaf2b5bd937d479db53f9a))
+
+
+### Features
+
+* ✅ add --skip-project-changelog option ([5bd57f9](https://github.com/jscutlery/semver/commit/5bd57f96f83c624d96f81a291b74a9f19c744cf5))
+* ✅ refactor --root-changelog option to --skip-root-changelog ([2fa3c9b](https://github.com/jscutlery/semver/commit/2fa3c9b3122e663a2e6120afc409436536c6a9cf))
+
+
+### BREAKING CHANGES
+
+* removed --root-changelog option in favor of --skip-root-changelog
+
+
+
 # [1.4.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-1.3.1...semver-1.4.0) (2021-04-08)
 
 
