@@ -46,7 +46,11 @@ If your project is already versioned, please tag the latest release commit with 
     /** If lastVersion equals 0.0.0 it means no tag exist,
      * then get the first commit ref to compute the initial version. */
     switchMap((lastVersion) =>
-      iif(() => lastVersion === initialVersion, getFirstCommitRef(), of(`${tagPrefix}${lastVersion}`))
+      iif(
+        () => lastVersion === initialVersion,
+        getFirstCommitRef(),
+        of(`${tagPrefix}${lastVersion}`)
+      )
     )
   );
 
@@ -61,13 +65,15 @@ If your project is already versioned, please tag the latest release commit with 
 
   return forkJoin([lastVersion$, commits$]).pipe(
     switchMap(([lastVersion, commits]) => {
+      /* If release type is manually specified,
+       * we just release even if there are no changes. */
+      if (releaseType !== null) {
+        return _manualBump({ since: lastVersion, releaseType, preid });
+      }
+
       /* No commits since last release so don't bump. */
       if (commits.length === 0) {
         return of(null);
-      }
-
-      if (releaseType !== null) {
-        return _manualBump({ since: lastVersion, releaseType, preid });
       }
 
       return _semverBump({

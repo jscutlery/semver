@@ -72,7 +72,7 @@
       }
     },
     "version": {
-      "description": "Manualy increment the version by that keyword.",
+      "description": "Manually increment the version by that keyword.",
       "type": "string"
     },
     "preid": {
