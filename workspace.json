@@ -42,12 +42,7 @@
               },
               {
                 "input": "./packages/semver",
-                "glob": "collection.json",
-                "output": "."
-              },
-              {
-                "input": "./packages/semver",
-                "glob": "builders.json",
+                "glob": "{builders,collection,migrations}.json",
                 "output": "."
               }
             ]
