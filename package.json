@@ -29,7 +29,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@jscutlery/semver": "^1.0.0",
+    "@jscutlery/semver": "^2.0.0",
     "@nrwl/cli": "11.6.2",
     "@nrwl/eslint-plugin-nx": "11.6.2",
     "@nrwl/jest": "11.6.2",
