@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@angular-devkit/build-angular": "0.1102.8",
-    "inquirer": "^7.3.3",
+    "inquirer": "^8.0.0",
     "standard-version": "^9.0.0"
   },
   "devDependencies": {
