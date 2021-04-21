@@ -14,6 +14,7 @@ export interface CommonVersionOptions {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
+  changelogHeader?: string;
 }
 
 export function versionWorkspace({
@@ -103,6 +104,7 @@ export function _runStandardVersion({
   preset,
   tagPrefix,
   skipChangelog,
+  changelogHeader = defaultHeader
 }: {
   bumpFiles: string[];
   skipChangelog: boolean;
@@ -113,7 +115,7 @@ export function _runStandardVersion({
      * we staged. */
     commitAll: true,
     dryRun,
-    header: defaultHeader,
+    header: changelogHeader,
     infile: getChangelogPath(projectRoot),
     /* Control version to avoid different results between the value
      * returned by `tryBump` and the one computed by standard-version. */

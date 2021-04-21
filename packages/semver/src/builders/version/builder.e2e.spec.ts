@@ -570,7 +570,9 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.1-beta.0');
+      expect((await readPackageJson('.').toPromise()).version).toEqual(
+        '0.0.1-beta.0'
+      );
     });
 
     it(`should bump "a"'s package.json`, async () => {
@@ -630,8 +632,37 @@ $`)
       );
     });
   });
-});
 
+  describe('--changelog-header', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await runBuilder(
+        {
+          ...defaultBuilderOptions,
+          changelogHeader: '# Custom changelog header \n',
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      ).toPromise();
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it('should generate changelogs with custom header', () => {
+      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Custom changelog header *`)
+      );
+    });
+  });
+});
 
 function commitChanges() {
   execSync(
