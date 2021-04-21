@@ -22,6 +22,7 @@ export function runBuilder(
     plugins,
     version,
     preid,
+    changelogHeader
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
@@ -57,6 +58,7 @@ export function runBuilder(
         preset,
         projectRoot,
         tagPrefix,
+        changelogHeader
       };
 
       const pluginHandler = createPluginHandler({ plugins, options, context });

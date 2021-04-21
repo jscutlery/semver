@@ -14,4 +14,5 @@ export interface VersionBuilderSchema extends JsonObject {
   plugins?: PluginDef[];
   version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
   preid?: string;
+  changelogHeader?: string;
 }
