@@ -97,6 +97,7 @@ nx run workspace:version --version=prerelease --preid=beta
 | **`--sync-versions`**          | `boolean` | `false`    | lock/sync versions between projects                                         |
 | **`--skip-root-changelog`**    | `boolean` | `false`    | skip generating root CHANGELOG containing all changes (only with sync mode) |
 | **`--skip-project-changelog`** | `boolean` | `false`    | skip generating project CHANGELOG (only with sync mode)                     |
+| **`--changelog-header`**       | `string`  | `null`     | custom Markdown header for CHANGELOGs                                       |
 | **`--origin`**                 | `string`  | `'origin'` | push against git remote repository                                          |
 | **`--base-branch`**            | `string`  | `'main'`   | push against git base branch                                                |
 | **`--version`**                | `string`  | `null`     | specify the level of change                                                 |
