@@ -49,32 +49,6 @@
       "type": "boolean",
       "default": false
     },
-    "plugins": {
-      "description": "Configurable plugins to extend release capabilities.",
-      "type": "array",
-      "default": [],
-      "items": {
-        "oneOf": [
-          {
-            "type": "string",
-            "description": "The module to import."
-          },
-          {
-            "type": "object",
-            "properties": {
-              "module": {
-                "type": "string",
-                "description": "The module to import."
-              },
-              "options": {
-                "type": "object",
-                "description": "The plugin option."
-              }
-            }
-          }
-        ]
-      }
-    },
     "version": {
       "description": "Manually increment the version by that keyword.",
       "type": "string"

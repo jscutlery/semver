@@ -2,7 +2,6 @@ import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/ar
 import { concat, defer, forkJoin, Observable, of } from 'rxjs';
 import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 
-import { createPluginHandler } from './plugin-handler';
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
@@ -19,7 +18,6 @@ export function runBuilder(
     syncVersions,
     skipRootChangelog,
     skipProjectChangelog,
-    plugins,
     version,
     preid,
     changelogHeader
@@ -61,11 +59,6 @@ export function runBuilder(
         changelogHeader
       };
 
-      const pluginHandler = createPluginHandler({ plugins, options, context });
-
-      /* 1. Validate */
-      const validate$ = defer(() => pluginHandler.validate());
-
       /* 2. Version */
       const runStandardVersion$ = defer(() =>
         syncVersions
@@ -85,14 +78,10 @@ export function runBuilder(
           remote,
         })
       );
-      /* 4. Publish */
-      const publish$ = defer(() => pluginHandler.publish());
 
       return concat(
-        validate$,
         runStandardVersion$,
         ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        ...(dryRun === false ? [publish$] : [])
       );
     })
   );

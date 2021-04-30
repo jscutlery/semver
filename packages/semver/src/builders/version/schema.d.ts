@@ -1,7 +1,5 @@
 import { JsonObject } from '@angular-devkit/core';
 
-import { PluginDef } from './plugin';
-
 export interface VersionBuilderSchema extends JsonObject {
   dryRun?: boolean;
   noVerify?: boolean;
@@ -11,7 +9,6 @@ export interface VersionBuilderSchema extends JsonObject {
   syncVersions?: boolean;
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;
-  plugins?: PluginDef[];
   version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
   preid?: string;
   changelogHeader?: string;
