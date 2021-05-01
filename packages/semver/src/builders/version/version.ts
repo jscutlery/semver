@@ -1,11 +1,13 @@
 import { resolve } from 'path';
-import { concat, forkJoin, Observable, of } from 'rxjs';
+import { concat, defer, forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
+import { SemverOptions } from './schema';
 import { defaultHeader, getChangelogPath, updateChangelog } from './utils/changelog';
-import { addToStage } from './utils/git';
-import { getPackageFiles, getProjectRoots } from './utils/workspace';
+import { addToStage, tryPushToGitRemote } from './utils/git';
+import { tryBump } from './utils/try-bump';
+import { getPackageFiles } from './utils/workspace';
 
 export interface CommonVersionOptions {
   dryRun: boolean;
@@ -17,18 +19,95 @@ export interface CommonVersionOptions {
   changelogHeader?: string;
 }
 
-export function versionWorkspace({
+export type SemverContext = SemverOptions & {
+  workspaceRoot: string;
+  logger: Logger;
+};
+
+export interface Logger {
+  warn(message: string): void;
+  info(message: string): void;
+}
+
+export async function runSemver({
+  push,
+  remote,
+  dryRun,
+  baseBranch,
+  noVerify,
   skipRootChangelog,
+  skipProjectChangelog,
+  version,
+  preid,
+  changelogHeader,
+  configs,
+  workspaceRoot,
+  logger,
+}: SemverContext): Promise<void> {
+  const preset = 'angular';
+
+  for (const config of configs) {
+    const tagPrefix = `${config.name}-`;
+    const newVersion = await tryBump({
+      preset,
+      projectRoot: config.path,
+      tagPrefix,
+      releaseType: version,
+      preid,
+      logger,
+    }).toPromise();
+
+    if (newVersion == null) {
+      logger.info('⏹ Nothing changed since last release.');
+      continue;
+    }
+
+    const options: CommonVersionOptions = {
+      dryRun,
+      newVersion,
+      noVerify,
+      preset,
+      projectRoot: config.path,
+      tagPrefix,
+      changelogHeader,
+    };
+
+    await defer(() =>
+      config.type === 'sync-group'
+        ? versionGroup({
+            ...options,
+            workspaceRoot,
+            projectsRoot: config.packages,
+            skipRootChangelog,
+            skipProjectChangelog,
+          })
+        : versionProject(options)
+    ).toPromise();
+
+    if (push && dryRun === false) {
+      await tryPushToGitRemote({
+        branch: baseBranch,
+        noVerify,
+        remote,
+      }).toPromise();
+    }
+  }
+}
+
+export function versionGroup({
+  skipRootChangelog,
+  projectsRoot,
   workspaceRoot,
   ...options
 }: {
   skipRootChangelog: boolean;
   skipProjectChangelog: boolean;
+  projectsRoot: string[],
   workspaceRoot: string;
 } & CommonVersionOptions) {
   return concat(
     ...[
-      getProjectRoots(workspaceRoot).pipe(
+      of(projectsRoot).pipe(
         switchMap((projectRoots) =>
           _generateProjectChangelogs({
             workspaceRoot,
@@ -41,7 +120,7 @@ export function versionWorkspace({
           addToStage({ paths: changelogPaths, dryRun: options.dryRun })
         )
       ),
-      getPackageFiles(workspaceRoot).pipe(
+      getPackageFiles(projectsRoot).pipe(
         switchMap((packageFiles) =>
           _runStandardVersion({
             bumpFiles: packageFiles,

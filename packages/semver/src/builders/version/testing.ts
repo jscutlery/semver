@@ -59,23 +59,16 @@ export function createFakeLogger(): logging.LoggerApi {
 }
 
 export function createFakeContext({
-  project,
-  projectRoot,
   workspaceRoot,
 }: {
-  project: string;
-  projectRoot: string;
   workspaceRoot: string;
 }): BuilderContext {
   return {
-    getProjectMetadata: jest.fn().mockReturnValue({ root: projectRoot }),
-    getTargetOptions: jest
-      .fn()
-      .mockResolvedValue({ outputPath: `dist/packages/${project}` }),
+    getProjectMetadata: jest.fn(),
     logger: createFakeLogger(),
     reportStatus: jest.fn(),
     target: {
-      project,
+      project: 'workspace',
     },
     workspaceRoot,
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

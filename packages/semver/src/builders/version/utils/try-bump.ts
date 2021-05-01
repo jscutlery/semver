@@ -1,10 +1,10 @@
-import { logging } from '@angular-devkit/core';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, Observable, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 
+import { Logger } from '../version';
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 
@@ -24,7 +24,7 @@ export function tryBump({
   tagPrefix: string;
   releaseType: string | null;
   preid: string | null;
-  logger: logging.LoggerApi;
+  logger: Logger;
 }): Observable<string> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({ tagPrefix }).pipe(

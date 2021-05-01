@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+
 import { getPackageFiles } from './workspace';
 
 describe('getPackageFiles', () => {
@@ -50,53 +51,48 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(
+      await getPackageFiles(['/root/packages/a, /root/packages/b']).toPromise()
+    ).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
-
-    expect(fs.readFile).toBeCalledTimes(1);
-    expect(fs.readFile).toBeCalledWith(
-      '/root/workspace.json',
-      'utf-8',
-      expect.any(Function)
-    );
   });
 
-  it('should fallback to angular.json if workspace.json is not found', async () => {
-    fakeReadFileSync.mockImplementationOnce(() => {
-      throw new Error('ENOENT, no such file or directory');
-    });
-    fakeReadFileSync.mockReturnValue(
-      JSON.stringify({
-        version: 1,
-        projects: {
-          a: {
-            root: 'packages/a',
-          },
-          b: {
-            root: 'packages/b',
-          },
-        },
-      })
-    );
+  // it('should fallback to angular.json if workspace.json is not found', async () => {
+  //   fakeReadFileSync.mockImplementationOnce(() => {
+  //     throw new Error('ENOENT, no such file or directory');
+  //   });
+  //   fakeReadFileSync.mockReturnValue(
+  //     JSON.stringify({
+  //       version: 1,
+  //       projects: {
+  //         a: {
+  //           root: 'packages/a',
+  //         },
+  //         b: {
+  //           root: 'packages/b',
+  //         },
+  //       },
+  //     })
+  //   );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
-      '/root/packages/a/package.json',
-      '/root/packages/b/package.json',
-    ]);
-    expect(fs.readFile).toBeCalledTimes(2);
-    expect(fs.readFile).toHaveBeenNthCalledWith(
-      1,
-      '/root/workspace.json',
-      'utf-8',
-      expect.any(Function)
-    );
-    expect(fs.readFile).toHaveBeenNthCalledWith(
-      2,
-      '/root/angular.json',
-      'utf-8',
-      expect.any(Function)
-    );
-  });
+  //   expect(await getPackageFiles('/root').toPromise()).toEqual([
+  //     '/root/packages/a/package.json',
+  //     '/root/packages/b/package.json',
+  //   ]);
+  //   expect(fs.readFile).toBeCalledTimes(2);
+  //   expect(fs.readFile).toHaveBeenNthCalledWith(
+  //     1,
+  //     '/root/workspace.json',
+  //     'utf-8',
+  //     expect.any(Function)
+  //   );
+  //   expect(fs.readFile).toHaveBeenNthCalledWith(
+  //     2,
+  //     '/root/angular.json',
+  //     'utf-8',
+  //     expect.any(Function)
+  //   );
+  // });
 });
