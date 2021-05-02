@@ -18,7 +18,6 @@ export interface CommonVersionOptions {
   newVersion: string;
   noVerify: boolean;
   preset: string;
-  // projectRoot: string;
   tagPrefix: string;
   changelogHeader?: string;
 }
