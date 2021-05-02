@@ -1,6 +1,5 @@
 import { resolve } from 'path';
-import { concat, defer, forkJoin, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { defer } from 'rxjs';
 import * as standardVersion from 'standard-version';
 
 import { SemverOptions } from './schema';
@@ -58,7 +57,7 @@ export async function runSemver({
       releaseType: version,
       preid,
       logger,
-    }).toPromise();
+    });
 
     if (newVersion == null) {
       logger.info('⏹ Nothing changed since last release.');
@@ -70,28 +69,25 @@ export async function runSemver({
       newVersion,
       noVerify,
       preset,
-      // projectRoot: resolve(workspaceRoot, config.path),
       tagPrefix,
       changelogHeader,
     };
 
-    await defer(() =>
-      config.type === 'sync-group'
-        ? versionGroup({
-            ...options,
-            workspaceRoot,
-            groupRoot: resolve(workspaceRoot, config.path),
-            projectsRoot: config.packages.map((projectRoot) =>
-              resolve(workspaceRoot, projectRoot)
-            ),
-            skipRootChangelog,
-            skipProjectChangelog,
-          })
-        : versionProject({
-            ...options,
-            projectRoot: resolve(workspaceRoot, config.path),
-          })
-    ).toPromise();
+    config.type === 'sync-group'
+      ? await versionGroup({
+          ...options,
+          workspaceRoot,
+          groupRoot: resolve(workspaceRoot, config.path),
+          projectsRoot: config.packages.map((projectRoot) =>
+            resolve(workspaceRoot, projectRoot)
+          ),
+          skipRootChangelog,
+          skipProjectChangelog,
+        })
+      : await versionProject({
+          ...options,
+          projectRoot: resolve(workspaceRoot, config.path),
+        });
 
     if (push && dryRun === false) {
       await tryPushToGitRemote({
@@ -103,7 +99,10 @@ export async function runSemver({
   }
 }
 
-export function versionGroup({
+/**
+ * @internal
+ */
+export async function versionGroup({
   skipRootChangelog,
   projectsRoot,
   workspaceRoot,
@@ -116,78 +115,71 @@ export function versionGroup({
   groupRoot: string;
   workspaceRoot: string;
 } & CommonVersionOptions) {
-  return concat(
-    ...[
-      of(projectsRoot).pipe(
-        switchMap((projectRoots) =>
-          generateProjectChangelogs({
-            workspaceRoot,
-            projectRoots,
-            ...options,
-          })
-        ),
-        /* Run Git add only once, after changelogs get generated in parallel. */
-        switchMap((changelogPaths) =>
-          addToStage({ paths: changelogPaths, dryRun: options.dryRun })
-        )
-      ),
-      getPackageFiles(projectsRoot).pipe(
-        switchMap((packageFiles) =>
-          runStandardVersion({
-            path: groupRoot,
-            changelogPath: getChangelogPath(workspaceRoot),
-            bumpFiles: packageFiles,
-            skipChangelog: skipRootChangelog,
-            ...options,
-          })
-        )
-      ),
-    ]
-  );
+  const changelogsPath = await generateProjectsChangelog({
+    workspaceRoot,
+    projectsRoot,
+    ...options,
+  });
+
+  await addToStage({
+    paths: changelogsPath,
+    dryRun: options.dryRun,
+  }).toPromise();
+
+  const packageFiles = await getPackageFiles(projectsRoot).toPromise();
+
+  return runStandardVersion({
+    path: groupRoot,
+    changelogPath: getChangelogPath(workspaceRoot),
+    bumpFiles: packageFiles,
+    skipChangelog: skipRootChangelog,
+    ...options,
+  });
 }
 
-export function versionProject(
-  options: CommonVersionOptions & { projectRoot: string }
-) {
+/**
+ *  @internal
+ */
+export function versionProject({
+  projectRoot,
+  ...options
+}: CommonVersionOptions & { projectRoot: string }): Promise<void> {
   return runStandardVersion({
-    path: options.projectRoot,
-    changelogPath: getChangelogPath(options.projectRoot),
-    bumpFiles: [resolve(options.projectRoot, 'package.json')],
+    path: projectRoot,
+    changelogPath: getChangelogPath(projectRoot),
+    bumpFiles: [resolve(projectRoot, 'package.json')],
     skipChangelog: false,
     ...options,
   });
 }
 
 /**
- * Generate project's changelogs and return an array containing their path.
- * Skip generation if --skip-project-changelog enabled and return an empty array.
+ * Generate project's changelogs in parallel and return an array containing their path.
+ * Skip generation if skipProjectChangelog passed and return an empty array.
+ * @internal
  */
-export function generateProjectChangelogs({
-  projectRoots,
+export function generateProjectsChangelog({
+  projectsRoot,
   workspaceRoot,
   ...options
 }: CommonVersionOptions & {
   skipProjectChangelog: boolean;
-  projectRoots: string[];
+  projectsRoot: string[];
   workspaceRoot: string;
-}): Observable<string[]> {
+}): Promise<string[]> {
   if (options.skipProjectChangelog) {
-    return of([]);
+    return Promise.resolve([]);
   }
 
-  return forkJoin(
-    projectRoots
-      /* Don't update the workspace's changelog as it will be
-       * dealt with by `standardVersion`. */
-      .filter((projectRoot) => projectRoot !== workspaceRoot)
-      .map((projectRoot) =>
-        updateChangelog({
-          dryRun: options.dryRun,
-          preset: options.preset,
-          projectRoot: resolve(workspaceRoot, projectRoot),
-          newVersion: options.newVersion,
-        })
-      )
+  return Promise.all(
+    projectsRoot.map((projectRoot) =>
+      updateChangelog({
+        dryRun: options.dryRun,
+        preset: options.preset,
+        projectRoot: resolve(workspaceRoot, projectRoot),
+        newVersion: options.newVersion,
+      })
+    )
   );
 }
 

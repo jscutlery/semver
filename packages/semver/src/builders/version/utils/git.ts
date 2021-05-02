@@ -6,6 +6,7 @@ import { execAsync } from './exec-async';
 
 /**
  * Return the list of commits since `since` commit.
+ * @internal
  */
 export function getCommits({
   projectRoot,
@@ -30,6 +31,9 @@ export function getCommits({
   );
 }
 
+/**
+ * @internal
+ */
 export function tryPushToGitRemote({
   remote,
   branch,
@@ -80,6 +84,9 @@ export function tryPushToGitRemote({
   });
 }
 
+/**
+ * @internal
+ */
 export function addToStage({
   paths,
   dryRun,
@@ -95,6 +102,9 @@ export function addToStage({
   return execAsync('git', ['add', ...gitAddOptions]);
 }
 
+/**
+ * @internal
+ */
 export function getFirstCommitRef(): Observable<string> {
   return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     /**                                 Remove line breaks. */

@@ -3,6 +3,9 @@ import { Observable } from 'rxjs';
 
 import { readJsonFile } from './filesystem';
 
+/**
+ * @internal
+ */
 export function readPackageJson(
   projectRoot: string
 ): Observable<{

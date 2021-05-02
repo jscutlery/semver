@@ -21,7 +21,7 @@ describe(getLastVersion.name, () => {
   it('should compute current version from previous semver tag', async () => {
     mockGitSemverTags.mockResolvedValue(['my-lib-2.1.0', 'my-lib-2.0.0', 'my-lib-1.0.0']);
 
-    const tag = await getLastVersion({ tagPrefix }).toPromise();
+    const tag = await getLastVersion({ tagPrefix });
 
     expect(tag).toEqual('2.1.0');
   });
@@ -29,6 +29,6 @@ describe(getLastVersion.name, () => {
   it('should throw error if no tag available', async () => {
     mockGitSemverTags.mockResolvedValue([]);
 
-    expect(getLastVersion({ tagPrefix }).toPromise()).rejects.toThrow('No semver tag found');
+    expect(getLastVersion({ tagPrefix })).rejects.toThrow('No semver tag found');
   });
 });

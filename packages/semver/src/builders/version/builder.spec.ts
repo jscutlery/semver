@@ -62,7 +62,7 @@ describe('@jscutlery/semver:version', () => {
     context = createFakeContext({ workspaceRoot: '/root' });
 
     mockChangelog.mockResolvedValue(undefined);
-    mockTryBump.mockReturnValue(of('2.1.0'));
+    mockTryBump.mockReturnValue(Promise.resolve('2.1.0'));
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
@@ -113,7 +113,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(Promise.resolve(null));
 
       const { success } = await runBuilder(options, context).toPromise();
 
@@ -210,7 +210,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(Promise.resolve(null));
 
       const { success } = await runBuilder(options, context).toPromise();
 

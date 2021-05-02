@@ -1,6 +1,6 @@
 import { logging } from '@angular-devkit/core';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { callbackify } from 'util';
 
 import { createFakeLogger } from '../testing';
@@ -28,7 +28,7 @@ describe('tryBump', () => {
 
   beforeEach(() => {
     logger = createFakeLogger();
-    mockGetLastVersion.mockReturnValue(of('2.1.0'));
+    mockGetLastVersion.mockReturnValue(Promise.resolve('2.1.0'));
   });
 
   afterEach(() => {
@@ -58,7 +58,7 @@ describe('tryBump', () => {
       releaseType: null,
       preid: null,
       logger,
-    }).toPromise();
+    });
 
     expect(newVersion).toEqual('2.2.0');
 
@@ -89,7 +89,7 @@ describe('tryBump', () => {
       releaseType: 'premajor',
       preid: 'alpha',
       logger,
-    }).toPromise();
+    });
 
     expect(newVersion).toEqual('3.0.0-alpha.0');
 
@@ -112,7 +112,7 @@ describe('tryBump', () => {
       releaseType: 'patch',
       preid: null,
       logger,
-    }).toPromise();
+    });
 
     expect(newVersion).toEqual('2.1.1');
 
@@ -120,7 +120,7 @@ describe('tryBump', () => {
   });
 
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
-    mockGetLastVersion.mockReturnValue(throwError('No version found'));
+    mockGetLastVersion.mockRejectedValue(new Error('No version found'));
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
 
@@ -131,7 +131,7 @@ describe('tryBump', () => {
       releaseType: null,
       preid: null,
       logger,
-    }).toPromise();
+    });
 
     expect(logger.warn).toBeCalledWith(
       expect.stringContaining('No previous version tag found')
@@ -153,7 +153,7 @@ describe('tryBump', () => {
       releaseType: null,
       preid: null,
       logger,
-    }).toPromise();
+    });
 
     expect(newVersion).toBe(null);
 
