@@ -4,7 +4,11 @@ import { switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
 import { SemverOptions } from './schema';
-import { defaultHeader, getChangelogPath, updateChangelog } from './utils/changelog';
+import {
+  defaultHeader,
+  getChangelogPath,
+  updateChangelog,
+} from './utils/changelog';
 import { addToStage, tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getPackageFiles } from './utils/workspace';
@@ -14,7 +18,7 @@ export interface CommonVersionOptions {
   newVersion: string;
   noVerify: boolean;
   preset: string;
-  projectRoot: string;
+  // projectRoot: string;
   tagPrefix: string;
   changelogHeader?: string;
 }
@@ -67,7 +71,7 @@ export async function runSemver({
       newVersion,
       noVerify,
       preset,
-      projectRoot: config.path,
+      // projectRoot: resolve(workspaceRoot, config.path),
       tagPrefix,
       changelogHeader,
     };
@@ -77,11 +81,17 @@ export async function runSemver({
         ? versionGroup({
             ...options,
             workspaceRoot,
-            projectsRoot: config.packages,
+            groupRoot: resolve(workspaceRoot, config.path),
+            projectsRoot: config.packages.map((projectRoot) =>
+              resolve(workspaceRoot, projectRoot)
+            ),
             skipRootChangelog,
             skipProjectChangelog,
           })
-        : versionProject(options)
+        : versionProject({
+            ...options,
+            projectRoot: resolve(workspaceRoot, config.path),
+          })
     ).toPromise();
 
     if (push && dryRun === false) {
@@ -98,18 +108,20 @@ export function versionGroup({
   skipRootChangelog,
   projectsRoot,
   workspaceRoot,
+  groupRoot,
   ...options
 }: {
   skipRootChangelog: boolean;
   skipProjectChangelog: boolean;
-  projectsRoot: string[],
+  projectsRoot: string[];
+  groupRoot: string;
   workspaceRoot: string;
 } & CommonVersionOptions) {
   return concat(
     ...[
       of(projectsRoot).pipe(
         switchMap((projectRoots) =>
-          _generateProjectChangelogs({
+          generateProjectChangelogs({
             workspaceRoot,
             projectRoots,
             ...options,
@@ -122,7 +134,9 @@ export function versionGroup({
       ),
       getPackageFiles(projectsRoot).pipe(
         switchMap((packageFiles) =>
-          _runStandardVersion({
+          runStandardVersion({
+            path: groupRoot,
+            changelogPath: getChangelogPath(workspaceRoot),
             bumpFiles: packageFiles,
             skipChangelog: skipRootChangelog,
             ...options,
@@ -133,8 +147,12 @@ export function versionGroup({
   );
 }
 
-export function versionProject(options: CommonVersionOptions) {
-  return _runStandardVersion({
+export function versionProject(
+  options: CommonVersionOptions & { projectRoot: string }
+) {
+  return runStandardVersion({
+    path: options.projectRoot,
+    changelogPath: getChangelogPath(options.projectRoot),
     bumpFiles: [resolve(options.projectRoot, 'package.json')],
     skipChangelog: false,
     ...options,
@@ -145,7 +163,7 @@ export function versionProject(options: CommonVersionOptions) {
  * Generate project's changelogs and return an array containing their path.
  * Skip generation if --skip-project-changelog enabled and return an empty array.
  */
-export function _generateProjectChangelogs({
+export function generateProjectChangelogs({
   projectRoots,
   workspaceRoot,
   ...options
@@ -167,26 +185,29 @@ export function _generateProjectChangelogs({
         updateChangelog({
           dryRun: options.dryRun,
           preset: options.preset,
-          projectRoot,
+          projectRoot: resolve(workspaceRoot, projectRoot),
           newVersion: options.newVersion,
         })
       )
   );
 }
 
-export function _runStandardVersion({
+export function runStandardVersion({
   bumpFiles,
   dryRun,
-  projectRoot,
+  path,
+  changelogPath,
   newVersion,
   noVerify,
   preset,
   tagPrefix,
   skipChangelog,
-  changelogHeader = defaultHeader
+  changelogHeader = defaultHeader,
 }: {
   bumpFiles: string[];
   skipChangelog: boolean;
+  path: string;
+  changelogPath: string;
 } & CommonVersionOptions) {
   return standardVersion({
     bumpFiles,
@@ -195,14 +216,14 @@ export function _runStandardVersion({
     commitAll: true,
     dryRun,
     header: changelogHeader,
-    infile: getChangelogPath(projectRoot),
+    infile: changelogPath,
     /* Control version to avoid different results between the value
      * returned by `tryBump` and the one computed by standard-version. */
     releaseAs: newVersion,
     silent: false,
     noVerify,
-    packageFiles: [resolve(projectRoot, 'package.json')],
-    path: projectRoot,
+    packageFiles: bumpFiles,
+    path,
     preset,
     tagPrefix,
     skip: {

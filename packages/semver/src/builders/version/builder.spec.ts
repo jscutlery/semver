@@ -11,8 +11,6 @@ import { callbackify } from 'util';
 import { createFakeContext } from './testing';
 import { tryBump } from './utils/try-bump';
 import * as git from './utils/git';
-import * as workspace from './utils/workspace';
-import { getPackageFiles } from './utils/workspace';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -81,22 +79,10 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock console.info. */
     jest.spyOn(console, 'info').mockImplementation();
-
-    /* Mock getPackageFiles. */
-    jest
-      .spyOn(workspace, 'getPackageFiles')
-      .mockReturnValue(
-        of([
-          '/root/packages/rx-state/package.json',
-          '/root/packages/cdk/helpers/package.json',
-          '/root/packages/cdk/operators/package.json',
-        ])
-      );
   });
 
   afterEach(() => {
     (console.info as jest.Mock).mockRestore();
-    (getPackageFiles as jest.Mock).mockRestore();
     mockTryPushToGitRemote.mockRestore();
     mockAddToStage.mockRestore();
     mockExecFile.mockRestore();
@@ -110,13 +96,14 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
+      expect(standardVersion).toHaveBeenNthCalledWith(
+        1,
         expect.objectContaining({
           silent: false,
           preset: 'angular',
           dryRun: false,
           noVerify: false,
-          tagPrefix: 'v-',
+          tagPrefix: 'rx-state-',
           path: '/root/packages/rx-state',
           infile: '/root/packages/rx-state/CHANGELOG.md',
           bumpFiles: ['/root/packages/rx-state/package.json'],
@@ -162,19 +149,24 @@ describe('@jscutlery/semver:version', () => {
         '2.1.0'
       );
 
-      expect(standardVersion).toBeCalledWith(
+      expect(standardVersion).toHaveBeenNthCalledWith(
+        2,
         expect.objectContaining({
           silent: false,
           preset: 'angular',
           dryRun: false,
           noVerify: false,
-          path: '/root',
+          tagPrefix: 'cdk-',
+          path: '/root/packages/cdk',
           infile: '/root/CHANGELOG.md',
           bumpFiles: [
             '/root/packages/cdk/operators/package.json',
             '/root/packages/cdk/helpers/package.json',
           ],
-          packageFiles: ['/root/package.json'],
+          packageFiles: [
+            '/root/packages/cdk/operators/package.json',
+            '/root/packages/cdk/helpers/package.json',
+          ],
           skip: {
             changelog: false,
           },
