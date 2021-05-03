@@ -4,7 +4,7 @@ import { callbackify } from 'util';
 import { getLastVersion } from './get-last-version';
 
 jest.mock('git-semver-tags', () => jest.fn());
-jest.mock('./project');
+jest.mock('./workspace');
 
 const tagPrefix = 'my-lib-';
 
