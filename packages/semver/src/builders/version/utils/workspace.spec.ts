@@ -1,12 +1,34 @@
-import { getPackageFiles } from './workspace';
+import { getPackageFiles, getProjectsRoot } from './workspace';
 
 describe('getPackageFiles', () => {
-  it('should return projects package.json path', async () => {
+  it('should resolve projects package.json', () => {
     expect(
-      await getPackageFiles(['/root/packages/a', '/root/packages/b']).toPromise()
+      getPackageFiles([
+        '/root/packages/a',
+        '/root/packages/b',
+      ])
     ).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
+    ]);
+  });
+});
+
+describe('getProjectsRoot', () => {
+  it('should resolve projects root', () => {
+    expect(
+      getProjectsRoot({
+        workspaceRoot: '/root',
+        config: {
+          name: 'cdk',
+          type: 'sync-group',
+          path: 'packages/cdk',
+          packages: ['packages/cdk/helpers', 'packages/cdk/operators'],
+        },
+      })
+    ).toIncludeAllMembers([
+      '/root/packages/cdk/helpers',
+      '/root/packages/cdk/operators',
     ]);
   });
 });

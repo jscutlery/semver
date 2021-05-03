@@ -1,16 +1,11 @@
 import { resolve } from 'path';
-import { defer } from 'rxjs';
 import * as standardVersion from 'standard-version';
 
 import { SemverOptions } from './schema';
-import {
-  defaultHeader,
-  getChangelogPath,
-  updateChangelog,
-} from './utils/changelog';
+import { defaultHeader, getChangelogPath, updateChangelog } from './utils/changelog';
 import { addToStage, tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
-import { getPackageFiles } from './utils/workspace';
+import { getPackageFiles, getProjectsRoot } from './utils/workspace';
 
 export interface CommonVersionOptions {
   dryRun: boolean;
@@ -73,21 +68,21 @@ export async function runSemver({
       changelogHeader,
     };
 
-    config.type === 'sync-group'
-      ? await versionGroup({
-          ...options,
-          workspaceRoot,
-          groupRoot: resolve(workspaceRoot, config.path),
-          projectsRoot: config.packages.map((projectRoot) =>
-            resolve(workspaceRoot, projectRoot)
-          ),
-          skipRootChangelog,
-          skipProjectChangelog,
-        })
-      : await versionProject({
-          ...options,
-          projectRoot: resolve(workspaceRoot, config.path),
-        });
+    if (config.type === 'sync-group') {
+      await versionGroup({
+        ...options,
+        workspaceRoot,
+        groupRoot: resolve(workspaceRoot, config.path),
+        projectsRoot: getProjectsRoot({ workspaceRoot, config }),
+        skipRootChangelog,
+        skipProjectChangelog,
+      });
+    } else if (config.type === 'independent') {
+      await versionProject({
+        ...options,
+        projectRoot: resolve(workspaceRoot, config.path),
+      });
+    }
 
     if (push && dryRun === false) {
       await tryPushToGitRemote({
@@ -126,12 +121,10 @@ export async function versionGroup({
     dryRun: options.dryRun,
   }).toPromise();
 
-  const packageFiles = await getPackageFiles(projectsRoot).toPromise();
-
   return runStandardVersion({
     path: groupRoot,
     changelogPath: getChangelogPath(workspaceRoot),
-    bumpFiles: packageFiles,
+    bumpFiles: getPackageFiles(projectsRoot),
     skipChangelog: skipRootChangelog,
     ...options,
   });
