@@ -111,9 +111,9 @@ export async function manualBump({
     ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(releaseType) &&
     preid !== null;
 
-  const semverArgs: string[] = [
+  const semverArgs: [string, semver.ReleaseType, ...string[]] = [
     since,
-    releaseType,
+    releaseType as semver.ReleaseType,
     ...(hasPreid ? [preid] : []),
   ];
 

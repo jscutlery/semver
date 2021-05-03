@@ -27,6 +27,5 @@
     "@types/inquirer": "^7.3.1",
     "@types/git-semver-tags": "^4.1.0",
     "@types/semver": "^7.3.5"
-
   }
 }

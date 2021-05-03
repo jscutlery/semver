@@ -10,7 +10,10 @@ export async function getLastVersion({
 }: {
   tagPrefix: string;
 }): Promise<string> {
-  const tags = await promisify(gitSemverTags)({ tagPrefix });
+  const getSemverTags = promisify(gitSemverTags) as (
+    options: gitSemverTags.Options
+  ) => Promise<string[]>;
+  const tags = await getSemverTags({ tagPrefix });
   const versions = tags.map((tag) => tag.substring(tagPrefix.length));
   const [version] = versions.sort(semver.rcompare);
 
