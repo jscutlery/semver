@@ -2,14 +2,10 @@ import { resolve } from 'path';
 import * as standardVersion from 'standard-version';
 
 import { SemverOptions } from './schema';
-import {
-  defaultHeader,
-  getChangelogPath,
-  updateChangelog,
-} from './utils/changelog';
+import { defaultHeader, updateChangelog } from './utils/changelog';
 import { addToStage, tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
-import { getPackageFiles, getProjectsRoot } from './utils/workspace';
+import { getChangelogPath, getPackageFiles, getPackageJsonPath, getProjectsRoot } from './utils/workspace';
 
 export interface CommonVersionOptions {
   dryRun: boolean;
@@ -144,7 +140,7 @@ export function versionProject({
   return runStandardVersion({
     path: projectRoot,
     changelogPath: getChangelogPath(projectRoot),
-    bumpFiles: [resolve(projectRoot, 'package.json')],
+    bumpFiles: [getPackageJsonPath(projectRoot)],
     skipChangelog: false,
     ...options,
   });

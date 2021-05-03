@@ -5,12 +5,8 @@ import { readFileSync } from 'fs';
 
 import { runBuilder } from './builder';
 import { SemverOptions } from './schema';
-import {
-  createFakeContext,
-  setupTestingWorkspace,
-  TestingWorkspace,
-} from './testing';
-import { readPackageJson } from './utils/project';
+import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
+import { readPackageJson } from './utils/workspace';
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: SemverOptions = {

@@ -1,19 +1,12 @@
-import { resolve } from 'path';
-import { defer } from 'rxjs';
-import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import * as standardVersionDefaults from 'standard-version/defaults';
+import * as changelog from 'standard-version/lib/lifecycles/changelog';
+
+import { getChangelogPath } from './workspace';
 
 export const defaultHeader = `# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 `;
-
-/**
- * @internal
- */
-export function getChangelogPath(projectRoot: string) {
-  return resolve(projectRoot, 'CHANGELOG.md');
-}
 
 /**
  * @internal
@@ -29,7 +22,7 @@ export async function updateChangelog({
   preset: string;
   newVersion: string;
 }) {
-  const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
+  const changelogPath = getChangelogPath(projectRoot);
   await changelog(
     {
       ...standardVersionDefaults,
