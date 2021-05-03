@@ -2,7 +2,11 @@ import { resolve } from 'path';
 import * as standardVersion from 'standard-version';
 
 import { SemverOptions } from './schema';
-import { defaultHeader, getChangelogPath, updateChangelog } from './utils/changelog';
+import {
+  defaultHeader,
+  getChangelogPath,
+  updateChangelog,
+} from './utils/changelog';
 import { addToStage, tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getPackageFiles, getProjectsRoot } from './utils/workspace';
@@ -89,7 +93,7 @@ export async function runSemver({
         branch: baseBranch,
         noVerify,
         remote,
-      }).toPromise();
+      });
     }
   }
 }
@@ -119,7 +123,7 @@ export async function versionGroup({
   await addToStage({
     paths: changelogsPath,
     dryRun: options.dryRun,
-  }).toPromise();
+  });
 
   return runStandardVersion({
     path: groupRoot,

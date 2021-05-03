@@ -1,5 +1,4 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
 
 import * as cp from './exec-async';
@@ -46,13 +45,13 @@ describe('git', () => {
       it('should Git push with right options', async () => {
         jest
           .spyOn(cp, 'execAsync')
-          .mockReturnValue(of({ stderr: '', stdout: 'success' }));
+          .mockResolvedValue({ stderr: '', stdout: 'success' });
 
         await tryPushToGitRemote({
           remote: 'upstream',
           branch: 'master',
           noVerify: false,
-        }).toPromise();
+        });
 
         expect(cp.execAsync).toBeCalledWith(
           'git',
@@ -69,13 +68,13 @@ describe('git', () => {
       it(`should Git push and add '--no-verify' option when asked for`, async () => {
         jest
           .spyOn(cp, 'execAsync')
-          .mockReturnValue(of({ stderr: '', stdout: 'success' }));
+          .mockResolvedValue({ stderr: '', stdout: 'success' });
 
         await tryPushToGitRemote({
           remote: 'origin',
           branch: 'main',
           noVerify: true,
-        }).toPromise();
+        });
 
         expect(cp.execAsync).toBeCalledWith(
           'git',
@@ -90,13 +89,11 @@ describe('git', () => {
         );
       });
 
-      it(`should retry Git push if '--atomic' option not supported`, async () => {
+      it(`should retry git push without --atomic option`, async () => {
         jest
           .spyOn(cp, 'execAsync')
-          .mockReturnValueOnce(
-            throwError({ stderr: 'atomic failed', stdout: '' })
-          )
-          .mockReturnValueOnce(of({ stderr: '', stdout: 'success' }));
+          .mockRejectedValueOnce({ stderr: 'atomic failed', stdout: '' })
+          .mockResolvedValueOnce({ stderr: '', stdout: 'success' });
 
         jest.spyOn(console, 'warn').mockImplementation();
 
@@ -104,7 +101,7 @@ describe('git', () => {
           remote: 'origin',
           branch: 'master',
           noVerify: false,
-        }).toPromise();
+        });
 
         expect(cp.execAsync).toHaveBeenNthCalledWith(
           1,
@@ -122,14 +119,14 @@ describe('git', () => {
       it(`should throw if Git push failed`, async () => {
         jest
           .spyOn(cp, 'execAsync')
-          .mockReturnValue(throwError({ stderr: 'failed', stdout: '' }));
+          .mockRejectedValue({ stderr: 'failed', stdout: '' });
 
         try {
           await tryPushToGitRemote({
             remote: 'origin',
             branch: 'master',
             noVerify: false,
-          }).toPromise();
+          });
           fail();
         } catch (error) {
           expect(cp.execAsync).toBeCalledTimes(1);
@@ -147,7 +144,7 @@ describe('git', () => {
             branch: undefined as any,
             /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
-          }).toPromise();
+          });
           fail();
         } catch (error) {
           expect(error.message).toContain('Missing Git options');
@@ -160,40 +157,44 @@ describe('git', () => {
     it('should add to git stage', async () => {
       jest
         .spyOn(cp, 'execAsync')
-        .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
+        .mockResolvedValue({ stderr: '', stdout: 'ok' });
 
       await addToStage({
         paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
         dryRun: false,
-      }).toPromise();
+      });
 
       expect(cp.execAsync).toBeCalledWith(
         'git',
-        expect.arrayContaining(['add', 'packages/demo/file.txt', 'packages/demo/other-file.ts'])
+        expect.arrayContaining([
+          'add',
+          'packages/demo/file.txt',
+          'packages/demo/other-file.ts',
+        ])
       );
     });
 
     it('should skip git add if paths argument is empty', async () => {
       jest
         .spyOn(cp, 'execAsync')
-        .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
+        .mockResolvedValue({ stderr: '', stdout: 'ok' });
 
       await addToStage({
         paths: [],
         dryRun: false,
-      }).toPromise();
+      });
 
       expect(cp.execAsync).not.toBeCalled();
     });
   });
 
-    describe('getFirstCommitRef', () => {
+  describe('getFirstCommitRef', () => {
     it('should get last git commit', async () => {
       jest
         .spyOn(cp, 'execAsync')
-        .mockReturnValue(of({ stderr: '', stdout: 'sha1\n' }));
+        .mockResolvedValue({ stderr: '', stdout: 'sha1\n' });
 
-      const tag = await getFirstCommitRef().toPromise();
+      const tag = await getFirstCommitRef();
 
       expect(tag).toBe('sha1');
       expect(cp.execAsync).toBeCalledWith(

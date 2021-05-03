@@ -1,16 +1,14 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { of } from 'rxjs';
+import { execFile } from 'child_process';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { runBuilder } from './builder';
-import { SemverOptions } from './schema';
-import { execFile } from 'child_process';
-
 import { callbackify } from 'util';
 
+import { runBuilder } from './builder';
+import { SemverOptions } from './schema';
 import { createFakeContext } from './testing';
-import { tryBump } from './utils/try-bump';
 import * as git from './utils/git';
+import { tryBump } from './utils/try-bump';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -65,8 +63,8 @@ describe('@jscutlery/semver:version', () => {
     mockTryBump.mockReturnValue(Promise.resolve('2.1.0'));
 
     /* Mock Git execution */
-    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
-    jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
+    jest.spyOn(git, 'tryPushToGitRemote').mockResolvedValue(undefined);
+    jest.spyOn(git, 'addToStage').mockResolvedValue(undefined);
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -238,8 +236,8 @@ describe('@jscutlery/semver:version', () => {
 
   describe('Git push', () => {
     it('should push to Git', async () => {
-      mockTryPushToGitRemote.mockReturnValue(
-        of({ stderr: '', stdout: 'success' })
+      mockTryPushToGitRemote.mockResolvedValue(
+        { stderr: '', stdout: 'success' }
       );
 
       const { success } = await runBuilder(

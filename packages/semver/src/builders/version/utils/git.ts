@@ -1,6 +1,6 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { defer, Observable, of, throwError, EMPTY } from 'rxjs';
-import { catchError, last, scan, startWith, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { last, scan, startWith } from 'rxjs/operators';
 
 import { execAsync } from './exec-async';
 
@@ -34,7 +34,7 @@ export function getCommits({
 /**
  * @internal
  */
-export function tryPushToGitRemote({
+export async function tryPushToGitRemote({
   remote,
   branch,
   noVerify,
@@ -42,46 +42,36 @@ export function tryPushToGitRemote({
   remote: string;
   branch: string;
   noVerify: boolean;
-}): Observable<{
-  stderr: string;
-  stdout: string;
-}> {
-  return defer(() => {
-    if (remote == null || branch == null) {
-      return throwError(
-        new Error(
-          'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
-        )
-      );
-    }
+}) {
+  if (remote == null || branch == null) {
+    throw new Error(
+      'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
+    );
+  }
 
-    const gitPushOptions = [
-      '--follow-tags',
-      ...(noVerify ? ['--no-verify'] : []),
-    ];
+  const gitPushOptions = [
+    '--follow-tags',
+    ...(noVerify ? ['--no-verify'] : []),
+  ];
 
-    return execAsync('git', [
+  try {
+    const result = await execAsync('git', [
       'push',
       ...gitPushOptions,
       '--atomic',
       remote,
       branch,
-    ]).pipe(
-      catchError((error) => {
-        if (
-          /atomic/.test(error.stderr) ||
-          (process.env.GIT_REDIRECT_STDERR === '2>&1' &&
-            /atomic/.test(error.stdout))
-        ) {
-          console.warn('git push --atomic failed, attempting non-atomic push');
+    ]);
 
-          return execAsync('git', ['push', ...gitPushOptions, remote, branch]);
-        }
+    return result;
+  } catch (error) {
+    if (/atomic/.test(error.stderr)) {
+      console.warn('git push --atomic failed, attempting non-atomic push');
+      return execAsync('git', ['push', ...gitPushOptions, remote, branch]);
+    }
 
-        return throwError(error);
-      })
-    );
-  });
+    throw error;
+  }
 }
 
 /**
@@ -93,9 +83,9 @@ export function addToStage({
 }: {
   paths: string[];
   dryRun: boolean;
-}): Observable<{ stderr: string; stdout: string }> {
+}) {
   if (paths.length === 0) {
-    return EMPTY;
+    return Promise.resolve();
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
@@ -105,9 +95,12 @@ export function addToStage({
 /**
  * @internal
  */
-export function getFirstCommitRef(): Observable<string> {
-  return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
-    /**                                 Remove line breaks. */
-    switchMap(({ stdout }) => of(stdout.replace(/\r?\n|\r/, '')))
-  );
+export async function getFirstCommitRef(): Promise<string> {
+  const { stdout } = await execAsync('git', [
+    'rev-list',
+    '--max-parents=0',
+    'HEAD',
+  ]);
+  /* remove line breaks. */
+  return stdout.replace(/\r?\n|\r/, '');
 }

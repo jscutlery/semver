@@ -44,7 +44,7 @@ If your project is already versioned, please tag the latest release commit with 
    * then get the first commit ref to compute the initial version. */
   const lastVersionGitRef =
     lastVersion === initialVersion
-      ? await getFirstCommitRef().toPromise()
+      ? await getFirstCommitRef()
       : `${tagPrefix}${lastVersion}`;
 
   const commits = await getCommits({

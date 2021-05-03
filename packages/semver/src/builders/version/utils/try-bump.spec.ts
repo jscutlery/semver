@@ -122,7 +122,7 @@ describe('tryBump', () => {
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
     mockGetLastVersion.mockRejectedValue(new Error('No version found'));
     mockGetCommits.mockReturnValue(of([]));
-    mockGetFirstCommitRef.mockReturnValue(of('sha1'));
+    mockGetFirstCommitRef.mockResolvedValue('sha1');
 
     await tryBump({
       preset: 'angular',

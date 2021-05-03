@@ -1,17 +1,9 @@
 import { exec } from 'child_process';
-import { defer } from 'rxjs';
 
 /**
  * @internal
  */
-export function execAsync(cmd: string, args: string[]) {
-  return defer(() => _execAsync(cmd, args));
-}
-
-/**
- * @internal
- */
-export function _execAsync(cmd: string, args: string[] = []): Promise<{ stderr: string; stdout: string }> {
+export function execAsync(cmd: string, args: string[] = []): Promise<{ stderr: string; stdout: string }> {
   return new Promise((resolve, reject) => {
     exec(
       `${cmd} ${args.length > 0 ? args.join(' '): ''}`.trim(),
