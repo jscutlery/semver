@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.2.0](https://github.com/jscutlery/semver/compare/semver-2.1.0...semver-2.2.0) (2021-05-16)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 fix json schema id conflict issue ([eeef6f8](https://github.com/jscutlery/semver/commit/eeef6f8b95daf19ead7a9cb3aea2cfae0ea56ed1))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.10 ([39f7559](https://github.com/jscutlery/semver/commit/39f7559f0ee8a5105f8e4e8ba778dc8edde58c66))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.11 ([4f8855c](https://github.com/jscutlery/semver/commit/4f8855c8d96bac79902392ba9bf690c05c17a373))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.12 ([635a32d](https://github.com/jscutlery/semver/commit/635a32d6ee32a9b099f7cd0a0f9f8374c2aef1a5))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.13 ([8b7418f](https://github.com/jscutlery/semver/commit/8b7418f78905f0474738a19743f9af9d57649767))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.9 ([f652491](https://github.com/jscutlery/semver/commit/f652491d520c4936668d1e246d7c482bc226aaee))
+* 📦 update dependency inquirer to v8 ([f07f21d](https://github.com/jscutlery/semver/commit/f07f21d8cfaa7d66f27e33dbe3b80922087a9ed4))
+
+
+### Features
+
+* ✅ add changelog header option ([205851b](https://github.com/jscutlery/semver/commit/205851bce9f457423de58e36d164ea3b2a60c63d))
+
+
+
 # [2.1.0](https://github.com/jscutlery/semver/compare/semver-2.0.0...semver-2.1.0) (2021-04-15)
 
 
