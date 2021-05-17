@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.2.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.2.0...semver-2.2.1) (2021-05-17)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 fix $schema ref ([009c230](https://github.com/jscutlery/nx-plugin-semver/commit/009c2307e33c0d64464b4c9061ef6a1c8faef736))
+
+
+
 # [2.2.0](https://github.com/jscutlery/semver/compare/semver-2.1.0...semver-2.2.0) (2021-05-16)
 
 
