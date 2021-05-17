@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/schema",
   "$id": "jscutlery-semver-version",
   "title": "JSCutlery Version builder",
   "description": "Automate versioning and CHANGELOG generation.",
