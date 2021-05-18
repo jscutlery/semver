@@ -20,13 +20,14 @@ export function runBuilder(
     skipProjectChangelog,
     version,
     preid,
-    changelogHeader
+    changelogHeader,
+    prefixSeparator
   }: VersionBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
   const { workspaceRoot } = context;
   const preset = 'angular';
-  const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
+  const tagPrefix = syncVersions ? 'v' : `${context.target.project}${prefixSeparator}`;
 
   const projectRoot$ = getProjectRoot(context).pipe(
     shareReplay({ refCount: true, bufferSize: 1 })
