@@ -4,4 +4,6 @@ export interface SchemaOptions {
   remote: string;
   branch: string;
   projects?: string[];
+  enforceConventionalCommits?: boolean;
+  skipInstall?: boolean;
 }
