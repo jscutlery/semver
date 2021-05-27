@@ -48,12 +48,6 @@ export function getJsonFile<T>(tree: Tree, path: string): T {
   }
 }
 
-export function getFileContents(tree: Tree, filePath: string): string {
-  const buffer = tree.read(filePath) || '';
-
-  return buffer.toString();
-}
-
 export function overwritePackageJson(
   tree: Tree,
   content: PackageJson,
