@@ -20,11 +20,16 @@ const COMMITLINT = {
   '@commitlint/config-conventional': '^12.1.4',
 };
 
+const HUSKY = {
+  husky: '^6.0.0',
+};
+
 export function addDependencies(options: SchemaOptions): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (options.enforceConventionalCommits) {
       addCommitizen(options, tree, context);
       addCommitlint(options, tree, context);
+      addHusky(options, tree, context);
     }
   };
 }
@@ -104,6 +109,37 @@ export function addCommitlintConfig(tree: Tree) {
   }
 }
 
+export function addHusky(
+  options: SchemaOptions,
+  tree: Tree,
+  context: SchematicContext
+) {
+  addDevDependencies(HUSKY, options, tree, context);
+  addHuskyScrip(tree);
+}
+
+export function addHuskyScrip(tree: Tree) {
+  const packageJson: PackageJson = getPackageJson(tree);
+  const scripts = {
+    scripts: {
+      ...packageJson.scripts,
+      ...{
+        prepare: 'husky install',
+      },
+    },
+  };
+  const commitMsg = `#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit $1`;
+  tree.create('.husky/commit-msg', commitMsg);
+  const newJson: PackageJson = getMergedPackageJsonConfig(
+    scripts,
+    packageJson
+  ) as PackageJson;
+  overwritePackageJson(tree, newJson);
+}
+
 export function addDevDependencies(
   deps: PackageJsonConfigPart<string>,
   options: SchemaOptions,
@@ -127,7 +163,6 @@ function installDependencies(
   context: SchematicContext
 ) {
   if (options.skipInstall !== true) {
-    context.logger.info('Installs npm dependencies');
     context.addTask(new NodePackageInstallTask());
   }
 }
