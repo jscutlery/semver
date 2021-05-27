@@ -38,9 +38,7 @@ export function ngAdd(options: SchemaOptions): Rule {
               ? updateWorkspaceFromSchema(options)
               : await updateWorkspaceFromPrompt(tree),
           ]),
-          addDependencies(options)
-      ],
-    );
+      addDependencies(options),
+    ]);
   };
 }
-
