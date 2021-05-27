@@ -27,19 +27,16 @@ const HUSKY = {
 export function addDependencies(options: SchemaOptions): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (options.enforceConventionalCommits) {
-      addCommitizen(options, tree, context);
-      addCommitlint(options, tree, context);
-      addHusky(options, tree, context);
+      addCommitizen(tree);
+      addCommitlint(tree);
+      addHusky(tree);
+      installDependencies(options, context);
     }
   };
 }
 
-export function addCommitizen(
-  options: SchemaOptions,
-  tree: Tree,
-  context: SchematicContext
-) {
-  addDevDependencies(COMMITIZEN, options, tree, context);
+export function addCommitizen(tree: Tree) {
+  addDevDependencies(COMMITIZEN, tree);
   addCommitizenConfig(tree);
   addCommitizenScrip(tree);
 }
@@ -74,15 +71,12 @@ export function addCommitizenScrip(tree: Tree) {
     scripts,
     packageJson
   ) as PackageJson;
+
   overwritePackageJson(tree, newJson);
 }
 
-export function addCommitlint(
-  options: SchemaOptions,
-  tree: Tree,
-  context: SchematicContext
-) {
-  addDevDependencies(COMMITLINT, options, tree, context);
+export function addCommitlint(tree: Tree) {
+  addDevDependencies(COMMITLINT, tree);
   addCommitlintConfig(tree);
 }
 
@@ -109,12 +103,8 @@ export function addCommitlintConfig(tree: Tree) {
   }
 }
 
-export function addHusky(
-  options: SchemaOptions,
-  tree: Tree,
-  context: SchematicContext
-) {
-  addDevDependencies(HUSKY, options, tree, context);
+export function addHusky(tree: Tree) {
+  addDevDependencies(HUSKY, tree);
   addHuskyScrip(tree);
 }
 
@@ -142,9 +132,7 @@ npx --no-install commitlint --edit $1`;
 
 export function addDevDependencies(
   deps: PackageJsonConfigPart<string>,
-  options: SchemaOptions,
-  tree: Tree,
-  context: SchematicContext
+  tree: Tree
 ) {
   const packageJson: PackageJson = getPackageJson(tree);
   const devDependencies = {
@@ -155,7 +143,6 @@ export function addDevDependencies(
     packageJson
   ) as PackageJson;
   overwritePackageJson(tree, newJson);
-  installDependencies(options, context);
 }
 
 function installDependencies(
