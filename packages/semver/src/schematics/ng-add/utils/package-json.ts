@@ -7,8 +7,9 @@ export interface PackageJson {
   scripts: PackageJsonConfigPart<string>;
   devDependencies: PackageJsonConfigPart<string>;
   config?: {
-    commitizen?: any;
+    commitizen?: PackageJsonConfigPart<any>;
   };
+  commitlint: PackageJsonConfigPart<any>;
   [key: string]: any;
 }
 
