@@ -105,29 +105,38 @@ export function addCommitlintConfig(tree: Tree) {
 
 export function addHusky(tree: Tree) {
   addDevDependencies(HUSKY, tree);
-  addHuskyScrip(tree);
+  addHuskyConfig(tree);
 }
 
-export function addHuskyScrip(tree: Tree) {
-  const packageJson: PackageJson = getPackageJson(tree);
-  const scripts = {
-    scripts: {
-      ...packageJson.scripts,
-      ...{
-        prepare: 'husky install',
+export function addHuskyConfig(tree: Tree) {
+  const hasHusky = tree.exists('.husky');
+  const hasConfigFile = tree.exists('.husky/commit-msg');
+
+  if (!hasHusky) {
+    const packageJson: PackageJson = getPackageJson(tree);
+    const scripts = {
+      scripts: {
+        ...packageJson.scripts,
+        ...{
+          prepare: 'husky install',
+        },
       },
-    },
-  };
-  const commitMsg = `#!/bin/sh
+    };
+    const newJson: PackageJson = getMergedPackageJsonConfig(
+      scripts,
+      packageJson
+    ) as PackageJson;
+    overwritePackageJson(tree, newJson);
+  }
+
+  if (!hasConfigFile) {
+    const commitMsg = `#!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx --no-install commitlint --edit $1`;
-  tree.create('.husky/commit-msg', commitMsg);
-  const newJson: PackageJson = getMergedPackageJsonConfig(
-    scripts,
-    packageJson
-  ) as PackageJson;
-  overwritePackageJson(tree, newJson);
+npx --no-install commitlint --edit $1
+`;
+    tree.create('.husky/commit-msg', commitMsg);
+  }
 }
 
 export function addDevDependencies(
