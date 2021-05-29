@@ -24,14 +24,11 @@ class FileNotFoundException extends Error {
   }
 }
 
-export const getPackageJson = (
-  tree: Tree,
-  workingDirectory = ''
-): PackageJson => {
+export function getPackageJson(tree: Tree, workingDirectory = ''): PackageJson {
   const url = join(workingDirectory, PACKAGE_JSON);
 
   return getJsonFile(tree, url);
-};
+}
 
 export function getJsonFile<T>(tree: Tree, path: string): T {
   const file = tree.get(path);
@@ -50,17 +47,12 @@ export function getJsonFile<T>(tree: Tree, path: string): T {
 
 export function overwritePackageJson(
   tree: Tree,
-  content: PackageJson,
+  packageJson: PackageJson,
+  content: PackageJsonConfigPart<any>,
   workingDirectory = ''
 ) {
+  const newJson: PackageJson = { ...packageJson, ...content };
   const url = join(workingDirectory, PACKAGE_JSON);
 
-  tree.overwrite(url, JSON.stringify(content, null, 2));
-}
-
-export function getMergedPackageJsonConfig(
-  existingConfig: PackageJsonConfigPart<any>,
-  newConfig: PackageJsonConfigPart<any>
-) {
-  return { ...newConfig, ...existingConfig };
+  tree.overwrite(url, JSON.stringify(newJson, null, 2));
 }
