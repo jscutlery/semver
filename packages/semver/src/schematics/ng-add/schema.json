@@ -17,14 +17,8 @@
     "enforceConventionalCommits": {
       "description": "Install & configure commitlint, husky & commitizen",
       "type": "boolean",
-      "default": false,
+      "default": true,
       "x-prompt": "Enforce conventional commits?"
-    },
-    "skipInstall": {
-      "description": "Skips installing new node_modules after modifying package.json",
-      "type": "boolean",
-      "default": false,
-      "x-prompt": "Skips installing new modules?"
     }
   },
   "required": []
