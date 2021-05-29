@@ -30,7 +30,7 @@ export function addCommitizenConfig(tree: Tree) {
   if (!hasConfig) {
     const config: PackageJsonConfigPart<any> = {
       config: {
-        ...packageJson?.config,
+        ...packageJson.config,
         commitizen: {
           path: 'cz-conventional-changelog',
         },
@@ -80,7 +80,7 @@ export function addHusky(tree: Tree) {
 }
 
 export function addHuskyConfig(tree: Tree) {
-  const hasHusky: boolean = tree.exists('.husky');
+  const hasHusky: boolean = tree.exists('.husky/_/husky.sh');
   const hasConfigFile: boolean = tree.exists('.husky/commit-msg');
 
   if (!hasHusky) {
