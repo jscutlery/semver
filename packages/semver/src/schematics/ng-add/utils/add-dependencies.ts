@@ -98,12 +98,7 @@ export function addHuskyConfig(tree: Tree) {
   }
 
   if (!hasConfigFile) {
-    const commitMsg = `#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-npx --no-install commitlint --edit $1
-`;
-
+    const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\nnpx --no-install commitlint --edit $1\n`;
     tree.create('.husky/commit-msg', commitMsg);
   }
 }
