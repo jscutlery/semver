@@ -1,6 +1,6 @@
 import { noop, Rule, Tree } from '@angular-devkit/schematics';
 import { addDepsToPackageJson, updateJsonInTree } from '@nrwl/workspace';
-import { constants } from 'fs';
+import { constants, mkdirSync, writeFileSync } from 'fs';
 
 import { SchemaOptions } from '../schema';
 
@@ -102,7 +102,10 @@ export function addHuskyConfigMsg(): (tree: Tree) => Rule {
 
     if (!hasConfigFile) {
       const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\nnpx --no-install commitlint --edit $1\n`;
-      tree.create('.husky/commit-msg', commitMsg);
+      mkdirSync('.husky');
+      writeFileSync('.husky/commit-msg', commitMsg, {
+        mode: getExecutableMode(),
+      });
     }
 
     return noop();
