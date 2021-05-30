@@ -2,6 +2,7 @@ import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import { readJsonInTree, readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
 import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
+import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
@@ -156,6 +157,15 @@ describe('ng-add schematic', () => {
 
   describe('Enforce Conventional Commits', () => {
     const options = { ...defaultOptions, syncVersions: true };
+
+    beforeAll(() => {
+      jest.spyOn(fs, 'mkdirSync').mockImplementation(() => null);
+      jest
+        .spyOn(fs, 'writeFileSync')
+        .mockImplementation((_path: string, _content: string) => {
+          appTree.create(_path, _content);
+        });
+    });
 
     it('add commitizen to package.json devDepencencies', async () => {
       const packageJson = JSON.parse(
