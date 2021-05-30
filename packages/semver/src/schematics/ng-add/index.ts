@@ -2,7 +2,7 @@ import { chain, Rule, Tree } from '@angular-devkit/schematics';
 import { updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
 
 import { SchemaOptions } from './schema';
-import { addDependencies } from './utils/add-dependencies';
+import { addCommitizenConfig, addCommitlintConfig, addDependencies, addHuskyConfig } from './utils/dependencies';
 import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
 
 export function ngAdd(options: SchemaOptions): Rule {
@@ -39,6 +39,9 @@ export function ngAdd(options: SchemaOptions): Rule {
               : await updateWorkspaceFromPrompt(tree),
           ]),
       addDependencies(options),
+      addCommitizenConfig(options),
+      addCommitlintConfig(options),
+      addHuskyConfig(options),
     ]);
   };
 }
