@@ -1,8 +1,14 @@
-import { chain, Rule, Tree } from '@angular-devkit/schematics';
+import { chain, noop, Rule, Tree } from '@angular-devkit/schematics';
 import { updateNxJsonInTree, updateWorkspace } from '@nrwl/workspace';
 
 import { SchemaOptions } from './schema';
-import { addCommitizenConfig, addCommitlintConfig, addDependencies, addHuskyConfig } from './utils/dependencies';
+import {
+  addCommitizenConfig,
+  addCommitlintConfig,
+  addDependencies,
+  addHuskyConfig,
+  addHuskyConfigMsg,
+} from './utils/dependencies';
 import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
 
 export function ngAdd(options: SchemaOptions): Rule {
@@ -38,10 +44,11 @@ export function ngAdd(options: SchemaOptions): Rule {
               ? updateWorkspaceFromSchema(options)
               : await updateWorkspaceFromPrompt(tree),
           ]),
-      addDependencies(options),
-      addCommitizenConfig(options),
-      addCommitlintConfig(options),
-      addHuskyConfig(options),
+      options.enforceConventionalCommits ? addDependencies(options) : noop(),
+      options.enforceConventionalCommits ? addCommitizenConfig() : noop(),
+      options.enforceConventionalCommits ? addCommitlintConfig() : noop(),
+      options.enforceConventionalCommits ? addHuskyConfig() : noop(),
+      options.enforceConventionalCommits ? addHuskyConfigMsg() : noop(),
     ]);
   };
 }
