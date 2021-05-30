@@ -1,12 +1,11 @@
 import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
-import { readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
+import { readJsonInTree, readNxJsonInTree, readWorkspace } from '@nrwl/workspace';
 import { createEmptyWorkspace, runSchematic } from '@nrwl/workspace/testing';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
 import { SchemaOptions } from './schema';
-import { getPackageJson, overwritePackageJson } from './utils/package-json';
 
 jest.mock('inquirer');
 
@@ -159,20 +158,19 @@ describe('ng-add schematic', () => {
     const options = { ...defaultOptions, syncVersions: true };
 
     it('add commitizen to package.json devDepencencies', async () => {
-      const packageJson = getPackageJson(appTree);
-      const config = {
-        config: {
-          other: 'test',
-        },
+      const packageJson = JSON.parse(
+        appTree.get('package.json').content.toString()
+      );
+      packageJson.config = {
+        other: 'test',
       };
-
-      overwritePackageJson(appTree, packageJson, config);
+      appTree.overwrite('package.json', JSON.stringify(packageJson, null, 2));
 
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson2 = getPackageJson(tree);
+      const packageJson2 = readJsonInTree(tree, 'package.json');
 
       expect(packageJson2.devDependencies.commitizen).toEqual('^4.2.4');
       expect(packageJson2.devDependencies['cz-conventional-changelog']).toEqual(
@@ -185,7 +183,7 @@ describe('ng-add schematic', () => {
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson = getPackageJson(tree);
+      const packageJson = readJsonInTree(tree, 'package.json');
 
       expect(packageJson.config.commitizen.path).toEqual(
         'cz-conventional-changelog'
@@ -193,23 +191,21 @@ describe('ng-add schematic', () => {
     });
 
     it('does not add commitizen config to package.json if exists', async () => {
-      const packageJson = getPackageJson(appTree);
-      const config = {
-        config: {
-          commitizen: {
-            path: 'other',
-          },
+      const packageJson = JSON.parse(
+        appTree.get('package.json').content.toString()
+      );
+      packageJson.config = {
+        commitizen: {
+          path: 'other',
         },
       };
-
-      overwritePackageJson(appTree, packageJson, config);
+      appTree.overwrite('package.json', JSON.stringify(packageJson, null, 2));
 
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson2 = getPackageJson(tree);
-
+      const packageJson2 = readJsonInTree(tree, 'package.json');
       expect(packageJson2.config.commitizen.path).toEqual('other');
     });
 
@@ -218,7 +214,7 @@ describe('ng-add schematic', () => {
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson = getPackageJson(tree);
+      const packageJson = readJsonInTree(tree, 'package.json');
       expect(packageJson.devDependencies['@commitlint/cli']).toEqual('^12.1.4');
       expect(
         packageJson.devDependencies['@commitlint/config-conventional']
@@ -230,7 +226,7 @@ describe('ng-add schematic', () => {
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson = getPackageJson(tree);
+      const packageJson = readJsonInTree(tree, 'package.json');
 
       expect(packageJson.commitlint.extends).toEqual([
         '@commitlint/config-conventional',
@@ -238,20 +234,19 @@ describe('ng-add schematic', () => {
     });
 
     it('does not add commitlint config to package.json if exists', async () => {
-      const packageJson = getPackageJson(appTree);
-      const config = {
-        commitlint: {
-          extends: ['other'],
-        },
+      const packageJson = JSON.parse(
+        appTree.get('package.json').content.toString()
+      );
+      packageJson.commitlint = {
+        extends: ['other'],
       };
-
-      overwritePackageJson(appTree, packageJson, config);
+      appTree.overwrite('package.json', JSON.stringify(packageJson, null, 2));
 
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson2 = getPackageJson(tree);
+      const packageJson2 = readJsonInTree(tree, 'package.json');
 
       expect(packageJson2.commitlint.extends).toEqual(['other']);
     });
@@ -261,15 +256,15 @@ describe('ng-add schematic', () => {
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
 
-      const packageJson = getPackageJson(tree);
-      expect(packageJson.devDependencies.husky).toEqual('^6.0.0');
+      const packageJson = readJsonInTree(tree, 'package.json');
+      expect(packageJson.devDependencies.husky).toBeDefined();
     });
 
     it('adds husky config if does not exist', async () => {
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
-      const packageJson = getPackageJson(tree);
+      const packageJson = readJsonInTree(tree, 'package.json');
 
       expect(tree.exists('.husky/commit-msg')).toEqual(true);
       expect(packageJson.scripts.prepare).toEqual('husky install');
@@ -278,22 +273,13 @@ describe('ng-add schematic', () => {
     it('does not add husky config if exists', async () => {
       appTree.create('.husky/_/husky.sh', '');
       appTree.create('.husky/commit-msg', 'test');
-      console.log(appTree);
       const tree = await schematicRunner
         .runSchematicAsync('ng-add', options, appTree)
         .toPromise();
-      const packageJson = getPackageJson(tree);
+      const packageJson = readJsonInTree(tree, 'package.json');
 
       expect(tree.readContent('.husky/commit-msg')).toEqual('test');
       expect(packageJson.scripts.prepare).toBeUndefined();
-    });
-
-    it('throws if no package.json', async () => {
-      const tree = await schematicRunner
-        .runSchematicAsync('ng-add', options, appTree)
-        .toPromise();
-
-      expect(() => getPackageJson(tree, 'nonExistant')).toThrow();
     });
 
     it('does nothing if no enforceConventionalCommits', async () => {
@@ -304,7 +290,7 @@ describe('ng-add schematic', () => {
           appTree
         )
         .toPromise();
-      const packageJson = getPackageJson(tree);
+      const packageJson = readJsonInTree(tree, 'package.json');
 
       expect(packageJson.devDependencies.commitizen).toBeUndefined();
       expect(

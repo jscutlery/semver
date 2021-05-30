@@ -19,6 +19,11 @@
       "type": "boolean",
       "default": true,
       "x-prompt": "Enforce conventional commits?"
+    },
+    "skipInstall": {
+      "description": "Skip install dependencies",
+      "type": "boolean",
+      "default": false
     }
   },
   "required": []
