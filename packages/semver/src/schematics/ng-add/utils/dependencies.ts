@@ -11,7 +11,7 @@ export interface PackageJson {
   config?: {
     commitizen?: PackageJsonPart<string>;
   };
-  commitlint: PackageJsonPart<[string]>;
+  commitlint: PackageJsonPart<string[]>;
 }
 
 export interface PackageJsonPart<T> {
@@ -70,7 +70,6 @@ export function addCommitlintConfig(options: SchemaOptions): Rule {
           tree.exists('.commitlintrc.yml');
 
         if (!hasConfig) {
-          packageJson.scripts = { ...packageJson.scripts, ...{ cz: 'cz' } };
           packageJson.commitlint = {
             ...packageJson.commitlint,
             extends: ['@commitlint/config-conventional'],
