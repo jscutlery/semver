@@ -1,12 +1,8 @@
-import { noop, Rule, Tree } from '@angular-devkit/schematics';
+import { chain, noop, Rule, Tree } from '@angular-devkit/schematics';
 import { addDepsToPackageJson, updateJsonInTree } from '@nrwl/workspace';
 import { constants, mkdirSync, writeFileSync } from 'fs';
 
 import { SchemaOptions } from '../schema';
-
-function getExecutableMode() {
-  return constants.S_IXUSR | constants.S_IXGRP | constants.S_IXOTH;
-}
 
 const PACKAGE_JSON = 'package.json';
 
@@ -23,7 +19,19 @@ export interface PackageJsonPart<T> {
   [key: string]: T;
 }
 
-export function addDependencies(options: SchemaOptions): Rule {
+export function addDependencies(options: SchemaOptions) {
+  return options.enforceConventionalCommits
+    ? chain([
+        _addDevDependencies(options),
+        _addCommitizenConfig(),
+        _addCommitlintConfig(),
+        _addHuskyConfig(),
+        _addHuskyConfigMsg(),
+      ])
+    : noop();
+}
+
+function _addDevDependencies(options: SchemaOptions): Rule {
   return addDepsToPackageJson(
     {},
     {
@@ -37,7 +45,7 @@ export function addDependencies(options: SchemaOptions): Rule {
   );
 }
 
-export function addCommitizenConfig(): (tree: Tree) => Rule {
+function _addCommitizenConfig(): (tree: Tree) => Rule {
   return (tree: Tree) => {
     return updateJsonInTree(PACKAGE_JSON, (packageJson: PackageJson) => {
       const hasConfig: boolean =
@@ -56,7 +64,7 @@ export function addCommitizenConfig(): (tree: Tree) => Rule {
   };
 }
 
-export function addCommitlintConfig(): (tree: Tree) => Rule {
+function _addCommitlintConfig(): (tree: Tree) => Rule {
   return (tree: Tree) => {
     return updateJsonInTree(PACKAGE_JSON, (packageJson: PackageJson) => {
       const hasConfig: boolean =
@@ -79,7 +87,7 @@ export function addCommitlintConfig(): (tree: Tree) => Rule {
   };
 }
 
-export function addHuskyConfig(): (tree: Tree) => Rule {
+function _addHuskyConfig(): (tree: Tree) => Rule {
   return (tree: Tree) => {
     return updateJsonInTree(PACKAGE_JSON, (packageJson: PackageJson) => {
       const hasHusky: boolean = tree.exists('.husky/_/husky.sh');
@@ -96,15 +104,17 @@ export function addHuskyConfig(): (tree: Tree) => Rule {
   };
 }
 
-export function addHuskyConfigMsg(): (tree: Tree) => Rule {
+function _addHuskyConfigMsg(): (tree: Tree) => Rule {
   return (tree: Tree) => {
     const hasConfigFile: boolean = tree.exists('.husky/commit-msg');
 
     if (!hasConfigFile) {
       const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\nnpx --no-install commitlint --edit $1\n`;
+
+      // This is a hack until Tree.create can change the file's permissions
       mkdirSync('.husky');
       writeFileSync('.husky/commit-msg', commitMsg, {
-        mode: getExecutableMode(),
+        mode: constants.S_IRWXU | constants.S_IRWXG | constants.S_IRWXO,
       });
     }
 
