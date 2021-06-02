@@ -36,6 +36,15 @@ describe('ng-add schematic', () => {
     appTree = await runSchematic('lib', libOptions, appTree);
   });
 
+  beforeEach(() => {
+    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => null);
+    jest
+      .spyOn(fs, 'writeFileSync')
+      .mockImplementation((_path: string, _content: string) => {
+        appTree.create(_path, _content);
+      });
+  });
+
   describe('Sync versions', () => {
     const options = { ...defaultOptions, syncVersions: true };
 
@@ -157,15 +166,6 @@ describe('ng-add schematic', () => {
 
   describe('Enforce Conventional Commits', () => {
     const options = { ...defaultOptions, syncVersions: true };
-
-    beforeAll(() => {
-      jest.spyOn(fs, 'mkdirSync').mockImplementation(() => null);
-      jest
-        .spyOn(fs, 'writeFileSync')
-        .mockImplementation((_path: string, _content: string) => {
-          appTree.create(_path, _content);
-        });
-    });
 
     it('add commitizen to package.json devDepencencies', async () => {
       const packageJson = JSON.parse(
