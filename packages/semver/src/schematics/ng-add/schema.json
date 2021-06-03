@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "ngAdd",
+  "$id": "ng-add",
   "title": "@jscutlery/semver ng-add schematic",
   "type": "object",
   "properties": {
