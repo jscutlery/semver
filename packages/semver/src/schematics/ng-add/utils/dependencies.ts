@@ -22,11 +22,11 @@ export interface PackageJsonPart<T> {
 export function addDependencies(options: SchemaOptions) {
   return options.enforceConventionalCommits
     ? chain([
-        _addDevDependencies(options),
         _addCommitizenConfig(),
         _addCommitlintConfig(),
         _addHuskyConfig(),
         _addHuskyConfigMsg(),
+        _addDevDependencies(options),
       ])
     : noop();
 }
