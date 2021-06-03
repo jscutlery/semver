@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.3.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.2.1...semver-2.3.0) (2021-06-03)
+
+
+### Bug Fixes
+
+* **ng-add:** execute prepare ([43ada7c](https://github.com/jscutlery/nx-plugin-semver/commit/43ada7c7d33712fd5d461f1629b676fab91aead9))
+* **ng-add:** fix wrong code ([4b814c6](https://github.com/jscutlery/nx-plugin-semver/commit/4b814c688010a3f7ddf7f487faa145d63f933566))
+* **ng-add:** update husky file check ([de1754e](https://github.com/jscutlery/nx-plugin-semver/commit/de1754e647aa3674dc655a16bfff601e1b079664))
+
+
+### Features
+
+* **ng-add:** add commitizen ([8c1d996](https://github.com/jscutlery/nx-plugin-semver/commit/8c1d996e773a23bb8db0e27e95ae6d26a30b9637))
+* **ng-add:** add commitlint ([741f76c](https://github.com/jscutlery/nx-plugin-semver/commit/741f76c02eb8152217cfd1a89d4cd6d2f6453b31))
+* **ng-add:** add husky ([4f5c202](https://github.com/jscutlery/nx-plugin-semver/commit/4f5c202bae39d2bf5dd88b0d281e3b9ddd490d04))
+* **ng-add:** add new options to enforce CC ([4621059](https://github.com/jscutlery/nx-plugin-semver/commit/4621059e689a139abcfa70a7f71a10ea32cdf46a))
+* **ng-add:** check husky config before create ([bf3590d](https://github.com/jscutlery/nx-plugin-semver/commit/bf3590d9b2cbf251c47ee4a8cce1a49955b56dbb))
+* **ng-add:** make commit-msg executable ([fbcb930](https://github.com/jscutlery/nx-plugin-semver/commit/fbcb9308d300347e2fda36e37622992ccb928e63))
+* **ng-add:** remove uneeded code ([496ec3e](https://github.com/jscutlery/nx-plugin-semver/commit/496ec3e89a525aaafbae7c90b50ab70e0f4fff11))
+* **ng-add:** update behavior and code cleanup ([d8eb821](https://github.com/jscutlery/nx-plugin-semver/commit/d8eb821800e8f9245eaf859d7afc2e6ce206e3d2))
+
+
+
 ## [2.2.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.2.0...semver-2.2.1) (2021-05-17)
 
 
