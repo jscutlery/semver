@@ -111,10 +111,12 @@ function _addHuskyConfigMsg(): (tree: Tree) => Rule {
     if (!hasConfigFile) {
       const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\nnpx --no-install commitlint --edit $1\n`;
 
-      // This is a hack until Tree.create can change the file's permissions
+      /* This is a hack until Tree.create can change the file's permissions,
+       see https://github.com/nrwl/nx/pull/5695 */
       mkdirSync('.husky');
       writeFileSync('.husky/commit-msg', commitMsg, {
-        mode: constants.S_IRWXU | constants.S_IRWXG | constants.S_IRWXO,
+        /* File mode indicating readable, writable, and executable by owner. */
+        mode: constants.S_IRWXU,
       });
     }
 
