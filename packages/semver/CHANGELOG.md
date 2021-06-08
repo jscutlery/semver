@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.3.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.3.0...semver-2.3.1) (2021-06-08)
+
+
+### Bug Fixes
+
+* **ng-add:** only allow read write and execution from owner ([41b7b30](https://github.com/jscutlery/nx-plugin-semver/commit/41b7b3044d2188ced3fddfbf5fbd9b3bd7b0a703))
+* 📦 update dependency @angular-devkit/build-angular to v0.1102.14 ([c16d0fa](https://github.com/jscutlery/nx-plugin-semver/commit/c16d0fa53e141d7c2067e20d4cec959d468a433b))
+* **ng-add:** fix id schema property warning ([5d67597](https://github.com/jscutlery/nx-plugin-semver/commit/5d6759739003f354b3d2c180dcc2f343e8232ee8))
+
+
+
 # [2.3.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.2.1...semver-2.3.0) (2021-06-03)
 
 
