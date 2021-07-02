@@ -2,26 +2,37 @@ import { BuilderOutput } from '@angular-devkit/architect';
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
 
 import { runBuilder } from './builder';
-import { VersionBuilderSchema } from './schema';
+import { SemverOptions } from './schema';
 import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
-import { readPackageJson } from './utils/project';
+import { readPackageJson } from './utils/workspace';
 
 describe('@jscutlery/semver:version', () => {
-  const defaultBuilderOptions: VersionBuilderSchema = {
+  const defaultBuilderOptions: SemverOptions = {
     dryRun: false,
     noVerify: false,
     push: false,
     remote: 'origin',
     baseBranch: 'main',
     skipRootChangelog: false,
-    syncVersions: false,
+    skipProjectChangelog: false,
+    configs: [
+      {
+        name: 'rx-state',
+        path: 'packages/rx-state',
+        type: 'independent',
+      },
+      {
+        name: 'cdk',
+        path: 'packages/cdk',
+        type: 'sync-group',
+        packages: ['packages/cdk/helpers', 'packages/cdk/operators'],
+      },
+    ],
   };
 
   const commonWorkspaceFiles: [string, string][] = [
-    ['package.json', JSON.stringify({ version: '0.0.0' })],
     [
       'workspace.json',
       JSON.stringify({
@@ -29,20 +40,24 @@ describe('@jscutlery/semver:version', () => {
           workspace: {
             root: '.',
           },
-          a: {
-            root: 'packages/a',
+          'rx-state': {
+            root: 'packages/rx-state',
           },
-          b: {
-            root: 'packages/b',
+          helpers: {
+            root: 'packages/cdk/helpers',
+          },
+          operators: {
+            root: 'packages/cdk/operators',
           },
         },
       }),
     ],
-    ['packages/a/.gitkeep', ''],
-    /* "a" has a package.json */
-    ['packages/a/package.json', JSON.stringify({ version: '0.0.0' })],
-    /* but "b" doesn't. */
-    ['packages/b/.gitkeep', ''],
+    ['packages/rx-state/package.json', JSON.stringify({ version: '0.0.0' })],
+    ['packages/cdk/helpers/package.json', JSON.stringify({ version: '0.0.0' })],
+    [
+      'packages/cdk/operators/package.json',
+      JSON.stringify({ version: '0.0.0' }),
+    ],
   ];
 
   let result: BuilderOutput;
@@ -51,7 +66,7 @@ describe('@jscutlery/semver:version', () => {
   beforeAll(() => jest.spyOn(console, 'info').mockImplementation());
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
-  describe('package "a" with (--sync-versions=false)', () => {
+  describe('Independent config (package "rx-state")', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -62,8 +77,6 @@ describe('@jscutlery/semver:version', () => {
       result = await runBuilder(
         defaultBuilderOptions,
         createFakeContext({
-          project: 'a',
-          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
         })
       ).toPromise();
@@ -79,22 +92,18 @@ describe('@jscutlery/semver:version', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
-    it('should not bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
+    it(`should bump rx-state's package.json`, async () => {
+      expect(
+        (await readPackageJson('packages/rx-state').toPromise()).version
+      ).toEqual('0.1.0');
     });
 
-    it(`should bump a's package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
-        '0.1.0'
-      );
+    it('should generate root changelog', () => {
+      expect(fileExists('CHANGELOG.md')).toBe(true);
     });
 
-    it('should not generate root changelog', () => {
-      expect(fileExists('CHANGELOG.md')).toBe(false);
-    });
-
-    it(`should generate "a"'s changelog`, async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+    it(`should generate rx-state's changelog`, async () => {
+      expect(readFileSync('packages/rx-state/CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
 
 This file was generated.*
@@ -104,13 +113,13 @@ This file was generated.*
 
 ### Features
 
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
+\\* \\*\\*rx-state:\\*\\* 🚀 new feature .*
 $`)
       );
     });
   });
 
-  describe('package "b" with (--sync-versions=false)', () => {
+  describe('Sync-group config (package "cdk")', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -121,8 +130,6 @@ $`)
       result = await runBuilder(
         defaultBuilderOptions,
         createFakeContext({
-          project: 'b',
-          projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
         })
       ).toPromise();
@@ -138,16 +145,14 @@ $`)
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
-    it('should not bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
+    it('should generate root changelog', () => {
+      expect(fileExists('CHANGELOG.md')).toBe(true);
     });
 
-    it('should not generate root changelog', () => {
-      expect(fileExists('CHANGELOG.md')).toBe(false);
-    });
-
-    it(`should generate "b"'s changelog`, async () => {
-      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+    it(`should generate cdk's "helper" changelog`, async () => {
+      expect(
+        readFileSync('packages/cdk/helpers/CHANGELOG.md', 'utf-8')
+      ).toMatch(
         new RegExp(`^# Changelog
 
 This file was generated.*
@@ -157,482 +162,459 @@ This file was generated.*
 
 ### Bug Fixes
 
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+\\* \\*\\*cdk:\\*\\* 🐞 fix emptiness .*
+$`)
+      );
+    });
+
+    it(`should generate cdk's "operators" changelog`, async () => {
+      expect(
+        readFileSync('packages/cdk/operators/CHANGELOG.md', 'utf-8')
+      ).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+## 0.0.1 \\(.*\\)
 $`)
       );
     });
   });
 
-  describe('workspace with --sync-versions=true (--root-changelog=true)', () => {
-    beforeAll(async () => {
-      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+//   describe('workspace with --sync-versions=true (--root-changelog=true)', () => {
+//     beforeAll(async () => {
+//       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
-      /* Commit changes. */
-      commitChanges();
+//       /* Commit changes. */
+//       commitChanges();
 
-      /* Run builder. */
-      result = await runBuilder(
-        {
-          ...defaultBuilderOptions,
-          syncVersions: true,
-        },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
-      ).toPromise();
-    });
+//       /* Run builder. */
+//       result = await runBuilder(
+//         {
+//           ...defaultBuilderOptions,
+//         },
+//         createFakeContext({
+//           workspaceRoot: testingWorkspace.root,
+//         })
+//       ).toPromise();
+//     });
 
-    afterAll(() => testingWorkspace.tearDown());
+//     afterAll(() => testingWorkspace.tearDown());
 
-    it('should return success', () => {
-      expect(result).toEqual({ success: true });
-    });
+//     it('should return success', () => {
+//       expect(result).toEqual({ success: true });
+//     });
 
-    it('should commit all changes', () => {
-      expect(uncommitedChanges()).toHaveLength(0);
-    });
+//     it('should commit all changes', () => {
+//       expect(uncommitedChanges()).toHaveLength(0);
+//     });
 
-    it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
-    });
+//     it('should bump root package.json', async () => {
+//       expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
+//     });
 
-    it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
-        '0.1.0'
-      );
-    });
+//     it(`should bump "a"'s package.json`, async () => {
+//       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+//         '0.1.0'
+//       );
+//     });
 
-    it('should generate root changelog', async () => {
-      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
+//     it('should generate root changelog', async () => {
+//       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+//         new RegExp(`^# Changelog
 
-This file was generated.*
+// This file was generated.*
 
-# 0.1.0 \\(.*\\)
+// # 0.1.0 \\(.*\\)
 
 
-### Bug Fixes
+// ### Bug Fixes
 
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-
+// \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
 
-### Features
 
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
-    });
+// ### Features
 
-    it('should generate sub-changelogs', async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
+// \\* \\*\\*a:\\*\\* 🚀 new feature .*
+// $`)
+//       );
+//     });
 
-This file was generated.*
+//     it('should generate sub-changelogs', async () => {
+//       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+//         new RegExp(`^# Changelog
 
-# 0.1.0 \\(.*\\)
+// This file was generated.*
 
+// # 0.1.0 \\(.*\\)
 
-### Features
 
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
+// ### Features
 
-      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
+// \\* \\*\\*a:\\*\\* 🚀 new feature .*
+// $`)
+//       );
 
-This file was generated.*
+//       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+//         new RegExp(`^# Changelog
 
-# 0.1.0 \\(.*\\)
+// This file was generated.*
 
+// # 0.1.0 \\(.*\\)
 
-### Bug Fixes
 
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
-      );
-    });
-  });
+// ### Bug Fixes
 
-  describe('on workspace with --sync-versions=true (--root-changelog=true), after changing lib "b"', () => {
-    beforeAll(async () => {
-      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+// \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+// $`)
+//       );
+//     });
+//   });
 
-      /* Commit changes. */
-      commitChanges();
+  //   describe('on workspace with --sync-versions=true (--root-changelog=true), after changing lib "b"', () => {
+  //     beforeAll(async () => {
+  //       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
-      /* Run builder. */
-      await runBuilder(
-        {
-          ...defaultBuilderOptions,
-          syncVersions: true,
-        },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
-      ).toPromise();
+  //       /* Commit changes. */
+  //       commitChanges();
 
-      /* Change b and commit. */
-      execSync(`
-        echo b > packages/b/b
-        git add packages/b/b
-        git commit -m "feat(b): b"
-      `);
-
-      result = await runBuilder(
-        {
-          ...defaultBuilderOptions,
-          syncVersions: true,
-        },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
-      ).toPromise();
-    });
-
-    afterAll(() => testingWorkspace.tearDown());
-
-    it('should return success', () => {
-      expect(result).toEqual({ success: true });
-    });
-
-    it('should commit all changes', () => {
-      expect(uncommitedChanges()).toHaveLength(0);
-    });
-
-    it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.2.0');
-    });
-
-    /* In sync mode, we bump "a" even if change concerns "b". */
-    it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
-        '0.2.0'
-      );
-    });
-
-    it('should update root changelog', async () => {
-      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`
-# \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+  //       /* Run builder. */
+  //       await runBuilder(
+  //         {
+  //           ...defaultBuilderOptions,
+  //         },
+  //         createFakeContext({
+  //           workspaceRoot: testingWorkspace.root,
+  //         })
+  //       ).toPromise();
+
+  //       /* Change b and commit. */
+  //       execSync(`
+  //         echo b > packages/b/b
+  //         git add packages/b/b
+  //         git commit -m "feat(b): b"
+  //       `);
+
+  //       result = await runBuilder(
+  //         {
+  //           ...defaultBuilderOptions,
+  //         },
+  //         createFakeContext({
+  //           workspaceRoot: testingWorkspace.root,
+  //         })
+  //       ).toPromise();
+  //     });
+
+  //     afterAll(() => testingWorkspace.tearDown());
+
+  //     it('should return success', () => {
+  //       expect(result).toEqual({ success: true });
+  //     });
+
+  //     it('should commit all changes', () => {
+  //       expect(uncommitedChanges()).toHaveLength(0);
+  //     });
+
+  //     it('should bump root package.json', async () => {
+  //       expect((await readPackageJson('.').toPromise()).version).toEqual('0.2.0');
+  //     });
+
+  //     /* In sync mode, we bump "a" even if change concerns "b". */
+  //     it(`should bump "a"'s package.json`, async () => {
+  //       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+  //         '0.2.0'
+  //       );
+  //     });
+
+  //     it('should update root changelog', async () => {
+  //       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`
+  // # \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+
+  // ### Features
+
+  // \\* \\*\\*b:\\*\\* b .*
+
+  // # 0.1.0 \\(.*\\)
+  // `)
+  //       );
+  //     });
+
+  //     it(`should update "a"'s changelog without listing "b"'s feature`, async () => {
+  //       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`
+  // # \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+
+  // # 0.1.0 \\(.*\\)
+  // `)
+  //       );
+  //     });
+
+  //     it(`should update "b"'s changelog with new feature`, async () => {
+  //       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`
+  // # \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+
+  // ### Features
+
+  // \\* \\*\\*b:\\*\\* b .*
+
+  // # 0.1.0 \\(.*\\)
+  // `)
+  //       );
+  //     });
+  //   });
+
+  //   describe('workspace with --sync-versions=true --root-changelog=false`', () => {
+  //     beforeAll(async () => {
+  //       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+  //       /* Commit changes. */
+  //       commitChanges();
+
+  //       /* Run builder. */
+  //       result = await runBuilder(
+  //         {
+  //           ...defaultBuilderOptions,
+  //           skipRootChangelog: true,
+  //         },
+  //         createFakeContext({
+  //           workspaceRoot: testingWorkspace.root,
+  //         })
+  //       ).toPromise();
+  //     });
+
+  //     afterAll(() => testingWorkspace.tearDown());
+
+  //     it('should return success', () => {
+  //       expect(result).toEqual({ success: true });
+  //     });
+
+  //     it('should commit all changes', () => {
+  //       expect(uncommitedChanges()).toHaveLength(0);
+  //     });
+
+  //     it('should bump root package.json', async () => {
+  //       expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
+  //     });
+
+  //     it(`should bump "a"'s package.json`, async () => {
+  //       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+  //         '0.1.0'
+  //       );
+  //     });
+
+  //     it('should not generate root changelog', () => {
+  //       expect(fileExists('CHANGELOG.md')).toBe(false);
+  //     });
+
+  //     it('should generate sub-changelogs', async () => {
+  //       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
+
+  // This file was generated.*
 
+  // # 0.1.0 \\(.*\\)
 
-### Features
-
-\\* \\*\\*b:\\*\\* b .*
+  // ### Features
 
+  // \\* \\*\\*a:\\*\\* 🚀 new feature .*
+  // $`)
+  //       );
 
+  //       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-# 0.1.0 \\(.*\\)
-`)
-      );
-    });
+  // This file was generated.*
 
-    it(`should update "a"'s changelog without listing "b"'s feature`, async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`
-# \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+  // # 0.1.0 \\(.*\\)
 
+  // ### Bug Fixes
 
+  // \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+  // $`)
+  //       );
+  //     });
+  //   });
 
-# 0.1.0 \\(.*\\)
-`)
-      );
-    });
+  //   describe('workspace with --version=major', () => {
+  //     beforeAll(async () => {
+  //       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+  //       /* Commit changes. */
+  //       commitChanges();
+
+  //       /* Run builder. */
+  //       result = await runBuilder(
+  //         {
+  //           ...defaultBuilderOptions,
+  //           version: 'major',
+  //         },
+  //         createFakeContext({
+  //           workspaceRoot: testingWorkspace.root,
+  //         })
+  //       ).toPromise();
+  //     });
+
+  //     afterAll(() => testingWorkspace.tearDown());
+
+  //     it('should return success', () => {
+  //       expect(result).toEqual({ success: true });
+  //     });
+
+  //     it('should commit all changes', () => {
+  //       expect(uncommitedChanges()).toHaveLength(0);
+  //     });
+
+  //     it('should bump root package.json', async () => {
+  //       expect((await readPackageJson('.').toPromise()).version).toEqual('1.0.0');
+  //     });
+
+  //     it(`should bump "a"'s package.json`, async () => {
+  //       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+  //         '1.0.0'
+  //       );
+  //     });
+
+  //     it('should generate root changelog', async () => {
+  //       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-    it(`should update "b"'s changelog with new feature`, async () => {
-      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`
-# \\[0.2.0\\]\\(/compare/v0.1.0...v0.2.0\\) \\(.*\\)
+  // This file was generated.*
 
+  // # 1.0.0 \\(.*\\)
 
-### Features
+  // ### Bug Fixes
 
-\\* \\*\\*b:\\*\\* b .*
+  // \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
 
+  // ### Features
 
+  // \\* \\*\\*a:\\*\\* 🚀 new feature .*
+  // $`)
+  //       );
+  //     });
 
-# 0.1.0 \\(.*\\)
-`)
-      );
-    });
-  });
+  //     it('should generate sub-changelogs', async () => {
+  //       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-  describe('workspace with --sync-versions=true --root-changelog=false`', () => {
-    beforeAll(async () => {
-      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+  // This file was generated.*
 
-      /* Commit changes. */
-      commitChanges();
+  // # 1.0.0 \\(.*\\)
 
-      /* Run builder. */
-      result = await runBuilder(
-        {
-          ...defaultBuilderOptions,
-          skipRootChangelog: true,
-          syncVersions: true,
-        },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
-      ).toPromise();
-    });
-
-    afterAll(() => testingWorkspace.tearDown());
+  // ### Features
 
-    it('should return success', () => {
-      expect(result).toEqual({ success: true });
-    });
+  // \\* \\*\\*a:\\*\\* 🚀 new feature .*
+  // $`)
+  //       );
 
-    it('should commit all changes', () => {
-      expect(uncommitedChanges()).toHaveLength(0);
-    });
+  //       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-    it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
-    });
+  // This file was generated.*
 
-    it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
-        '0.1.0'
-      );
-    });
+  // # 1.0.0 \\(.*\\)
 
-    it('should not generate root changelog', () => {
-      expect(fileExists('CHANGELOG.md')).toBe(false);
-    });
+  // ### Bug Fixes
 
-    it('should generate sub-changelogs', async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
+  // \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+  // $`)
+  //       );
+  //     });
+  //   });
 
-This file was generated.*
+  //   describe('workspace with --version=prerelease --preid=beta', () => {
+  //     beforeAll(async () => {
+  //       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
-# 0.1.0 \\(.*\\)
+  //       /* Commit changes. */
+  //       commitChanges();
 
+  //       /* Run builder. */
+  //       result = await runBuilder(
+  //         {
+  //           ...defaultBuilderOptions,
+  //           version: 'prerelease',
+  //           preid: 'beta',
+  //         },
+  //         createFakeContext({
+  //           workspaceRoot: testingWorkspace.root,
+  //         })
+  //       ).toPromise();
+  //     });
 
-### Features
+  //     afterAll(() => testingWorkspace.tearDown());
 
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
+  //     it('should return success', () => {
+  //       expect(result).toEqual({ success: true });
+  //     });
 
-      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
+  //     it('should commit all changes', () => {
+  //       expect(uncommitedChanges()).toHaveLength(0);
+  //     });
 
-This file was generated.*
+  //     it('should bump root package.json', async () => {
+  //       expect((await readPackageJson('.').toPromise()).version).toEqual(
+  //         '0.0.1-beta.0'
+  //       );
+  //     });
 
-# 0.1.0 \\(.*\\)
+  //     it(`should bump "a"'s package.json`, async () => {
+  //       expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+  //         '0.0.1-beta.0'
+  //       );
+  //     });
 
+  //     it('should generate root changelog', async () => {
+  //       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-### Bug Fixes
+  // This file was generated.*
 
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
-      );
-    });
-  });
+  // ## 0.0.1-beta.0 \\(.*\\)
 
-  describe('workspace with --version=major', () => {
-    beforeAll(async () => {
-      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+  // ### Bug Fixes
 
-      /* Commit changes. */
-      commitChanges();
+  // \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
 
-      /* Run builder. */
-      result = await runBuilder(
-        {
-          ...defaultBuilderOptions,
-          syncVersions: true,
-          version: 'major',
-        },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
-      ).toPromise();
-    });
+  // ### Features
 
-    afterAll(() => testingWorkspace.tearDown());
+  // \\* \\*\\*a:\\*\\* 🚀 new feature .*
+  // $`)
+  //       );
+  //     });
 
-    it('should return success', () => {
-      expect(result).toEqual({ success: true });
-    });
+  //     it('should generate sub-changelogs', async () => {
+  //       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-    it('should commit all changes', () => {
-      expect(uncommitedChanges()).toHaveLength(0);
-    });
+  // This file was generated.*
 
-    it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('1.0.0');
-    });
+  // ## 0.0.1-beta.0 \\(.*\\)
 
-    it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
-        '1.0.0'
-      );
-    });
+  // ### Features
 
-    it('should generate root changelog', async () => {
-      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
+  // \\* \\*\\*a:\\*\\* 🚀 new feature .*
+  // $`)
+  //       );
 
-This file was generated.*
+  //       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+  //         new RegExp(`^# Changelog
 
-# 1.0.0 \\(.*\\)
+  // This file was generated.*
 
+  // ## 0.0.1-beta.0 \\(.*\\)
 
-### Bug Fixes
+  // ### Bug Fixes
 
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+  // \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+  // $`)
+  //       );
+  //     });
+  //   });
 
-
-### Features
-
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
-    });
-
-    it('should generate sub-changelogs', async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
-
-This file was generated.*
-
-# 1.0.0 \\(.*\\)
-
-
-### Features
-
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
-
-      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
-
-This file was generated.*
-
-# 1.0.0 \\(.*\\)
-
-
-### Bug Fixes
-
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
-      );
-    });
-  });
-
-  describe('workspace with --version=prerelease --preid=beta', () => {
-    beforeAll(async () => {
-      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
-
-      /* Commit changes. */
-      commitChanges();
-
-      /* Run builder. */
-      result = await runBuilder(
-        {
-          ...defaultBuilderOptions,
-          syncVersions: true,
-          version: 'prerelease',
-          preid: 'beta',
-        },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
-      ).toPromise();
-    });
-
-    afterAll(() => testingWorkspace.tearDown());
-
-    it('should return success', () => {
-      expect(result).toEqual({ success: true });
-    });
-
-    it('should commit all changes', () => {
-      expect(uncommitedChanges()).toHaveLength(0);
-    });
-
-    it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual(
-        '0.0.1-beta.0'
-      );
-    });
-
-    it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
-        '0.0.1-beta.0'
-      );
-    });
-
-    it('should generate root changelog', async () => {
-      expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
-
-This file was generated.*
-
-## 0.0.1-beta.0 \\(.*\\)
-
-
-### Bug Fixes
-
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-
-
-### Features
-
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
-    });
-
-    it('should generate sub-changelogs', async () => {
-      expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
-
-This file was generated.*
-
-## 0.0.1-beta.0 \\(.*\\)
-
-
-### Features
-
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`)
-      );
-
-      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Changelog
-
-This file was generated.*
-
-## 0.0.1-beta.0 \\(.*\\)
-
-
-### Bug Fixes
-
-\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
-      );
-    });
-  });
-
-  describe('--changelog-header', () => {
+  describe('option --changelog-header', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -646,8 +628,6 @@ $`)
           changelogHeader: '# Custom changelog header \n',
         },
         createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
       ).toPromise();
@@ -675,12 +655,12 @@ function commitChanges() {
 
         git add .
         git commit -m "🐣"
-        echo a > packages/a/a.txt
+        echo a > packages/rx-state/rx-state.txt
         git add .
-        git commit -m "feat(a): 🚀 new feature"
-        echo b > packages/b/b.txt
+        git commit -m "feat(rx-state): 🚀 new feature"
+        echo b > packages/cdk/helpers/helpers.txt
         git add .
-        git commit -m "fix(b): 🐞 fix emptiness"
+        git commit -m "fix(cdk): 🐞 fix emptiness"
       `
   );
 }

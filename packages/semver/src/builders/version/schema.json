@@ -34,11 +34,6 @@
       "type": "string",
       "default": "main"
     },
-    "syncVersions": {
-      "description": "Sync all package versions.",
-      "type": "boolean",
-      "default": false
-    },
     "skipRootChangelog": {
       "description": "Skip root CHANGELOG generation containing all monorepo changes (only with sync mode).",
       "type": "boolean",

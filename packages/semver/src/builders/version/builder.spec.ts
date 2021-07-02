@@ -1,18 +1,14 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { of } from 'rxjs';
+import { execFile } from 'child_process';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { runBuilder } from './builder';
-import { VersionBuilderSchema } from './schema';
-import { execFile } from 'child_process';
-
 import { callbackify } from 'util';
 
+import { runBuilder } from './builder';
+import { SemverOptions } from './schema';
 import { createFakeContext } from './testing';
-import { tryBump } from './utils/try-bump';
 import * as git from './utils/git';
-import * as workspace from './utils/workspace';
-import { getPackageFiles, getProjectRoots } from './utils/workspace';
+import { tryBump } from './utils/try-bump';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -37,30 +33,38 @@ describe('@jscutlery/semver:version', () => {
 
   let context: BuilderContext;
 
-  const options: VersionBuilderSchema = {
+  const options: SemverOptions = {
     dryRun: false,
     noVerify: false,
     push: false,
     remote: 'origin',
     baseBranch: 'main',
-    syncVersions: false,
     skipRootChangelog: false,
     skipProjectChangelog: false,
+    configs: [
+      {
+        name: 'rx-state',
+        path: 'packages/rx-state',
+        type: 'independent',
+      },
+      {
+        name: 'cdk',
+        type: 'sync-group',
+        path: 'packages/cdk',
+        packages: ['packages/cdk/operators', 'packages/cdk/helpers'],
+      },
+    ],
   };
 
   beforeEach(() => {
-    context = createFakeContext({
-      project: 'a',
-      projectRoot: '/root/packages/a',
-      workspaceRoot: '/root',
-    });
+    context = createFakeContext({ workspaceRoot: '/root' });
 
     mockChangelog.mockResolvedValue(undefined);
-    mockTryBump.mockReturnValue(of('2.1.0'));
+    mockTryBump.mockReturnValue(Promise.resolve('2.1.0'));
 
     /* Mock Git execution */
-    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
-    jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
+    jest.spyOn(git, 'tryPushToGitRemote').mockResolvedValue(undefined);
+    jest.spyOn(git, 'addToStage').mockResolvedValue(undefined);
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -73,24 +77,10 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock console.info. */
     jest.spyOn(console, 'info').mockImplementation();
-
-    /* Mock getPackageFiles. */
-    jest
-      .spyOn(workspace, 'getPackageFiles')
-      .mockReturnValue(
-        of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
-      );
-
-    /* Mock getProjectRoots. */
-    jest
-      .spyOn(workspace, 'getProjectRoots')
-      .mockReturnValue(of(['/root/packages/a', '/root/packages/b']));
   });
 
   afterEach(() => {
     (console.info as jest.Mock).mockRestore();
-    (getPackageFiles as jest.Mock).mockRestore();
-    (getProjectRoots as jest.Mock).mockRestore();
     mockTryPushToGitRemote.mockRestore();
     mockAddToStage.mockRestore();
     mockExecFile.mockRestore();
@@ -104,23 +94,24 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
+      expect(standardVersion).toHaveBeenNthCalledWith(
+        1,
         expect.objectContaining({
           silent: false,
           preset: 'angular',
           dryRun: false,
           noVerify: false,
-          tagPrefix: 'a-',
-          path: '/root/packages/a',
-          infile: '/root/packages/a/CHANGELOG.md',
-          bumpFiles: ['/root/packages/a/package.json'],
-          packageFiles: ['/root/packages/a/package.json'],
+          tagPrefix: 'rx-state-',
+          path: '/root/packages/rx-state',
+          infile: '/root/packages/rx-state/CHANGELOG.md',
+          bumpFiles: ['/root/packages/rx-state/package.json'],
+          packageFiles: ['/root/packages/rx-state/package.json'],
         })
       );
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(Promise.resolve(null));
 
       const { success } = await runBuilder(options, context).toPromise();
 
@@ -132,25 +123,9 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('Sync versions', () => {
-    beforeEach(() => {
-      /* With the sync versions, the builder runs on the workspace. */
-      context = createFakeContext({
-        project: 'workspace',
-        projectRoot: '/root',
-        workspaceRoot: '/root',
-      });
-    });
-
+  describe('sync-group', () => {
     it('should run standard-version on multiple projects', async () => {
-      const { success } = await runBuilder(
-        {
-          ...options,
-          /* Enable sync versions. */
-          syncVersions: true,
-        },
-        context
-      ).toPromise();
+      const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
       expect(changelog).toHaveBeenNthCalledWith(
@@ -158,7 +133,7 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({
           header: expect.any(String),
           dryRun: false,
-          infile: '/root/packages/a/CHANGELOG.md',
+          infile: '/root/packages/cdk/operators/CHANGELOG.md',
         }),
         '2.1.0'
       );
@@ -167,24 +142,29 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({
           header: expect.any(String),
           dryRun: false,
-          infile: '/root/packages/b/CHANGELOG.md',
+          infile: '/root/packages/cdk/helpers/CHANGELOG.md',
         }),
         '2.1.0'
       );
 
-      expect(standardVersion).toBeCalledWith(
+      expect(standardVersion).toHaveBeenNthCalledWith(
+        2,
         expect.objectContaining({
           silent: false,
           preset: 'angular',
           dryRun: false,
           noVerify: false,
-          path: '/root',
+          tagPrefix: 'cdk-',
+          path: '/root/packages/cdk',
           infile: '/root/CHANGELOG.md',
           bumpFiles: [
-            '/root/packages/a/package.json',
-            '/root/packages/b/package.json',
+            '/root/packages/cdk/operators/package.json',
+            '/root/packages/cdk/helpers/package.json',
           ],
-          packageFiles: ['/root/package.json'],
+          packageFiles: [
+            '/root/packages/cdk/operators/package.json',
+            '/root/packages/cdk/helpers/package.json',
+          ],
           skip: {
             changelog: false,
           },
@@ -196,7 +176,6 @@ describe('@jscutlery/semver:version', () => {
       await runBuilder(
         {
           ...options,
-          syncVersions: true,
           /* Disable root CHANGELOG */
           skipRootChangelog: true,
         },
@@ -216,7 +195,6 @@ describe('@jscutlery/semver:version', () => {
       await runBuilder(
         {
           ...options,
-          syncVersions: true,
           /* Disable project CHANGELOG */
           skipProjectChangelog: true,
         },
@@ -230,15 +208,9 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(Promise.resolve(null));
 
-      const { success } = await runBuilder(
-        {
-          ...options,
-          syncVersions: true,
-        },
-        context
-      ).toPromise();
+      const { success } = await runBuilder(options, context).toPromise();
 
       expect(success).toBe(true);
 
@@ -249,19 +221,13 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should add files to Git stage only once', async () => {
-      await runBuilder(
-        {
-          ...options,
-          syncVersions: true,
-        },
-        context
-      ).toPromise();
+      await runBuilder(options, context).toPromise();
 
       expect(mockAddToStage).toBeCalledTimes(1);
       expect(mockAddToStage).toBeCalledWith({
         paths: expect.arrayContaining([
-          '/root/packages/a/CHANGELOG.md',
-          '/root/packages/b/CHANGELOG.md',
+          '/root/packages/cdk/operators/CHANGELOG.md',
+          '/root/packages/cdk/helpers/CHANGELOG.md',
         ]),
         dryRun: false,
       });
@@ -270,8 +236,8 @@ describe('@jscutlery/semver:version', () => {
 
   describe('Git push', () => {
     it('should push to Git', async () => {
-      mockTryPushToGitRemote.mockReturnValue(
-        of({ stderr: '', stdout: 'success' })
+      mockTryPushToGitRemote.mockResolvedValue(
+        { stderr: '', stdout: 'success' }
       );
 
       const { success } = await runBuilder(
