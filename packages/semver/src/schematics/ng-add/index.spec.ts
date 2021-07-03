@@ -41,7 +41,7 @@ describe('ng-add schematic', () => {
     jest
       .spyOn(fs, 'writeFileSync')
       .mockImplementation((_path: string, _content: string) => {
-        appTree.create(_path, _content);
+        appTree.exists(_path) ? appTree.overwrite(_path, _content) : appTree.create(_path, _content);
       });
   });
 

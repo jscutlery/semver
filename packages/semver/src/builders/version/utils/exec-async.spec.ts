@@ -8,7 +8,7 @@ describe('execAsync (Observable)', () => {
 
     execAsync('node', ['--version']).subscribe({
       next: observer.next,
-      error: fail,
+      error: done.fail,
       complete: () => {
         expect(observer.next).toBeCalledTimes(1);
         expect(observer.next).toBeCalledWith(
