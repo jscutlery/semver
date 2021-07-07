@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.4.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.3.1...semver-2.4.0) (2021-07-07)
+
+
+### Features
+
+* ✅ handle extracted project's configuration ([#230](https://github.com/jscutlery/nx-plugin-semver/issues/230)) ([924347a](https://github.com/jscutlery/nx-plugin-semver/commit/924347aeea24a50e3e31633c7ddeafe2e0cae4ba))
+
+
+
 ## [2.3.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.3.0...semver-2.3.1) (2021-06-08)
 
 
