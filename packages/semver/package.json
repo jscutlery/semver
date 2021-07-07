@@ -18,7 +18,7 @@
     "migrations": "./migrations.json"
   },
   "dependencies": {
-    "@angular-devkit/build-angular": "0.1102.14",
+    "@angular-devkit/build-angular": "12.1.1",
     "inquirer": "^8.0.0",
     "standard-version": "^9.0.0"
   },
