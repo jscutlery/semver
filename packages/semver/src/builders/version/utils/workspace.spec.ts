@@ -99,4 +99,21 @@ describe('getPackageFiles', () => {
       expect.any(Function)
     );
   });
+
+  it('should handle extracted project\'s configuration', async () => {
+    fakeReadFileSync.mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        projects: {
+          a: 'packages/a',
+          b: 'packages/b',
+        },
+      })
+    );
+
+    expect(await getPackageFiles('/root').toPromise()).toEqual([
+      '/root/packages/a/package.json',
+      '/root/packages/b/package.json',
+    ]);
+  });
 });

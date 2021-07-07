@@ -31,7 +31,9 @@ export function getProjectRoots(workspaceRoot: string): Observable<string[]> {
   return _getWorkspaceDefinition(workspaceRoot).pipe(
     map((workspaceDefinition) =>
       Object.values(workspaceDefinition.projects).map((project) =>
-        resolve(workspaceRoot, project.root)
+        typeof project === 'string'
+          ? resolve(workspaceRoot, project)
+          : resolve(workspaceRoot, project.root)
       )
     )
   );
