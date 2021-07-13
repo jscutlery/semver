@@ -1,4 +1,4 @@
-import { BuilderContext } from '@angular-devkit/architect';
+import { ExecutorContext } from '@nrwl/devkit';
 import { resolve } from 'path';
 import { defer, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -21,10 +21,8 @@ export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
   );
 }
 
-export function getProjectRoot(context: BuilderContext): Observable<string> {
-  return defer(
-    async () => await context.getProjectMetadata(context.target.project)
-  ).pipe(map(({ root }) => root as string));
+export function getProjectRoot(context: ExecutorContext): string {
+  return context.workspace.projects[context.projectName].root;
 }
 
 export function getProjectRoots(workspaceRoot: string): Observable<string[]> {

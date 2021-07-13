@@ -1,12 +1,14 @@
-import { logging } from '@angular-devkit/core';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, Observable, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
+import { logger as devkitLogger } from '@nrwl/devkit';
+
 import { promisify } from 'util';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
+import { logger } from '@nrwl/devkit';
 
 /**
  * Return new version or null if nothing changed.
@@ -15,7 +17,6 @@ export function tryBump({
   preset,
   projectRoot,
   tagPrefix,
-  logger,
   releaseType = null,
   preid = null,
 }: {
@@ -24,7 +25,6 @@ export function tryBump({
   tagPrefix: string;
   releaseType: string | null;
   preid: string | null;
-  logger: logging.LoggerApi;
 }): Observable<string> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({ tagPrefix }).pipe(

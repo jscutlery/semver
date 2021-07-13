@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-import { runBuilder } from './builder';
+import { version } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
 import { readPackageJson } from './utils/project';
@@ -59,7 +59,7 @@ describe('@jscutlery/semver:version', () => {
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         defaultBuilderOptions,
         createFakeContext({
           project: 'a',
@@ -118,7 +118,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         defaultBuilderOptions,
         createFakeContext({
           project: 'b',
@@ -171,7 +171,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -264,7 +264,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      await runBuilder(
+      await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -283,7 +283,7 @@ $`)
         git commit -m "feat(b): b"
       `);
 
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -372,7 +372,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           skipRootChangelog: true,
@@ -449,7 +449,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -543,7 +543,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -640,7 +640,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           changelogHeader: '# Custom changelog header \n',
