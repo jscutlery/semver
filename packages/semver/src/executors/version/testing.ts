@@ -1,11 +1,10 @@
-import { BuilderContext } from '@angular-devkit/architect';
-import { logging } from '@angular-devkit/core';
 import { mkdirSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import * as rimraf from 'rimraf';
 import * as tmp from 'tmp';
 import { promisify } from 'util';
 
+import type { ExecutorContext } from '@nrwl/devkit';
 export interface TestingWorkspace {
   tearDown(): Promise<void>;
   root: string;
@@ -46,18 +45,6 @@ export function setupTestingWorkspace(
   };
 }
 
-export function createFakeLogger(): logging.LoggerApi {
-  return {
-    error: jest.fn((e) => console.error(e)),
-    info: jest.fn(),
-    warn: jest.fn(),
-    createChild: jest.fn(),
-    log: jest.fn(),
-    debug: jest.fn(),
-    fatal: jest.fn(),
-  };
-}
-
 export function createFakeContext({
   project,
   projectRoot,
@@ -66,18 +53,15 @@ export function createFakeContext({
   project: string;
   projectRoot: string;
   workspaceRoot: string;
-}): BuilderContext {
+}): ExecutorContext {
   return {
-    getProjectMetadata: jest.fn().mockReturnValue({ root: projectRoot }),
-    getTargetOptions: jest
-      .fn()
-      .mockResolvedValue({ outputPath: `dist/packages/${project}` }),
-    logger: createFakeLogger(),
-    reportStatus: jest.fn(),
-    target: {
-      project,
+    root: workspaceRoot,
+    projectName: project,
+    workspace: {
+      version: 2,
+      projects: {
+        [project]: { root: projectRoot, targets: {} },
+      },
     },
-    workspaceRoot,
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  } as any;
+  } as ExecutorContext;
 }
