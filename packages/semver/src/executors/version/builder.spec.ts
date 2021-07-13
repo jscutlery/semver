@@ -1,18 +1,17 @@
-import { BuilderContext } from '@angular-devkit/architect';
+import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import { execFile } from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { runBuilder } from './builder';
-import { VersionBuilderSchema } from './schema';
-import { execFile } from 'child_process';
-
 import { callbackify } from 'util';
+import { logger } from '@nrwl/devkit';
 
+import { version } from './builder';
+import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
-import { tryBump } from './utils/try-bump';
 import * as git from './utils/git';
+import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -35,7 +34,7 @@ describe('@jscutlery/semver:version', () => {
     typeof standardVersion
   >;
 
-  let context: BuilderContext;
+  let context: ExecutorContext;
 
   const options: VersionBuilderSchema = {
     dryRun: false,
@@ -54,6 +53,8 @@ describe('@jscutlery/semver:version', () => {
       projectRoot: '/root/packages/a',
       workspaceRoot: '/root',
     });
+
+    jest.spyOn(logger, 'info');
 
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
@@ -88,20 +89,12 @@ describe('@jscutlery/semver:version', () => {
   });
 
   afterEach(() => {
-    (console.info as jest.Mock).mockRestore();
-    (getPackageFiles as jest.Mock).mockRestore();
-    (getProjectRoots as jest.Mock).mockRestore();
-    mockTryPushToGitRemote.mockRestore();
-    mockAddToStage.mockRestore();
-    mockExecFile.mockRestore();
-    mockChangelog.mockRestore();
-    mockStandardVersion.mockRestore();
-    mockTryBump.mockRestore();
+    jest.resetAllMocks();
   });
 
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
-      const { success } = await runBuilder(options, context).toPromise();
+      const { success } = await version(options, context).toPromise();
 
       expect(success).toBe(true);
       expect(standardVersion).toBeCalledWith(
@@ -122,10 +115,10 @@ describe('@jscutlery/semver:version', () => {
     it('should not version if no commits since last release', async () => {
       mockTryBump.mockReturnValue(of(null));
 
-      const { success } = await runBuilder(options, context).toPromise();
+      const { success } = await version(options, context).toPromise();
 
       expect(success).toBe(true);
-      expect(context.logger.info).toBeCalledWith(
+      expect(logger.info).toBeCalledWith(
         '⏹ Nothing changed since last release.'
       );
       expect(standardVersion).not.toBeCalled();
@@ -143,7 +136,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version on multiple projects', async () => {
-      const { success } = await runBuilder(
+      const { success } = await version(
         {
           ...options,
           /* Enable sync versions. */
@@ -193,7 +186,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should skip root CHANGELOG generation (--skip-root-changelog=true)', async () => {
-      await runBuilder(
+      await version(
         {
           ...options,
           syncVersions: true,
@@ -213,7 +206,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should skip project CHANGELOG generation (--skip-project-changelog=true)', async () => {
-      await runBuilder(
+      await version(
         {
           ...options,
           syncVersions: true,
@@ -232,7 +225,7 @@ describe('@jscutlery/semver:version', () => {
     it('should not version if no commits since last release', async () => {
       mockTryBump.mockReturnValue(of(null));
 
-      const { success } = await runBuilder(
+      const { success } = await version(
         {
           ...options,
           syncVersions: true,
@@ -242,14 +235,14 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
 
-      expect(context.logger.info).toBeCalledWith(
+      expect(logger.info).toBeCalledWith(
         '⏹ Nothing changed since last release.'
       );
       expect(standardVersion).not.toBeCalled();
     });
 
     it('should add files to Git stage only once', async () => {
-      await runBuilder(
+      await version(
         {
           ...options,
           syncVersions: true,
@@ -274,7 +267,7 @@ describe('@jscutlery/semver:version', () => {
         of({ stderr: '', stdout: 'success' })
       );
 
-      const { success } = await runBuilder(
+      const { success } = await version(
         { ...options, push: true },
         context
       ).toPromise();
@@ -290,12 +283,12 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not push to Git by default', async () => {
-      await runBuilder(options, context).toPromise();
+      await version(options, context).toPromise();
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
 
     it('should not push to Git with (--dry-run=true)', async () => {
-      await runBuilder({ ...options, dryRun: true }, context).toPromise();
+      await version({ ...options, dryRun: true }, context).toPromise();
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
   });

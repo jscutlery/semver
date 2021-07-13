@@ -1,6 +1,6 @@
-import { BuilderContext, BuilderOutput, createBuilder } from '@angular-devkit/architect';
-import { concat, defer, forkJoin, Observable, of } from 'rxjs';
-import { catchError, mapTo, shareReplay, switchMap } from 'rxjs/operators';
+import { ExecutorContext, logger } from '@nrwl/devkit';
+import { concat, defer, Observable, of } from 'rxjs';
+import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
@@ -8,7 +8,7 @@ import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
 
-export function runBuilder(
+export function version(
   {
     push,
     remote,
@@ -20,32 +20,27 @@ export function runBuilder(
     skipProjectChangelog,
     version,
     preid,
-    changelogHeader
+    changelogHeader,
   }: VersionBuilderSchema,
-  context: BuilderContext
-): Observable<BuilderOutput> {
-  const { workspaceRoot } = context;
+  context: ExecutorContext
+): Observable<{ success: boolean }> {
+  const workspaceRoot = context.root;
   const preset = 'angular';
-  const tagPrefix = syncVersions ? 'v' : `${context.target.project}-`;
+  const tagPrefix = syncVersions ? 'v' : `${context.projectName}-`;
 
-  const projectRoot$ = getProjectRoot(context).pipe(
-    shareReplay({ refCount: true, bufferSize: 1 })
-  );
-  const newVersion$ = projectRoot$.pipe(
-    switchMap((projectRoot) => tryBump({
-      preset,
-      projectRoot,
-      tagPrefix,
-      releaseType: version,
-      preid,
-      logger: context.logger,
-    }))
-  );
+  const projectRoot = getProjectRoot(context);
+  const newVersion$ = tryBump({
+    preset,
+    projectRoot,
+    tagPrefix,
+    releaseType: version,
+    preid,
+  });
 
-  const action$ = forkJoin([projectRoot$, newVersion$]).pipe(
-    switchMap(([projectRoot, newVersion]) => {
+  const action$ = newVersion$.pipe(
+    switchMap((newVersion) => {
       if (newVersion == null) {
-        context.logger.info('⏹ Nothing changed since last release.');
+        logger.info('⏹ Nothing changed since last release.');
         return of(undefined);
       }
 
@@ -56,10 +51,9 @@ export function runBuilder(
         preset,
         projectRoot,
         tagPrefix,
-        changelogHeader
+        changelogHeader,
       };
 
-      /* 2. Version */
       const runStandardVersion$ = defer(() =>
         syncVersions
           ? versionWorkspace({
@@ -70,7 +64,6 @@ export function runBuilder(
             })
           : versionProject(options)
       );
-      /* 3. Push */
       const pushToGitRemote$ = defer(() =>
         tryPushToGitRemote({
           branch: baseBranch,
@@ -81,7 +74,7 @@ export function runBuilder(
 
       return concat(
         runStandardVersion$,
-        ...(push && dryRun === false ? [pushToGitRemote$] : []),
+        ...(push && dryRun === false ? [pushToGitRemote$] : [])
       );
     })
   );
@@ -89,11 +82,8 @@ export function runBuilder(
   return action$.pipe(
     mapTo({ success: true }),
     catchError((error) => {
-      context.logger.error(error.stack ?? error.toString());
-      context.reportStatus('Error');
+      logger.error(error.stack ?? error.toString());
       return of({ success: false });
     })
   );
 }
-
-export default createBuilder(runBuilder);

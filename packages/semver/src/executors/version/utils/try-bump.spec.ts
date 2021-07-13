@@ -1,9 +1,8 @@
-import { logging } from '@angular-devkit/core';
+import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { of, throwError } from 'rxjs';
 import { callbackify } from 'util';
 
-import { createFakeLogger } from '../testing';
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 import { tryBump } from './try-bump';
@@ -24,11 +23,11 @@ describe('tryBump', () => {
     typeof getFirstCommitRef
   >;
 
-  let logger: logging.LoggerApi;
+  let loggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    logger = createFakeLogger();
     mockGetLastVersion.mockReturnValue(of('2.1.0'));
+    loggerSpy = jest.spyOn(logger, 'warn');
   });
 
   afterEach(() => {
@@ -36,6 +35,7 @@ describe('tryBump', () => {
     mockConventionalRecommendedBump.mockRestore();
     mockGetCommits.mockRestore();
     mockGetFirstCommitRef.mockRestore();
+    loggerSpy.mockRestore();
   });
 
   afterEach(() => (getCommits as jest.Mock).mockRestore());
@@ -57,7 +57,6 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: null,
       preid: null,
-      logger,
     }).toPromise();
 
     expect(newVersion).toEqual('2.2.0');
@@ -88,7 +87,6 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: 'premajor',
       preid: 'alpha',
-      logger,
     }).toPromise();
 
     expect(newVersion).toEqual('3.0.0-alpha.0');
@@ -111,7 +109,6 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: 'patch',
       preid: null,
-      logger,
     }).toPromise();
 
     expect(newVersion).toEqual('2.1.1');
@@ -130,10 +127,9 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: null,
       preid: null,
-      logger,
     }).toPromise();
 
-    expect(logger.warn).toBeCalledWith(
+    expect(loggerSpy).toBeCalledWith(
       expect.stringContaining('No previous version tag found')
     );
     expect(mockGetCommits).toBeCalledTimes(1);
@@ -152,7 +148,6 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: null,
       preid: null,
-      logger,
     }).toPromise();
 
     expect(newVersion).toBe(null);
