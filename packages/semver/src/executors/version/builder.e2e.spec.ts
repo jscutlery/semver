@@ -66,7 +66,7 @@ describe('@jscutlery/semver:version', () => {
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -125,7 +125,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -181,7 +181,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -274,7 +274,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
 
       /* Change b and commit. */
       execSync(`
@@ -293,7 +293,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -383,7 +383,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -460,7 +460,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -555,7 +555,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -650,7 +650,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
