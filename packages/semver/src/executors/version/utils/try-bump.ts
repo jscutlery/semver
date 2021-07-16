@@ -1,14 +1,12 @@
+import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, Observable, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
-import { logger as devkitLogger } from '@nrwl/devkit';
-
 import { promisify } from 'util';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
-import { logger } from '@nrwl/devkit';
 
 /**
  * Return new version or null if nothing changed.

@@ -5,5 +5,12 @@
       "schema": "./src/executors/version/schema.json",
       "description": "Automate versioning and CHANGELOG generation."
     }
+  },
+  "builders": {
+    "version": {
+      "implementation": "./src/executors/version/builder#versionBuilder",
+      "schema": "./src/executors/version/schema.json",
+      "description": "Automate versioning and CHANGELOG generation."
+    }
   }
 }

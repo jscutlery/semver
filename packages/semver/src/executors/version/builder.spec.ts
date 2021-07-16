@@ -94,7 +94,7 @@ describe('@jscutlery/semver:version', () => {
 
   describe('Independent version', () => {
     it('should run standard-version independently on a project', async () => {
-      const { success } = await version(options, context).toPromise();
+      const { success } = await version(options, context);
 
       expect(success).toBe(true);
       expect(standardVersion).toBeCalledWith(
@@ -115,7 +115,7 @@ describe('@jscutlery/semver:version', () => {
     it('should not version if no commits since last release', async () => {
       mockTryBump.mockReturnValue(of(null));
 
-      const { success } = await version(options, context).toPromise();
+      const { success } = await version(options, context);
 
       expect(success).toBe(true);
       expect(logger.info).toBeCalledWith(
@@ -143,7 +143,7 @@ describe('@jscutlery/semver:version', () => {
           syncVersions: true,
         },
         context
-      ).toPromise();
+      );
 
       expect(success).toBe(true);
       expect(changelog).toHaveBeenNthCalledWith(
@@ -194,7 +194,7 @@ describe('@jscutlery/semver:version', () => {
           skipRootChangelog: true,
         },
         context
-      ).toPromise();
+      );
 
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
@@ -214,7 +214,7 @@ describe('@jscutlery/semver:version', () => {
           skipProjectChangelog: true,
         },
         context
-      ).toPromise();
+      );
 
       expect(mockChangelog).not.toBeCalled();
       expect(mockAddToStage).toBeCalledWith(
@@ -231,7 +231,7 @@ describe('@jscutlery/semver:version', () => {
           syncVersions: true,
         },
         context
-      ).toPromise();
+      );
 
       expect(success).toBe(true);
 
@@ -248,7 +248,7 @@ describe('@jscutlery/semver:version', () => {
           syncVersions: true,
         },
         context
-      ).toPromise();
+      );
 
       expect(mockAddToStage).toBeCalledTimes(1);
       expect(mockAddToStage).toBeCalledWith({
@@ -270,7 +270,7 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await version(
         { ...options, push: true },
         context
-      ).toPromise();
+      );
 
       expect(success).toBe(true);
       expect(mockTryPushToGitRemote).toHaveBeenCalledWith(
@@ -283,12 +283,12 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not push to Git by default', async () => {
-      await version(options, context).toPromise();
+      await version(options, context);
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
 
     it('should not push to Git with (--dry-run=true)', async () => {
-      await version({ ...options, dryRun: true }, context).toPromise();
+      await version({ ...options, dryRun: true }, context);
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
   });

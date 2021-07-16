@@ -8,6 +8,14 @@
       "description": "Add @jscutlery/semver to the workspace."
     }
   },
+  "schematics": {
+    "ng-add": {
+      "aliases": ["install"],
+      "schema": "./src/generators/install/schema.json",
+      "factory": "./src/generators/install/index#installSchematic",
+      "description": "Add @jscutlery/semver to the workspace."
+    }
+  },
   "required": [],
   "additionalProperties": false
 }

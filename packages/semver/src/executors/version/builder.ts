@@ -1,5 +1,5 @@
-import { ExecutorContext, logger } from '@nrwl/devkit';
-import { concat, defer, Observable, of } from 'rxjs';
+import { convertNxExecutor, ExecutorContext, logger } from '@nrwl/devkit';
+import { concat, defer, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { VersionBuilderSchema } from './schema';
@@ -23,7 +23,7 @@ export function version(
     changelogHeader,
   }: VersionBuilderSchema,
   context: ExecutorContext
-): Observable<{ success: boolean }> {
+): Promise<{ success: boolean }> {
   const workspaceRoot = context.root;
   const preset = 'angular';
   const tagPrefix = syncVersions ? 'v' : `${context.projectName}-`;
@@ -85,5 +85,7 @@ export function version(
       logger.error(error.stack ?? error.toString());
       return of({ success: false });
     })
-  );
+  ).toPromise();
 }
+
+export const versionExecutor = convertNxExecutor(version);
