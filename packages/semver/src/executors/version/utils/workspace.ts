@@ -1,6 +1,6 @@
 import { ExecutorContext } from '@nrwl/devkit';
 import { resolve } from 'path';
-import { defer, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { readJsonFile } from './filesystem';
