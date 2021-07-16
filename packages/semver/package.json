@@ -8,7 +8,7 @@
   "builders": "./builders.json",
   "schematics": "./collection.json",
   "repository": {
-    "url": "https://github.com/jscutlery/nx-plugin-semver"
+    "url": "https://github.com/jscutlery/semver"
   },
   "ng-add": {
     "save": "devDependencies"
@@ -18,12 +18,12 @@
     "migrations": "./migrations.json"
   },
   "dependencies": {
-    "@angular-devkit/build-angular": "12.1.1",
-    "inquirer": "^8.0.0",
-    "standard-version": "^9.0.0"
+    "@nrwl/devkit": "^12.5.8",
+    "inquirer": "^8.1.1",
+    "standard-version": "^9.3.0"
   },
   "devDependencies": {
-    "@types/standard-version": "^7.0.0",
-    "@types/inquirer": "^7.3.1"
+    "@types/standard-version": "^7.0.1",
+    "@types/inquirer": "^7.3.3"
   }
 }

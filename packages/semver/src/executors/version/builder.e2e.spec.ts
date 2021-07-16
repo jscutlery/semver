@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-import { runBuilder } from './builder';
+import { version } from './builder';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
 import { readPackageJson } from './utils/project';
@@ -59,14 +59,14 @@ describe('@jscutlery/semver:version', () => {
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         defaultBuilderOptions,
         createFakeContext({
           project: 'a',
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -118,14 +118,14 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         defaultBuilderOptions,
         createFakeContext({
           project: 'b',
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -171,7 +171,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -181,7 +181,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -264,7 +264,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      await runBuilder(
+      await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -274,7 +274,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
 
       /* Change b and commit. */
       execSync(`
@@ -283,7 +283,7 @@ $`)
         git commit -m "feat(b): b"
       `);
 
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -293,7 +293,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -372,7 +372,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           skipRootChangelog: true,
@@ -383,7 +383,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -449,7 +449,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -460,7 +460,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -543,7 +543,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           syncVersions: true,
@@ -555,7 +555,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -640,7 +640,7 @@ $`)
       commitChanges();
 
       /* Run builder. */
-      result = await runBuilder(
+      result = await version(
         {
           ...defaultBuilderOptions,
           changelogHeader: '# Custom changelog header \n',
@@ -650,7 +650,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
         })
-      ).toPromise();
+      );
     });
 
     afterAll(() => testingWorkspace.tearDown());

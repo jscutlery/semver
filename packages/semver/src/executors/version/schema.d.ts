@@ -1,6 +1,4 @@
-import { JsonObject } from '@angular-devkit/core';
-
-export interface VersionBuilderSchema extends JsonObject {
+export interface VersionBuilderSchema {
   dryRun?: boolean;
   noVerify?: boolean;
   push?: boolean;
