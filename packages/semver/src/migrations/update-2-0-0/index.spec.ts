@@ -6,7 +6,7 @@ import * as path from 'path';
 
 const collectionPath = path.join(__dirname, '../../../migrations.json');
 
-function serializeJson(json: any) {
+function serializeJson(json: unknown) {
   return `${JSON.stringify(json, null, 2)}\n`;
 }
 
