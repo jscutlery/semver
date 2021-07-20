@@ -12,4 +12,5 @@ export interface VersionBuilderSchema extends JsonObject {
   version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
   preid?: string;
   changelogHeader?: string;
+  prefixSeparator?: string;
 }

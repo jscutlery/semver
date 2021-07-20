@@ -46,6 +46,7 @@ describe('@jscutlery/semver:version', () => {
     syncVersions: false,
     skipRootChangelog: false,
     skipProjectChangelog: false,
+    prefixSeparator: '-',
   };
 
   beforeEach(() => {
@@ -129,6 +130,20 @@ describe('@jscutlery/semver:version', () => {
         '⏹ Nothing changed since last release.'
       );
       expect(standardVersion).not.toBeCalled();
+    });
+
+    it('should use custom --prefix-separator', async () => {
+      const { success } = await runBuilder(
+        { ...options, prefixSeparator: '@' },
+        context
+      ).toPromise();
+
+      expect(success).toBe(true);
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          tagPrefix: 'a@',
+        })
+      );
     });
   });
 

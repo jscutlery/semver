@@ -56,6 +56,11 @@
     "preid": {
       "description": "Use the next semantic prerelease version with a specific prerelease identifier.",
       "type": "string"
+    },
+    "prefixSeparator": {
+      "description": "Prefix separator used between prefix and version for the Git tag (only with independent mode).",
+      "type": "string",
+      "default": "-"
     }
   },
   "required": []
