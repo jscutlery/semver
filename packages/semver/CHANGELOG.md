@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.5.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.4.0...semver-2.5.0) (2021-08-05)
+
+
+### Bug Fixes
+
+* 📦 update dependency @angular-devkit/build-angular to v12 ([52792a6](https://github.com/jscutlery/nx-plugin-semver/commit/52792a6369caac9f4084b8d2c41514a15015a027))
+
+
+
 # [2.4.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.3.1...semver-2.4.0) (2021-07-07)
 
 
