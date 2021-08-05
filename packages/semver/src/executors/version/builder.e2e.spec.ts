@@ -1,4 +1,3 @@
-import { BuilderOutput } from '@angular-devkit/architect';
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
@@ -45,7 +44,7 @@ describe('@jscutlery/semver:version', () => {
     ['packages/b/.gitkeep', ''],
   ];
 
-  let result: BuilderOutput;
+  let result: Promise<{ success: boolean }>;
   let testingWorkspace: TestingWorkspace;
 
   beforeAll(() => jest.spyOn(console, 'info').mockImplementation());
