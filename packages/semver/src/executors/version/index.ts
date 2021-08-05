@@ -1,4 +1,4 @@
-import { convertNxExecutor, ExecutorContext, logger } from '@nrwl/devkit';
+import { ExecutorContext, logger } from '@nrwl/devkit';
 import { concat, defer, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
 
-export function version(
+export default function version(
   {
     push,
     remote,
@@ -87,5 +87,3 @@ export function version(
     })
   ).toPromise();
 }
-
-export const versionExecutor = convertNxExecutor(version);

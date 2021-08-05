@@ -3,7 +3,7 @@ import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
-import { install } from '.';
+import install from '.';
 import { SchemaOptions } from './schema';
 
 jest.mock('inquirer');

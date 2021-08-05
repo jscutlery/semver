@@ -1,14 +1,14 @@
 {
   "executors": {
     "version": {
-      "implementation": "./src/executors/version/builder#version",
+      "implementation": "./src/executors/version",
       "schema": "./src/executors/version/schema.json",
       "description": "Automate versioning and CHANGELOG generation."
     }
   },
   "builders": {
     "version": {
-      "implementation": "./src/executors/version/builder#versionBuilder",
+      "implementation": "./src/executors/version/compat",
       "schema": "./src/executors/version/schema.json",
       "description": "Automate versioning and CHANGELOG generation."
     }

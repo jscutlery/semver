@@ -1,30 +1,32 @@
-import { Rule } from '@angular-devkit/schematics';
-import { updateWorkspace } from '@nrwl/workspace';
+import { updateProjectConfiguration, getProjects } from '@nrwl/devkit';
 
-export default function (): Rule {
-  return () => {
-    return updateWorkspace((workspace) => {
-      workspace.projects.forEach((project) => {
-        if (project.targets.has('version')) {
-          const options = project.targets.get('version').options ?? {};
+import type { Tree } from '@nrwl/devkit';
 
-          /* Check if the outdated option is defined. */
-          if (typeof options.rootChangelog === 'boolean') {
-            const newOptions = {
-              skipRootChangelog: !options.rootChangelog,
-            };
+export default function migrate(tree: Tree) {
+  getProjects(tree).forEach((project, projectName) => {
+    if (project.targets.version) {
+      const options = project.targets.version.options ?? {};
 
-            /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-            const { rootChangelog, ...otherOptions } = options;
-            /* For a mysterious reason, to override the builder definition we have to delete it before. */
-            project.targets.delete('version');
-            project.targets.set('version', {
-              builder: '@jscutlery/semver',
+      /* Check if the outdated option is defined. */
+      if (typeof options.rootChangelog === 'boolean') {
+        const newOptions = {
+          skipRootChangelog: !options.rootChangelog,
+        };
+
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+        const { rootChangelog, ...otherOptions } = options;
+
+        updateProjectConfiguration(tree, projectName, {
+          ...project,
+          targets: {
+            ...project.targets,
+            version: {
+              executor: '@jscutlery/semver',
               options: { ...otherOptions, ...newOptions },
-            });
-          }
-        }
-      });
-    });
-  };
+            },
+          },
+        });
+      }
+    }
+  });
 }
