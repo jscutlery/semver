@@ -14,14 +14,14 @@
 
 ### Install
 
-Without Angular:
+Using Nx:
 
 ```sh
 npm install -D @jscutlery/semver
 nx g @jscutlery/semver:install
 ```
 
-or if you are using Angular:
+or if you are using Angular CLI:
 
 ```sh
 ng add @jscutlery/semver
