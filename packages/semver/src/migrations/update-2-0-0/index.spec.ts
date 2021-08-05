@@ -1,10 +1,8 @@
-import { Tree } from '@angular-devkit/schematics';
-import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
-import { readWorkspace } from '@nrwl/workspace';
-import { createEmptyWorkspace } from '@nrwl/workspace/testing';
-import * as path from 'path';
+import { getProjects } from '@nrwl/devkit';
+import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
+import type { Tree } from '@nrwl/devkit';
 
-const collectionPath = path.join(__dirname, '../../../migrations.json');
+import migrate from '.';
 
 function serializeJson(json: unknown) {
   return `${JSON.stringify(json, null, 2)}\n`;
@@ -12,19 +10,13 @@ function serializeJson(json: unknown) {
 
 describe('2.0.0 migration schematic', () => {
   let appTree: Tree;
-  let schematicRunner: SchematicTestRunner;
 
   beforeEach(async () => {
-    schematicRunner = new SchematicTestRunner(
-      '@jscutlery/semver',
-      collectionPath
-    );
-
-    appTree = createEmptyWorkspace(Tree.empty());
+    appTree = createTreeWithEmptyWorkspace();
   });
 
-  it('should update --root-changelog=false option to --skip-root-changelog=true', async () => {
-    appTree.overwrite(
+  it('should update --root-changelog=false option to --skip-root-changelog=true', () => {
+    appTree.write(
       'workspace.json',
       serializeJson({
         version: 1,
@@ -43,24 +35,21 @@ describe('2.0.0 migration schematic', () => {
       })
     );
 
-    const tree = await schematicRunner
-      .runSchematicAsync('migration-2-0-0', undefined, appTree)
-      .toPromise();
+    migrate(appTree);
+    const projects = getProjects(appTree);
 
-    const workspace = readWorkspace(tree);
-
-    expect(workspace.projects.demo.architect.version.options).not.toContainKey(
+    expect(projects.get('demo').targets.version.options).not.toContainKey(
       'rootChangelog'
     );
-    expect(workspace.projects.demo.architect.version.options).toEqual(
+    expect(projects.get('demo').targets.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: true,
       })
     );
   });
 
-  it('should update --root-changelog=true option to --skip-root-changelog=false', async () => {
-    appTree.overwrite(
+  it('should update --root-changelog=true option to --skip-root-changelog=false', () => {
+    appTree.write(
       'workspace.json',
       serializeJson({
         version: 1,
@@ -79,16 +68,13 @@ describe('2.0.0 migration schematic', () => {
       })
     );
 
-    const tree = await schematicRunner
-      .runSchematicAsync('migration-2-0-0', undefined, appTree)
-      .toPromise();
+    migrate(appTree);
 
-    const workspace = readWorkspace(tree);
-
-    expect(workspace.projects.demo.architect.version.options).not.toContainKey(
+    const projects = getProjects(appTree);
+    expect(projects.get('demo').targets.version.options).not.toContainKey(
       'rootChangelog'
     );
-    expect(workspace.projects.demo.architect.version.options).toEqual(
+    expect(projects.get('demo').targets.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: false,
       })

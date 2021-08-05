@@ -1,12 +1,12 @@
+import { logger } from '@nrwl/devkit';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
 import { of } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { callbackify } from 'util';
-import { logger } from '@nrwl/devkit';
 
-import { version } from './builder';
+import version from './';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as git from './utils/git';

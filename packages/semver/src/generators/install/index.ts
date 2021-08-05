@@ -1,14 +1,12 @@
-import type { Tree } from '@nrwl/devkit';
-import { addProjectConfiguration, convertNxGenerator } from '@nrwl/devkit';
+import { addProjectConfiguration } from '@nrwl/devkit';
 
-import { SchemaOptions } from './schema';
 import { addDependencies } from './utils/dependencies';
-import {
-  updateWorkspaceFromPrompt,
-  updateWorkspaceFromSchema,
-} from './utils/workspace';
+import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
 
-export async function install(tree: Tree, options: SchemaOptions) {
+import type { Tree } from '@nrwl/devkit';
+import type { SchemaOptions } from './schema';
+
+export default async function install(tree: Tree, options: SchemaOptions) {
   /* Synced versioning. */
   if (options.syncVersions) {
     addProjectConfiguration(tree, 'workspace', {
@@ -30,5 +28,3 @@ export async function install(tree: Tree, options: SchemaOptions) {
 
   addDependencies(tree, options);
 }
-
-export const installSchematic = convertNxGenerator(install);

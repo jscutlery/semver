@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-import { version } from './builder';
+import version from './';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
 import { readPackageJson } from './utils/project';
@@ -44,7 +44,7 @@ describe('@jscutlery/semver:version', () => {
     ['packages/b/.gitkeep', ''],
   ];
 
-  let result: Promise<{ success: boolean }>;
+  let result: { success: boolean };
   let testingWorkspace: TestingWorkspace;
 
   beforeAll(() => jest.spyOn(console, 'info').mockImplementation());
