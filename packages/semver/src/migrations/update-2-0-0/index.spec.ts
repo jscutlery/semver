@@ -22,9 +22,9 @@ describe('2.0.0 migration schematic', () => {
         version: 1,
         projects: {
           demo: {
-            architect: {
+            targets: {
               version: {
-                builder: '@jscutlery/semver',
+                executor: '@jscutlery/semver',
                 options: {
                   rootChangelog: false,
                 },
@@ -36,8 +36,8 @@ describe('2.0.0 migration schematic', () => {
     );
 
     migrate(appTree);
-    const projects = getProjects(appTree);
 
+    const projects = getProjects(appTree);
     expect(projects.get('demo').targets.version.options).not.toContainKey(
       'rootChangelog'
     );
@@ -55,9 +55,9 @@ describe('2.0.0 migration schematic', () => {
         version: 1,
         projects: {
           demo: {
-            architect: {
+            targets: {
               version: {
-                builder: '@jscutlery/semver',
+                executor: '@jscutlery/semver',
                 options: {
                   rootChangelog: true,
                 },
@@ -79,5 +79,32 @@ describe('2.0.0 migration schematic', () => {
         skipRootChangelog: false,
       })
     );
+  });
+
+  it('should not update other targets', () => {
+    appTree.write(
+      'workspace.json',
+      serializeJson({
+        version: 1,
+        projects: {
+          demo: {
+            targets: {
+              test: {
+                executor: 'another',
+                options: { option: 'value' },
+              },
+            },
+          },
+        },
+      })
+    );
+
+    migrate(appTree);
+
+    const projects = getProjects(appTree);
+    expect(projects.get('demo').targets.test).toEqual({
+      executor: 'another',
+      options: { option: 'value' },
+    });
   });
 });
