@@ -58,7 +58,7 @@
       "type": "string"
     },
     "versionTagPrefix": {
-      "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and async modes.",
+      "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
       "type": "string"
     }
   },
