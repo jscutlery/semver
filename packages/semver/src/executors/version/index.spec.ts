@@ -113,7 +113,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version with a custom tag', async () => {
-      const { success } = await version({...options, versionTagPrefix: 'custom-tag-prefix/a-' }, context);
+      const { success } = await version({...options, versionTagPrefix: 'custom-tag-prefix/${target}-' }, context);
 
       expect(success).toBe(true);
       expect(standardVersion).toBeCalledWith(

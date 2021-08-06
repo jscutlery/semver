@@ -6,6 +6,7 @@ import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
+import { resolveTagTemplate } from './utils/tag-template';
 import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
 
 export default function version(
@@ -27,7 +28,8 @@ export default function version(
 ): Promise<{ success: boolean }> {
   const workspaceRoot = context.root;
   const preset = 'angular';
-  const tagPrefix = versionTagPrefix ? versionTagPrefix
+  const tagPrefix = versionTagPrefix ? resolveTagTemplate(versionTagPrefix,
+      { target: context.projectName, projectName: context.projectName })
     : (syncVersions ? 'v' : `${context.projectName}-`);
 
   const projectRoot = getProjectRoot(context);
