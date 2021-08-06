@@ -56,6 +56,10 @@
     "preid": {
       "description": "Use the next semantic prerelease version with a specific prerelease identifier.",
       "type": "string"
+    },
+    "versionTagPrefix": {
+      "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and async modes.",
+      "type": "string"
     }
   },
   "required": []

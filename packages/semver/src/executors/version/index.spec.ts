@@ -112,6 +112,19 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
+    it('should run standard-version with a custom tag', async () => {
+      const { success } = await version({...options, versionTagPrefix: 'custom-tag-prefix/a-' }, context);
+
+      expect(success).toBe(true);
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          header: expect.any(String),
+          dryRun: false,
+          tagPrefix: "custom-tag-prefix/a-",
+        })
+      );
+    });
+
     it('should not version if no commits since last release', async () => {
       mockTryBump.mockReturnValue(of(null));
 

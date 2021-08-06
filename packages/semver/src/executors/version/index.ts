@@ -21,12 +21,14 @@ export default function version(
     version,
     preid,
     changelogHeader,
+    versionTagPrefix,
   }: VersionBuilderSchema,
   context: ExecutorContext
 ): Promise<{ success: boolean }> {
   const workspaceRoot = context.root;
   const preset = 'angular';
-  const tagPrefix = syncVersions ? 'v' : `${context.projectName}-`;
+  const tagPrefix = versionTagPrefix ? versionTagPrefix
+    : (syncVersions ? 'v' : `${context.projectName}-`);
 
   const projectRoot = getProjectRoot(context);
   const newVersion$ = tryBump({
