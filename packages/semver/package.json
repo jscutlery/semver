@@ -18,7 +18,8 @@
     "migrations": "./migrations.json"
   },
   "dependencies": {
-    "@nrwl/devkit": "^12.5.8",
+    "@nrwl/devkit": "^12.6.4",
+    "@nrwl/schematics": "^8.12.11",
     "inquirer": "^8.1.1",
     "standard-version": "^9.3.0"
   },
