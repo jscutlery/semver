@@ -10,4 +10,5 @@ export interface VersionBuilderSchema {
   version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
   preid?: string;
   changelogHeader?: string;
+  versionTagPrefix?: string;
 }
