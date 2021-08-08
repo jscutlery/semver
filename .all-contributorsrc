@@ -91,6 +91,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "GethsLeader",
+      "name": "GethsLeader",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7333062?v=4",
+      "profile": "https://github.com/GethsLeader",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
