@@ -89,19 +89,20 @@ nx run workspace:version --version=prerelease --preid=beta
 
 #### Available options:
 
-| name                           | type      | default    | description                                                                 |
-| ------------------------------ | --------- | ---------- | --------------------------------------------------------------------------- |
-| **`--dry-run`**                | `boolean` | `false`    | run with dry mode                                                           |
-| **`--no-verify`**              | `boolean` | `false`    | skip git hooks                                                              |
-| **`--push`**                   | `boolean` | `false`    | push the release                                                            |
-| **`--sync-versions`**          | `boolean` | `false`    | lock/sync versions between projects                                         |
-| **`--skip-root-changelog`**    | `boolean` | `false`    | skip generating root CHANGELOG containing all changes (only with sync mode) |
-| **`--skip-project-changelog`** | `boolean` | `false`    | skip generating project CHANGELOG (only with sync mode)                     |
-| **`--changelog-header`**       | `string`  | `null`     | custom Markdown header for CHANGELOGs                                       |
-| **`--origin`**                 | `string`  | `'origin'` | push against git remote repository                                          |
-| **`--base-branch`**            | `string`  | `'main'`   | push against git base branch                                                |
-| **`--version`**                | `string`  | `null`     | specify the level of change                                                 |
-| **`--preid`**                  | `string`  | `null`     | prerelease identifier                                                       |
+| name                           | type      | default    | description                                                                                                                                       |
+| ------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`--dry-run`**                | `boolean` | `false`    | run with dry mode                                                                                                                                 |
+| **`--no-verify`**              | `boolean` | `false`    | skip git hooks                                                                                                                                    |
+| **`--push`**                   | `boolean` | `false`    | push the release                                                                                                                                  |
+| **`--sync-versions`**          | `boolean` | `false`    | lock/sync versions between projects                                                                                                               |
+| **`--skip-root-changelog`**    | `boolean` | `false`    | skip generating root CHANGELOG containing all changes (only with sync mode)                                                                       |
+| **`--skip-project-changelog`** | `boolean` | `false`    | skip generating project CHANGELOG (only with sync mode)                                                                                           |
+| **`--changelog-header`**       | `string`  | `null`     | custom Markdown header for CHANGELOGs                                                                                                             |
+| **`--origin`**                 | `string`  | `'origin'` | push against git remote repository                                                                                                                |
+| **`--base-branch`**            | `string`  | `'main'`   | push against git base branch                                                                                                                      |
+| **`--version`**                | `string`  | `null`     | specify the level of change                                                                                                                       |
+| **`--preid`**                  | `string`  | `null`     | prerelease identifier                                                                                                                             |
+| **`--version-tag-prefix`**     | `string`  | `null`     | Version tag prefix, defaults are `'v'` and `'${target}-'` for sync and independent modes, `${target}` will be replaced with context target value. |
 
 ## Changelog
 
