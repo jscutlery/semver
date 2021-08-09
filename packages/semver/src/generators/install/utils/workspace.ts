@@ -20,20 +20,13 @@ export function updateProjects(
   tree: Tree,
   predicate: (projectName: string) => boolean
 ) {
-  const projects = getProjects(tree);
-
-  projects.forEach((project, projectName) => {
+  getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
-      updateProjectConfiguration(tree, projectName, {
-        ...project,
-        targets: {
-          ...project.targets,
-          version: {
-            executor: '@jscutlery/semver:version',
-            options: { syncVersions: false },
-          },
-        },
-      });
+      project.targets.version = {
+        executor: '@jscutlery/semver:version',
+        options: { syncVersions: false },
+      };
+      updateProjectConfiguration(tree, projectName, project);
     }
   });
 }
