@@ -2,12 +2,14 @@ import { ExecutorContext, logger } from '@nrwl/devkit';
 import { concat, defer, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
-import { VersionBuilderSchema } from './schema';
 import { tryPushToGitRemote } from './utils/git';
+import { resolveTagTemplate } from './utils/tag-template';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import { resolveTagTemplate } from './utils/tag-template';
-import { CommonVersionOptions, versionProject, versionWorkspace } from './version';
+import { versionProject, versionWorkspace } from './version';
+
+import type { CommonVersionOptions } from './version';
+import type { VersionBuilderSchema } from './schema';
 
 export default function version(
   {

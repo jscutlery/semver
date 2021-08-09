@@ -1,6 +1,6 @@
 import * as inquirer from 'inquirer';
 
-import { ProjectDefinition } from './workspace';
+import type { ProjectDefinition } from './workspace';
 
 export function createPrompt(
   projects: ProjectDefinition[]

@@ -4,9 +4,11 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import version from './';
-import { VersionBuilderSchema } from './schema';
-import { createFakeContext, setupTestingWorkspace, TestingWorkspace } from './testing';
+import { createFakeContext, setupTestingWorkspace } from './testing';
 import { readPackageJson } from './utils/project';
+
+import type { TestingWorkspace } from './testing';
+import type { VersionBuilderSchema } from './schema';
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
