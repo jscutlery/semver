@@ -3,6 +3,7 @@
   "$id": "ng-add",
   "title": "@jscutlery/semver install generator",
   "type": "object",
+  "cli": "nx",
   "properties": {
     "syncVersions": {
       "description": "Lock/sync versions between packages",
