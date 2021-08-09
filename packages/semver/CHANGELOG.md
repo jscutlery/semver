@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.6.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.5.0...semver-2.6.0) (2021-08-09)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 add `@nrwl/schematics` dependency ([3382473](https://github.com/jscutlery/nx-plugin-semver/commit/3382473fefbf173b19f861d9cf2851db1bb5151c))
+* **semver:** 🐞 add missing schema cli property ([9006e26](https://github.com/jscutlery/nx-plugin-semver/commit/9006e26e52cfccde837e0676f96ad3bb6868e02e))
+* **semver:** 🐞 ensure package install after fs commited ([72b44b7](https://github.com/jscutlery/nx-plugin-semver/commit/72b44b74b38476639bdf25f99470dc63274e7649))
+
+
+### Features
+
+* **semver:** add custom tag prefix implementation ([4bc45e3](https://github.com/jscutlery/nx-plugin-semver/commit/4bc45e3e98b106eb0deb6ef32711895656a4c665))
+* **semver:** add tag template string support ([91dec48](https://github.com/jscutlery/nx-plugin-semver/commit/91dec484aa6221b429588bfd753c399881801f61))
+
+
+
 # [2.5.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.4.0...semver-2.5.0) (2021-08-05)
 
 
