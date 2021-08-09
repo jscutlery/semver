@@ -1,4 +1,4 @@
-import { addProjectConfiguration } from '@nrwl/devkit';
+import { addProjectConfiguration, installPackagesTask } from '@nrwl/devkit';
 
 import { addDependencies } from './utils/dependencies';
 import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
@@ -27,4 +27,8 @@ export default async function install(tree: Tree, options: SchemaOptions) {
   }
 
   addDependencies(tree, options);
+
+  return () => {
+    !options.skipInstall && installPackagesTask(tree);
+  };
 }
