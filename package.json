@@ -29,7 +29,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@angular-devkit/schematics": "12.2.0",
+    "@angular-devkit/schematics": "12.2.1",
     "@jscutlery/semver": "^2.4.0",
     "@nrwl/cli": "12.6.5",
     "@nrwl/eslint-plugin-nx": "12.6.5",
