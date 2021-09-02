@@ -75,6 +75,88 @@ describe('tryBump', () => {
     );
   });
 
+  it('should compute the next version based on last version, changes, and dependencies', async () => {
+    mockGetCommits
+      .mockReturnValueOnce(of(['fix: A', 'fix: B']))
+      .mockReturnValueOnce(of(['chore: A', 'chore: B']))
+      .mockReturnValueOnce(of(['fix: A', 'feat: B']));
+
+    /* Mock bump to return "minor". */
+    mockConventionalRecommendedBump
+      .mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: 'patch',
+          })
+        )
+      )
+      .mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: undefined,
+          })
+        )
+      )
+      .mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: 'minor',
+          })
+        )
+      );
+
+    const newVersion = await tryBump({
+      preset: 'angular',
+      projectRoot: '/libs/demo',
+      dependencyRoots: ['/libs/dep1', '/libs/dep2'],
+      tagPrefix: 'v',
+      releaseType: null,
+      preid: null,
+    }).toPromise();
+
+    expect(newVersion).toEqual('2.2.0');
+
+    expect(mockGetCommits).toBeCalledTimes(3);
+    expect(mockGetCommits).toBeCalledWith({
+        projectRoot: '/libs/demo',
+        since: 'v2.1.0',
+      });
+    expect(mockGetCommits).toBeCalledWith({
+        projectRoot: '/libs/dep1',
+        since: 'v2.1.0',
+      });
+    expect(mockGetCommits).toBeCalledWith({
+        projectRoot: '/libs/dep2',
+        since: 'v2.1.0',
+      });
+
+    expect(mockConventionalRecommendedBump).toBeCalledTimes(3);
+    expect(mockConventionalRecommendedBump).toBeCalledWith(
+      {
+        path: '/libs/demo',
+        preset: 'angular',
+        tagPrefix: 'v',
+      },
+      expect.any(Function)
+    );
+    expect(mockConventionalRecommendedBump).toBeCalledWith(
+      {
+        path: '/libs/dep1',
+        preset: 'angular',
+        tagPrefix: 'v',
+      },
+      expect.any(Function)
+    );
+    expect(mockConventionalRecommendedBump).toBeCalledWith(
+      {
+        path: '/libs/dep2',
+        preset: 'angular',
+        tagPrefix: 'v',
+      },
+      expect.any(Function)
+    );
+  });
+
   it('should use given type to calculate next version', async () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
 

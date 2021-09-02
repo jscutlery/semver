@@ -50,11 +50,14 @@ export function createFakeContext({
   project,
   projectRoot,
   workspaceRoot,
+  additionalProjects = []
 }: {
   project: string;
   projectRoot: string;
   workspaceRoot: string;
+  additionalProjects?: {project: string, projectRoot: string}[];
 }): ExecutorContext {
+
   return {
     root: workspaceRoot,
     projectName: project,
@@ -62,7 +65,15 @@ export function createFakeContext({
       version: 2,
       projects: {
         [project]: { root: projectRoot, targets: {} },
+        ...assembleAdditionalProjects(additionalProjects)
       },
     },
   } as ExecutorContext;
+}
+
+function assembleAdditionalProjects(additionalProjects: {project: string, projectRoot: string}[]) {
+  return additionalProjects.reduce((acc, p) => {
+    acc[p.project] = { root: p.projectRoot, targets: {} };
+    return acc;
+  }, {});
 }

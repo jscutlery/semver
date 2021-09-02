@@ -7,6 +7,7 @@ import { promisify } from 'util';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
+import { getGreatestVersionBump } from './get-greatest-version-bump';
 
 import type { Observable } from 'rxjs';
 import type { ReleaseIdentifier } from '../schema';
@@ -17,12 +18,14 @@ export function tryBump({
   preset,
   projectRoot,
   tagPrefix,
+  dependencyRoots = [],
   releaseType,
   preid,
 }: {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
+  dependencyRoots?: string[];
   releaseType?: ReleaseIdentifier;
   preid?: string;
 }) {
@@ -55,12 +58,26 @@ If your project is already versioned, please tag the latest release commit with 
   );
 
   const commits$ = lastVersionGitRef$.pipe(
-    switchMap((lastVersionGitRef) =>
-      getCommits({
-        projectRoot,
-        since: lastVersionGitRef,
-      })
-    )
+    switchMap((lastVersionGitRef) => {
+      const listOfGetCommits = [projectRoot, ...dependencyRoots]
+        .map(root =>
+          getCommits({
+            projectRoot: root,
+            since: lastVersionGitRef,
+          })
+        );
+      /* Combine the commit lists that are available for the project and
+       * its dependencies (if using --with-deps). */
+      return combineLatest(listOfGetCommits)
+        .pipe(
+          map((results: string[][]) => {
+            return results.reduce((acc, commits) => {
+              acc.push(...commits);
+              return acc;
+            }, []);
+          })
+        )
+    })
   );
 
   return forkJoin([lastVersion$, commits$]).pipe(
@@ -80,12 +97,17 @@ If your project is already versioned, please tag the latest release commit with 
         return of(undefined);
       }
 
-      return _semverBump({
-        since: lastVersion,
-        preset,
-        projectRoot,
-        tagPrefix,
-      });
+      const semverBumps = [projectRoot, ...dependencyRoots]
+        .map(root => _semverBump({
+          since: lastVersion,
+          preset,
+          projectRoot: root,
+          tagPrefix,
+        }));
+      return combineLatest(semverBumps)
+        .pipe(
+          map(bumps => getGreatestVersionBump(bumps))
+        )
     })
   );
 }

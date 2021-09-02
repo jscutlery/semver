@@ -64,6 +64,12 @@
     },
     "versionTagPrefix": {
       "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
+      "type": "string"
+    },
+    "useDeps": {
+      "description": "Include's the project's dependencies in calculating a recommended version bump.",
+      "type": "boolean",
+      "default": false
       "oneOf": [{ "type": "string" }, { "type": "null" }]
     },
     "postTargets": {
