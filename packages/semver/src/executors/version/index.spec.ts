@@ -74,7 +74,6 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(logger, 'info');
     jest.spyOn(logger, 'error');
 
-    mockGetProjectDependencies.mockReturnValue(Promise.resolve(['lib1', 'lib2']));
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
 
@@ -140,6 +139,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version independently on a project with dependencies', async () => {
+      mockGetProjectDependencies.mockReturnValue(Promise.resolve(['lib1', 'lib2']));
       const tempOptions = {...options, useDeps: true};
       const { success } = await version(tempOptions, context);
 
@@ -163,6 +163,22 @@ describe('@jscutlery/semver:version', () => {
           packageFiles: ['/root/packages/a/package.json'],
         })
       );
+    });
+
+    it('should run standard-version independently on a project with failure on dependencies', async () => {
+      mockGetProjectDependencies.mockReturnValue(Promise.reject('thrown error'));
+      const tempOptions = {...options, useDeps: true};
+      let error;
+      try {
+        await version(tempOptions, context);
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toEqual('thrown error');
+      expect(logger.error).toBeCalledWith(
+        'Failed to determine dependencies.'
+      );
+      expect(standardVersion).not.toBeCalled();
     });
 
     it('should run standard-version with a custom tag', async () => {

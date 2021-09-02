@@ -55,7 +55,7 @@ export default async function version(
         .map(name => context.workspace.projects[name].root);
     } catch (e) {
       logger.error('Failed to determine dependencies.');
-      return Promise.resolve(e);
+      return Promise.reject(e);
     }
   }
 
