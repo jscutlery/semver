@@ -13,6 +13,7 @@ export interface VersionBuilderSchema {
   syncVersions?: boolean;
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;
+  useDeps?: boolean;
   /**
    * @deprecated Use the alias releaseAs (--releaseAs) instead.
    * @sunset 3.0.0

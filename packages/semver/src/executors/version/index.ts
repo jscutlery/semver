@@ -13,12 +13,14 @@ import { versionProject, versionWorkspace } from './version';
 import type { ExecutorContext } from '@nrwl/devkit';
 import type { CommonVersionOptions } from './version';
 import type { VersionBuilderSchema } from './schema';
+import { getProjectDependencies } from './utils/get-project-dependencies';
 
-export default function version(
+export default async function version(
   {
     push,
     remote,
     dryRun,
+    useDeps,
     baseBranch,
     noVerify,
     syncVersions,
@@ -43,9 +45,24 @@ export default function version(
   });
 
   const projectRoot = getProjectRoot(context);
+
+  let dependencyRoots = [];
+  if (useDeps && !version) {
+    // Include any depended-upon libraries in determining the version bump.
+    try {
+      const dependencyLibs = await getProjectDependencies(context.projectName);
+      dependencyRoots = dependencyLibs
+        .map(name => context.workspace.projects[name].root);
+    } catch (e) {
+      logger.error('Failed to determine dependencies.');
+      return Promise.resolve(e);
+    }
+  }
+
   const newVersion$ = tryBump({
     preset,
     projectRoot,
+    dependencyRoots,
     tagPrefix,
     releaseType: releaseAs ?? version,
     preid,
@@ -60,6 +77,7 @@ export default function version(
 
       const options: CommonVersionOptions = {
         dryRun: dryRun as boolean,
+        useDeps,
         newVersion,
         noVerify: noVerify as boolean,
         preset,
