@@ -14,18 +14,35 @@ describe('getGreatestVersionBump', () => {
     });
 
     it('returns the greatest value when the greatest is in the middle of the list', () => {
-      const version = getGreatestVersionBump(['0.0.1', '0.1.0', '1.0.0', '0.0.1', '0.1.0']);
+      const version = getGreatestVersionBump([
+        '0.0.1',
+        '0.1.0',
+        '1.0.0',
+        '0.0.1',
+        '0.1.0',
+      ]);
       expect(version).toEqual('1.0.0');
     });
 
     it('returns the greatest value when the greatest is at the end of the list', () => {
-      const version = getGreatestVersionBump(['0.0.1', '0.0.1', '0.0.1', '0.0.1', '0.1.0']);
+      const version = getGreatestVersionBump([
+        '0.0.1',
+        '0.0.1',
+        '0.0.1',
+        '0.0.1',
+        '0.1.0',
+      ]);
       expect(version).toEqual('0.1.0');
     });
 
-    it('returns a value when there\'s no winner', () => {
-      const version = getGreatestVersionBump(['0.0.1', '0.0.1', '0.0.1', '0.0.1']);
+    it("returns a value when there's no winner", () => {
+      const version = getGreatestVersionBump([
+        '0.0.1',
+        '0.0.1',
+        '0.0.1',
+        '0.0.1',
+      ]);
       expect(version).toEqual('0.0.1');
     });
-  })
+  });
 });

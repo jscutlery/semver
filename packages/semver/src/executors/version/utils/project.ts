@@ -3,9 +3,7 @@ import { Observable } from 'rxjs';
 
 import { readJsonFile } from './filesystem';
 
-export function readPackageJson(
-  projectRoot: string
-): Observable<{
+export function readPackageJson(projectRoot: string): Observable<{
   version?: string;
 }> {
   return readJsonFile(_getPackageJsonPath(projectRoot));
