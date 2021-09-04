@@ -1,7 +1,7 @@
 import type { Tree } from '@nrwl/devkit';
 import { addDependenciesToPackageJson } from '@nrwl/devkit';
 import { updateJson } from '@nrwl/devkit';
-import { constants, mkdirSync, writeFileSync } from 'fs';
+import { constants } from 'fs';
 
 import { SchemaOptions } from '../schema';
 
@@ -105,10 +105,7 @@ function _addHuskyConfigMsg(tree: Tree) {
   if (!hasConfigFile) {
     const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\nnpx --no-install commitlint --edit $1\n`;
 
-    /* This is a hack until Tree.create can change the file's permissions,
-       see https://github.com/nrwl/nx/pull/5695 */
-    mkdirSync('.husky');
-    writeFileSync('.husky/commit-msg', commitMsg, {
+    tree.write('.husky/commit-msg', commitMsg, {
       /* File mode indicating readable, writable, and executable by owner. */
       mode: constants.S_IRWXU,
     });
