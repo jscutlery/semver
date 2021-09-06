@@ -30,8 +30,11 @@ export default function version(
 ): Promise<{ success: boolean }> {
   const workspaceRoot = context.root;
   const preset = 'angular';
-  const tagPrefix = versionTagPrefix ? resolveTagTemplate(versionTagPrefix,
-      { target: context.projectName, projectName: context.projectName })
+  const tagPrefix = versionTagPrefix !== undefined 
+    ? resolveTagTemplate(
+      versionTagPrefix,
+      { target: context.projectName, projectName: context.projectName }
+    )
     : (syncVersions ? 'v' : `${context.projectName}-`);
 
   const projectRoot = getProjectRoot(context);
