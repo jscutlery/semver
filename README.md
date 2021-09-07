@@ -116,7 +116,7 @@ The **`--versionTagPrefix`** option allows you to customize the tag prefix.
 
 With the sync mode the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for example. Note that only one tag is created for the whole workspace.
 
-With independent mode the tag prefix use the context target value, the default value is `"${target}-"` which is resolved to `project-a-0.0.1` for example. Note that each project is versioned with its own tag.
+With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
 
 ## Changelog
 
