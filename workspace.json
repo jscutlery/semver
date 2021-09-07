@@ -5,29 +5,31 @@
       "root": "packages/semver",
       "sourceRoot": "packages/semver/src",
       "projectType": "library",
-      "schematics": {},
-      "architect": {
+      "generators": {},
+      "targets": {
         "version": {
-          "builder": "@jscutlery/semver:version",
+          "executor": "@jscutlery/semver:version",
           "options": {
             "syncVersions": false
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/semver/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/semver/**/*.ts"
+            ]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "packages/semver/jest.config.js",
             "passWithNoTests": true
           }
         },
         "build": {
-          "builder": "@nrwl/node:package",
+          "executor": "@nrwl/node:package",
           "options": {
             "outputPath": "dist/packages/semver",
             "tsConfig": "packages/semver/tsconfig.lib.json",
