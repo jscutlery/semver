@@ -110,6 +110,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "miluoshi",
+      "name": "Miloš Lajtman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1130547?v=4",
+      "profile": "https://github.com/miluoshi",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
