@@ -995,8 +995,8 @@ function commitChanges() {
         git config user.email "bot@jest.io"
         git config user.name "Test Bot"
         git config commit.gpgsign false
-        git add .
 
+        git add .
         git commit -m "🐣"
         echo a > packages/a/a.txt
         git add .
