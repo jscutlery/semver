@@ -81,22 +81,22 @@ nx run workspace:version --version=prerelease --preid=beta
 
 #### Available options:
 
-| name                         | type     | default    | description                                                            |
-| ---------------------------- | -------- | ---------- | ---------------------------------------------------------------------- |
-| **`--dryRun`**               | `bool`   | `false`    | run with dry mode                                                      |
-| **`--noVerify`**             | `bool`   | `false`    | skip git hooks                                                         |
-| **`--push`**                 | `bool`   | `false`    | push the release against git origin                                    |
-| **`--syncVersions`**         | `bool`   | `false`    | lock/sync versions between projects                                    |
-| **`--skipRootChangelog`**    | `bool`   | `false`    | skip generating root changelog containing all changes (sync mode only) |
-| **`--skipProjectChangelog`** | `bool`   | `false`    | skip generating project changelog (sync mode only)                     |
-| **`--changelogHeader`**      | `string` | `null`     | custom Markdown header for changelogs                                  |
-| **`--origin`**               | `string` | `'origin'` | push against git remote repository                                     |
-| **`--baseBranch`**           | `string` | `'main'`   | push against git base branch                                           |
-| **`--version`**              | `string` | `null`     | specify the level of change                                            |
-| **`--preid`**                | `string` | `null`     | prerelease identifier                                                  |
-| **`--versionTagPrefix`**     | `string` | `null`     | specify the tag prefix                                                 |
+| name                         | type     | default    | description                                        |
+| ---------------------------- | -------- | ---------- | -------------------------------------------------- |
+| **`--dryRun`**               | `bool`   | `false`    | run with dry mode                                  |
+| **`--noVerify`**             | `bool`   | `false`    | skip git hooks                                     |
+| **`--push`**                 | `bool`   | `false`    | push the release against git origin                |
+| **`--syncVersions`**         | `bool`   | `false`    | lock/sync versions between projects                |
+| **`--skipRootChangelog`**    | `bool`   | `false`    | skip generating root changelog (sync mode only)    |
+| **`--skipProjectChangelog`** | `bool`   | `false`    | skip generating project changelog (sync mode only) |
+| **`--changelogHeader`**      | `string` | `null`     | custom Markdown header for changelogs              |
+| **`--origin`**               | `string` | `'origin'` | push against git remote repository                 |
+| **`--baseBranch`**           | `string` | `'main'`   | push against git base branch                       |
+| **`--version`**              | `string` | `null`     | specify the level of change                        |
+| **`--preid`**                | `string` | `null`     | prerelease identifier                              |
+| **`--versionTagPrefix`**     | `string` | `null`     | specify the tag prefix                             |
 
-Note that you can define the options using the CLI and in `workspace.json` file as well, eg: 
+Note that you can define the options using the CLI and in `workspace.json` file as well, eg:
 
 ```json
 {
