@@ -14,17 +14,9 @@
 
 ### Install
 
-Using Nx:
-
 ```sh
 npm install -D @jscutlery/semver
 nx g @jscutlery/semver:install
-```
-
-or if you are using Angular CLI:
-
-```sh
-ng add @jscutlery/semver
 ```
 
 This package allows you to manage your monorepo using one of two modes: Synced or Independent.
@@ -89,20 +81,40 @@ nx run workspace:version --version=prerelease --preid=beta
 
 #### Available options:
 
-| name                           | type      | default    | description                                                                                                                                       |
-| ------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`--dry-run`**                | `boolean` | `false`    | run with dry mode                                                                                                                                 |
-| **`--no-verify`**              | `boolean` | `false`    | skip git hooks                                                                                                                                    |
-| **`--push`**                   | `boolean` | `false`    | push the release                                                                                                                                  |
-| **`--sync-versions`**          | `boolean` | `false`    | lock/sync versions between projects                                                                                                               |
-| **`--skip-root-changelog`**    | `boolean` | `false`    | skip generating root CHANGELOG containing all changes (only with sync mode)                                                                       |
-| **`--skip-project-changelog`** | `boolean` | `false`    | skip generating project CHANGELOG (only with sync mode)                                                                                           |
-| **`--changelog-header`**       | `string`  | `null`     | custom Markdown header for CHANGELOGs                                                                                                             |
-| **`--origin`**                 | `string`  | `'origin'` | push against git remote repository                                                                                                                |
-| **`--base-branch`**            | `string`  | `'main'`   | push against git base branch                                                                                                                      |
-| **`--version`**                | `string`  | `null`     | specify the level of change                                                                                                                       |
-| **`--preid`**                  | `string`  | `null`     | prerelease identifier                                                                                                                             |
-| **`--version-tag-prefix`**     | `string`  | `null`     | Version tag prefix, defaults are `'v'` and `'${target}-'` for sync and independent modes, `${target}` will be replaced with context target value. |
+| name                         | type     | default    | description                                                            |
+| ---------------------------- | -------- | ---------- | ---------------------------------------------------------------------- |
+| **`--dryRun`**               | `bool`   | `false`    | run with dry mode                                                      |
+| **`--noVerify`**             | `bool`   | `false`    | skip git hooks                                                         |
+| **`--push`**                 | `bool`   | `false`    | push the release against git origin                                    |
+| **`--syncVersions`**         | `bool`   | `false`    | lock/sync versions between projects                                    |
+| **`--skipRootChangelog`**    | `bool`   | `false`    | skip generating root changelog containing all changes (sync mode only) |
+| **`--skipProjectChangelog`** | `bool`   | `false`    | skip generating project changelog (sync mode only)                     |
+| **`--changelogHeader`**      | `string` | `null`     | custom Markdown header for changelogs                                  |
+| **`--origin`**               | `string` | `'origin'` | push against git remote repository                                     |
+| **`--baseBranch`**           | `string` | `'main'`   | push against git base branch                                           |
+| **`--version`**              | `string` | `null`     | specify the level of change                                            |
+| **`--preid`**                | `string` | `null`     | prerelease identifier                                                  |
+| **`--versionTagPrefix`**     | `string` | `null`     | specify the tag prefix                                                 |
+
+Note that you can define the options using the CLI and in `workspace.json` file as well, eg: 
+
+```json
+{
+  "executor": "@jscutlery/semver:version",
+  "options": {
+    "baseBranch": "master",
+    "versionTagPrefix": "${target}@"
+  }
+}
+```
+
+#### Tag prefix customization
+
+The **`--versionTagPrefix`** option allows you to customize the tag prefix.
+
+With the sync mode the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for example. Note that only one tag is created for the whole workspace.
+
+With independent mode the tag prefix use the context target value, the default value is `"${target}-"` which is resolved to `project-a-0.0.1` for example. Note that each project is versioned with its own tag.
 
 ## Changelog
 
