@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.7.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.6.0...semver-2.7.0) (2021-09-07)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 install generator fails when .husky folder exists ([ac9556c](https://github.com/jscutlery/nx-plugin-semver/commit/ac9556c442ea83d6bdd514285531b64042c5ccdb))
+
+
+### Features
+
+* **semver:** ✔️  use undefined as default value of versionTagPrefix ([7cbafb2](https://github.com/jscutlery/nx-plugin-semver/commit/7cbafb2d80be267d49d625f28681857bbfe40cd7))
+
+
+
 # [2.6.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.5.0...semver-2.6.0) (2021-08-09)
 
 
