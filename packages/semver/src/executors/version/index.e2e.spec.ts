@@ -1,6 +1,6 @@
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import version from './';
@@ -9,9 +9,15 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
+import { execAsync } from './utils/exec-async';
+import { of } from 'rxjs';
+
+jest.mock('./utils/exec-async');
 import { lastValueFrom } from 'rxjs';
 
 describe('@jscutlery/semver:version', () => {
+  const mockExecAsync = execAsync as jest.MockedFunction<typeof execAsync>;
+
   const defaultBuilderOptions: VersionBuilderSchema = {
     dryRun: false,
     noVerify: false,
@@ -39,6 +45,15 @@ describe('@jscutlery/semver:version', () => {
           b: {
             root: 'packages/b',
           },
+          c: {
+            root: 'packages/c',
+          },
+          d: {
+            root: 'libs/d',
+          },
+          e: {
+            root: 'libs/e',
+          }
         },
       }),
     ],
@@ -47,6 +62,11 @@ describe('@jscutlery/semver:version', () => {
     ['packages/a/package.json', JSON.stringify({ version: '0.0.0' })],
     /* but "b" doesn't. */
     ['packages/b/.gitkeep', ''],
+    ['packages/c/.gitkeep', ''],
+    /* "a" has a package.json */
+    ['packages/c/package.json', JSON.stringify({ version: '0.0.0' })],
+    ['libs/d/.gitkeep', ''],
+    ['libs/e/.gitkeep', ''],
   ];
 
   let result: { success: boolean };
@@ -55,8 +75,16 @@ describe('@jscutlery/semver:version', () => {
   beforeAll(() => {
     jest.spyOn(console, 'warn').mockImplementation();
     jest.spyOn(console, 'info').mockImplementation();
-  });
 
+    /* This will mock execAsync ONLY when we're getting the project graph. */
+    const originalExecAsyncModule = jest.requireActual('./utils/exec-async');
+    mockExecAsync.mockImplementation((cmd, args) => {
+      if (cmd === 'npm' && args.join(' ') === 'run -s nx print-affected') {
+        return projectGraph();
+      }
+      return originalExecAsyncModule.execAsync(cmd, args);
+    })
+  });
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
   describe('package "a" with (--sync-versions=false)', () => {
@@ -449,6 +477,293 @@ $`)
     });
   });
 
+  describe('option --use-deps', () => {
+
+    describe('when disabled with an unchanged project', () => {
+      beforeAll(async () => {
+        testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+        /* Commit changes. */
+        commitChanges();
+
+        /* Run builder. */
+        result = await version(
+          {
+            ...defaultBuilderOptions,
+            useDeps: false,
+          },
+          createFakeContext({
+            project: 'c',
+            projectRoot: resolve(testingWorkspace.root, 'packages/c'),
+            workspaceRoot: testingWorkspace.root,
+            additionalProjects: [
+              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
+            ]
+          })
+        );
+      });
+
+      afterAll(() => testingWorkspace.tearDown());
+
+      it('should not get affected projects',  () => {
+        expect(mockExecAsync).not.toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      });
+
+      it('should not generate changelogs', () => {
+        expect(existsSync('packages/c/CHANGELOG.md')).toBeFalse();
+      });
+    });
+
+    /*
+      The workspace is set up with the following dependencies and state:
+      package a depends on lib d
+      package c depends on lib e
+      packages a, b, and lib d have changes
+      package c is unchanged
+     */
+    describe('used with unchanged package with unchanged libs', () => {
+      beforeAll(async () => {
+        testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+        /* Commit changes. */
+        commitChanges();
+
+        /* Run builder. */
+        result = await version(
+          {
+            ...defaultBuilderOptions,
+            syncVersions: false,
+            useDeps: true,
+          },
+          createFakeContext({
+            project: 'c',
+            projectRoot: resolve(testingWorkspace.root, 'packages/c'),
+            workspaceRoot: testingWorkspace.root,
+            additionalProjects: [
+              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
+            ]
+          })
+        );
+      });
+
+      afterAll(() => testingWorkspace.tearDown());
+
+      it('should get affected projects',  () => {
+        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      });
+
+      it('should not generate changelogs', async () => {
+        expect(existsSync('packages/c/CHANGELOG.md')).toBeFalse();
+      });
+    });
+
+    describe('used with unchanged package with changed lib', () => {
+      beforeAll(async () => {
+        testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+        /* Commit changes. */
+        commitChanges();
+
+        execSync(`
+            echo e > libs/e/e.txt
+            git add .
+            # This does not directly fix a single package.
+            git commit -m "fix: 🐞 fix emptiness"
+        `);
+
+        /* Run builder. */
+        result = await version(
+          {
+            ...defaultBuilderOptions,
+            syncVersions: false,
+            useDeps: true,
+          },
+          createFakeContext({
+            project: 'c',
+            projectRoot: resolve(testingWorkspace.root, 'packages/c'),
+            workspaceRoot: testingWorkspace.root,
+            additionalProjects: [
+              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
+            ]
+          })
+        );
+      });
+
+      afterAll(() => testingWorkspace.tearDown());
+
+      it('should get affected projects',  () => {
+        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      });
+
+      it('generates change logs', () => {
+        expect(readFileSync('packages/c/CHANGELOG.md', 'utf-8')).toMatch(
+          new RegExp(`^# Changelog.*
+
+This file was generated.*
+
+## 0.0.1 \\(.*\\)
+$`)
+        );
+      });
+    });
+
+    describe('used with changed package with changed lib', () => {
+      beforeAll(async () => {
+        testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+        /* Commit changes. */
+        commitChanges();
+
+        execSync(`
+            echo c > packages/c/c.txt
+            git add .
+            git commit -m "feat(c): 🚀 new feature"
+            echo e > libs/e/e.txt
+            git add .
+            # This does not directly fix a single package.
+            git commit -m "feat: 🐞 fix emptiness"
+        `);
+
+        /* Run builder. */
+        result = await version(
+          {
+            ...defaultBuilderOptions,
+            syncVersions: false,
+            useDeps: true,
+          },
+          createFakeContext({
+            project: 'c',
+            projectRoot: resolve(testingWorkspace.root, 'packages/c'),
+            workspaceRoot: testingWorkspace.root,
+            additionalProjects: [
+              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
+            ]
+          })
+        );
+      });
+
+      afterAll(() => testingWorkspace.tearDown());
+
+      it('should get affected projects',  () => {
+        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      });
+
+      it('generates change logs', () => {
+        expect(readFileSync('packages/c/CHANGELOG.md', 'utf-8')).toMatch(
+          new RegExp(`^# Changelog
+
+This file was generated.*
+
+# 0.1.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*c:\\*\\* 🚀 new feature .*
+$`)
+        );
+      });
+    });
+
+    describe('used with changed package with unchanged lib', () => {
+      beforeAll(async () => {
+        testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+        /* Commit changes. */
+        commitChanges();
+
+        /* Run builder. */
+        result = await version(
+          {
+            ...defaultBuilderOptions,
+            syncVersions: false,
+            useDeps: true,
+          },
+          createFakeContext({
+            project: 'a',
+            projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+            workspaceRoot: testingWorkspace.root,
+            additionalProjects: [
+              {project: 'd', projectRoot: resolve(testingWorkspace.root, 'libs/d')}
+            ]
+          })
+        );
+      });
+
+      afterAll(() => testingWorkspace.tearDown());
+
+      it('should get affected projects',  () => {
+        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      });
+
+      it('generates change logs', () => {
+        expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
+          new RegExp(`^# Changelog
+
+This file was generated.*
+
+# 0.1.0 \\(.*\\)
+
+
+### Features
+
+\\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`)
+        );
+      });
+    });
+
+    describe('used with unchanged package with changed lib (--sync-versions=true)', () => {
+      beforeAll(async () => {
+        testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+        /* Commit changes. */
+        commitChanges();
+
+        execSync(`
+            echo e > libs/e/e.txt
+            git add .
+            # This does not directly fix a single package.
+            git commit -m "fix: 🐞 fix emptiness"
+        `);
+
+        /* Run builder. */
+        result = await version(
+          {
+            ...defaultBuilderOptions,
+            syncVersions: true,
+            useDeps: true,
+          },
+          createFakeContext({
+            project: 'c',
+            projectRoot: resolve(testingWorkspace.root, 'packages/c'),
+            workspaceRoot: testingWorkspace.root,
+            additionalProjects: [
+              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
+            ]
+          })
+        );
+      });
+
+      afterAll(() => testingWorkspace.tearDown());
+
+      it('should get affected projects',  () => {
+        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      });
+
+      it('generates change logs', () => {
+        expect(readFileSync('packages/c/CHANGELOG.md', 'utf-8')).toMatch(
+          new RegExp(`^# Changelog.*
+
+This file was generated.*
+
+## 0.0.1 \\(.*\\).*
+`)
+        );
+      });
+    });
+  });
+
   describe('workspace with --version=major', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
@@ -680,7 +995,7 @@ function commitChanges() {
         git config user.email "bot@jest.io"
         git config user.name "Test Bot"
         git config commit.gpgsign false
-
+        ls -R .
         git add .
         git commit -m "🐣"
         echo a > packages/a/a.txt
@@ -700,4 +1015,45 @@ function uncommitedChanges() {
       /* Remove empty line. */
       .filter((line) => line.length !== 0)
   );
+}
+
+function projectGraph() {
+  // package a depends on lib d
+  // package c depends on lib e
+  const stdout = JSON.stringify({
+    tasks: [],
+    projects: ['a', 'b'],
+    projectGraph: {
+      nodes: ['a', 'b', 'c', 'd', 'e', 'npm:@mock/npm-lib1', 'npm:@mock/npm-lib2'],
+      dependencies: {
+        a: [
+          {
+            type: 'static',
+            source: 'a',
+            target: 'npm:@mock/npm-lib1',
+          },
+          {
+            type: 'implicit',
+            source: 'a',
+            target: 'd',
+          }
+        ],
+        c: [
+          {
+            type: 'static',
+            source: 'c',
+            target: 'npm:@mock/npm-lib1',
+          },
+          {
+            type: 'implicit',
+            source: 'c',
+            target: 'e',
+          },
+        ],
+        d: [],
+        e: []
+      },
+    },
+  });
+  return of({stdout, stderr: ''});
 }
