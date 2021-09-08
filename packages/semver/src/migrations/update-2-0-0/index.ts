@@ -21,7 +21,7 @@ export default function migrate(tree: Tree) {
           targets: {
             ...project.targets,
             version: {
-              executor: '@jscutlery/semver',
+              executor: '@jscutlery/semver:version',
               options: { ...otherOptions, ...newOptions },
             },
           },
