@@ -144,7 +144,7 @@ jobs:
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - run: yarn install --frozen-lockfile
-      - run: yarn nx version my-project --push
+      - run: yarn nx version my-project --push --baseBranch master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
