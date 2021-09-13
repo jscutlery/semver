@@ -118,6 +118,39 @@ With the sync mode the tag prefix is set to `"v"` by default, which is resolved 
 
 With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
 
+### CI usage
+
+#### GitHub Actions
+
+Here is an example running semver in a CI workflow: 
+
+```yml
+name: default
+
+on:
+  push:
+    branches:
+    - 'master'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: git config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+      - run: yarn install --frozen-lockfile
+      - run: yarn nx version my-project --push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+You can found the complete example [here](https://github.com/edbzn/semver-ci).
+
 ## Changelog
 
 For new features or breaking changes [see the changelog](https://github.com/jscutlery/nx-plugin-semver/blob/main/packages/semver/CHANGELOG.md).
