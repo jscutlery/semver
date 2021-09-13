@@ -118,11 +118,11 @@ With the sync mode the tag prefix is set to `"v"` by default, which is resolved 
 
 With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
 
-### CI usage
+### CI/CD usage
 
 #### GitHub Actions
 
-Here is an example running semver in a CI workflow: 
+Here is an example running semver in a GitHub workflow: 
 
 ```yml
 name: default
