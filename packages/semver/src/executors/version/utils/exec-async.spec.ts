@@ -35,17 +35,12 @@ describe('_execAsync (Promise)', () => {
   });
 
   it('should handle failure', async () => {
-    try {
-      await  _execAsync('exit 1');
-      fail();
-    } catch (error) {
-      expect(error).toEqual(
-        expect.objectContaining({
-          cmd: 'exit 1',
-          stderr: '',
-          stdout: '',
-        })
-      );
-    }
+    await expect(_execAsync('exit 1')).rejects.toEqual(
+      expect.objectContaining({
+        error: expect.objectContaining({ cmd: 'exit 1' }),
+        stderr: '',
+        stdout: '',
+      })
+    );
   });
 });

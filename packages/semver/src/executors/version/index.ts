@@ -30,7 +30,7 @@ export default function version(
 ): Promise<{ success: boolean }> {
   const workspaceRoot = context.root;
   const preset = 'angular';
-  const tagPrefix = versionTagPrefix !== undefined 
+  const tagPrefix = versionTagPrefix !== undefined
     ? resolveTagTemplate(
       versionTagPrefix,
       { target: context.projectName, projectName: context.projectName }
