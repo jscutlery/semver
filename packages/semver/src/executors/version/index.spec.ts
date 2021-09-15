@@ -1,7 +1,7 @@
 import { logger } from '@nrwl/devkit';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { callbackify } from 'util';
@@ -55,6 +55,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     jest.spyOn(logger, 'info');
+    jest.spyOn(logger, 'error');
 
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
@@ -113,14 +114,17 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version with a custom tag', async () => {
-      const { success } = await version({...options, versionTagPrefix: 'custom-tag-prefix/${target}-' }, context);
+      const { success } = await version(
+        { ...options, versionTagPrefix: 'custom-tag-prefix/${target}-' },
+        context
+      );
 
       expect(success).toBe(true);
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           header: expect.any(String),
           dryRun: false,
-          tagPrefix: "custom-tag-prefix/a-",
+          tagPrefix: 'custom-tag-prefix/a-',
         })
       );
     });
@@ -276,14 +280,9 @@ describe('@jscutlery/semver:version', () => {
 
   describe('Git push', () => {
     it('should push to Git', async () => {
-      mockTryPushToGitRemote.mockReturnValue(
-        of({ stderr: '', stdout: 'success' })
-      );
+      mockTryPushToGitRemote.mockReturnValue(of('success'));
 
-      const { success } = await version(
-        { ...options, push: true },
-        context
-      );
+      const { success } = await version({ ...options, push: true }, context);
 
       expect(success).toBe(true);
       expect(mockTryPushToGitRemote).toHaveBeenCalledWith(
@@ -292,6 +291,19 @@ describe('@jscutlery/semver:version', () => {
           branch: 'main',
           noVerify: false,
         })
+      );
+    });
+
+    it('should handle Git failure', async () => {
+      mockTryPushToGitRemote.mockReturnValue(
+        throwError(new Error('Something went wrong'))
+      );
+
+      const { success } = await version({ ...options, push: true }, context);
+
+      expect(success).toBe(false);
+      expect(logger.error).toBeCalledWith(
+        expect.stringContaining('Error: Something went wrong')
       );
     });
 

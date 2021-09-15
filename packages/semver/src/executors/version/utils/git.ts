@@ -1,6 +1,6 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { defer, Observable, of, throwError, EMPTY } from 'rxjs';
-import { catchError, last, scan, startWith, switchMap } from 'rxjs/operators';
+import { defer, EMPTY, Observable, throwError } from 'rxjs';
+import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 
 import { execAsync } from './exec-async';
 
@@ -38,10 +38,7 @@ export function tryPushToGitRemote({
   remote: string;
   branch: string;
   noVerify: boolean;
-}): Observable<{
-  stderr: string;
-  stdout: string;
-}> {
+}): Observable<string> {
   return defer(() => {
     if (remote == null || branch == null) {
       return throwError(
@@ -71,13 +68,18 @@ export function tryPushToGitRemote({
         ) {
           console.warn('git push --atomic failed, attempting non-atomic push');
 
-          return execAsync('git', ['push', ...gitPushOptions, remote, branch]);
+          return execAsync('git', [
+            'push',
+            ...gitPushOptions,
+            remote,
+            branch,
+          ]).pipe(catchError((error) => throwError(new Error(error.stderr))));
         }
 
-        return throwError(error);
+        return throwError(new Error(error.stderr));
       })
     );
-  });
+  }).pipe(map((process) => process.stdout));
 }
 
 export function addToStage({
@@ -86,18 +88,22 @@ export function addToStage({
 }: {
   paths: string[];
   dryRun: boolean;
-}): Observable<{ stderr: string; stdout: string }> {
+}): Observable<string> {
   if (paths.length === 0) {
     return EMPTY;
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
-  return execAsync('git', ['add', ...gitAddOptions]);
+  return execAsync('git', ['add', ...gitAddOptions]).pipe(
+    map((process) => process.stdout),
+    catchError((error) => throwError(new Error(error.stderr)))
+  );
 }
 
 export function getFirstCommitRef(): Observable<string> {
   return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
-    /**                                 Remove line breaks. */
-    switchMap(({ stdout }) => of(stdout.replace(/\r?\n|\r/, '')))
+    /**                                Remove line breaks. */
+    map(({ stdout }) => stdout.replace(/\r?\n|\r/, '')),
+    catchError((error) => throwError(new Error(error.stderr)))
   );
 }

@@ -122,36 +122,30 @@ describe('git', () => {
       it(`should throw if Git push failed`, async () => {
         jest
           .spyOn(cp, 'execAsync')
-          .mockReturnValue(throwError({ stderr: 'failed', stdout: '' }));
+          .mockReturnValue(
+            throwError({ stderr: 'Something went wrong', stdout: '' })
+          );
 
-        try {
-          await tryPushToGitRemote({
+        await expect(
+          tryPushToGitRemote({
             remote: 'origin',
             branch: 'master',
             noVerify: false,
-          }).toPromise();
-          fail();
-        } catch (error) {
-          expect(cp.execAsync).toBeCalledTimes(1);
-          expect(error).toEqual(
-            expect.objectContaining({ stderr: 'failed', stdout: '' })
-          );
-        }
+          }).toPromise()
+        ).rejects.toEqual(new Error('Something went wrong'));
+        expect(cp.execAsync).toBeCalledTimes(1);
       });
 
       it('should fail if options are undefined', async () => {
-        try {
-          await tryPushToGitRemote({
+        await expect(
+          tryPushToGitRemote({
             /* eslint-disable @typescript-eslint/no-explicit-any */
             remote: undefined as any,
             branch: undefined as any,
             /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
-          }).toPromise();
-          fail();
-        } catch (error) {
-          expect(error.message).toContain('Missing Git options');
-        }
+          }).toPromise()
+        ).rejects.toEqual(expect.any(Error));
       });
     });
   });
@@ -169,7 +163,11 @@ describe('git', () => {
 
       expect(cp.execAsync).toBeCalledWith(
         'git',
-        expect.arrayContaining(['add', 'packages/demo/file.txt', 'packages/demo/other-file.ts'])
+        expect.arrayContaining([
+          'add',
+          'packages/demo/file.txt',
+          'packages/demo/other-file.ts',
+        ])
       );
     });
 
@@ -187,7 +185,7 @@ describe('git', () => {
     });
   });
 
-    describe('getFirstCommitRef', () => {
+  describe('getFirstCommitRef', () => {
     it('should get last git commit', async () => {
       jest
         .spyOn(cp, 'execAsync')

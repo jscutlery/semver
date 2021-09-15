@@ -49,7 +49,11 @@ describe('@jscutlery/semver:version', () => {
   let result: { success: boolean };
   let testingWorkspace: TestingWorkspace;
 
-  beforeAll(() => jest.spyOn(console, 'info').mockImplementation());
+  beforeAll(() => {
+    jest.spyOn(console, 'warn').mockImplementation();
+    jest.spyOn(console, 'info').mockImplementation();
+  });
+
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
   describe('package "a" with (--sync-versions=false)', () => {
