@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.7.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.7.0...semver-2.7.1) (2021-09-15)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 handle child process error gracefully ([23dfee6](https://github.com/jscutlery/nx-plugin-semver/commit/23dfee60665e2ccfa9de3b4f495341d4cfdc7fa7)), closes [#196](https://github.com/jscutlery/nx-plugin-semver/issues/196)
+* **semver:** 🐞 update migration target ([6a22938](https://github.com/jscutlery/nx-plugin-semver/commit/6a22938e40b954fe2a49b1c85dc549c19cd79108))
+
+
+
 # [2.7.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.6.0...semver-2.7.0) (2021-09-07)
 
 
