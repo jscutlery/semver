@@ -168,10 +168,10 @@ describe('Install generator', () => {
 
       const packageJson2 = readJson(tree, 'package.json');
 
-      expect(packageJson2.devDependencies.commitizen).toEqual('^4.2.4');
-      expect(packageJson2.devDependencies['cz-conventional-changelog']).toEqual(
-        '^3.3.0'
-      );
+      expect(packageJson2.devDependencies.commitizen).toBeDefined();
+      expect(
+        packageJson2.devDependencies['cz-conventional-changelog']
+      ).toBeDefined();
     });
 
     it('adds commitizen config to package.json if does not exist', async () => {
@@ -204,10 +204,10 @@ describe('Install generator', () => {
       await install(tree, options);
 
       const packageJson = readJson(tree, 'package.json');
-      expect(packageJson.devDependencies['@commitlint/cli']).toEqual('^12.1.4');
+      expect(packageJson.devDependencies['@commitlint/cli']).toBeDefined();
       expect(
         packageJson.devDependencies['@commitlint/config-conventional']
-      ).toEqual('^12.1.4');
+      ).toBeDefined();
     });
 
     it('adds commitlint config to package.json if does not exist', async () => {
