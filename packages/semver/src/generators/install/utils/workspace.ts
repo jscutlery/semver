@@ -23,8 +23,7 @@ export function updateProjects(
   getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
       project.targets.version = {
-        executor: '@jscutlery/semver:version',
-        options: { syncVersions: false },
+        executor: '@jscutlery/semver:version'
       };
       updateProjectConfiguration(tree, projectName, project);
     }

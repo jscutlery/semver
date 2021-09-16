@@ -122,7 +122,6 @@ describe('Install generator', () => {
         expect.objectContaining({
           version: {
             executor: '@jscutlery/semver:version',
-            options: { syncVersions: false },
           },
         })
       );
@@ -141,7 +140,6 @@ describe('Install generator', () => {
         expect.objectContaining({
           version: {
             executor: '@jscutlery/semver:version',
-            options: { syncVersions: false },
           },
         })
       );
