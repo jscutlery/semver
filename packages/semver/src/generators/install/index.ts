@@ -1,4 +1,4 @@
-import { addProjectConfiguration, installPackagesTask } from '@nrwl/devkit';
+import { addProjectConfiguration, formatFiles, installPackagesTask } from '@nrwl/devkit';
 
 import { addDependencies } from './utils/dependencies';
 import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
@@ -27,6 +27,9 @@ export default async function install(tree: Tree, options: SchemaOptions) {
   }
 
   addDependencies(tree, options);
+
+  /* Supports Angular CLI workspace definition format, see https://github.com/nrwl/nx/discussions/6955#discussioncomment-1341893 */
+  await formatFiles(tree);
 
   return () => {
     !options.skipInstall && installPackagesTask(tree);
