@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.8.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.7.1...semver-2.8.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 support Angular CLI workspace definition ([416d6bb](https://github.com/jscutlery/nx-plugin-semver/commit/416d6bbfd0331a3ff9d5faaa6e0dd8b573a71cdd)), closes [/github.com/nrwl/nx/discussions/6955#discussioncomment-1341893](https://github.com//github.com/nrwl/nx/discussions/6955/issues/discussioncomment-1341893)
+
+
+### Features
+
+* **semver:** ✅ bump install generator dependencies ([9de8f17](https://github.com/jscutlery/nx-plugin-semver/commit/9de8f17cda699ebc58a4bb4b89a3b2f61071fa5f))
+
+
+
 ## [2.7.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.7.0...semver-2.7.1) (2021-09-15)
 
 
