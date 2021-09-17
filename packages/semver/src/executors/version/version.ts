@@ -3,7 +3,11 @@ import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import { defaultHeader, getChangelogPath, updateChangelog } from './utils/changelog';
+import {
+  defaultHeader,
+  getChangelogPath,
+  updateChangelog,
+} from './utils/changelog';
 import { addToStage } from './utils/git';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
@@ -27,30 +31,28 @@ export function versionWorkspace({
   workspaceRoot: string;
 } & CommonVersionOptions) {
   return concat(
-    ...[
-      getProjectRoots(workspaceRoot).pipe(
-        switchMap((projectRoots) =>
-          _generateProjectChangelogs({
-            workspaceRoot,
-            projectRoots,
-            ...options,
-          })
-        ),
-        /* Run Git add only once, after changelogs get generated in parallel. */
-        switchMap((changelogPaths) =>
-          addToStage({ paths: changelogPaths, dryRun: options.dryRun })
-        )
+    getProjectRoots(workspaceRoot).pipe(
+      switchMap((projectRoots) =>
+        _generateProjectChangelogs({
+          workspaceRoot,
+          projectRoots,
+          ...options,
+        })
       ),
-      getPackageFiles(workspaceRoot).pipe(
-        switchMap((packageFiles) =>
-          _runStandardVersion({
-            bumpFiles: packageFiles,
-            skipChangelog: skipRootChangelog,
-            ...options,
-          })
-        )
-      ),
-    ]
+      /* Run Git add only once, after changelogs get generated in parallel. */
+      switchMap((changelogPaths) =>
+        addToStage({ paths: changelogPaths, dryRun: options.dryRun })
+      )
+    ),
+    getPackageFiles(workspaceRoot).pipe(
+      switchMap((packageFiles) =>
+        _runStandardVersion({
+          bumpFiles: packageFiles,
+          skipChangelog: skipRootChangelog,
+          ...options,
+        })
+      )
+    )
   );
 }
 
@@ -104,7 +106,7 @@ export function _runStandardVersion({
   preset,
   tagPrefix,
   skipChangelog,
-  changelogHeader = defaultHeader
+  changelogHeader = defaultHeader,
 }: {
   bumpFiles: string[];
   skipChangelog: boolean;
