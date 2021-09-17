@@ -9,7 +9,6 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 * **semver:** 🐞 support Angular CLI workspace definition ([416d6bb](https://github.com/jscutlery/semver/commit/416d6bbfd0331a3ff9d5faaa6e0dd8b573a71cdd)), closes [discussion#6955](https://github.com/nrwl/nx/discussions/6955#discussioncomment-1341893)
 
-
 ### Features
 
 * **semver:** ✅ bump install generator dependencies ([9de8f17](https://github.com/jscutlery/semver/commit/9de8f17cda699ebc58a4bb4b89a3b2f61071fa5f))
