@@ -7,7 +7,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Bug Fixes
 
-* **semver:** 🐞 support Angular CLI workspace definition ([416d6bb](https://github.com/jscutlery/semver/commit/416d6bbfd0331a3ff9d5faaa6e0dd8b573a71cdd)), closes [/github.com/nrwl/nx/discussions/6955#discussioncomment-1341893](https://github.com//github.com/nrwl/nx/discussions/6955/issues/discussioncomment-1341893)
+* **semver:** 🐞 support Angular CLI workspace definition ([416d6bb](https://github.com/jscutlery/semver/commit/416d6bbfd0331a3ff9d5faaa6e0dd8b573a71cdd)), closes [https://github.com/nrwl/nx/discussions/6955#discussioncomment-1341893](https://github.com/nrwl/nx/discussions/6955#discussioncomment-1341893)
 
 
 ### Features
