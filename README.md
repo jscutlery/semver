@@ -161,7 +161,7 @@ You can found the complete example [here](https://github.com/edbzn/semver-ci).
 
 ## Changelog
 
-For new features or breaking changes [see the changelog](https://github.com/jscutlery/nx-plugin-semver/blob/main/packages/semver/CHANGELOG.md).
+For new features or breaking changes [see the changelog](https://github.com/jscutlery/semver/blob/main/packages/semver/CHANGELOG.md).
 
 ## Contributors
 
