@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "@types/standard-version": "^7.0.1",
-    "@types/inquirer": "^7.3.3"
+    "@types/inquirer": "^8.0.0"
   }
 }
