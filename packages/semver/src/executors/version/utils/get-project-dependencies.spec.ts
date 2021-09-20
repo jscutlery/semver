@@ -1,107 +1,96 @@
-import { execAsync } from './exec-async';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { getProjectDependencies } from './get-project-dependencies';
+import { createProjectGraphAsync, ProjectGraph } from '@nrwl/workspace/src/core/project-graph';
 
-jest.mock('./exec-async');
+jest.mock('@nrwl/workspace/src/core/project-graph');
 
-const printAffectedResponse = {
-  "tasks": [],
-  "projects": [
-    "demo",
-    "demo-e2e"
-  ],
-  "projectGraph": {
-    "nodes": [
-      "demo",
-      "lib1",
-      "lib2",
-      "npm:@mock/npm-lib1",
-      "npm:@mock/npm-lib2"
+const projectGraph: ProjectGraph = {
+  nodes: {},
+  dependencies: {
+    demo: [
+      {
+        type: 'static',
+        source: 'demo',
+        target: 'npm:@mock/npm-lib1',
+      },
+      {
+        type: 'implicit',
+        source: 'demo',
+        target: 'lib1',
+      },
+      {
+        type: 'static',
+        source: 'demo',
+        target: 'lib2',
+      },
     ],
-    "dependencies": {
-      "demo": [
-        {
-          "type": "static",
-          "source": "demo",
-          "target": "npm:@mock/npm-lib1"
-        },
-        {
-          "type": "implicit",
-          "source": "demo",
-          "target": "lib1"
-        },
-        {
-          "type": "static",
-          "source": "demo",
-          "target": "lib2"
-        }
-      ],
-      "lib1": [
-        {
-          "type": "static",
-          "source": "lib1",
-          "target": "npm:@mock/npm-lib1"
-        },
-        {
-          "type": "implicit",
-          "source": "lib1",
-          "target": "lib2"
-        }
-      ],
-      "lib2": [
-        {
-          "type": "static",
-          "source": "lib2",
-          "target": "npm:@mock/npm-lib2"
-        },
-        {
-          "type": "static",
-          "source": "lib2",
-          "target": "lib1"
-        }
-      ],
-      "demo-e2e": [
-        {
-          "type": "implicit",
-          "source": "demo-e2e",
-          "target": "demo"
-        }
-      ]
-    }
+    lib1: [
+      {
+        type: 'static',
+        source: 'lib1',
+        target: 'npm:@mock/npm-lib1',
+      },
+      {
+        type: 'implicit',
+        source: 'lib1',
+        target: 'lib2',
+      },
+    ],
+    lib2: [
+      {
+        type: 'static',
+        source: 'lib2',
+        target: 'npm:@mock/npm-lib2',
+      },
+      {
+        type: 'static',
+        source: 'lib2',
+        target: 'lib1',
+      },
+    ],
+    'demo-e2e': [
+      {
+        type: 'implicit',
+        source: 'demo-e2e',
+        target: 'demo',
+      },
+    ],
   }
-}
+};
 
 describe('projectDependencies', () => {
-  const mockExecAsync = execAsync as jest.MockedFunction<
-    typeof execAsync
-    >;
+  const mockCreateProjectGraphAsync = createProjectGraphAsync as jest.MockedFunction<typeof createProjectGraphAsync>;
 
   afterEach(() => {
-    mockExecAsync.mockRestore();
+    mockCreateProjectGraphAsync.mockRestore();
   });
 
   it('returns a list of libs that the project is dependent on', async () => {
-    mockExecAsync.mockReturnValue(of({ stderr: undefined, stdout: JSON.stringify(printAffectedResponse) }));
+    mockCreateProjectGraphAsync.mockReturnValue(
+      Promise.resolve(projectGraph)
+    );
 
     const dependencies = await getProjectDependencies('demo');
     expect(dependencies).toEqual(['lib1', 'lib2']);
 
-    expect(mockExecAsync).toHaveBeenCalledTimes(1);
-    expect(mockExecAsync).toBeCalledWith('npm', ['run', '-s', 'nx print-affected']);
+    expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
   });
 
   it('returns a sub-dependency', async () => {
-    mockExecAsync.mockReturnValue(of({ stderr: undefined, stdout: JSON.stringify(printAffectedResponse) }));
+    mockCreateProjectGraphAsync.mockReturnValue(
+      Promise.resolve(projectGraph)
+    );
 
     const dependencies = await getProjectDependencies('lib1');
     expect(dependencies).toEqual(['lib2']);
 
-    expect(mockExecAsync).toHaveBeenCalledTimes(1);
-    expect(mockExecAsync).toBeCalledWith('npm', ['run', '-s', 'nx print-affected']);
+    expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
   });
 
   it('handles a failure in retrieving the dependency graph', async () => {
-    mockExecAsync.mockReturnValue(throwError({ stderr: 'thrown error', stdout: undefined }));
+    mockCreateProjectGraphAsync.mockReturnValue(
+      Promise.reject('thrown error')
+    );
 
     let error;
     try {
