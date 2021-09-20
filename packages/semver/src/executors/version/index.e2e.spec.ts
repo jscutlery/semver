@@ -9,15 +9,13 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
-import { execAsync } from './utils/exec-async';
-import { of } from 'rxjs';
-
-jest.mock('./utils/exec-async');
+import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph';
 import { lastValueFrom } from 'rxjs';
 
-describe('@jscutlery/semver:version', () => {
-  const mockExecAsync = execAsync as jest.MockedFunction<typeof execAsync>;
+jest.mock('@nrwl/workspace/src/core/project-graph');
+jest.mock('./utils/exec-async');
 
+describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
     dryRun: false,
     noVerify: false,
@@ -75,15 +73,6 @@ describe('@jscutlery/semver:version', () => {
   beforeAll(() => {
     jest.spyOn(console, 'warn').mockImplementation();
     jest.spyOn(console, 'info').mockImplementation();
-
-    /* This will mock execAsync ONLY when we're getting the project graph. */
-    const originalExecAsyncModule = jest.requireActual('./utils/exec-async');
-    mockExecAsync.mockImplementation((cmd, args) => {
-      if (cmd === 'npm' && args.join(' ') === 'run -s nx print-affected') {
-        return projectGraph();
-      }
-      return originalExecAsyncModule.execAsync(cmd, args);
-    })
   });
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
@@ -478,9 +467,14 @@ $`)
   });
 
   describe('option --use-deps', () => {
+    const mockCreateProjectGraphAsync = createProjectGraphAsync as jest.MockedFunction<typeof createProjectGraphAsync>;
 
     describe('when disabled with an unchanged project', () => {
       beforeAll(async () => {
+        mockCreateProjectGraphAsync.mockReturnValue(
+          projectGraph()
+        );
+
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
         /* Commit changes. */
@@ -503,10 +497,13 @@ $`)
         );
       });
 
-      afterAll(() => testingWorkspace.tearDown());
+      afterAll(() => {
+        mockCreateProjectGraphAsync.mockRestore()
+        return testingWorkspace.tearDown();
+      });
 
       it('should not get affected projects',  () => {
-        expect(mockExecAsync).not.toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+        expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(0);
       });
 
       it('should not generate changelogs', () => {
@@ -523,6 +520,10 @@ $`)
      */
     describe('used with unchanged package with unchanged libs', () => {
       beforeAll(async () => {
+        mockCreateProjectGraphAsync.mockReturnValue(
+          projectGraph()
+        );
+
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
         /* Commit changes. */
@@ -546,10 +547,13 @@ $`)
         );
       });
 
-      afterAll(() => testingWorkspace.tearDown());
+      afterAll(() => {
+        mockCreateProjectGraphAsync.mockRestore();
+        return testingWorkspace.tearDown();
+      });
 
       it('should get affected projects',  () => {
-        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+        expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
       it('should not generate changelogs', async () => {
@@ -559,6 +563,10 @@ $`)
 
     describe('used with unchanged package with changed lib', () => {
       beforeAll(async () => {
+        mockCreateProjectGraphAsync.mockReturnValue(
+          projectGraph()
+        );
+
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
         /* Commit changes. */
@@ -589,10 +597,13 @@ $`)
         );
       });
 
-      afterAll(() => testingWorkspace.tearDown());
+      afterAll(() => {
+        mockCreateProjectGraphAsync.mockRestore();
+        return testingWorkspace.tearDown();
+      });
 
       it('should get affected projects',  () => {
-        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+        expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
       it('generates change logs', () => {
@@ -609,6 +620,10 @@ $`)
 
     describe('used with changed package with changed lib', () => {
       beforeAll(async () => {
+        mockCreateProjectGraphAsync.mockReturnValue(
+          projectGraph()
+        );
+
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
         /* Commit changes. */
@@ -642,13 +657,16 @@ $`)
         );
       });
 
-      afterAll(() => testingWorkspace.tearDown());
-
-      it('should get affected projects',  () => {
-        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      afterAll(() => {
+        mockCreateProjectGraphAsync.mockRestore();
+        return testingWorkspace.tearDown();
       });
 
-      it('generates change logs', () => {
+      it('should get affected projects',  () => {
+        expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
+      });
+
+      it('generates change logs', async () => {
         expect(readFileSync('packages/c/CHANGELOG.md', 'utf-8')).toMatch(
           new RegExp(`^# Changelog
 
@@ -667,6 +685,10 @@ $`)
 
     describe('used with changed package with unchanged lib', () => {
       beforeAll(async () => {
+        mockCreateProjectGraphAsync.mockReturnValue(
+          projectGraph()
+        );
+
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
         /* Commit changes. */
@@ -690,10 +712,13 @@ $`)
         );
       });
 
-      afterAll(() => testingWorkspace.tearDown());
+      afterAll(() => {
+        mockCreateProjectGraphAsync.mockRestore()
+        return testingWorkspace.tearDown();
+      });
 
       it('should get affected projects',  () => {
-        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+        expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
       it('generates change logs', () => {
@@ -715,6 +740,10 @@ $`)
 
     describe('used with unchanged package with changed lib (--sync-versions=true)', () => {
       beforeAll(async () => {
+        mockCreateProjectGraphAsync.mockReturnValue(
+          projectGraph()
+        );
+
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
         /* Commit changes. */
@@ -728,7 +757,7 @@ $`)
         `);
 
         /* Run builder. */
-        result = await version(
+        await version(
           {
             ...defaultBuilderOptions,
             syncVersions: true,
@@ -745,13 +774,16 @@ $`)
         );
       });
 
-      afterAll(() => testingWorkspace.tearDown());
-
-      it('should get affected projects',  () => {
-        expect(mockExecAsync).toHaveBeenCalledWith('npm', ['run', '-s', 'nx print-affected']);
+      afterAll(() => {
+        mockCreateProjectGraphAsync.mockRestore()
+        return testingWorkspace.tearDown();
       });
 
-      it('generates change logs', () => {
+      it('should get affected projects',  () => {
+        expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
+      });
+
+      it('generates change logs', async () => {
         expect(readFileSync('packages/c/CHANGELOG.md', 'utf-8')).toMatch(
           new RegExp(`^# Changelog.*
 
@@ -1020,40 +1052,35 @@ function uncommitedChanges() {
 function projectGraph() {
   // package a depends on lib d
   // package c depends on lib e
-  const stdout = JSON.stringify({
-    tasks: [],
-    projects: ['a', 'b'],
-    projectGraph: {
-      nodes: ['a', 'b', 'c', 'd', 'e', 'npm:@mock/npm-lib1', 'npm:@mock/npm-lib2'],
-      dependencies: {
-        a: [
-          {
-            type: 'static',
-            source: 'a',
-            target: 'npm:@mock/npm-lib1',
-          },
-          {
-            type: 'implicit',
-            source: 'a',
-            target: 'd',
-          }
-        ],
-        c: [
-          {
-            type: 'static',
-            source: 'c',
-            target: 'npm:@mock/npm-lib1',
-          },
-          {
-            type: 'implicit',
-            source: 'c',
-            target: 'e',
-          },
-        ],
-        d: [],
-        e: []
-      },
-    },
+  return Promise.resolve({
+    nodes: {},
+    dependencies: {
+      a: [
+        {
+          type: 'static',
+          source: 'a',
+          target: 'npm:@mock/npm-lib1',
+        },
+        {
+          type: 'implicit',
+          source: 'a',
+          target: 'd',
+        }
+      ],
+      c: [
+        {
+          type: 'static',
+          source: 'c',
+          target: 'npm:@mock/npm-lib1',
+        },
+        {
+          type: 'implicit',
+          source: 'c',
+          target: 'e',
+        },
+      ],
+      d: [],
+      e: []
+    }
   });
-  return of({stdout, stderr: ''});
 }
