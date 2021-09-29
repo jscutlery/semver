@@ -278,6 +278,17 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
+  it('should version with --no-verify', async () => {
+    const { success } = await version(
+      { ...options, noVerify: true },
+      context
+    );
+    expect(success).toBe(true);
+    expect(mockStandardVersion).toBeCalledWith(
+      expect.objectContaining({ noVerify: true })
+    );
+  });
+
   describe('Git push', () => {
     it('should push to Git', async () => {
       mockTryPushToGitRemote.mockReturnValue(of('success'));
