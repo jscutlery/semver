@@ -42,9 +42,10 @@ export function tryPushToGitRemote({
   return defer(() => {
     if (remote == null || branch == null) {
       return throwError(
-        new Error(
-          'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
-        )
+        () =>
+          new Error(
+            'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
+          )
       );
     }
 
@@ -73,10 +74,12 @@ export function tryPushToGitRemote({
             ...gitPushOptions,
             remote,
             branch,
-          ]).pipe(catchError((error) => throwError(new Error(error.stderr))));
+          ]).pipe(
+            catchError((error) => throwError(() => new Error(error.stderr)))
+          );
         }
 
-        return throwError(new Error(error.stderr));
+        return throwError(() => new Error(error.stderr));
       })
     );
   }).pipe(map((process) => process.stdout));
@@ -96,7 +99,7 @@ export function addToStage({
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
   return execAsync('git', ['add', ...gitAddOptions]).pipe(
     map((process) => process.stdout),
-    catchError((error) => throwError(new Error(error.stderr)))
+    catchError((error) => throwError(() => new Error(error.stderr)))
   );
 }
 
@@ -104,6 +107,6 @@ export function getFirstCommitRef(): Observable<string> {
   return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     /**                                Remove line breaks. */
     map(({ stdout }) => stdout.replace(/\r?\n|\r/, '')),
-    catchError((error) => throwError(new Error(error.stderr)))
+    catchError((error) => throwError(() => new Error(error.stderr)))
   );
 }

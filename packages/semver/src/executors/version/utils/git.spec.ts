@@ -94,7 +94,7 @@ describe('git', () => {
         jest
           .spyOn(cp, 'execAsync')
           .mockReturnValueOnce(
-            throwError({ stderr: 'atomic failed', stdout: '' })
+            throwError(() => ({ stderr: 'atomic failed', stdout: '' }))
           )
           .mockReturnValueOnce(of({ stderr: '', stdout: 'success' }));
 
@@ -123,7 +123,7 @@ describe('git', () => {
         jest
           .spyOn(cp, 'execAsync')
           .mockReturnValue(
-            throwError({ stderr: 'Something went wrong', stdout: '' })
+            throwError(() => ({ stderr: 'Something went wrong', stdout: '' }))
           );
 
         await expect(

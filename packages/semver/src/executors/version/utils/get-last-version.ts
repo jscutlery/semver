@@ -1,8 +1,10 @@
 import * as gitSemverTags from 'git-semver-tags';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
+
+import type { Observable } from 'rxjs';
 
 export function getLastVersion({
   tagPrefix,
@@ -15,7 +17,7 @@ export function getLastVersion({
       const [version] = versions.sort(semver.rcompare);
 
       if (version == null) {
-        return throwError(new Error('No semver tag found'));
+        return throwError(() => new Error('No semver tag found'));
       }
 
       const tag =`${tagPrefix}${version}`;

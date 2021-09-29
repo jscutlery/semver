@@ -307,7 +307,7 @@ describe('@jscutlery/semver:version', () => {
 
     it('should handle Git failure', async () => {
       mockTryPushToGitRemote.mockReturnValue(
-        throwError(new Error('Something went wrong'))
+        throwError(() => new Error('Something went wrong'))
       );
 
       const { success } = await version({ ...options, push: true }, context);

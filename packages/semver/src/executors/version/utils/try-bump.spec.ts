@@ -117,7 +117,7 @@ describe('tryBump', () => {
   });
 
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
-    mockGetLastVersion.mockReturnValue(throwError('No version found'));
+    mockGetLastVersion.mockReturnValue(throwError(() => 'No version found'));
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
 
