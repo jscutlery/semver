@@ -71,11 +71,11 @@ Release a project with a version that is incremented by a specified level.
 Level can be one of: `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, or `prerelease`:
 
 ```
-nx run workspace:version --version=major
-nx run workspace:version --version=minor
-nx run workspace:version --version=patch
-nx run workspace:version --version=prerelease --preid=alpha
-nx run workspace:version --version=prerelease --preid=beta
+nx run workspace:version --releaseAs=major
+nx run workspace:version --releaseAs=minor
+nx run workspace:version --releaseAs=patch
+nx run workspace:version --releaseAs=prerelease --preid=alpha
+nx run workspace:version --releaseAs=prerelease --preid=beta
 ```
 
 #### When run, this command does the following:
@@ -100,7 +100,7 @@ nx run workspace:version --version=prerelease --preid=beta
 | **`--changelogHeader`**      | `string` | `null`     | custom Markdown header for changelogs                |
 | **`--origin`**               | `string` | `'origin'` | push against git remote repository                   |
 | **`--baseBranch`**           | `string` | `'main'`   | push against git base branch                         |
-| **`--version`**              | `string` | `null`     | specify the level of change                          |
+| **`--releaseAs`**            | `string` | `null`     | specify the level of change                          |
 | **`--preid`**                | `string` | `null`     | prerelease identifier                                |
 | **`--versionTagPrefix`**     | `string` | `null`     | specify the tag prefix                               |
 
@@ -130,7 +130,7 @@ With independent mode the tag prefix uses the context target value, the default 
 
 #### GitHub Actions
 
-Here is an example running semver in a GitHub workflow: 
+Here is an example running semver in a GitHub workflow:
 
 ```yml
 name: default
@@ -138,7 +138,7 @@ name: default
 on:
   push:
     branches:
-    - 'master'
+      - 'master'
 
 jobs:
   release:

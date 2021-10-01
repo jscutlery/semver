@@ -202,7 +202,7 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should skip root CHANGELOG generation (--skip-root-changelog=true)', async () => {
+    it('should skip root CHANGELOG generation --skipProjectChangelog', async () => {
       await version(
         {
           ...options,
@@ -222,7 +222,7 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should skip project CHANGELOG generation (--skip-project-changelog=true)', async () => {
+    it('should skip project CHANGELOG generation --skipProjectChangelog', async () => {
       await version(
         {
           ...options,
@@ -278,7 +278,23 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  it('should version with --no-verify', async () => {
+  it('should version with --releaseAs', async () => {
+    const { success } = await version(
+      { ...options, releaseAs: 'major' },
+      context
+    );
+    expect(success).toBe(true);
+    expect(mockTryBump).toBeCalledWith(
+      expect.objectContaining({
+        releaseType: 'major'
+      })
+    );
+    expect(mockStandardVersion).toBeCalledWith(
+      expect.objectContaining({ releaseAs: '2.1.0' })
+    );
+  });
+
+  it('should version with --noVerify', async () => {
     const { success } = await version(
       { ...options, noVerify: true },
       context
@@ -323,7 +339,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
 
-    it('should not push to Git with (--dry-run=true)', async () => {
+    it('should not push to Git with --dryRun', async () => {
       await version({ ...options, dryRun: true }, context);
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });

@@ -1,3 +1,5 @@
+export type ReleaseIdentifier = 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
+
 export interface VersionBuilderSchema {
   dryRun?: boolean;
   noVerify?: boolean;
@@ -7,7 +9,12 @@ export interface VersionBuilderSchema {
   syncVersions?: boolean;
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;
-  version?: 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
+  /**
+   * @deprecated Use the alias releaseAs (--releaseAs) instead.
+   * @sunset 3.0.0
+   */
+  version?: ReleaseIdentifier;
+  releaseAs?: ReleaseIdentifier;
   preid?: string;
   changelogHeader?: string;
   versionTagPrefix?: string;

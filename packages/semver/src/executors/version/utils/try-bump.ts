@@ -1,6 +1,6 @@
 import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { defer, forkJoin, iif, Observable, of } from 'rxjs';
+import { defer, forkJoin, iif, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
@@ -8,6 +8,8 @@ import { promisify } from 'util';
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 
+import type { Observable } from 'rxjs';
+import type { ReleaseIdentifier } from '../schema';
 /**
  * Return new version or null if nothing changed.
  */
@@ -21,7 +23,7 @@ export function tryBump({
   preset: string;
   projectRoot: string;
   tagPrefix: string;
-  releaseType: string | null;
+  releaseType: ReleaseIdentifier | null;
   preid: string | null;
 }): Observable<string> {
   const initialVersion = '0.0.0';

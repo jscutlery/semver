@@ -54,6 +54,10 @@
       "description": "Manually increment the version by that keyword.",
       "type": "string"
     },
+    "releaseAs": {
+      "description": "Manually increment the version by that keyword.",
+      "type": "string"
+    },
     "preid": {
       "description": "Use the next semantic prerelease version with a specific prerelease identifier.",
       "type": "string"

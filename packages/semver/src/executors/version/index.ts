@@ -22,6 +22,7 @@ export default function version(
     skipRootChangelog,
     skipProjectChangelog,
     version,
+    releaseAs,
     preid,
     changelogHeader,
     versionTagPrefix,
@@ -42,7 +43,7 @@ export default function version(
     preset,
     projectRoot,
     tagPrefix,
-    releaseType: version,
+    releaseType: releaseAs ?? version,
     preid,
   });
 
