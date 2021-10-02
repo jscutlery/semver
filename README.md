@@ -35,9 +35,7 @@ Allow multiple projects to be versioned independently. This way you release only
 
 #### Synced mode
 
-Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together. This mode is useful when you are working with only one product.
-
-> One issue with this approach is that a major change in any project will result in all projects having a new major version.
+Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together. This mode is useful when you are working with only one product. One issue with this approach is that a major change in any project will result in all projects having a new major version.
 
 ## Usage
 
@@ -65,22 +63,9 @@ Release multiple projects at once:
 nx run workspace:version [...options]
 ```
 
-#### Specified Level Change
+#### When run, this executor does the following:
 
-Release a project with a version that is incremented by a specified level.
-Level can be one of: `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, or `prerelease`:
-
-```
-nx run workspace:version --releaseAs=major
-nx run workspace:version --releaseAs=minor
-nx run workspace:version --releaseAs=patch
-nx run workspace:version --releaseAs=prerelease --preid=alpha
-nx run workspace:version --releaseAs=prerelease --preid=beta
-```
-
-#### When run, this command does the following:
-
-1. Retrieve the current version of affected `package.json` projects.
+1. Retrieve the current version of affected projects.
 2. Bump versions based on your commits.
 3. Generates CHANGELOGs based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
 4. Creates a new commit including your `package.json` files and updated CHANGELOGs.
@@ -104,7 +89,7 @@ nx run workspace:version --releaseAs=prerelease --preid=beta
 | **`--preid`**                | `string` | `null`     | prerelease identifier                                |
 | **`--versionTagPrefix`**     | `string` | `null`     | specify the tag prefix                               |
 
-#### Configuration using the file:
+#### Configuration using the file
 
 Note that you can define the options you want to customize using the `workspace.json` file, eg:
 
@@ -116,6 +101,20 @@ Note that you can define the options you want to customize using the `workspace.
     "versionTagPrefix": "${target}@"
   }
 }
+```
+
+#### Specify the level of change
+
+The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level. 
+
+Level can be one of `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, or `prerelease`, for instance:
+
+```
+nx run workspace:version --releaseAs=major
+nx run workspace:version --releaseAs=minor
+nx run workspace:version --releaseAs=patch
+nx run workspace:version --releaseAs=prerelease --preid=alpha
+nx run workspace:version --releaseAs=prerelease --preid=beta
 ```
 
 #### Tag prefix customization
