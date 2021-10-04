@@ -1,57 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "projects": {
-    "semver": {
-      "root": "packages/semver",
-      "sourceRoot": "packages/semver/src",
-      "projectType": "library",
-      "generators": {},
-      "targets": {
-        "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "packages/semver/**/*.ts"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "packages/semver/jest.config.js",
-            "passWithNoTests": true
-          }
-        },
-        "build": {
-          "executor": "@nrwl/node:package",
-          "options": {
-            "outputPath": "dist/packages/semver",
-            "tsConfig": "packages/semver/tsconfig.lib.json",
-            "packageJson": "packages/semver/package.json",
-            "main": "packages/semver/src/index.ts",
-            "assets": [
-              "README.md",
-              {
-                "input": "./packages/semver/src",
-                "glob": "**/*.!(ts)",
-                "output": "./src"
-              },
-              {
-                "input": "./packages/semver",
-                "glob": "{builders,collection,migrations}.json",
-                "output": "."
-              }
-            ]
-          }
-        }
-      }
-    }
+    "semver": "packages/semver"
   },
   "cli": {
     "defaultCollection": "@nrwl/workspace"
