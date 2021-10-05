@@ -1,4 +1,4 @@
-import { logger, parseTargetString, runExecutor } from '@nrwl/devkit';
+import { logger, runExecutor } from '@nrwl/devkit';
 import { concat, defer, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
@@ -10,20 +10,7 @@ import { versionProject, versionWorkspace } from './version';
 
 import type { ExecutorContext } from '@nrwl/devkit';
 import type { CommonVersionOptions } from './version';
-import type { PostTargetSchema, VersionBuilderSchema } from './schema';
-
-export function normalizePostTarget(
-  postTargetSchema: PostTargetSchema,
-  context: ExecutorContext
-): Parameters<typeof runExecutor> {
-  return typeof postTargetSchema === 'string'
-    ? [parseTargetString(postTargetSchema), {}, context]
-    : [
-        parseTargetString(postTargetSchema.executor),
-        postTargetSchema.options,
-        context,
-      ];
-}
+import type { VersionBuilderSchema } from './schema';
 
 export default function version(
   {
@@ -104,7 +91,7 @@ export default function version(
         })
       );
 
-      const executePostTargets = postTargets.map((postTarget) => {
+      const executePostTargets$ = postTargets.map((postTarget) => {
         const options = normalizePostTarget(postTarget, context);
         return defer(async () => {
           const run = await runExecutor(...options);
@@ -119,7 +106,7 @@ export default function version(
       return concat(
         runStandardVersion$,
         ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        ...(dryRun === false ? executePostTargets : [])
+        ...(dryRun === false ? executePostTargets$ : [])
       );
     })
   );
