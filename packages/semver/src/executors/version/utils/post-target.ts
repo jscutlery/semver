@@ -1,6 +1,7 @@
 import { parseTargetString, runExecutor } from '@nrwl/devkit';
 import { defer } from 'rxjs';
 
+import type { Observable } from 'rxjs';
 import type { ExecutorContext } from '@nrwl/devkit';
 import type { PostTargetSchema } from '../schema';
 
@@ -20,7 +21,7 @@ export function normalizePostTarget(
 export function executePostTargets(
   postTargets: PostTargetSchema[],
   context: ExecutorContext
-) {
+): Observable<void>[] {
   return postTargets.map((postTarget) => {
     const options = normalizePostTarget(postTarget, context);
     return defer(async () => {

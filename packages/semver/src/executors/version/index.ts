@@ -1,8 +1,9 @@
-import { logger, runExecutor } from '@nrwl/devkit';
+import { logger } from '@nrwl/devkit';
 import { concat, defer, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { tryPushToGitRemote } from './utils/git';
+import { executePostTargets } from './utils/post-target';
 import { resolveTagTemplate } from './utils/tag-template';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
@@ -91,22 +92,10 @@ export default function version(
         })
       );
 
-      const executePostTargets$ = postTargets.map((postTarget) => {
-        const options = normalizePostTarget(postTarget, context);
-        return defer(async () => {
-          const run = await runExecutor(...options);
-          for await (const result of run) {
-            if (!result.success) {
-              throw new Error(`Something went wrong with post target: "${options[0].project}:${options[0].target}"`)
-            }
-          }
-        });
-      });
-
       return concat(
         runStandardVersion$,
         ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        ...(dryRun === false ? executePostTargets$ : [])
+        ...(dryRun === false ? executePostTargets(postTargets, context) : [])
       );
     })
   );
