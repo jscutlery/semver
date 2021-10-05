@@ -358,7 +358,7 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('post targets', () => {
+  describe('Post targets', () => {
     it('should successfully execute post targets', async () => {
       const { success } = await version(
         {
@@ -383,14 +383,12 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({
           project: 'project-a',
           target: 'test',
-          configuration: undefined,
         })
       );
       expect(mockRunExecutor.mock.calls[1][0]).toEqual(
         expect.objectContaining({
           project: 'project-b',
           target: 'test',
-          configuration: undefined,
         })
       );
       expect(mockRunExecutor.mock.calls[1][1]).toEqual(
@@ -407,6 +405,29 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it.todo('should handle post target failure');
+    it('should handle post target failure', async () => {
+      (mockRunExecutor as jest.Mock).mockImplementationOnce(function* () {
+        yield { success: true };
+      });
+      (mockRunExecutor as jest.Mock).mockImplementationOnce(function* () {
+        yield new Error('Nop!');
+      });
+
+      const { success } = await version(
+        {
+          ...options,
+          postTargets: ['project-a:test', 'project-b:test', 'project-c:test'],
+        },
+        context
+      );
+
+      expect(success).toBe(false);
+      expect(mockRunExecutor).toBeCalledTimes(2);
+      expect(logger.error).toBeCalledWith(
+        expect.stringMatching(
+          'Something went wrong with post target: "project-b:test"'
+        )
+      );
+    });
   });
 });
