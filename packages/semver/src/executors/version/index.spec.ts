@@ -430,4 +430,6 @@ describe('@jscutlery/semver:version', () => {
       );
     });
   });
+
+  it.todo('should forward options and version');
 });
