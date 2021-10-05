@@ -4,9 +4,10 @@ export type ReleaseIdentifier = 'patch' | 'minor' | 'major' | 'premajor' | 'prem
 
 /**
  * Specify a target to run after a new version was successfully created.
- * @example "@jscutlery/semver:push" | { "executor": "@jscutlery/semver:push" }
+ * @example "@jscutlery/semver:push"
+ * @example { "executor": "@jscutlery/semver:push", "options": {...} }
  */
-export type PostTargetSchema = string | TargetConfiguration;
+export type PostTargetSchema = string | Pick<TargetConfiguration, 'executor' | 'options'>;
 
 export interface VersionBuilderSchema {
   dryRun?: boolean;
