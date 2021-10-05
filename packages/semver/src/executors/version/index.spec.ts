@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { logger, runExecutor } from '@nrwl/devkit';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
@@ -16,6 +16,11 @@ import * as workspace from './utils/workspace';
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
+jest.mock('@nrwl/devkit', () => ({
+  runExecutor: jest.fn(),
+  parseTargetString: jest.requireActual('@nrwl/devkit').parseTargetString,
+  logger: jest.requireActual('@nrwl/devkit').logger,
+}));
 
 jest.mock('./utils/git');
 jest.mock('./utils/try-bump');
@@ -33,6 +38,9 @@ describe('@jscutlery/semver:version', () => {
   const mockStandardVersion = standardVersion as jest.MockedFunction<
     typeof standardVersion
   >;
+  const mockRunExecutor = runExecutor as jest.MockedFunction<
+    typeof runExecutor
+  >;
 
   let context: ExecutorContext;
 
@@ -45,6 +53,7 @@ describe('@jscutlery/semver:version', () => {
     syncVersions: false,
     skipRootChangelog: false,
     skipProjectChangelog: false,
+    postTargets: [],
   };
 
   beforeEach(() => {
@@ -59,6 +68,10 @@ describe('@jscutlery/semver:version', () => {
 
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
+
+    (mockRunExecutor as any).mockImplementation(function* () {
+      yield { success: true };
+    });
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
@@ -343,5 +356,57 @@ describe('@jscutlery/semver:version', () => {
       await version({ ...options, dryRun: true }, context);
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
+  });
+
+  describe('post targets', () => {
+    it('should successfully execute post targets', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          postTargets: [
+            'project-a:test',
+            {
+              executor: 'project-b:test',
+              options: {
+                optionA: 'optionA',
+              },
+            },
+            'project-c:test:prod',
+          ],
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockRunExecutor).toBeCalledTimes(3);
+      expect(mockRunExecutor.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          project: 'project-a',
+          target: 'test',
+          configuration: undefined,
+        })
+      );
+      expect(mockRunExecutor.mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          project: 'project-b',
+          target: 'test',
+          configuration: undefined,
+        })
+      );
+      expect(mockRunExecutor.mock.calls[1][1]).toEqual(
+        expect.objectContaining({
+          optionA: 'optionA',
+        })
+      );
+      expect(mockRunExecutor.mock.calls[2][0]).toEqual(
+        expect.objectContaining({
+          project: 'project-c',
+          target: 'test',
+          configuration: 'prod',
+        })
+      );
+    });
+
+    it.todo('should handle post target failure');
   });
 });
