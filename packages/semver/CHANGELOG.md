@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.9.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.8.1...semver-2.9.0) (2021-10-06)
+
+
+### Bug Fixes
+
+* **github:** 🐞 handle files and error correctly ([08cc021](https://github.com/jscutlery/nx-plugin-semver/commit/08cc0214a49e8afef694048786c3b555e8c8d85b))
+* **semver:** 🐞 forward valid version to post targets ([e5b15be](https://github.com/jscutlery/nx-plugin-semver/commit/e5b15be73f915920e8c57e21c2fe11d95169f4b0))
+* **semver:** 🐞 handle post-targets SchemaError ([09ffbae](https://github.com/jscutlery/nx-plugin-semver/commit/09ffbaeb7120b5e519f299fec74f9a20138c5a74))
+* **semver:** 🐞 resolve post target correctly ([b209832](https://github.com/jscutlery/nx-plugin-semver/commit/b209832235a1281141ff72d462f0377b31abadea))
+* **semver:** 🐞 use default export for version builder ([f334900](https://github.com/jscutlery/nx-plugin-semver/commit/f334900ad6902a4da76b643dc959333868f7be9a))
+* **semver:** 🐞 use only string schema ([304f16c](https://github.com/jscutlery/nx-plugin-semver/commit/304f16cd1fa93f989bb3021a1ef0dd84856b23b1))
+* use standalone projects ([22476c4](https://github.com/jscutlery/nx-plugin-semver/commit/22476c4ab52668fa200454df4b8e20abed893595)), closes [#320](https://github.com/jscutlery/nx-plugin-semver/issues/320)
+
+
+### Features
+
+* **github:** ✅ add `@jscutlery/semver:github` executor ([637758b](https://github.com/jscutlery/nx-plugin-semver/commit/637758beebe2eeb829c35465955423f0f0b3e526))
+* **github:** ✅ support branch argument ([d38b048](https://github.com/jscutlery/nx-plugin-semver/commit/d38b048748118e0ee3e1c865ed96a816027a88e1))
+* **github:** ✅ support files argument ([8a86aa0](https://github.com/jscutlery/nx-plugin-semver/commit/8a86aa0343f99be455816eec276200f108a94b7c))
+* **semver:** ✅ add `postTargets` option ([#167](https://github.com/jscutlery/nx-plugin-semver/issues/167)) ([133ef71](https://github.com/jscutlery/nx-plugin-semver/commit/133ef717edb7d269e77eb0e4459e9fff7f160f46))
+* **semver:** ✅ resolve `tag` property ([102021b](https://github.com/jscutlery/nx-plugin-semver/commit/102021b440a13587691236036f26e75c4be69f89))
+
+
+
 ## [2.8.1](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.8.0...semver-2.8.1) (2021-10-01)
 
 
