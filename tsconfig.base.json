@@ -16,7 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "jscutlery/semver": ["packages/semver/src/index.ts"]
+      "@jscutlery/semver": ["packages/semver/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
