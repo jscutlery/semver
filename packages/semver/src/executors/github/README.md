@@ -8,7 +8,7 @@ This executor requires the [GitHub CLI](https://cli.github.com/manual/installati
 
 ### Usage
 
-### Configuration
+#### Configuration
 
 In the workspace definition:
 
@@ -25,7 +25,7 @@ In the workspace definition:
 }
 ```
 
-### Create GitHub Release
+#### Create GitHub Release
 
 Publish the `v.1.0.0` release:
 
