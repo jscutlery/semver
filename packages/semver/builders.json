@@ -4,6 +4,11 @@
       "implementation": "./src/executors/version",
       "schema": "./src/executors/version/schema.json",
       "description": "Automate versioning and CHANGELOG generation."
+    },
+    "github": {
+      "implementation": "./src/executors/github/executor",
+      "schema": "./src/executors/github/schema.json",
+      "description": "github executor"
     }
   },
   "builders": {
@@ -11,6 +16,11 @@
       "implementation": "./src/executors/version/compat",
       "schema": "./src/executors/version/schema.json",
       "description": "Automate versioning and CHANGELOG generation."
+    },
+    "github": {
+      "implementation": "./src/executors/github/compat",
+      "schema": "./src/executors/github/schema.json",
+      "description": "github executor"
     }
   }
 }
