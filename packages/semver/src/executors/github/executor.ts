@@ -8,10 +8,12 @@ import type { GithubExecutorSchema } from './schema';
 
 export default async function runExecutor({
   tag,
+  files,
   branch,
 }: GithubExecutorSchema) {
   return execAsync('gh release create', [
     tag,
+    ...(files ? files : []),
     ...(branch ? [`--branch ${branch}`] : []),
   ])
     .pipe(

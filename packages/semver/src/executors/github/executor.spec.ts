@@ -29,12 +29,22 @@ describe('@jscutlery/semver:github', () => {
     expect(output.success).toBe(true);
   });
 
+  it('create release with specified files', async () => {
+    const output = await executor({ ...options, files: ['./dist/package']});
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['./dist/package'])
+    );
+    expect(output.success).toBe(true);
+  });
+
   it('create release with specified branch', async () => {
     const output = await executor({ ...options, branch: 'master' });
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['master'])
+      expect.arrayContaining(['--branch master'])
     );
     expect(output.success).toBe(true);
   });

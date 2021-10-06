@@ -12,6 +12,10 @@
     "branch": {
       "type": "string",
       "description": "Target branch or full commit SHA (default: main branch)."
+    },
+    "files": {
+      "type": "array",
+      "description": "A list of asset files may be given to upload to the new release."
     }
   },
   "required": ["tag"]
