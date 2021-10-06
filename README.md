@@ -88,7 +88,7 @@ nx run workspace:version [...options]
 | **`--releaseAs`**            | `string`   | `null`     | specify the level of change                          |
 | **`--preid`**                | `string`   | `null`     | prerelease identifier                                |
 | **`--versionTagPrefix`**     | `string`   | `null`     | specify the tag prefix                               |
-| **`--postTargets`**          | `string[]` | `null`     | specify a list of target to execute post-release     |
+| **`--postTargets`**          | `string[]` | `[]`       | specify a list of target to execute post-release     |
 
 #### Configuration using the file
 
@@ -150,7 +150,7 @@ The **`--postTargets`** option allows you to run targets post-release. This is p
 }
 ```
 
-The `postTargets` option will call `@jscutlery/semver:github` post-release and resolve options using the interpolation `${variable}` notation. 
+The `postTargets` option will call `@jscutlery/semver:github` post-release and resolve options using the interpolation `${variable}` notation.
 
 #### Resolved options:
 
