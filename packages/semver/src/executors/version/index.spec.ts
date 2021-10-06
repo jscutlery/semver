@@ -376,7 +376,24 @@ describe('@jscutlery/semver:version', () => {
       expect(mockExecutePostTargets).toBeCalled();
     });
 
-    it('should handle post target failure', async () => {
+    it('should skip post targets when (--dryRun)', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          dryRun: true,
+          postTargets: [
+            'project-a:test',
+            'project-c:test:prod',
+          ],
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockExecutePostTargets).not.toBeCalled();
+    });
+
+    it('should handle post targets failure', async () => {
       mockExecutePostTargets.mockReturnValue(
         throwError(() => new Error('Nop!'))
       );
