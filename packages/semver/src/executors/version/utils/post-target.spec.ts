@@ -32,8 +32,8 @@ describe(executePostTargets.name, () => {
   });
 
   it('should successfully execute post targets', (done) => {
-    executePostTargets(
-      [
+    executePostTargets({
+      postTargets: [
         'project-a:test',
         {
           executor: 'project-b:test',
@@ -43,8 +43,9 @@ describe(executePostTargets.name, () => {
         },
         'project-c:test:prod',
       ],
-      context
-    ).subscribe({
+      options: {},
+      context,
+    }).subscribe({
       next: nextSpy,
       complete: () => {
         expect(nextSpy).toBeCalledTimes(3);
@@ -86,27 +87,29 @@ describe(executePostTargets.name, () => {
       yield new Error('Nop!');
     });
 
-    executePostTargets(['project-a:test', 'project-b:test'], context).subscribe(
-      {
-        next: nextSpy,
-        error: (error) => {
-          expect(nextSpy).toBeCalledTimes(1);
-          expect(error.toString()).toEqual(
-            expect.stringMatching(
-              'Something went wrong with post target: "project-b:test"'
-            )
-          );
-          expect(mockRunExecutor).toBeCalledTimes(2);
-          done();
-        },
-      }
-    );
+    executePostTargets({
+      postTargets: ['project-a:test', 'project-b:test'],
+      options: {},
+      context,
+    }).subscribe({
+      next: nextSpy,
+      error: (error) => {
+        expect(nextSpy).toBeCalledTimes(1);
+        expect(error.toString()).toEqual(
+          expect.stringMatching(
+            'Something went wrong with post target: "project-b:test"'
+          )
+        );
+        expect(mockRunExecutor).toBeCalledTimes(2);
+        done();
+      },
+    });
   });
 
   it('should handle empty post target', (done) => {
     const errorSpy = jest.fn();
 
-    executePostTargets([], context).subscribe({
+    executePostTargets({ postTargets: [], options: {}, context }).subscribe({
       next: nextSpy,
       error: errorSpy,
       complete: () => {
