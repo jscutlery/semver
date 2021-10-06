@@ -3,7 +3,7 @@ import { defer } from 'rxjs';
 
 export type ChildProcessResponse = { error?: ExecException | null, stderr: string; stdout: string };
 
-export function execAsync(cmd: string, args: string[]) {
+export function execAsync(cmd: string, args?: string[]) {
   return defer(() => _execAsync(cmd, args));
 }
 

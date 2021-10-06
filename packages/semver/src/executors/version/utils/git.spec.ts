@@ -2,7 +2,7 @@ import * as gitRawCommits from 'git-raw-commits';
 import { of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
 
-import * as cp from './exec-async';
+import * as cp from '../../common/exec-async';
 import {
   addToStage,
   getCommits,
@@ -11,7 +11,7 @@ import {
 } from './git';
 
 jest.mock('git-raw-commits', () => jest.fn());
-jest.mock('./exec-async');
+jest.mock('../../common/exec-async');
 
 describe('git', () => {
   afterEach(() => (cp.execAsync as jest.Mock).mockReset());
