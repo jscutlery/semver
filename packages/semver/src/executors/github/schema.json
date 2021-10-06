@@ -8,6 +8,10 @@
     "tag": {
       "type": "string",
       "description": "Create a new release from given tag."
+    },
+    "branch": {
+      "type": "string",
+      "description": "Target branch or full commit SHA (default: main branch)."
     }
   },
   "required": ["tag"]
