@@ -1,4 +1,5 @@
 import { logger } from '@nrwl/devkit';
+import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
@@ -122,7 +123,12 @@ export default function version(
     .pipe(
       mapTo({ success: true }),
       catchError((error) => {
-        logger.error(error.stack ?? error.toString());
+        if (error instanceof SchemaError) {
+          logger.error(`Post-targets Error: ${error.message}`);
+        } else {
+          logger.error(error.stack ?? error.toString());
+        }
+
         return of({ success: false });
       })
     )
