@@ -10,9 +10,9 @@ import version from './';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as git from './utils/git';
+import { executePostTargets } from './utils/post-target';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-import { executePostTargets } from './utils/post-target';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -210,7 +210,7 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should skip root CHANGELOG generation --skipProjectChangelog', async () => {
+    it('should skip root CHANGELOG generation (--skipRootChangelog)', async () => {
       await version(
         {
           ...options,
@@ -230,7 +230,7 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should skip project CHANGELOG generation --skipProjectChangelog', async () => {
+    it('should skip project CHANGELOG generation (--skipProjectChangelog)', async () => {
       await version(
         {
           ...options,
@@ -347,7 +347,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
 
-    it('should not push to Git with --dryRun', async () => {
+    it('should not push to Git when (--dryRun)', async () => {
       await version({ ...options, dryRun: true }, context);
       expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
     });
@@ -376,23 +376,6 @@ describe('@jscutlery/semver:version', () => {
       expect(mockExecutePostTargets).toBeCalled();
     });
 
-    it('should skip post targets when (--dryRun)', async () => {
-      const { success } = await version(
-        {
-          ...options,
-          dryRun: true,
-          postTargets: [
-            'project-a:test',
-            'project-c:test:prod',
-          ],
-        },
-        context
-      );
-
-      expect(success).toBe(true);
-      expect(mockExecutePostTargets).not.toBeCalled();
-    });
-
     it('should handle post targets failure', async () => {
       mockExecutePostTargets.mockReturnValue(
         throwError(() => new Error('Nop!'))
@@ -408,6 +391,50 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(false);
       expect(logger.error).toBeCalledWith(expect.stringMatching('Nop!'));
+    });
+
+    it('should skip post targets when (--dryRun)', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          dryRun: true,
+          postTargets: ['project-a:test', 'project-c:test:prod'],
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockExecutePostTargets).not.toBeCalled();
+    });
+
+    it('should execute post targets after the bump occurred', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          postTargets: ['project-a:test'],
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockTryBump).toHaveBeenCalledBefore(
+        mockExecutePostTargets as jest.Mock
+      );
+    });
+
+    it('should skip executing post targets if no bump occurred', async () => {
+      mockTryBump.mockReturnValue(of(null));
+
+      const { success } = await version(
+        {
+          ...options,
+          postTargets: ['project-a:test'],
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockExecutePostTargets).not.toBeCalled();
     });
   });
 });
