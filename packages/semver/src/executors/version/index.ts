@@ -104,7 +104,7 @@ export default function version(
               resolvableOptions: {
                 project: context.projectName,
                 version: newVersion,
-                tag: `${tagPrefix}${version}`,
+                tag: `${tagPrefix}${newVersion}`,
                 tagPrefix,
                 noVerify,
                 dryRun,
