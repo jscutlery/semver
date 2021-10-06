@@ -64,45 +64,18 @@
     },
     "versionTagPrefix": {
       "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
-      "oneOf": [
-        { "type": "string" },
-        { "type": "null" }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "null" }]
     },
     "postTargets": {
       "description": "Specify the targets to run after a new version was successfully created.",
+      "type": "array",
       "default": [],
       "items": {
-        "$ref": "#/definitions/postTargets"
+        "type": "string",
+        "description": "The target to run."
       }
     }
   },
 
-  "required": [],
-
-  "definitions": {
-    "postTargets": {
-      "oneOf": [
-        {
-          "type": "object",
-          "properties": {
-            "executor": {
-              "type": "string",
-              "description": "The target to run."
-            },
-            "options": {
-              "type": "object",
-              "description": "The options for the target."
-            }
-          },
-          "additionalProperties": false,
-          "required": ["executor"]
-        },
-        {
-          "type": "string",
-          "description": "The target to run."
-        }
-      ]
-    }
-  }
+  "required": []
 }
