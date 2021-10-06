@@ -1,9 +1,14 @@
 {
   "$schema": "http://json-schema.org/schema",
   "cli": "nx",
-  "title": "Github executor",
+  "title": "@jscutlery/semver:github",
   "description": "",
   "type": "object",
-  "properties": {},
-  "required": []
+  "properties": {
+    "tag": {
+      "type": "string",
+      "description": "Create a new release from given tag."
+    }
+  },
+  "required": ["tag"]
 }

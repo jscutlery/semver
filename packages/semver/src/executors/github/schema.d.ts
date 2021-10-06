@@ -1,1 +1,3 @@
-export interface GithubExecutorSchema {} // eslint-disable-line
+export interface GithubExecutorSchema {
+  tag: string;
+}

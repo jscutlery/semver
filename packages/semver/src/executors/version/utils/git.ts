@@ -2,7 +2,7 @@ import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 
-import { execAsync } from './exec-async';
+import { execAsync } from '../../common/exec-async';
 
 /**
  * Return the list of commits since `since` commit.

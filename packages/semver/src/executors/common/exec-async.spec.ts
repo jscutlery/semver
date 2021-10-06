@@ -1,4 +1,4 @@
-import { _execAsync, execAsync } from './exec-async';
+import { _execAsync, execAsync } from '../common/exec-async';
 
 describe('execAsync (Observable)', () => {
   it('should exec a command', (done) => {
