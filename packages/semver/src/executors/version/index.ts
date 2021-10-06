@@ -83,7 +83,9 @@ export default function version(
           : versionProject(options)
       );
 
-      // @todo 4.0.0: remove this in favor of @jscutlery/semver:push postTarget.
+      /**
+       * @todo 3.0.0: remove this in favor of @jscutlery/semver:push postTarget.
+       */
       const pushToGitRemote$ = defer(() =>
         tryPushToGitRemote({
           branch: baseBranch,
@@ -95,7 +97,7 @@ export default function version(
       return concat(
         runStandardVersion$,
         ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        ...(dryRun === false ? executePostTargets(postTargets, context) : [])
+        (dryRun === false ? executePostTargets(postTargets, context) : [])
       );
     })
   );
