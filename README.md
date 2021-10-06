@@ -128,7 +128,7 @@ With independent mode the tag prefix uses the context target value, the default 
 
 #### Post-targets
 
-The **`--versionTagPrefix`** option allows you to run targets post-release. This is handful for publishing packages on Npm or any registry when a new version was created. Here is a configuration example for _my-project_ library:
+The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry when a new version was created. Here is a configuration example for _my-project_ library:
 
 ```json
 {
@@ -150,7 +150,9 @@ The **`--versionTagPrefix`** option allows you to run targets post-release. This
 }
 ```
 
-The `postTargets` option will call `@jscutlery/semver:github` post-release and resolve options using the interpolation `${variable}`. The exhaustive list of resolved options is the following:
+The `postTargets` option will call `@jscutlery/semver:github` post-release and resolve options using the interpolation `${variable}` notation. 
+
+#### Resolved options:
 
 - `project`
 - `version`
