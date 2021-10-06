@@ -7,7 +7,15 @@
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "syncVersions": false
+        "push": true,
+        "postTargets": ["semver:github"]
+      }
+    },
+    "github": {
+      "executor": "@jscutlery/semver:github",
+      "options": {
+        "tag": "${tag}",
+        "files": ["./packages/semver/CHANGELOG.md"]
       }
     },
     "lint": {
