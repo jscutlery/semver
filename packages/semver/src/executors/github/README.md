@@ -1,0 +1,38 @@
+## @jscutlery/semver:github
+
+An executor for creating GitHub Releases.
+
+### Requirements
+
+This executor requires the [GitHub CLI](https://cli.github.com/manual/installation) to be installed on your machine.
+
+### Usage
+
+In the workspace definition:
+
+```json
+{
+  "targets": {
+    "github": {
+      "executor": "@jscutlery/semver:github",
+      "options": {
+        "files": ["./libs/my-project/CHANGELOG.md"]
+      }
+    }
+  }
+}
+```
+
+Publish the `v.1.0.0` release:
+
+```
+nx run my-project:github --tag v1.0.0 [...options]
+```
+
+#### Available Options
+
+| name           | type       | default     | description                                                     |
+| -------------- | ---------- | ----------- | --------------------------------------------------------------- |
+| **`--tag`**    | `string`   | `undefined` | attach the release to the specified tag                         |
+| **`--branch`** | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
+| **`--files`**  | `string[]` | `false`     | a list of asset files may be given to upload to the new release |

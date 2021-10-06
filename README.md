@@ -74,20 +74,21 @@ nx run workspace:version [...options]
 
 #### Available options:
 
-| name                         | type     | default    | description                                          |
-| ---------------------------- | -------- | ---------- | ---------------------------------------------------- |
-| **`--dryRun`**               | `bool`   | `false`    | run with dry mode                                    |
-| **`--noVerify`**             | `bool`   | `false`    | skip git hooks                                       |
-| **`--push`**                 | `bool`   | `false`    | push the release against git origin                  |
-| **`--syncVersions`**         | `bool`   | `false`    | lock/sync versions between projects                  |
-| **`--skipRootChangelog`**    | `bool`   | `false`    | skip generating root changelog _(sync mode only)_    |
-| **`--skipProjectChangelog`** | `bool`   | `false`    | skip generating project changelog _(sync mode only)_ |
-| **`--changelogHeader`**      | `string` | `null`     | custom Markdown header for changelogs                |
-| **`--origin`**               | `string` | `'origin'` | push against git remote repository                   |
-| **`--baseBranch`**           | `string` | `'main'`   | push against git base branch                         |
-| **`--releaseAs`**            | `string` | `null`     | specify the level of change                          |
-| **`--preid`**                | `string` | `null`     | prerelease identifier                                |
-| **`--versionTagPrefix`**     | `string` | `null`     | specify the tag prefix                               |
+| name                         | type       | default    | description                                          |
+| ---------------------------- | ---------- | ---------- | ---------------------------------------------------- |
+| **`--dryRun`**               | `bool`     | `false`    | run with dry mode                                    |
+| **`--noVerify`**             | `bool`     | `false`    | skip git hooks                                       |
+| **`--push`**                 | `bool`     | `false`    | push the release against git origin                  |
+| **`--syncVersions`**         | `bool`     | `false`    | lock/sync versions between projects                  |
+| **`--skipRootChangelog`**    | `bool`     | `false`    | skip generating root changelog _(sync mode only)_    |
+| **`--skipProjectChangelog`** | `bool`     | `false`    | skip generating project changelog _(sync mode only)_ |
+| **`--changelogHeader`**      | `string`   | `null`     | custom Markdown header for changelogs                |
+| **`--origin`**               | `string`   | `'origin'` | push against git remote repository                   |
+| **`--baseBranch`**           | `string`   | `'main'`   | push against git base branch                         |
+| **`--releaseAs`**            | `string`   | `null`     | specify the level of change                          |
+| **`--preid`**                | `string`   | `null`     | prerelease identifier                                |
+| **`--versionTagPrefix`**     | `string`   | `null`     | specify the tag prefix                               |
+| **`--postTargets`**          | `string[]` | `null`     | specify a list of target to execute post-release     |
 
 #### Configuration using the file
 
@@ -105,7 +106,7 @@ Note that you can define the options you want to customize using the `workspace.
 
 #### Specify the level of change
 
-The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level. 
+The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level.
 
 Level can be one of `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, or `prerelease`, for instance:
 
@@ -124,6 +125,45 @@ The **`--versionTagPrefix`** option allows you to customize the tag prefix.
 With the sync mode the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for example. Note that only one tag is created for the whole workspace.
 
 With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
+
+#### Post-targets
+
+The **`--versionTagPrefix`** option allows you to run targets post-release. This is handful for publishing packages on Npm or any registry when a new version was created. Here is a configuration example for _my-project_ library:
+
+```json
+{
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "postTargets": ["my-project:github"]
+      }
+    },
+    "github": {
+      "executor": "@jscutlery/semver:github",
+      "options": {
+        "tag": "${tag}",
+        "files": ["./libs/my-project/CHANGELOG.md"]
+      }
+    }
+  }
+}
+```
+
+The `postTargets` option will call `@jscutlery/semver:github` post-release and resolve options using the interpolation `${variable}`. The exhaustive list of resolved options is the following:
+
+- `project`
+- `version`
+- `tag`
+- `tagPrefix`
+- `noVerify`
+- `dryRun`
+- `remote`
+- `baseBranch`
+
+#### Built-in post-targets:
+
+- [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) GiHub Release Support
 
 ### CI/CD usage
 
