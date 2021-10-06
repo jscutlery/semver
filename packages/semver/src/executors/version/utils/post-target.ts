@@ -1,4 +1,4 @@
-import { parseTargetString, runExecutor } from '@nrwl/devkit';
+import { parseTargetString, runExecutor, Target } from '@nrwl/devkit';
 import { concat, defer } from 'rxjs';
 
 import { resolveInterpolation } from './resolve-interpolation';
@@ -15,33 +15,6 @@ export type ResolvablePostTargetOptions = Partial<
     }
 >;
 
-export function normalizePostTarget({
-  postTargetSchema,
-  options,
-  context,
-}: {
-  postTargetSchema: PostTargetSchema;
-  options: ResolvablePostTargetOptions;
-  context: ExecutorContext;
-}): Parameters<typeof runExecutor> {
-  const hasConfig = typeof postTargetSchema === 'object';
-  const target = parseTargetString(
-    hasConfig ? postTargetSchema.executor : postTargetSchema
-  );
-  const rawPostTargetOptions: Record<string, unknown> = hasConfig
-    ? postTargetSchema.options ?? {}
-    : {};
-  const resolvedTargetOptions = Object.entries(rawPostTargetOptions).reduce(
-    (resolvedOptions, [option, value]) => ({
-      ...resolvedOptions,
-      [option]: resolveInterpolation(value.toString(), options),
-    }),
-    {}
-  );
-
-  return [target, resolvedTargetOptions, context];
-}
-
 export function executePostTargets({
   postTargets,
   options,
@@ -53,22 +26,54 @@ export function executePostTargets({
 }): Observable<void> {
   return concat(
     ...postTargets.map((postTargetSchema) => {
-      const executorOptions = normalizePostTarget({
+      const [target, targetOptions] = _normalizePostTarget({
         postTargetSchema,
-        options,
-        context,
+      });
+      const resolvedOptions = _resolveTargetOptions({
+        targetOptions,
+        resolvableContext: options,
       });
 
       return defer(async () => {
-        const run = await runExecutor(...executorOptions);
+        const run = await runExecutor(target, resolvedOptions, context);
         for await (const { success } of run) {
           if (!success) {
             throw new Error(
-              `Something went wrong with post target: "${options[0].project}:${options[0].target}"`
+              `Something went wrong with post target: "${target.project}:${target.target}"`
             );
           }
         }
       });
     })
+  );
+}
+
+export function _normalizePostTarget({
+  postTargetSchema,
+}: {
+  postTargetSchema: PostTargetSchema;
+}): [Target, Record<string, unknown>] {
+  const hasConfig = typeof postTargetSchema === 'object';
+  const target = parseTargetString(
+    hasConfig ? postTargetSchema.executor : postTargetSchema
+  );
+  const targetOptions = hasConfig ? postTargetSchema.options ?? {} : {};
+
+  return [target, targetOptions];
+}
+
+export function _resolveTargetOptions({
+  targetOptions,
+  resolvableContext,
+}: {
+  targetOptions: Record<string, unknown>;
+  resolvableContext: ResolvablePostTargetOptions;
+}): Record<string, unknown> {
+  return Object.entries(targetOptions).reduce(
+    (resolvedOptions, [option, value]) => ({
+      ...resolvedOptions,
+      [option]: resolveInterpolation(value.toString(), resolvableContext),
+    }),
+    {}
   );
 }
