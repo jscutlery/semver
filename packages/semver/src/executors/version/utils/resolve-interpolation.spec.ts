@@ -1,7 +1,7 @@
 import { resolveInterpolation } from './resolve-interpolation';
 
 describe(resolveInterpolation.name, () => {
-  const testContext = { test1: 'xxx', test2: 'yyy', test3: 10, test4: true };
+  const testContext = { test1: 'xxx', test2: 'yyy' };
 
   it('should resolve noting', () => {
     expect(
@@ -33,9 +33,27 @@ describe(resolveInterpolation.name, () => {
   it('should resolve boolean and numbers placeholders', () => {
     expect(
       resolveInterpolation(
-        'test string with ${test3} and ${test4}',
-        testContext
+        'test string with ${num} and ${bool}',
+        { num: 42, bool: true }
       )
-    ).toBe('test string with 10 and true');
+    ).toBe('test string with 42 and true');
+  });
+
+  it('should resolve boolean', () => {
+    expect(
+      resolveInterpolation(
+        '${bool}',
+        { bool: true }
+      )
+    ).toBe(true);
+  });
+
+  it('should resolve number', () => {
+    expect(
+      resolveInterpolation(
+        '${num}',
+        { num: 42 }
+      )
+    ).toBe(42);
   });
 });
