@@ -56,4 +56,22 @@ describe(resolveInterpolation.name, () => {
       )
     ).toBe(42);
   });
+
+  it('should handle multiple keys', () => {
+    expect(
+      resolveInterpolation(
+        '${num}',
+        { num: 42, bool: true }
+      )
+    ).toBe(42);
+  });
+
+  it('should handle multiple interpolations', () => {
+    expect(
+      resolveInterpolation(
+        '${num} ${bool}',
+        { num: 42, bool: true }
+      )
+    ).toBe('42 true');
+  });
 });
