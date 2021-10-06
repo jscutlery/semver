@@ -6,17 +6,20 @@ import { execAsync } from '../common/exec-async';
 
 import type { GithubExecutorSchema } from './schema';
 
-export default async function runExecutor(
-  options: GithubExecutorSchema,
-) {
-  return execAsync('gh release create', [options.tag])
-  .pipe(
-    mapTo({ success: true }),
-    catchError((error) => {
-      logger.error(error.stack ?? error.toString());
-      return of({ success: false });
-    })
-  )
-  .toPromise();
+export default async function runExecutor({
+  tag,
+  branch,
+}: GithubExecutorSchema) {
+  return execAsync('gh release create', [
+    tag,
+    ...(branch ? [`--branch ${branch}`] : []),
+  ])
+    .pipe(
+      mapTo({ success: true }),
+      catchError((error) => {
+        logger.error(error.stack ?? error.toString());
+        return of({ success: false });
+      })
+    )
+    .toPromise();
 }
-
