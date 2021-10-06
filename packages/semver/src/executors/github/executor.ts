@@ -1,6 +1,5 @@
-import { logger } from '@nrwl/devkit';
-import { catchError, mapTo } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { throwError } from 'rxjs';
+import { catchError, map, mapTo } from 'rxjs/operators';
 
 import { execAsync } from '../common/exec-async';
 
@@ -13,15 +12,13 @@ export default async function runExecutor({
 }: GithubExecutorSchema) {
   return execAsync('gh release create', [
     tag,
-    ...(files ? files : []),
+    ...(files ? [files.toString()] : []),
     ...(branch ? [`--branch ${branch}`] : []),
   ])
     .pipe(
+      map(({ stdout }) => stdout),
       mapTo({ success: true }),
-      catchError((error) => {
-        logger.error(error.stack ?? error.toString());
-        return of({ success: false });
-      })
+      catchError((response) => throwError(() => new Error(response.error)))
     )
     .toPromise();
 }
