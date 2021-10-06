@@ -8,6 +8,8 @@ This executor requires the [GitHub CLI](https://cli.github.com/manual/installati
 
 ### Usage
 
+### Configuration
+
 In the workspace definition:
 
 ```json
@@ -22,6 +24,8 @@ In the workspace definition:
   }
 }
 ```
+
+### Create GitHub Release
 
 Publish the `v.1.0.0` release:
 
