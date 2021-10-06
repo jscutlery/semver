@@ -1,4 +1,4 @@
-import { logger, runExecutor } from '@nrwl/devkit';
+import { logger } from '@nrwl/devkit';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
@@ -12,18 +12,15 @@ import { createFakeContext } from './testing';
 import * as git from './utils/git';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
+import { executePostTargets } from './utils/post-target';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
 jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
-jest.mock('@nrwl/devkit', () => ({
-  runExecutor: jest.fn(),
-  parseTargetString: jest.requireActual('@nrwl/devkit').parseTargetString,
-  logger: jest.requireActual('@nrwl/devkit').logger,
-}));
 
 jest.mock('./utils/git');
 jest.mock('./utils/try-bump');
+jest.mock('./utils/post-target');
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
@@ -38,8 +35,8 @@ describe('@jscutlery/semver:version', () => {
   const mockStandardVersion = standardVersion as jest.MockedFunction<
     typeof standardVersion
   >;
-  const mockRunExecutor = runExecutor as jest.MockedFunction<
-    typeof runExecutor
+  const mockExecutePostTargets = executePostTargets as jest.MockedFunction<
+    typeof executePostTargets
   >;
 
   let context: ExecutorContext;
@@ -69,13 +66,11 @@ describe('@jscutlery/semver:version', () => {
     mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(of('2.1.0'));
 
-    (mockRunExecutor as any).mockImplementation(function* () {
-      yield { success: true };
-    });
-
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
     jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
+
+    mockExecutePostTargets.mockReturnValue(of(undefined));
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -378,58 +373,24 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockRunExecutor).toBeCalledTimes(3);
-      expect(mockRunExecutor.mock.calls[0][0]).toEqual(
-        expect.objectContaining({
-          project: 'project-a',
-          target: 'test',
-        })
-      );
-      expect(mockRunExecutor.mock.calls[1][0]).toEqual(
-        expect.objectContaining({
-          project: 'project-b',
-          target: 'test',
-        })
-      );
-      expect(mockRunExecutor.mock.calls[1][1]).toEqual(
-        expect.objectContaining({
-          optionA: 'optionA',
-        })
-      );
-      expect(mockRunExecutor.mock.calls[2][0]).toEqual(
-        expect.objectContaining({
-          project: 'project-c',
-          target: 'test',
-          configuration: 'prod',
-        })
-      );
+      expect(mockExecutePostTargets).toBeCalled();
     });
 
     it('should handle post target failure', async () => {
-      (mockRunExecutor as jest.Mock).mockImplementationOnce(function* () {
-        yield { success: true };
-      });
-      (mockRunExecutor as jest.Mock).mockImplementationOnce(function* () {
-        yield new Error('Nop!');
-      });
+      mockExecutePostTargets.mockReturnValue(
+        throwError(() => new Error('Nop!'))
+      );
 
       const { success } = await version(
         {
           ...options,
-          postTargets: ['project-a:test', 'project-b:test', 'project-c:test'],
+          postTargets: ['project-a:test'],
         },
         context
       );
 
       expect(success).toBe(false);
-      expect(mockRunExecutor).toBeCalledTimes(2);
-      expect(logger.error).toBeCalledWith(
-        expect.stringMatching(
-          'Something went wrong with post target: "project-b:test"'
-        )
-      );
+      expect(logger.error).toBeCalledWith(expect.stringMatching('Nop!'));
     });
   });
-
-  it.todo('should forward options and version');
 });

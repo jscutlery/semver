@@ -14,7 +14,7 @@ export interface VersionBuilderSchema {
   noVerify?: boolean;
   /**
    * @deprecated Use postTargets instead.
-   * @sunset 4.0.0
+   * @sunset 3.0.0
    */
   push?: boolean;
   remote?: string;
