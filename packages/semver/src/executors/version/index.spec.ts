@@ -360,12 +360,7 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           postTargets: [
             'project-a:test',
-            {
-              executor: 'project-b:test',
-              options: {
-                optionA: 'optionA',
-              },
-            },
+            'project-b:test',
             'project-c:test:prod',
           ],
         },
@@ -398,7 +393,7 @@ describe('@jscutlery/semver:version', () => {
         {
           ...options,
           dryRun: true,
-          postTargets: ['project-a:test', 'project-c:test:prod'],
+          postTargets: ['project-a:test', 'project-b:test:prod'],
         },
         context
       );

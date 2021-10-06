@@ -1,13 +1,4 @@
-import { TargetConfiguration } from "@nrwl/devkit";
-
 export type ReleaseIdentifier = 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
-
-/**
- * Specify a target to run after a new version was successfully created.
- * @example "@jscutlery/semver:push"
- * @example { "executor": "@jscutlery/semver:push", "options": {...} }
- */
-export type PostTargetSchema = string | Pick<TargetConfiguration, 'executor' | 'options'>;
 
 export interface VersionBuilderSchema {
   dryRun?: boolean;
@@ -31,5 +22,5 @@ export interface VersionBuilderSchema {
   preid?: string;
   changelogHeader?: string;
   versionTagPrefix?: string;
-  postTargets: PostTargetSchema[];
+  postTargets: string[];
 }

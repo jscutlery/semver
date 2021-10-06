@@ -1,15 +1,17 @@
-import { runExecutor } from '@nrwl/devkit';
+import { runExecutor, readTargetOptions } from '@nrwl/devkit';
 
 import { createFakeContext } from '../testing';
 import { executePostTargets } from './post-target';
 
 jest.mock('@nrwl/devkit', () => ({
   runExecutor: jest.fn(),
+  readTargetOptions: jest.fn(),
   parseTargetString: jest.requireActual('@nrwl/devkit').parseTargetString,
 }));
 
 describe(executePostTargets.name, () => {
   const mockRunExecutor = runExecutor as jest.Mock;
+  const mockReadTargetOptions = readTargetOptions as jest.Mock;
 
   let nextSpy: jest.Mock;
 
@@ -24,24 +26,20 @@ describe(executePostTargets.name, () => {
     mockRunExecutor.mockImplementation(function* () {
       yield { success: true };
     });
+    mockReadTargetOptions.mockReturnValue({});
   });
 
   afterEach(() => {
-    mockRunExecutor.mockReset();
+    jest.resetAllMocks();
   });
 
   it('should successfully execute post targets', (done) => {
+    mockReadTargetOptions.mockReturnValue({
+      optionA: 'optionA'
+    });
+
     executePostTargets({
-      postTargets: [
-        'project-a:test',
-        {
-          executor: 'project-b:test',
-          options: {
-            optionA: 'optionA',
-          },
-        },
-        'project-c:test:prod',
-      ],
+      postTargets: ['project-a:test', 'project-b:test', 'project-c:test:prod'],
       context,
     }).subscribe({
       next: nextSpy,
@@ -121,32 +119,26 @@ describe(executePostTargets.name, () => {
     });
   });
 
-  it('should forward and resolve options', (done) => {
-    const postTargets = [
-      {
-        executor: 'project-a:test',
-        options: {
-          optionA: 'optionA',
-          version: '${version}',
-          dryRun: '${dryRun}',
-        },
-      },
-      {
-        executor: 'project-b:test',
-        options: {
-          optionB: 'optionB',
-          version: 'project@${version}',
-        },
-      },
-    ];
+  fit('should forward and resolve options', (done) => {
+    mockReadTargetOptions.mockReturnValueOnce({
+      optionA: 'optionA',
+      version: '${version}',
+      dryRun: '${dryRun}',
+      numeric: '${num}',
+    });
+    mockReadTargetOptions.mockReturnValueOnce({
+      optionB: 'optionB',
+      version: 'project@${version}',
+    });
 
     const resolvableOptions = {
       version: '2.0.0',
       dryRun: true,
+      num: 42,
     };
 
     executePostTargets({
-      postTargets,
+      postTargets: ['project-a:test', 'project-b:test'],
       resolvableOptions,
       context,
     }).subscribe({
@@ -155,36 +147,12 @@ describe(executePostTargets.name, () => {
           optionA: 'optionA',
           version: '2.0.0',
           dryRun: true,
+          numeric: 42,
         });
         expect(mockRunExecutor.mock.calls[1][1]).toEqual({
           optionB: 'optionB',
           version: 'project@2.0.0',
         });
-        done();
-      },
-    });
-  });
-
-  it('should emit an error when an option is not expected type', (done) => {
-    const postTargets = [
-      {
-        executor: 'project-a:test',
-        options: {
-          option() {
-            return 'Nop!';
-          },
-        },
-      },
-    ];
-
-    executePostTargets({
-      postTargets,
-      context,
-    }).subscribe({
-      error: (error) => {
-        expect(error.toString()).toEqual(
-          expect.stringMatching('Cannot resolve "option" with type function')
-        );
         done();
       },
     });
