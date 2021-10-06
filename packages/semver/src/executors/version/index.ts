@@ -36,7 +36,7 @@ export default function version(
   const preset = 'angular';
 
   // @todo: refactor this in a dedicated function without a chained ternary.
-  const tagPrefix =
+  const tagPrefix = (
     versionTagPrefix !== undefined
       ? resolveInterpolation(versionTagPrefix, {
           target: context.projectName,
@@ -44,7 +44,8 @@ export default function version(
         })
       : syncVersions
       ? 'v'
-      : `${context.projectName}-`;
+      : `${context.projectName}-`
+  ) as string;
 
   const projectRoot = getProjectRoot(context);
   const newVersion$ = tryBump({
@@ -100,7 +101,8 @@ export default function version(
         dryRun === false
           ? executePostTargets({
               postTargets,
-              options: {
+              resolvableOptions: {
+                project: context.projectName,
                 version: newVersion,
                 tagPrefix,
                 noVerify,

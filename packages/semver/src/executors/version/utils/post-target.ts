@@ -5,36 +5,29 @@ import { resolveInterpolation } from './resolve-interpolation';
 
 import type { Observable } from 'rxjs';
 import type { ExecutorContext } from '@nrwl/devkit';
-import type { PostTargetSchema, VersionBuilderSchema } from '../schema';
-import type { CommonVersionOptions } from '../version';
-
-export type ResolvablePostTargetOptions = Partial<
-  Pick<CommonVersionOptions, 'tagPrefix' | 'dryRun' | 'noVerify'> &
-    Pick<VersionBuilderSchema, 'baseBranch' | 'remote'> & {
-      version: string;
-    }
->;
+import type { PostTargetSchema } from '../schema';
 
 export function executePostTargets({
   postTargets,
-  options,
+  resolvableOptions = {},
   context,
 }: {
   postTargets: PostTargetSchema[];
-  options: ResolvablePostTargetOptions;
+  resolvableOptions?: Record<string, unknown>;
   context: ExecutorContext;
 }): Observable<void> {
   return concat(
     ...postTargets.map((postTargetSchema) => {
-      const [target, targetOptions] = _normalizePostTarget({
-        postTargetSchema,
-      });
-      const resolvedOptions = _resolveTargetOptions({
-        targetOptions,
-        resolvableContext: options,
-      });
-
       return defer(async () => {
+
+        const [target, targetOptions] = _normalizePostTarget({
+          postTargetSchema,
+        });
+        const resolvedOptions = _resolveTargetOptions({
+          targetOptions,
+          resolvableOptions,
+        });
+
         const run = await runExecutor(target, resolvedOptions, context);
         for await (const { success } of run) {
           if (!success) {
@@ -64,16 +57,30 @@ export function _normalizePostTarget({
 
 export function _resolveTargetOptions({
   targetOptions,
-  resolvableContext,
+  resolvableOptions,
 }: {
   targetOptions: Record<string, unknown>;
-  resolvableContext: ResolvablePostTargetOptions;
+  resolvableOptions: Record<string, unknown>;
 }): Record<string, unknown> {
   return Object.entries(targetOptions).reduce(
-    (resolvedOptions, [option, value]) => ({
-      ...resolvedOptions,
-      [option]: resolveInterpolation(value.toString(), resolvableContext),
-    }),
+    (resolvedOptions, [option, value]) => {
+      let resolvedOption;
+
+      if (typeof value === 'object') {
+        resolvedOption = value;
+      } else if (typeof value === 'string') {
+        resolvedOption = resolveInterpolation(value, resolvableOptions);
+      } else {
+        throw new TypeError(
+          `Cannot resolve "${option}" with type ${typeof value}`
+        );
+      }
+
+      return {
+        ...resolvedOptions,
+        [option]: resolvedOption,
+      };
+    },
     {}
   );
 }
