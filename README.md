@@ -153,7 +153,7 @@ Here is a configuration example using `@jscutlery/semver:github` to create GitHu
 }
 ```
 
-The `postTargets` option declare `my-project:github` target which run `@jscutlery/semver:github`. Note that options using the interpolation notation `${variable}` are resolved with their corresponding value.
+The `postTargets` option declare `my-project:github` target which run `@jscutlery/semver:github` executor. Note that options using the interpolation notation `${variable}` are resolved with their corresponding value.
 
 #### Resolved options:
 

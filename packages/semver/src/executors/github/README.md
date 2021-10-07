@@ -35,7 +35,27 @@ nx run my-project:github --tag v1.0.0 [...options]
 
 #### Run using post-targets (recommended)
 
-This executor aims to be used with [post-targets](https://github.com/jscutlery/semver#post-targets). 
+This executor aims to be used with [post-targets](https://github.com/jscutlery/semver#post-targets):
+
+```json
+{
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "postTargets": ["my-project:github"]
+      }
+    },
+    "github": {
+      "executor": "@jscutlery/semver:github",
+      "options": {
+        "tag": "${tag}",
+        "files": ["./libs/my-project/CHANGELOG.md"]
+      }
+    }
+  }
+}
+```
 
 #### Available Options
 
