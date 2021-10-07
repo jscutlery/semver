@@ -22,15 +22,15 @@ describe('@jscutlery/semver:github', () => {
     });
   });
 
-  it('create release with specified tag', async () => {
+  it('create release with specified --tag', async () => {
     const output = await executor(options);
 
     expect(mockExec).toBeCalledWith('gh release create', ['v1.0.0']);
     expect(output.success).toBe(true);
   });
 
-  it('create release with specified files', async () => {
-    const output = await executor({ ...options, files: ['./dist/package']});
+  it('create release with specified --files', async () => {
+    const output = await executor({ ...options, files: ['./dist/package'] });
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
@@ -39,12 +39,35 @@ describe('@jscutlery/semver:github', () => {
     expect(output.success).toBe(true);
   });
 
-  it('create release with specified branch', async () => {
+  it('create release with specified --branch', async () => {
     const output = await executor({ ...options, branch: 'master' });
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
       expect.arrayContaining(['--branch master'])
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('create release with specified --notes', async () => {
+    const output = await executor({ ...options, notes: 'add feature' });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--notes "add feature"'])
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('create release with specified --notesFile', async () => {
+    const output = await executor({
+      ...options,
+      notesFile: 'libs/my-lib/CHANGELOG.md',
+    });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--notes-file libs/my-lib/CHANGELOG.md'])
     );
     expect(output.success).toBe(true);
   });

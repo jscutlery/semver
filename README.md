@@ -146,7 +146,7 @@ Here is a configuration example using `@jscutlery/semver:github` to create GitHu
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "files": ["./libs/my-project/CHANGELOG.md"]
+        "notesFile": "libs/my-project/CHANGELOG.md"
       }
     }
   }

@@ -18,7 +18,7 @@ In the workspace definition:
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
-        "files": ["./libs/my-project/CHANGELOG.md"]
+        "notesFile": "libs/my-project/CHANGELOG.md"
       }
     }
   }
@@ -30,7 +30,7 @@ In the workspace definition:
 Publish the `v.1.0.0` release:
 
 ```
-nx run my-project:github --tag v1.0.0 [...options]
+nx run my-project:github --tag v1.0.0 --notesFile "libs/my-project/CHANGELOG.md" [...options]
 ```
 
 #### Run using post-targets (recommended)
@@ -50,7 +50,7 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "files": ["./libs/my-project/CHANGELOG.md"]
+        "notesFile": "libs/my-project/CHANGELOG.md"
       }
     }
   }
@@ -59,8 +59,10 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
 
 #### Available Options
 
-| name           | type       | default     | description                                                     |
-| -------------- | ---------- | ----------- | --------------------------------------------------------------- |
-| **`--tag`**    | `string`   | `undefined` | attach the release to the specified tag                         |
-| **`--branch`** | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
-| **`--files`**  | `string[]` | `false`     | a list of asset files may be given to upload to the new release |
+| name              | type       | default     | description                                                     |
+| ----------------- | ---------- | ----------- | --------------------------------------------------------------- |
+| **`--tag`**       | `string`   | `undefined` | attach the release to the specified tag                         |
+| **`--branch`**    | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
+| **`--files`**     | `string[]` | `undefined` | a list of asset files may be given to upload to the new release |
+| **`--notes`**     | `string`   | `undefined` | release notes                                                   |
+| **`--notesFile`** | `string`   | `undefined` | read release notes from file                                    |

@@ -16,6 +16,14 @@
     "files": {
       "type": "array",
       "description": "A list of asset files may be given to upload to the new release."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Release notes."
+    },
+    "notesFiles": {
+      "type": "string",
+      "description": "Read release notes from file."
     }
   },
   "required": ["tag"]
