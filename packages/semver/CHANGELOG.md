@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.10.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.9.0...semver-2.10.0) (2021-10-07)
+
+
+### Features
+
+* **github:** ✅ add `--notes` and `--notesFile` support ([68ef734](https://github.com/jscutlery/nx-plugin-semver/commit/68ef7340a2c0c6263c7d19f666d38aa3d9f3b2cf))
+
+
+
 # [2.9.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.8.1...semver-2.9.0) (2021-10-06)
 
 
