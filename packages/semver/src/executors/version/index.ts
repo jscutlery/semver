@@ -5,7 +5,7 @@ import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
-import { resolveInterpolation } from './utils/resolve-interpolation';
+import { resolveTagPrefix } from './utils/resolve-tag-prefix';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import { versionProject, versionWorkspace } from './version';
@@ -36,17 +36,11 @@ export default function version(
   const workspaceRoot = context.root;
   const preset = 'angular';
 
-  // @todo: refactor this in a dedicated function without a chained ternary.
-  const tagPrefix = (
-    versionTagPrefix !== undefined
-      ? resolveInterpolation(versionTagPrefix, {
-          target: context.projectName,
-          projectName: context.projectName,
-        })
-      : syncVersions
-      ? 'v'
-      : `${context.projectName}-`
-  ) as string;
+  const tagPrefix = resolveTagPrefix({
+    versionTagPrefix,
+    projectName: context.projectName,
+    syncVersions
+  });
 
   const projectRoot = getProjectRoot(context);
   const newVersion$ = tryBump({
