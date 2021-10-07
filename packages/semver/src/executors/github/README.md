@@ -25,13 +25,17 @@ In the workspace definition:
 }
 ```
 
-#### Create GitHub Release
+#### Run manually
 
 Publish the `v.1.0.0` release:
 
 ```
 nx run my-project:github --tag v1.0.0 [...options]
 ```
+
+#### Run using post-targets (recommended)
+
+This executor aims to be used with [post-targets](https://github.com/jscutlery/semver#post-targets). 
 
 #### Available Options
 

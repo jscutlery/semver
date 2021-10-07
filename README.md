@@ -71,6 +71,7 @@ nx run workspace:version [...options]
 4. Creates a new commit including your `package.json` files and updated CHANGELOGs.
 5. Creates new tags with the new versions number.
 6. Push the releases (if enabled).
+7. Run post-targets.
 
 #### Available options:
 
@@ -128,7 +129,9 @@ With independent mode the tag prefix uses the context target value, the default 
 
 #### Post-targets
 
-The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry when a new version was created. Here is a configuration example for _my-project_ library:
+The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task. 
+
+Here is a configuration example using `@jscutlery/semver:github` to create GitHub Release for _my-project_ library:
 
 ```json
 {
@@ -150,7 +153,7 @@ The **`--postTargets`** option allows you to run targets post-release. This is p
 }
 ```
 
-The `postTargets` option will call `@jscutlery/semver:github` post-release and resolve options using the interpolation `${variable}` notation.
+The `postTargets` option declare `my-project:github` target which run `@jscutlery/semver:github`. Note that options using the interpolation notation `${variable}` are resolved with their corresponding value.
 
 #### Resolved options:
 
