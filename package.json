@@ -31,7 +31,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@angular-devkit/schematics": "12.2.8",
+    "@angular-devkit/schematics": "12.2.9",
     "@commitlint/cli": "^13.2.0",
     "@commitlint/config-angular": "^13.2.0",
     "@jscutlery/semver": "^2.10.0",
