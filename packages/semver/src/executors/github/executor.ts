@@ -1,4 +1,4 @@
-import { throwError } from 'rxjs';
+import { throwError, lastValueFrom } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
 
 import { execAsync } from '../common/exec-async';
@@ -12,16 +12,16 @@ export default async function runExecutor({
   notesFile,
   branch,
 }: GithubExecutorSchema) {
-  return execAsync('gh release create', [
+  const createRelease$ = execAsync('gh release create', [
     tag,
     ...(files ? [files.toString()] : []),
     ...(notes ? [`--notes "${notes}"`] : []),
     ...(notesFile ? [`--notes-file ${notesFile}`] : []),
     ...(branch ? [`--branch ${branch}`] : []),
-  ])
-    .pipe(
-      catchError((response) => throwError(() => new Error(response.error))),
-      mapTo({ success: true }),
-    )
-    .toPromise();
+  ]).pipe(
+    catchError((response) => throwError(() => new Error(response.error))),
+    mapTo({ success: true })
+  );
+
+  return lastValueFrom(createRelease$);
 }
