@@ -1,5 +1,5 @@
 import { throwError } from 'rxjs';
-import { catchError, map, mapTo } from 'rxjs/operators';
+import { catchError, mapTo } from 'rxjs/operators';
 
 import { execAsync } from '../common/exec-async';
 
@@ -20,9 +20,8 @@ export default async function runExecutor({
     ...(branch ? [`--branch ${branch}`] : []),
   ])
     .pipe(
-      map(({ stdout }) => stdout),
+      catchError((response) => throwError(() => new Error(response.error))),
       mapTo({ success: true }),
-      catchError((response) => throwError(() => new Error(response.error)))
     )
     .toPromise();
 }
