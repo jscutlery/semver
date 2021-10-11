@@ -4,10 +4,10 @@ import { defer, forkJoin, iif, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
+import { gt, inc } from 'semver';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
-import { getGreatestVersionBump } from './get-greatest-version-bump';
 
 import type { Observable } from 'rxjs';
 import type { ReleaseIdentifier } from '../schema';
@@ -59,23 +59,16 @@ If your project is already versioned, please tag the latest release commit with 
 
   const commits$ = lastVersionGitRef$.pipe(
     switchMap((lastVersionGitRef) => {
-      const listOfGetCommits = [projectRoot, ...dependencyRoots]
-        .map(root =>
-          getCommits({
-            projectRoot: root,
-            since: lastVersionGitRef,
-          })
-        );
-      /* Combine the commit lists that are available for the project and
-       * its dependencies (if using --track-deps). */
-      return combineLatest(listOfGetCommits).pipe(
-        map((results: string[][]) => {
-          return results.reduce((acc, commits) => {
-            acc.push(...commits);
-            return acc;
-          }, []);
+      const listOfGetCommits = [projectRoot, ...dependencyRoots].map((root) =>
+        getCommits({
+          projectRoot: root,
+          since: lastVersionGitRef,
         })
       );
+      /* Get the lists of commits and its dependencies (if using --track-deps).
+       * Note: the mechanism for identifying if --track-deps was used is whether
+       * dependencyRoots is a populated array. */
+      return combineLatest(listOfGetCommits);
     })
   );
 
@@ -91,22 +84,50 @@ If your project is already versioned, please tag the latest release commit with 
         });
       }
 
+      const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
       /* No commits since last release so don't bump. */
-      if (commits.length === 0) {
-        return of(undefined);
+      if (numOfCommits === 0) {
+        return of(null);
       }
 
-      const semverBumps = [projectRoot, ...dependencyRoots]
-        .map(root => _semverBump({
-          since: lastVersion,
+      const dependencyChecks$ = dependencyRoots.map((root) =>
+        _semverBump({
+          since: '0.0.0',
           preset,
           projectRoot: root,
           tagPrefix,
-        }));
-      return combineLatest(semverBumps)
+        })
+      );
+
+      const dependencyBump$ = combineLatest(dependencyChecks$).pipe(
+        map((bumps) => {
+          // See if there's an increment indicated by a dependency.
+          const positiveBumps = bumps
+            .filter(b => b !== null && b !== '0.0.0');
+
+          /** If there's an increment, then the target project should
+           * receive a patch increment. **/
+          if (positiveBumps.length > 0) {
+            return inc(lastVersion, 'patch');
+          }
+          return null;
+        })
+      );
+      return _semverBump({
+          since: lastVersion,
+          preset,
+          projectRoot,
+          tagPrefix,
+        })
         .pipe(
-          map(bumps => getGreatestVersionBump(bumps))
-        )
+          switchMap((projectVersionBump) => {
+            if (projectVersionBump !== null) {
+              return of(projectVersionBump);
+            }
+
+            return dependencyBump$;
+          })
+        );
     })
   );
 }
