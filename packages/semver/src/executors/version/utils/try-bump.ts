@@ -67,16 +67,15 @@ If your project is already versioned, please tag the latest release commit with 
           })
         );
       /* Combine the commit lists that are available for the project and
-       * its dependencies (if using --use-deps). */
-      return combineLatest(listOfGetCommits)
-        .pipe(
-          map((results: string[][]) => {
-            return results.reduce((acc, commits) => {
-              acc.push(...commits);
-              return acc;
-            }, []);
-          })
-        )
+       * its dependencies (if using --track-deps). */
+      return combineLatest(listOfGetCommits).pipe(
+        map((results: string[][]) => {
+          return results.reduce((acc, commits) => {
+            acc.push(...commits);
+            return acc;
+          }, []);
+        })
+      );
     })
   );
 

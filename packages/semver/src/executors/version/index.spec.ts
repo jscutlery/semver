@@ -49,7 +49,7 @@ describe('@jscutlery/semver:version', () => {
 
   const options: VersionBuilderSchema = {
     dryRun: false,
-    useDeps: false,
+    trackDeps: false,
     noVerify: false,
     push: false,
     remote: 'origin',
@@ -139,8 +139,10 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version independently on a project with dependencies', async () => {
-      mockGetProjectDependencies.mockReturnValue(Promise.resolve(['lib1', 'lib2']));
-      const tempOptions = {...options, useDeps: true};
+      mockGetProjectDependencies.mockReturnValue(
+        Promise.resolve(['lib1', 'lib2'])
+      );
+      const tempOptions = { ...options, trackDeps: true };
       const { success } = await version(tempOptions, context);
 
       expect(success).toBe(true);
@@ -166,8 +168,10 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version independently on a project with failure on dependencies', async () => {
-      mockGetProjectDependencies.mockReturnValue(Promise.reject('thrown error'));
-      const tempOptions = {...options, useDeps: true};
+      mockGetProjectDependencies.mockReturnValue(
+        Promise.reject('thrown error')
+      );
+      const tempOptions = { ...options, trackDeps: true };
       let error;
       try {
         await version(tempOptions, context);

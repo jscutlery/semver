@@ -13,7 +13,7 @@ import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 export interface CommonVersionOptions {
   dryRun: boolean;
-  useDeps: boolean;
+  trackDeps: boolean;
   newVersion: string;
   noVerify: boolean;
   preset: string;

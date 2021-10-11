@@ -20,7 +20,7 @@ export default async function version(
     push,
     remote,
     dryRun,
-    useDeps,
+    trackDeps,
     baseBranch,
     noVerify,
     syncVersions,
@@ -47,7 +47,7 @@ export default async function version(
   const projectRoot = getProjectRoot(context);
 
   let dependencyRoots = [];
-  if (useDeps && !version) {
+  if (trackDeps && !version) {
     // Include any depended-upon libraries in determining the version bump.
     try {
       const dependencyLibs = await getProjectDependencies(context.projectName);
@@ -77,7 +77,7 @@ export default async function version(
 
       const options: CommonVersionOptions = {
         dryRun: dryRun as boolean,
-        useDeps,
+        trackDeps,
         newVersion,
         noVerify: noVerify as boolean,
         preset,
