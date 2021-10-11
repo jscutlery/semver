@@ -19,7 +19,7 @@ describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
     dryRun: false,
     noVerify: false,
-    useDeps: false,
+    trackDeps: false,
     push: false,
     remote: 'origin',
     baseBranch: 'main',
@@ -466,7 +466,7 @@ $`)
     });
   });
 
-  describe('option --use-deps', () => {
+  describe('option --track-deps', () => {
     const mockCreateProjectGraphAsync = createProjectGraphAsync as jest.MockedFunction<typeof createProjectGraphAsync>;
 
     describe('when disabled with an unchanged project', () => {
@@ -484,7 +484,7 @@ $`)
         result = await version(
           {
             ...defaultBuilderOptions,
-            useDeps: false,
+            trackDeps: false,
           },
           createFakeContext({
             project: 'c',
@@ -534,7 +534,7 @@ $`)
           {
             ...defaultBuilderOptions,
             syncVersions: false,
-            useDeps: true,
+            trackDeps: true,
           },
           createFakeContext({
             project: 'c',
@@ -584,7 +584,7 @@ $`)
           {
             ...defaultBuilderOptions,
             syncVersions: false,
-            useDeps: true,
+            trackDeps: true,
           },
           createFakeContext({
             project: 'c',
@@ -644,7 +644,7 @@ $`)
           {
             ...defaultBuilderOptions,
             syncVersions: false,
-            useDeps: true,
+            trackDeps: true,
           },
           createFakeContext({
             project: 'c',
@@ -699,7 +699,7 @@ $`)
           {
             ...defaultBuilderOptions,
             syncVersions: false,
-            useDeps: true,
+            trackDeps: true,
           },
           createFakeContext({
             project: 'a',
@@ -761,7 +761,7 @@ $`)
           {
             ...defaultBuilderOptions,
             syncVersions: true,
-            useDeps: true,
+            trackDeps: true,
           },
           createFakeContext({
             project: 'c',
