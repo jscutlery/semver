@@ -575,8 +575,8 @@ $`)
         execSync(`
             echo e > libs/e/e.txt
             git add .
-            # This does not directly fix a single package.
-            git commit -m "fix: 🐞 fix emptiness"
+            # This does not directly add a feature to a single package.
+            git commit -m "feat: 🚀 new feature"
         `);
 
         /* Run builder. */

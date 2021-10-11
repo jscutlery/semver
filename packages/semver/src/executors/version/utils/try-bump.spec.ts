@@ -77,7 +77,7 @@ describe('tryBump', () => {
 
   it('should compute the next version based on last version, changes, and dependencies', async () => {
     mockGetCommits
-      .mockReturnValueOnce(of(['fix: A', 'fix: B']))
+      .mockReturnValueOnce(of(['chore: A', 'chore: B']))
       .mockReturnValueOnce(of(['chore: A', 'chore: B']))
       .mockReturnValueOnce(of(['fix: A', 'feat: B']));
 
@@ -85,23 +85,15 @@ describe('tryBump', () => {
     mockConventionalRecommendedBump
       .mockImplementation(
         callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: 'patch',
-          })
-        )
-      )
-      .mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: undefined,
-          })
-        )
-      )
-      .mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: 'minor',
-          })
+          jest.fn().mockResolvedValueOnce({
+              releaseType: undefined,
+            })
+            .mockResolvedValueOnce({
+              releaseType: undefined,
+            })
+            .mockResolvedValueOnce({
+              releaseType: 'minor',
+            })
         )
       );
 
@@ -114,7 +106,7 @@ describe('tryBump', () => {
       preid: null,
     }).toPromise();
 
-    expect(newVersion).toEqual('2.2.0');
+    expect(newVersion).toEqual('2.1.1');
 
     expect(mockGetCommits).toBeCalledTimes(3);
     expect(mockGetCommits).toBeCalledWith({
