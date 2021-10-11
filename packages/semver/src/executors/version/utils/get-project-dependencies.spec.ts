@@ -1,4 +1,3 @@
-import { of } from 'rxjs';
 import { getProjectDependencies } from './get-project-dependencies';
 import { createProjectGraphAsync, ProjectGraph } from '@nrwl/workspace/src/core/project-graph';
 

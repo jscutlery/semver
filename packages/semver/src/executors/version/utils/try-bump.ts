@@ -4,7 +4,7 @@ import { defer, forkJoin, iif, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
-import { gt, inc } from 'semver';
+import { inc } from 'semver';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
