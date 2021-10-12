@@ -9,7 +9,7 @@ export function resolveTagPrefix({
   projectName: string;
   syncVersions: boolean;
 }): string {
-  if (versionTagPrefix !== undefined) {
+  if (versionTagPrefix !== undefined && versionTagPrefix !== null) {
     const resolvingContest = {
       target: projectName,
       projectName: projectName,

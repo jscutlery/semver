@@ -25,7 +25,7 @@ export function tryBump({
   tagPrefix: string;
   releaseType: ReleaseIdentifier | null;
   preid: string | null;
-}): Observable<string> {
+}): Observable<string | null> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({ tagPrefix }).pipe(
     catchError(() => {
@@ -115,7 +115,7 @@ export function _manualBump({
 }: {
   since: string;
   releaseType: string;
-  preid: string;
+  preid: string | null;
 }): Observable<string> {
   return defer(() => {
     const hasPreid =

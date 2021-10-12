@@ -3,7 +3,7 @@ export interface SchemaOptions {
   push: boolean;
   remote: string;
   branch: string;
-  projects?: string[];
+  projects: string[];
   enforceConventionalCommits?: boolean;
   skipInstall?: boolean;
 }

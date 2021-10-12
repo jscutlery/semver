@@ -3,8 +3,8 @@ import { updateProjectConfiguration, getProjects } from '@nrwl/devkit';
 import type { Tree } from '@nrwl/devkit';
 
 export default function migrate(tree: Tree) {
-  getProjects(tree).forEach((project, projectName) => {
-    if (project.targets.version) {
+  getProjects(tree).forEach((project: { targets: { version: { options: {rootChangelog : boolean}; }; }; }, projectName: any) => {
+    if (project?.targets?.version) {
       const options = project.targets.version.options ?? {};
 
       /* Check if the outdated option is defined. */

@@ -21,7 +21,7 @@ export default async function install(tree: Tree, options: SchemaOptions) {
 
     /* Independent versioning. */
   } else {
-    options.projects?.length > 0
+    options && options?.projects?.length > 0
       ? updateWorkspaceFromSchema(tree, options)
       : await updateWorkspaceFromPrompt(tree);
   }

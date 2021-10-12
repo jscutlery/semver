@@ -3,7 +3,7 @@ export function resolveInterpolation(
   resolvingContext: Record<string, unknown>
 ): string | number | boolean {
   const resolvedValue = Object.keys(resolvingContext).reduce(
-    (accumulator, contextParamKey) => {
+    (accumulator, contextParamKey: string) => {
       const interpolationRegex = new RegExp(`\\$\\{${contextParamKey}}`, 'g');
       return accumulator.replace(
         interpolationRegex,

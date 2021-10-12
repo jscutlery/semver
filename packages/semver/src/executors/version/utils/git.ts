@@ -20,7 +20,7 @@ export function getCommits({
       path: projectRoot,
     })
       .on('data', (data: string) => observer.next(data))
-      .on('error', (error) => observer.error(error))
+      .on('error', (error: string) => observer.error(error))
       .on('close', () => observer.complete())
       .on('finish', () => observer.complete());
   }).pipe(
