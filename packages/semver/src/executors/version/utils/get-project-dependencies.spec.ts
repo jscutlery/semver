@@ -46,7 +46,13 @@ const projectGraph: ProjectGraph = {
         source: 'lib2',
         target: 'lib1',
       },
+      {
+        type: 'static',
+        source: 'lib2',
+        target: 'lib3',
+      },
     ],
+    lib3: [],
     'demo-e2e': [
       {
         type: 'implicit',
