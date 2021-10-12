@@ -12,31 +12,7 @@ export async function getProjectDependencies(
   // The shape of the project graph can still change. So we're pinning the
   // version of the graph to 3.0.
   const dependencyGraph = await createProjectGraphAsync('3.0');
-  return Array.from(
-    assembleDependenciesFromGraph(dependencyGraph.dependencies, projectName)
-  );
-}
-
-function assembleDependenciesFromGraph(
-  dependencyGraph: { [key: string]: ProjectGraphDependency[] },
-  projectName: string,
-  traversedNodes: string[] = []
-): Set<string> {
-  return getProjectsFromDependencies(dependencyGraph[projectName]).reduce(
-    (acc, dependency) => {
-      // This if statement keeps us from getting caught in a circular dependency.
-      if (traversedNodes.indexOf(dependency) === -1) {
-        const subDependencies = assembleDependenciesFromGraph(
-          dependencyGraph,
-          dependency,
-          [projectName, ...traversedNodes]
-        );
-        acc = new Set([...acc, dependency, ...subDependencies]);
-      }
-      return acc;
-    },
-    new Set<string>()
-  );
+  return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);
 }
 
 /**
