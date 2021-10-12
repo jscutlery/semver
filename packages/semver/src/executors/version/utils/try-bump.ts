@@ -96,7 +96,7 @@ export function _semverBump({
   preset: string;
   projectRoot: string;
   tagPrefix: string;
-}): Observable<string> {
+}): Observable<string | null> {
   return defer(async () => {
     const recommended = await promisify(conventionalRecommendedBump)({
       path: projectRoot,
@@ -116,7 +116,7 @@ export function _manualBump({
   since: string;
   releaseType: string;
   preid: string | null;
-}): Observable<string> {
+}): Observable<string | null> {
   return defer(() => {
     const hasPreid =
       ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
@@ -129,6 +129,7 @@ export function _manualBump({
       ...(hasPreid ? [preid] : []),
     ];
 
-    return of<string>(semver.inc(...semverArgs));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return of<string>(semver.inc(...semverArgs)!);
   });
 }

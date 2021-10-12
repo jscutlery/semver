@@ -1,6 +1,6 @@
 import { logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
-import { concat, defer, of } from 'rxjs';
+import { concat, defer, of, lastValueFrom } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { tryPushToGitRemote } from './utils/git';
@@ -38,7 +38,8 @@ export default function version(
 
   const tagPrefix = resolveTagPrefix({
     versionTagPrefix,
-    projectName: context.projectName,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    projectName: context.projectName!,
     syncVersions
   });
 
@@ -113,8 +114,8 @@ export default function version(
     })
   );
 
-  return action$
-    .pipe(
+  return lastValueFrom(
+    action$.pipe(
       mapTo({ success: true }),
       catchError((error) => {
         if (error instanceof SchemaError) {
@@ -126,5 +127,5 @@ export default function version(
         return of({ success: false });
       })
     )
-    .toPromise();
+  );
 }

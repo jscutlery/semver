@@ -22,7 +22,8 @@ export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
 }
 
 export function getProjectRoot(context: ExecutorContext): string {
-  return context.workspace.projects[context.projectName].root;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return context.workspace.projects[context.projectName!].root;
 }
 
 export function getProjectRoots(workspaceRoot: string): Observable<string[]> {

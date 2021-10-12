@@ -7,7 +7,7 @@ export function resolveInterpolation(
       const interpolationRegex = new RegExp(`\\$\\{${contextParamKey}}`, 'g');
       return accumulator.replace(
         interpolationRegex,
-        resolvingContext[contextParamKey].toString()
+        (resolvingContext[contextParamKey] as string | number | boolean).toString()
       );
     },
     template
