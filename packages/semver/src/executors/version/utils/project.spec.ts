@@ -9,7 +9,7 @@ describe('readPackageJson', () => {
       callbackify(jest.fn().mockResolvedValue(`{"version":"2.1.0"}`)) as any
     );
 
-    const content = await readPackageJson('/root').toPromise();
+    const content = await readPackageJson('/root').lastValueFrom();
     expect(content).toEqual({
       version: '2.1.0',
     });

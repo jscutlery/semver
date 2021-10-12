@@ -52,7 +52,7 @@ describe('git', () => {
           remote: 'upstream',
           branch: 'master',
           noVerify: false,
-        }).toPromise();
+        }).lastValueFrom();
 
         expect(cp.execAsync).toBeCalledWith(
           'git',
@@ -75,7 +75,7 @@ describe('git', () => {
           remote: 'origin',
           branch: 'main',
           noVerify: true,
-        }).toPromise();
+        }).lastValueFrom();
 
         expect(cp.execAsync).toBeCalledWith(
           'git',
@@ -104,7 +104,7 @@ describe('git', () => {
           remote: 'origin',
           branch: 'master',
           noVerify: false,
-        }).toPromise();
+        }).lastValueFrom();
 
         expect(cp.execAsync).toHaveBeenNthCalledWith(
           1,
@@ -131,7 +131,7 @@ describe('git', () => {
             remote: 'origin',
             branch: 'master',
             noVerify: false,
-          }).toPromise()
+          }).lastValueFrom()
         ).rejects.toEqual(new Error('Something went wrong'));
         expect(cp.execAsync).toBeCalledTimes(1);
       });
@@ -144,7 +144,7 @@ describe('git', () => {
             branch: undefined as any,
             /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
-          }).toPromise()
+          }).lastValueFrom()
         ).rejects.toEqual(expect.any(Error));
       });
     });
@@ -159,7 +159,7 @@ describe('git', () => {
       await addToStage({
         paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
         dryRun: false,
-      }).toPromise();
+      }).lastValueFrom();
 
       expect(cp.execAsync).toBeCalledWith(
         'git',
@@ -179,7 +179,7 @@ describe('git', () => {
       await addToStage({
         paths: [],
         dryRun: false,
-      }).toPromise();
+      }).lastValueFrom();
 
       expect(cp.execAsync).not.toBeCalled();
     });
@@ -191,7 +191,7 @@ describe('git', () => {
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'sha1\n' }));
 
-      const tag = await getFirstCommitRef().toPromise();
+      const tag = await getFirstCommitRef().lastValueFrom();
 
       expect(tag).toBe('sha1');
       expect(cp.execAsync).toBeCalledWith(

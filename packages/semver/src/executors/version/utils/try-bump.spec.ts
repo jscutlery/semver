@@ -57,7 +57,7 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: null,
       preid: null,
-    }).toPromise();
+    }).lastValueFrom();
 
     expect(newVersion).toEqual('2.2.0');
 
@@ -87,7 +87,7 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: 'premajor',
       preid: 'alpha',
-    }).toPromise();
+    }).lastValueFrom();
 
     expect(newVersion).toEqual('3.0.0-alpha.0');
 
@@ -109,7 +109,7 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: 'patch',
       preid: null,
-    }).toPromise();
+    }).lastValueFrom();
 
     expect(newVersion).toEqual('2.1.1');
 
@@ -127,7 +127,7 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: null,
       preid: null,
-    }).toPromise();
+    }).lastValueFrom();
 
     expect(loggerSpy).toBeCalledWith(
       expect.stringContaining('No previous version tag found')
@@ -148,7 +148,7 @@ describe('tryBump', () => {
       tagPrefix: 'v',
       releaseType: null,
       preid: null,
-    }).toPromise();
+    }).lastValueFrom();
 
     expect(newVersion).toBe(null);
 

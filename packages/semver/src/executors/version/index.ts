@@ -126,5 +126,5 @@ export default function version(
         return of({ success: false });
       })
     )
-    .toPromise();
+    .lastValueFrom();
 }

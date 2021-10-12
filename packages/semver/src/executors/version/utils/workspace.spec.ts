@@ -50,7 +50,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(await getPackageFiles('/root').lastValueFrom()).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
@@ -81,7 +81,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(await getPackageFiles('/root').lastValueFrom()).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
@@ -111,7 +111,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(await getPackageFiles('/root').lastValueFrom()).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);

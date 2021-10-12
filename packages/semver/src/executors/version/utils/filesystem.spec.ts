@@ -27,7 +27,7 @@ describe('readJsonFile', () => {
      * before we subscribe, otherwise the error is not handled. */
     await new Promise(setImmediate);
 
-    expect(file$.toPromise()).rejects.toThrow(
+    expect(file$.lastValueFrom()).rejects.toThrow(
       'ENOENT: no such file or directory'
     );
     expect(mockReadFile).toBeCalledTimes(1);
