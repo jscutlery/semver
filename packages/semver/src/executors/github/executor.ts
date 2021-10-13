@@ -23,5 +23,5 @@ export default async function runExecutor({
     mapTo({ success: true })
   );
 
-  return lastValueFrom(createRelease$);
+  return await lastValueFrom(createRelease$);
 }

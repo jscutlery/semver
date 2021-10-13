@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { getPackageFiles } from './workspace';
+import { lastValueFrom } from 'rxjs';
 
 describe('getPackageFiles', () => {
   let fakeReadFileSync: jest.Mock;
@@ -50,7 +51,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').lastValueFrom()).toEqual([
+     await lastValueFrom(expect(await getPackageFiles('/root'))).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
@@ -81,7 +82,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').lastValueFrom()).toEqual([
+    await lastValueFrom(expect(await getPackageFiles('/root'))).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
@@ -111,7 +112,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').lastValueFrom()).toEqual([
+    await lastValueFrom(expect(await getPackageFiles('/root'))).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);

@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import { callbackify } from 'util';
 import { readJsonFile } from './filesystem';
+import { lastValueFrom } from 'rxjs';
+
 
 jest.mock('fs');
 
@@ -27,9 +29,9 @@ describe('readJsonFile', () => {
      * before we subscribe, otherwise the error is not handled. */
     await new Promise(setImmediate);
 
-    expect(file$.lastValueFrom()).rejects.toThrow(
+    await lastValueFrom(expect(file$).rejects.toThrow(
       'ENOENT: no such file or directory'
-    );
+    ))
     expect(mockReadFile).toBeCalledTimes(1);
   });
 });

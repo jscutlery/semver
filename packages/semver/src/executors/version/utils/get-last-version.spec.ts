@@ -1,5 +1,7 @@
 import * as gitSemverTags from 'git-semver-tags';
 import { callbackify } from 'util';
+import { lastValueFrom } from 'rxjs';
+
 
 import { getLastVersion } from './get-last-version';
 
@@ -29,6 +31,6 @@ describe(getLastVersion.name, () => {
   it('should throw error if no tag available', async () => {
     mockGitSemverTags.mockResolvedValue([]);
 
-    expect(getLastVersion({ tagPrefix }).lastValueFrom()).rejects.toThrow('No semver tag found');
+   await lastValueFrom( expect(getLastVersion({ tagPrefix })).rejects.toThrow('No semver tag found'))
   });
 });

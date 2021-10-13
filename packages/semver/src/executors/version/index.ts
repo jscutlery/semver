@@ -1,6 +1,7 @@
+
 import { logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
-import { concat, defer, of } from 'rxjs';
+import { concat, defer, of, lastValueFrom} from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { tryPushToGitRemote } from './utils/git';
@@ -14,7 +15,7 @@ import type { ExecutorContext } from '@nrwl/devkit';
 import type { CommonVersionOptions } from './version';
 import type { VersionBuilderSchema } from './schema';
 
-export default function version(
+export default async function version(
   {
     push,
     remote,
@@ -113,7 +114,7 @@ export default function version(
     })
   );
 
-  return action$
+  return await lastValueFrom(action$
     .pipe(
       mapTo({ success: true }),
       catchError((error) => {
@@ -125,6 +126,6 @@ export default function version(
 
         return of({ success: false });
       })
-    )
-    .lastValueFrom();
+    ))
+    
 }
