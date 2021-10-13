@@ -76,7 +76,7 @@
       }
     },
     "trackDeps": {
-      "description": "Include's the project's dependencies in calculating a recommended version bump.",
+      "description": "Includes the project's dependencies in calculating a recommended version bump.",
       "type": "boolean",
       "default": false
     }
