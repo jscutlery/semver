@@ -9,6 +9,7 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
+import { lastValueFrom } from 'rxjs';
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
@@ -86,11 +87,11 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.0.0');
     });
 
     it(`should bump a's package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
         '0.1.0'
       );
     });
@@ -145,7 +146,7 @@ $`)
     });
 
     it('should not bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.0.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.0.0');
     });
 
     it('should not generate root changelog', () => {
@@ -201,11 +202,11 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.1.0');
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
         '0.1.0'
       );
     });
@@ -313,12 +314,12 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.2.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.2.0');
     });
 
     /* In sync mode, we bump "a" even if change concerns "b". */
     it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
         '0.2.0'
       );
     });
@@ -403,11 +404,11 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('0.1.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.1.0');
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
         '0.1.0'
       );
     });
@@ -480,11 +481,11 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual('1.0.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('1.0.0');
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
         '1.0.0'
       );
     });
@@ -575,13 +576,13 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await readPackageJson('.').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
         '0.0.1-beta.0'
       );
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await readPackageJson('packages/a').toPromise()).version).toEqual(
+      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
         '0.0.1-beta.0'
       );
     });

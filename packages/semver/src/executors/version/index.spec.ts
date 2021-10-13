@@ -2,8 +2,8 @@ import { logger } from '@nrwl/devkit';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
-import * as standardVersion from 'standard-version';
-import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import standardVersion from 'standard-version';
+
 import { callbackify } from 'util';
 
 import version from './';
@@ -22,8 +22,10 @@ jest.mock('./utils/git');
 jest.mock('./utils/try-bump');
 jest.mock('./utils/post-target');
 
+const changelog = jest.fn();
+
 describe('@jscutlery/semver:version', () => {
-  const mockChangelog = changelog as jest.Mock;
+  const mockChangelog = changelog;
   const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
     typeof git.tryPushToGitRemote
   >;
@@ -67,8 +69,8 @@ describe('@jscutlery/semver:version', () => {
     mockTryBump.mockReturnValue(of('2.1.0'));
 
     /* Mock Git execution */
-    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(undefined));
-    jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
+    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(''));
+    jest.spyOn(git, 'addToStage').mockReturnValue(of(''));
 
     mockExecutePostTargets.mockReturnValue(of(undefined));
 
@@ -138,7 +140,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(of(''));
 
       const { success } = await version(options, context);
 
@@ -248,7 +250,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(of(''));
 
       const { success } = await version(
         {
@@ -418,7 +420,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should skip executing post targets if no bump occurred', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockReturnValue(of(''));
 
       const { success } = await version(
         {
