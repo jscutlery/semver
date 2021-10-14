@@ -22,7 +22,8 @@ export function updateProjects(
 ) {
   getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
-      project.targets.version = {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      project.targets!.version = {
         executor: '@jscutlery/semver:version'
       };
       updateProjectConfiguration(tree, projectName, project);

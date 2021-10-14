@@ -56,7 +56,7 @@ export function _resolveTargetOptions({
       const resolvedOption =
         typeof value === 'object'
           ? value
-          : resolveInterpolation(value.toString(), resolvableOptions);
+          : resolveInterpolation((value as string).toString(), resolvableOptions);
 
       return {
         ...resolvedOptions,

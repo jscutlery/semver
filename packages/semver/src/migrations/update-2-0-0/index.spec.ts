@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getProjects } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import type { Tree } from '@nrwl/devkit';
@@ -38,10 +39,10 @@ describe('2.0.0 migration schematic', () => {
     migrate(appTree);
 
     const projects = getProjects(appTree);
-    expect(projects.get('demo').targets.version.options).not.toContainKey(
+    expect(projects.get('demo')!.targets!.version.options).not.toContainKey(
       'rootChangelog'
     );
-    expect(projects.get('demo').targets.version.options).toEqual(
+    expect(projects.get('demo')!.targets!.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: true,
       })
@@ -71,10 +72,12 @@ describe('2.0.0 migration schematic', () => {
     migrate(appTree);
 
     const projects = getProjects(appTree);
-    expect(projects.get('demo').targets.version.options).not.toContainKey(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(projects.get('demo')!.targets!.version.options).not.toContainKey(
       'rootChangelog'
     );
-    expect(projects.get('demo').targets.version.options).toEqual(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(projects.get('demo')!.targets!.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: false,
       })
@@ -102,7 +105,7 @@ describe('2.0.0 migration schematic', () => {
     migrate(appTree);
 
     const projects = getProjects(appTree);
-    expect(projects.get('demo').targets.test).toEqual({
+    expect(projects.get('demo')!.targets!.test).toEqual({
       executor: 'another',
       options: { option: 'value' },
     });
