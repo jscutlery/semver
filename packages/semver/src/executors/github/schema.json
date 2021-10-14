@@ -24,6 +24,26 @@
     "notesFiles": {
       "type": "string",
       "description": "Read release notes from file."
+    },
+    "draft": {
+      "type": "string",
+      "description": "Save the release as a draft instead of publishing it"
+    },
+    "title": {
+      "type": "string",
+      "description": "Release title"
+    },
+    "prerelease": {
+      "type": "string",
+      "description": "Mark the release as a prerelease"
+    },
+    "discussion-category": {
+      "type": "string",
+      "description": "Start a discussion of the specified category"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Select another repository using the [HOST/]OWNER/REPO format"
     }
   },
   "required": ["tag"]
