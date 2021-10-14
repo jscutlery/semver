@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { defer } from 'rxjs';
-import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import * as standardVersionDefaults from 'standard-version/defaults';
+import changelog from 'standard-version/lib/lifecycles/changelog';
+import standardVersionDefaults from 'standard-version/defaults';
 
 export const defaultHeader = `# Changelog
 

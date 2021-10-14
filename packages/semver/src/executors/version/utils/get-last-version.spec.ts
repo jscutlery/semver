@@ -1,4 +1,4 @@
-import * as gitSemverTags from 'git-semver-tags';
+import gitSemverTags from 'git-semver-tags';
 import { callbackify } from 'util';
 
 import { getLastVersion } from './get-last-version';
