@@ -7,6 +7,7 @@ import install from '.';
 
 import type { Tree } from '@nrwl/devkit';
 import type { SchemaOptions } from './schema';
+import type { PathLike } from 'fs';
 
 jest.mock('inquirer');
 
@@ -23,11 +24,11 @@ describe('Install generator', () => {
   let tree: Tree;
 
   beforeEach(() => {
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => null);
+    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined);
     jest
       .spyOn(fs, 'writeFileSync')
-      .mockImplementation((_path: string, _content: string) => {
-        tree.write(_path, _content);
+      .mockImplementation((_path: number | PathLike, _content: string | ArrayBufferView) => {
+        tree.write(_path as string, _content as string);
       });
   });
 
@@ -285,7 +286,7 @@ describe('Install generator', () => {
 
         const packageJson = readJson(tree, 'package.json');
 
-        expect(tree.read('.husky/commit-msg').toString()).toEqual('test');
+        expect(tree.read('.husky/commit-msg')?.toString()).toEqual('test');
         expect(packageJson.scripts.prepare).toBeUndefined();
       });
 

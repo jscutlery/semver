@@ -1,8 +1,8 @@
 import { logger } from '@nrwl/devkit';
-import * as conventionalRecommendedBump from 'conventional-recommended-bump';
+import conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, of } from 'rxjs';
 import { catchError, shareReplay, switchMap } from 'rxjs/operators';
-import * as semver from 'semver';
+import semver, { ReleaseType } from 'semver';
 import { promisify } from 'util';
 
 import { getLastVersion } from './get-last-version';
@@ -63,17 +63,18 @@ If your project is already versioned, please tag the latest release commit with 
     )
   );
 
-  return forkJoin([lastVersion$, commits$]).pipe(
+  return forkJoin([lastVersion$, commits$])
+  .pipe(
     switchMap(([lastVersion, commits]) => {
       /* If release type is manually specified,
        * we just release even if there are no changes. */
       if (releaseType !== null) {
-        return _manualBump({ since: lastVersion, releaseType, preid });
+        return _manualBump({ since: lastVersion, releaseType: releaseType as string, preid: preid as string });
       }
 
       /* No commits since last release so don't bump. */
       if (commits.length === 0) {
-        return of(null);
+        return of(undefined);
       }
 
       return _semverBump({
@@ -83,7 +84,7 @@ If your project is already versioned, please tag the latest release commit with 
         tagPrefix,
       });
     })
-  );
+  ) as Observable<string>;
 }
 
 export function _semverBump({
@@ -97,14 +98,14 @@ export function _semverBump({
   projectRoot: string;
   tagPrefix: string;
 }): Observable<string> {
-  return defer(async () => {
+  return defer(async (): Promise<string> => {
     const recommended = await promisify(conventionalRecommendedBump)({
       path: projectRoot,
       preset,
       tagPrefix,
-    });
+    }) as { releaseType: ReleaseType };
     const { releaseType } = recommended;
-    return semver.inc(since, releaseType);
+    return semver.inc(since, releaseType) as string;
   });
 }
 
@@ -117,18 +118,18 @@ export function _manualBump({
   releaseType: string;
   preid: string;
 }): Observable<string> {
-  return defer(() => {
+  return defer((): Observable<string> => {
     const hasPreid =
       ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
         releaseType
       ) && preid !== null;
 
-    const semverArgs: string[] = [
+    const semverArgs: [string, ReleaseType, ...string[]] = [
       since,
-      releaseType,
+      releaseType as ReleaseType,
       ...(hasPreid ? [preid] : []),
     ];
 
-    return of<string>(semver.inc(...semverArgs));
+    return of<string>(semver.inc(...semverArgs) as string);
   });
 }

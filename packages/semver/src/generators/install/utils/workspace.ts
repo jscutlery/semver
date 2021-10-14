@@ -22,7 +22,7 @@ export function updateProjects(
 ) {
   getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
-      project.targets.version = {
+      project.targets!.version = {
         executor: '@jscutlery/semver:version'
       };
       updateProjectConfiguration(tree, projectName, project);
@@ -44,6 +44,6 @@ export function updateWorkspaceFromSchema(
   options: SchemaOptions
 ): void {
   return updateProjects(tree, (projectName) =>
-    options.projects.includes(projectName)
+    options.projects?.includes(projectName) as boolean
   );
 }

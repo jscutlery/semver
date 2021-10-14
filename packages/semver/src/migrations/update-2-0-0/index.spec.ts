@@ -38,10 +38,10 @@ describe('2.0.0 migration schematic', () => {
     migrate(appTree);
 
     const projects = getProjects(appTree);
-    expect(projects.get('demo').targets.version.options).not.toContainKey(
+    expect(projects.get('demo')?.targets?.version.options).not.toContainKey(
       'rootChangelog'
     );
-    expect(projects.get('demo').targets.version.options).toEqual(
+    expect(projects.get('demo')?.targets?.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: true,
       })
@@ -71,10 +71,10 @@ describe('2.0.0 migration schematic', () => {
     migrate(appTree);
 
     const projects = getProjects(appTree);
-    expect(projects.get('demo').targets.version.options).not.toContainKey(
+    expect(projects.get('demo')?.targets?.version.options).not.toContainKey(
       'rootChangelog'
     );
-    expect(projects.get('demo').targets.version.options).toEqual(
+    expect(projects.get('demo')?.targets?.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: false,
       })
@@ -102,7 +102,7 @@ describe('2.0.0 migration schematic', () => {
     migrate(appTree);
 
     const projects = getProjects(appTree);
-    expect(projects.get('demo').targets.test).toEqual({
+    expect(projects.get('demo')?.targets?.test).toEqual({
       executor: 'another',
       options: { option: 'value' },
     });

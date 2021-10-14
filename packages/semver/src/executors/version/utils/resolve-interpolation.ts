@@ -1,6 +1,6 @@
 export function resolveInterpolation(
   template: string,
-  resolvingContext: Record<string, unknown>
+  resolvingContext: Record<string, any>
 ): string | number | boolean {
   const resolvedValue = Object.keys(resolvingContext).reduce(
     (accumulator, contextParamKey) => {

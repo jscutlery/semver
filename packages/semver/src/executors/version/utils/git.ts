@@ -1,4 +1,4 @@
-import * as gitRawCommits from 'git-raw-commits';
+import gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 

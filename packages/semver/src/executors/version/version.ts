@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import * as standardVersion from 'standard-version';
+import standardVersion from 'standard-version';
 
 import {
   defaultHeader,
