@@ -26,8 +26,8 @@ export default async function runExecutor({
     ...(draft ? [`--draft`] : []),
     ...(title ? [`--title ${title}`] : []),
     ...(prerelease ? [`--prerelease`] : []),
-    ...(discussionCategory ? [`--discussion-category ${discussionCategory}`] : []),
-    ...(repo ? [`--repo  ${repo}`] : []),
+    ...(discussionCategory ? [`--discussion-category "${discussionCategory}"`] : []),
+    ...(repo ? [`--repo ${repo}`] : []),
   ]).pipe(
     catchError((response) => throwError(() => new Error(response.error))),
     mapTo({ success: true })
