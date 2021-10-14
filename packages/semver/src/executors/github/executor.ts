@@ -11,6 +11,11 @@ export default async function runExecutor({
   notes,
   notesFile,
   branch,
+  draft,
+  title,
+  prerelease,
+  discussionCategory,
+  repo
 }: GithubExecutorSchema) {
   const createRelease$ = execAsync('gh release create', [
     tag,
@@ -18,6 +23,11 @@ export default async function runExecutor({
     ...(notes ? [`--notes "${notes}"`] : []),
     ...(notesFile ? [`--notes-file ${notesFile}`] : []),
     ...(branch ? [`--branch ${branch}`] : []),
+    ...(draft ? [`--draft`] : []),
+    ...(title ? [`--title ${title}`] : []),
+    ...(prerelease ? [`--prerelease`] : []),
+    ...(discussionCategory ? [`--discussion-category ${discussionCategory}`] : []),
+    ...(repo ? [`--repo  ${repo}`] : []),
   ]).pipe(
     catchError((response) => throwError(() => new Error(response.error))),
     mapTo({ success: true })
