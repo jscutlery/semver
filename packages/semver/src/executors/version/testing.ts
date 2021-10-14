@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
-import * as rimraf from 'rimraf';
-import * as tmp from 'tmp';
+import rimraf from 'rimraf';
+import tmp from 'tmp';
 import { promisify } from 'util';
 
 import type { ExecutorContext } from '@nrwl/devkit';
