@@ -233,6 +233,9 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://jefiozie.github.io/"><img src="https://avatars.githubusercontent.com/u/17835373?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeffrey Bosch</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=Jefiozie" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/RaviTejaVattem"><img src="https://avatars.githubusercontent.com/u/43704759?v=4?s=100" width="100px;" alt=""/><br /><sub><b>RaviTejaVattem</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=RaviTejaVattem" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://abishek.is-a.dev/"><img src="https://avatars.githubusercontent.com/u/43115551?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Abishek PY</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=vj-abishek" title="Code">💻</a> <a href="https://github.com/jscutlery/semver/commits?author=vj-abishek" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->

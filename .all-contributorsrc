@@ -147,6 +147,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vj-abishek",
+      "name": "Abishek PY",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43115551?v=4",
+      "profile": "https://abishek.is-a.dev/",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
