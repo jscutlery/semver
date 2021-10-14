@@ -4,9 +4,9 @@ export interface GithubExecutorSchema {
   files?: string[];
   notes?: string;
   notesFile?: string;
-  draft?: string;
+  draft?: boolean;
   title?: string;
-  prerelease?: string;
+  prerelease?: boolean;
   discussionCategory?: string;
   repo?: string;  
 }
