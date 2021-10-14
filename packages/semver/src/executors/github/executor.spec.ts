@@ -71,4 +71,55 @@ describe('@jscutlery/semver:github', () => {
     );
     expect(output.success).toBe(true);
   });
+
+  
+  it('create release with specified --draft', async () => {
+    const output = await executor({ ...options, draft: true });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--draft'])
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('create release with specified --title', async () => {
+    const output = await executor({ ...options, title: 'Title for release' });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--title "Title for release"'])
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('create release with specified --prerelease', async () => {
+    const output = await executor({ ...options, prerelease: true });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--prerelease'])
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('create release with specified --discussion-category', async () => {
+    const output = await executor({ ...options, discussionCategory: 'General' });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--discussion-category "General"'])
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('create release with specified --repo', async () => {
+    const output = await executor({ ...options, repo: 'repo:MYORG/REPO' });
+
+    expect(mockExec).toBeCalledWith(
+      'gh release create',
+      expect.arrayContaining(['--repo "repo:MYORG/REPO"'])
+    );
+    expect(output.success).toBe(true);
+  });
 });

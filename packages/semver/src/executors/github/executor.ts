@@ -24,10 +24,10 @@ export default async function runExecutor({
     ...(notesFile ? [`--notes-file ${notesFile}`] : []),
     ...(branch ? [`--branch ${branch}`] : []),
     ...(draft ? [`--draft`] : []),
-    ...(title ? [`--title ${title}`] : []),
+    ...(title ? [`--title "${title}"`] : []),
     ...(prerelease ? [`--prerelease`] : []),
     ...(discussionCategory ? [`--discussion-category "${discussionCategory}"`] : []),
-    ...(repo ? [`--repo ${repo}`] : []),
+    ...(repo ? [`--repo "${repo}"`] : []),
   ]).pipe(
     catchError((response) => throwError(() => new Error(response.error))),
     mapTo({ success: true })
