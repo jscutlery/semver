@@ -17,14 +17,14 @@ export function tryBump({
   preset,
   projectRoot,
   tagPrefix,
-  releaseType = null,
-  preid = null,
+  releaseType = undefined,
+  preid = undefined,
 }: {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
-  releaseType: ReleaseIdentifier | null;
-  preid: string | null;
+  releaseType: ReleaseIdentifier | undefined;
+  preid: string | undefined;
 }): Observable<string> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({ tagPrefix }).pipe(
