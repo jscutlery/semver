@@ -1,6 +1,6 @@
 import { logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
-import { concat, defer, of } from 'rxjs';
+import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
 import { tryPushToGitRemote } from './utils/git';
@@ -38,8 +38,8 @@ export default function version(
 
   const tagPrefix = resolveTagPrefix({
     versionTagPrefix,
-    projectName: context.projectName,
-    syncVersions
+    projectName: context.projectName as string,
+    syncVersions: syncVersions as boolean
   });
 
   const projectRoot = getProjectRoot(context);
@@ -59,9 +59,9 @@ export default function version(
       }
 
       const options: CommonVersionOptions = {
-        dryRun,
+        dryRun: dryRun as boolean,
         newVersion,
-        noVerify,
+        noVerify: noVerify as boolean,
         preset,
         projectRoot,
         tagPrefix,
@@ -72,8 +72,8 @@ export default function version(
         syncVersions
           ? versionWorkspace({
               ...options,
-              skipRootChangelog,
-              skipProjectChangelog,
+              skipRootChangelog: skipRootChangelog as boolean,
+              skipProjectChangelog: skipProjectChangelog as boolean,
               workspaceRoot,
             })
           : versionProject(options)
@@ -84,9 +84,9 @@ export default function version(
        */
       const pushToGitRemote$ = defer(() =>
         tryPushToGitRemote({
-          branch: baseBranch,
-          noVerify,
-          remote,
+          branch: baseBranch as string,
+          noVerify: noVerify as boolean,
+          remote: remote as string,
         })
       );
 
@@ -113,7 +113,7 @@ export default function version(
     })
   );
 
-  return action$
+  return lastValueFrom(action$
     .pipe(
       mapTo({ success: true }),
       catchError((error) => {
@@ -125,6 +125,5 @@ export default function version(
 
         return of({ success: false });
       })
-    )
-    .toPromise();
+    ));
 }
