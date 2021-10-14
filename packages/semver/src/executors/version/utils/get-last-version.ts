@@ -1,7 +1,7 @@
-import * as gitSemverTags from 'git-semver-tags';
+import gitSemverTags from 'git-semver-tags';
 import { from, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import * as semver from 'semver';
+import semver from 'semver';
 import { promisify } from 'util';
 
 import type { Observable } from 'rxjs';

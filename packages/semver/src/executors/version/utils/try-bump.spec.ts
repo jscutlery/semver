@@ -1,6 +1,6 @@
 import { logger } from '@nrwl/devkit';
-import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { of, throwError } from 'rxjs';
+import conventionalRecommendedBump from 'conventional-recommended-bump';
+import { lastValueFrom, of, throwError } from 'rxjs';
 import { callbackify } from 'util';
 
 import { getLastVersion } from './get-last-version';
@@ -48,16 +48,16 @@ describe('tryBump', () => {
         jest.fn().mockResolvedValue({
           releaseType: 'minor',
         })
-      )
+      ) as () => void
     );
 
-    const newVersion = await tryBump({
+    const newVersion = await lastValueFrom(tryBump({
       preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'v',
-      releaseType: null,
-      preid: null,
-    }).toPromise();
+      releaseType: undefined,
+      preid: undefined,
+    }));
 
     expect(newVersion).toEqual('2.2.0');
 
@@ -103,13 +103,13 @@ describe('tryBump', () => {
   it('should use given type to calculate next version even if there are no changes', async () => {
     mockGetCommits.mockReturnValue(of([]));
 
-    const newVersion = await tryBump({
+    const newVersion = await lastValueFrom(tryBump({
       preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'v',
       releaseType: 'patch',
-      preid: null,
-    }).toPromise();
+      preid: undefined,
+    }));
 
     expect(newVersion).toEqual('2.1.1');
 
@@ -121,13 +121,13 @@ describe('tryBump', () => {
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
 
-    await tryBump({
+    await lastValueFrom(tryBump({
       preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'v',
-      releaseType: null,
-      preid: null,
-    }).toPromise();
+      releaseType: undefined,
+      preid: undefined,
+    }));
 
     expect(loggerSpy).toBeCalledWith(
       expect.stringContaining('No previous version tag found')
@@ -146,8 +146,8 @@ describe('tryBump', () => {
       preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'v',
-      releaseType: null,
-      preid: null,
+      releaseType: undefined,
+      preid: undefined,
     }).toPromise();
 
     expect(newVersion).toBe(null);

@@ -22,7 +22,7 @@ export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
 }
 
 export function getProjectRoot(context: ExecutorContext): string {
-  return context.workspace.projects[context.projectName].root;
+  return context.workspace.projects[context.projectName as string].root;
 }
 
 export function getProjectRoots(workspaceRoot: string): Observable<string[]> {

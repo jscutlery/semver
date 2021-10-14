@@ -1,4 +1,4 @@
-import * as gitRawCommits from 'git-raw-commits';
+import gitRawCommits from 'git-raw-commits';
 import { of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
 

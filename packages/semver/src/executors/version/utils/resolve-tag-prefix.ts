@@ -14,7 +14,7 @@ export function resolveTagPrefix({
       target: projectName,
       projectName: projectName,
     };
-    return resolveInterpolation(versionTagPrefix, resolvingContest) as string;
+    return resolveInterpolation(versionTagPrefix as string, resolvingContest) as string;
   }
   if (syncVersions) {
     return 'v';

@@ -75,6 +75,49 @@
   dependencies:
     "@types/json-schema" "*"
 
+"@types/conventional-changelog-core@*":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@types/conventional-changelog-core/-/conventional-changelog-core-4.2.0.tgz#e8dcc5365ccb6a3ec2ee9f1c7e3493394b88596a"
+  integrity sha512-+zsPiroIGMRxhFc2o7jvvkYrKKvpBLTkWkUb2tr//qjRSW8FBPK65dI0TAtpQ5dyOQI99GqVeoSMs0jeprgExA==
+  dependencies:
+    "@types/conventional-changelog-writer" "*"
+    "@types/conventional-commits-parser" "*"
+    "@types/conventional-recommended-bump" "*"
+    "@types/git-raw-commits" "*"
+    "@types/node" "*"
+    "@types/normalize-package-data" "*"
+
+"@types/conventional-changelog-writer@*":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/conventional-changelog-writer/-/conventional-changelog-writer-4.0.1.tgz#9e8db2acf34b0e51a7d39aa7f56ae00c4e276666"
+  integrity sha512-S7lJJByPMkkocMWnDKOtkSLi9yXu619+GhGejPnCiNK1Dgwjf5jjzBxXYgMv47tBG8MokmCCV1sWhI53lFl6FA==
+  dependencies:
+    "@types/conventional-commits-parser" "*"
+    "@types/node" "*"
+
+"@types/conventional-commits-parser@*":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/conventional-commits-parser/-/conventional-commits-parser-3.0.2.tgz#144b208c7344838bb045860fe1ddd10d4ae68f7c"
+  integrity sha512-1kVPUHFaart1iGRFxKn8WNXYEDVAgMb+DLatgql2dGg9jTGf3bNxWtN//C/tDG3ckOLg4u7SSx+qcn8VjzI5zg==
+  dependencies:
+    "@types/node" "*"
+
+"@types/conventional-recommended-bump@*", "@types/conventional-recommended-bump@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@types/conventional-recommended-bump/-/conventional-recommended-bump-6.1.0.tgz#b0386c0cc830aac0f88d9018226f77641d1b9bf9"
+  integrity sha512-AlhJsbzY2W+9xkn44qvEgeJGY6FbQIluPRZawwU2JgJw+o7PYB/yjeuRsJhNZRKto3j71hDj+hQik10w/7bI4Q==
+  dependencies:
+    "@types/conventional-changelog-core" "*"
+    "@types/conventional-changelog-writer" "*"
+    "@types/conventional-commits-parser" "*"
+
+"@types/git-raw-commits@*", "@types/git-raw-commits@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/git-raw-commits/-/git-raw-commits-2.0.1.tgz#94bd91f6cfbc7174a47545424559de229998adc1"
+  integrity sha512-vE2lbXxqJ0AqMDoP4N6d+WVfbcBla9+z8IL6e+37JNQIwYZCYY0z3J7hdpY8D/VGwFZ0yIYQLcqk8eCnfXsaEg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/git-semver-tags@^4.1.1":
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/@types/git-semver-tags/-/git-semver-tags-4.1.1.tgz#8bc8e506e7fa14028f9d5a8b9bb53ac7298eb5d4"
@@ -116,7 +159,7 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-16.10.9.tgz"
   integrity sha512-H9ReOt+yqIJPCutkTYjFjlyK6WEMQYT9hLZMlWtOjFQY2ItppsWZ6RJf8Aw+jz5qTYceuHvFgPIaKOHtLAEWBw==
 
-"@types/normalize-package-data@^2.4.0":
+"@types/normalize-package-data@*", "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
   resolved "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz"
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
@@ -128,6 +171,11 @@
   dependencies:
     "@types/glob" "*"
     "@types/node" "*"
+
+"@types/semver@^7.3.8":
+  version "7.3.8"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.8.tgz#508a27995498d7586dcecd77c25e289bfaf90c59"
+  integrity sha512-D/2EJvAlCEtYFEYmmlGwbGXuK886HzyCc3nZX/tkFTQdEU8jZDAgiv08P162yB17y4ZXZoq7yFAnW4GDBb9Now==
 
 "@types/standard-version@^7.0.1":
   version "7.0.1"

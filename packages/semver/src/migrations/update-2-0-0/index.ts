@@ -4,7 +4,7 @@ import type { Tree } from '@nrwl/devkit';
 
 export default function migrate(tree: Tree) {
   getProjects(tree).forEach((project, projectName) => {
-    if (project.targets.version) {
+    if (project.targets?.version) {
       const options = project.targets.version.options ?? {};
 
       /* Check if the outdated option is defined. */
