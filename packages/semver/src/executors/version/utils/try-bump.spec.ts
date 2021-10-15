@@ -1,5 +1,5 @@
 import { logger } from '@nrwl/devkit';
-import conventionalRecommendedBump from 'conventional-recommended-bump';
+import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { callbackify } from 'util';
 
@@ -12,9 +12,10 @@ jest.mock('./get-last-version');
 jest.mock('./git');
 
 describe('tryBump', () => {
-  const mockConventionalRecommendedBump = conventionalRecommendedBump as jest.MockedFunction<
-    typeof conventionalRecommendedBump
-  >;
+  const mockConventionalRecommendedBump =
+    conventionalRecommendedBump as jest.MockedFunction<
+      typeof conventionalRecommendedBump
+    >;
   const mockGetLastVersion = getLastVersion as jest.MockedFunction<
     typeof getLastVersion
   >;
@@ -31,14 +32,8 @@ describe('tryBump', () => {
   });
 
   afterEach(() => {
-    mockGetLastVersion.mockRestore();
-    mockConventionalRecommendedBump.mockRestore();
-    mockGetCommits.mockRestore();
-    mockGetFirstCommitRef.mockRestore();
-    loggerSpy.mockRestore();
+    jest.resetAllMocks();
   });
-
-  afterEach(() => (getCommits as jest.Mock).mockRestore());
 
   it('should compute next version based on last version and changes', async () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
@@ -51,13 +46,15 @@ describe('tryBump', () => {
       ) as () => void
     );
 
-    const newVersion = await lastValueFrom(tryBump({
-      preset: 'angular',
-      projectRoot: '/libs/demo',
-      tagPrefix: 'v',
-      releaseType: undefined,
-      preid: undefined,
-    }));
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: undefined,
+        preid: undefined,
+      })
+    );
 
     expect(newVersion).toEqual('2.2.0');
 
@@ -81,13 +78,13 @@ describe('tryBump', () => {
   it('should use given type to calculate next version', async () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
 
-    const newVersion = await tryBump({
+    const newVersion = await lastValueFrom(tryBump({
       preset: 'angular',
       projectRoot: '/libs/demo',
       tagPrefix: 'v',
       releaseType: 'premajor',
       preid: 'alpha',
-    }).toPromise();
+    }));
 
     expect(newVersion).toEqual('3.0.0-alpha.0');
 
@@ -103,13 +100,14 @@ describe('tryBump', () => {
   it('should use given type to calculate next version even if there are no changes', async () => {
     mockGetCommits.mockReturnValue(of([]));
 
-    const newVersion = await lastValueFrom(tryBump({
-      preset: 'angular',
-      projectRoot: '/libs/demo',
-      tagPrefix: 'v',
-      releaseType: 'patch',
-      preid: undefined,
-    }));
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: 'patch',
+      })
+    );
 
     expect(newVersion).toEqual('2.1.1');
 
@@ -121,13 +119,13 @@ describe('tryBump', () => {
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
 
-    await lastValueFrom(tryBump({
-      preset: 'angular',
-      projectRoot: '/libs/demo',
-      tagPrefix: 'v',
-      releaseType: undefined,
-      preid: undefined,
-    }));
+    await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v'
+      })
+    );
 
     expect(loggerSpy).toBeCalledWith(
       expect.stringContaining('No previous version tag found')
@@ -139,18 +137,18 @@ describe('tryBump', () => {
     });
   });
 
-  it('should return null if there are no changes in current path', async () => {
+  it('should return undefined if there are no changes in current path', async () => {
     mockGetCommits.mockReturnValue(of([]));
 
-    const newVersion = await tryBump({
-      preset: 'angular',
-      projectRoot: '/libs/demo',
-      tagPrefix: 'v',
-      releaseType: undefined,
-      preid: undefined,
-    }).toPromise();
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+      })
+    );
 
-    expect(newVersion).toBe(null);
+    expect(newVersion).toBeUndefined();
 
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',

@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { lastValueFrom } from 'rxjs';
 import { callbackify } from 'util';
 import { readJsonFile } from './filesystem';
 
@@ -27,7 +28,7 @@ describe('readJsonFile', () => {
      * before we subscribe, otherwise the error is not handled. */
     await new Promise(setImmediate);
 
-    expect(file$.toPromise()).rejects.toThrow(
+    expect(lastValueFrom(file$)).rejects.toThrow(
       'ENOENT: no such file or directory'
     );
     expect(mockReadFile).toBeCalledTimes(1);
