@@ -19,7 +19,6 @@
     "paths": {
       "@jscutlery/semver": ["packages/semver/src/index.ts"]
     },
-    "esModuleInterop":true,
     "noEmit": true
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import { lastValueFrom } from 'rxjs';
+
 import { getPackageFiles } from './workspace';
 
 describe('getPackageFiles', () => {
@@ -50,7 +52,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(await lastValueFrom(getPackageFiles('/root'))).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
@@ -81,7 +83,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(await lastValueFrom(getPackageFiles('/root'))).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
@@ -100,7 +102,7 @@ describe('getPackageFiles', () => {
     );
   });
 
-  it('should handle extracted project\'s configuration', async () => {
+  it("should handle extracted project's configuration", async () => {
     fakeReadFileSync.mockReturnValue(
       JSON.stringify({
         version: 1,
@@ -111,7 +113,7 @@ describe('getPackageFiles', () => {
       })
     );
 
-    expect(await getPackageFiles('/root').toPromise()).toEqual([
+    expect(await lastValueFrom(getPackageFiles('/root'))).toEqual([
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);

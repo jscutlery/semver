@@ -53,7 +53,7 @@ export default function version(
 
   const action$ = newVersion$.pipe(
     switchMap((newVersion) => {
-      if (newVersion == null) {
+      if (newVersion === undefined) {
         logger.info('⏹ Nothing changed since last release.');
         return of(undefined);
       }

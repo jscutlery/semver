@@ -74,5 +74,8 @@
       "@commitlint/config-conventional"
     ]
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "rxjs": "^7.4.0"
+  }
 }

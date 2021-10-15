@@ -1,5 +1,5 @@
-import gitRawCommits from 'git-raw-commits';
-import { of, throwError } from 'rxjs';
+import * as gitRawCommits from 'git-raw-commits';
+import { lastValueFrom, of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
 
 import * as cp from '../../common/exec-async';
@@ -48,11 +48,13 @@ describe('git', () => {
           .spyOn(cp, 'execAsync')
           .mockReturnValue(of({ stderr: '', stdout: 'success' }));
 
-        await tryPushToGitRemote({
-          remote: 'upstream',
-          branch: 'master',
-          noVerify: false,
-        }).toPromise();
+        await lastValueFrom(
+          tryPushToGitRemote({
+            remote: 'upstream',
+            branch: 'master',
+            noVerify: false,
+          })
+        );
 
         expect(cp.execAsync).toBeCalledWith(
           'git',
@@ -71,11 +73,13 @@ describe('git', () => {
           .spyOn(cp, 'execAsync')
           .mockReturnValue(of({ stderr: '', stdout: 'success' }));
 
-        await tryPushToGitRemote({
-          remote: 'origin',
-          branch: 'main',
-          noVerify: true,
-        }).toPromise();
+        await lastValueFrom(
+          tryPushToGitRemote({
+            remote: 'origin',
+            branch: 'main',
+            noVerify: true,
+          })
+        );
 
         expect(cp.execAsync).toBeCalledWith(
           'git',
@@ -100,11 +104,13 @@ describe('git', () => {
 
         jest.spyOn(console, 'warn').mockImplementation();
 
-        await tryPushToGitRemote({
-          remote: 'origin',
-          branch: 'master',
-          noVerify: false,
-        }).toPromise();
+        await lastValueFrom(
+          tryPushToGitRemote({
+            remote: 'origin',
+            branch: 'master',
+            noVerify: false,
+          })
+        );
 
         expect(cp.execAsync).toHaveBeenNthCalledWith(
           1,
@@ -127,24 +133,28 @@ describe('git', () => {
           );
 
         await expect(
-          tryPushToGitRemote({
-            remote: 'origin',
-            branch: 'master',
-            noVerify: false,
-          }).toPromise()
+          lastValueFrom(
+            tryPushToGitRemote({
+              remote: 'origin',
+              branch: 'master',
+              noVerify: false,
+            })
+          )
         ).rejects.toEqual(new Error('Something went wrong'));
         expect(cp.execAsync).toBeCalledTimes(1);
       });
 
       it('should fail if options are undefined', async () => {
         await expect(
-          tryPushToGitRemote({
-            /* eslint-disable @typescript-eslint/no-explicit-any */
-            remote: undefined as any,
-            branch: undefined as any,
-            /* eslint-enable @typescript-eslint/no-explicit-any */
-            noVerify: false,
-          }).toPromise()
+          lastValueFrom(
+            tryPushToGitRemote({
+              /* eslint-disable @typescript-eslint/no-explicit-any */
+              remote: undefined as any,
+              branch: undefined as any,
+              /* eslint-enable @typescript-eslint/no-explicit-any */
+              noVerify: false,
+            })
+          )
         ).rejects.toEqual(expect.any(Error));
       });
     });
@@ -156,10 +166,12 @@ describe('git', () => {
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
 
-      await addToStage({
-        paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
-        dryRun: false,
-      }).toPromise();
+      await lastValueFrom(
+        addToStage({
+          paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
+          dryRun: false,
+        })
+      );
 
       expect(cp.execAsync).toBeCalledWith(
         'git',
@@ -176,10 +188,13 @@ describe('git', () => {
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'ok' }));
 
-      await addToStage({
-        paths: [],
-        dryRun: false,
-      }).toPromise();
+      await lastValueFrom(
+        addToStage({
+          paths: [],
+          dryRun: false,
+        }),
+        { defaultValue: undefined }
+      );
 
       expect(cp.execAsync).not.toBeCalled();
     });
@@ -191,7 +206,7 @@ describe('git', () => {
         .spyOn(cp, 'execAsync')
         .mockReturnValue(of({ stderr: '', stdout: 'sha1\n' }));
 
-      const tag = await getFirstCommitRef().toPromise();
+      const tag = await lastValueFrom(getFirstCommitRef());
 
       expect(tag).toBe('sha1');
       expect(cp.execAsync).toBeCalledWith(

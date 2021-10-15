@@ -2,7 +2,8 @@ import { logger } from '@nrwl/devkit';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
-import standardVersion from 'standard-version';
+import * as standardVersion from 'standard-version';
+import * as changelog from 'standard-version/lib/lifecycles/changelog';
 
 import { callbackify } from 'util';
 
@@ -22,10 +23,8 @@ jest.mock('./utils/git');
 jest.mock('./utils/try-bump');
 jest.mock('./utils/post-target');
 
-const changelog = jest.fn();
-
 describe('@jscutlery/semver:version', () => {
-  const mockChangelog = changelog;
+  const mockChangelog = changelog as jest.Mock;
   const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
     typeof git.tryPushToGitRemote
   >;
@@ -140,7 +139,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(''));
+      mockTryBump.mockReturnValue(of(undefined));
 
       const { success } = await version(options, context);
 
@@ -250,7 +249,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(''));
+      mockTryBump.mockReturnValue(of(undefined));
 
       const { success } = await version(
         {
@@ -420,7 +419,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should skip executing post targets if no bump occurred', async () => {
-      mockTryBump.mockReturnValue(of(''));
+      mockTryBump.mockReturnValue(of(undefined));
 
       const { success } = await version(
         {

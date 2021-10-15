@@ -1,4 +1,4 @@
-import gitRawCommits from 'git-raw-commits';
+import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ export function getCommits({
       path: projectRoot,
     })
       .on('data', (data: string) => observer.next(data))
-      .on('error', (error) => observer.error(error))
+      .on('error', (error: Error) => observer.error(error))
       .on('close', () => observer.complete())
       .on('finish', () => observer.complete());
   }).pipe(
