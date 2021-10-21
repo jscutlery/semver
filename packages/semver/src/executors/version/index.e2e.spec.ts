@@ -9,10 +9,7 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
-import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph';
 import { lastValueFrom } from 'rxjs';
-
-jest.mock('@nrwl/workspace/src/core/project-graph');
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
