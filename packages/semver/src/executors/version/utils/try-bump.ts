@@ -87,7 +87,7 @@ If your project is already versioned, please tag the latest release commit with 
       const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
       /* No commits since last release so don't bump. */
       if (numOfCommits === 0) {
-        return of(null);
+        return of(undefined);
       }
 
       const dependencyChecks$ = dependencyRoots.map((root) =>
