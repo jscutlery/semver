@@ -1,7 +1,7 @@
 import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { defer, forkJoin, iif, of } from 'rxjs';
-import { catchError, shareReplay, switchMap } from 'rxjs/operators';
+import { combineLatest, defer, forkJoin, iif, of } from 'rxjs';
+import { catchError, map, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 import { inc } from 'semver';
@@ -87,7 +87,7 @@ If your project is already versioned, please tag the latest release commit with 
       const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
       /* No commits since last release so don't bump. */
       if (numOfCommits === 0) {
-        return of(null);
+        return of(undefined);
       }
 
       const dependencyChecks$ = dependencyRoots.map((root) =>

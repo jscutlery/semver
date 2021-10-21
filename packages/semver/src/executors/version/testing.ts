@@ -75,5 +75,5 @@ function assembleAdditionalProjects(additionalProjects: {project: string, projec
   return additionalProjects.reduce((acc, p) => {
     acc[p.project] = { root: p.projectRoot, targets: {} };
     return acc;
-  }, {});
+  }, {} as {[project: string]: any});
 }

@@ -94,17 +94,15 @@ describe('tryBump', () => {
             .mockResolvedValueOnce({
               releaseType: 'minor',
             })
-        )
+        ) as () => void
       );
 
-    const newVersion = await tryBump({
+    const newVersion = await lastValueFrom(tryBump({
       preset: 'angular',
       projectRoot: '/libs/demo',
       dependencyRoots: ['/libs/dep1', '/libs/dep2'],
       tagPrefix: 'v',
-      releaseType: null,
-      preid: null,
-    }).toPromise();
+    }));
 
     expect(newVersion).toEqual('2.1.1');
 
