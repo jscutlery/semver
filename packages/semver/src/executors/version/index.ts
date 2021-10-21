@@ -46,11 +46,11 @@ export default async function version(
 
   const projectRoot = getProjectRoot(context);
 
-  let dependencyRoots = [];
+  let dependencyRoots: string[] = [];
   if (trackDeps && !version) {
     // Include any depended-upon libraries in determining the version bump.
     try {
-      const dependencyLibs = await getProjectDependencies(context.projectName);
+      const dependencyLibs = await getProjectDependencies(context.projectName as string);
       dependencyRoots = dependencyLibs
         .map(name => context.workspace.projects[name].root);
     } catch (e) {
@@ -77,8 +77,8 @@ export default async function version(
 
       const options: CommonVersionOptions = {
         dryRun: dryRun as boolean,
-        trackDeps,
-        newVersion,
+        trackDeps: trackDeps as boolean,
+        newVersion: newVersion as string,
         noVerify: noVerify as boolean,
         preset,
         projectRoot,

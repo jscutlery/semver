@@ -13,7 +13,6 @@ import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph'
 import { lastValueFrom } from 'rxjs';
 
 jest.mock('@nrwl/workspace/src/core/project-graph');
-jest.mock('./utils/exec-async');
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
