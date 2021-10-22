@@ -18,8 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "@jscutlery/semver": ["packages/semver/src/index.ts"]
-    },
-    "noEmit": true
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
