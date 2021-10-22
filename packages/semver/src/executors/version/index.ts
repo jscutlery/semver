@@ -35,6 +35,8 @@ export default async function version(
   }: VersionBuilderSchema,
   context: ExecutorContext
 ): Promise<{ success: boolean }> {
+  releaseAs = releaseAs ?? version;
+
   const workspaceRoot = context.root;
   const preset = 'angular';
 
@@ -47,7 +49,7 @@ export default async function version(
   const projectRoot = getProjectRoot(context);
 
   let dependencyRoots: string[] = [];
-  if (trackDeps && !version) {
+  if (trackDeps && !releaseAs) {
     // Include any depended-upon libraries in determining the version bump.
     try {
       const dependencyLibs = await getProjectDependencies(context.projectName as string);
@@ -64,13 +66,13 @@ export default async function version(
     projectRoot,
     dependencyRoots,
     tagPrefix,
-    releaseType: releaseAs ?? version,
+    releaseType: releaseAs,
     preid,
   });
 
   const action$ = newVersion$.pipe(
     switchMap((newVersion) => {
-      if (newVersion === undefined) {
+      if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
         return of(undefined);
       }
@@ -78,7 +80,7 @@ export default async function version(
       const options: CommonVersionOptions = {
         dryRun: dryRun as boolean,
         trackDeps: trackDeps as boolean,
-        newVersion: newVersion as string,
+        newVersion: newVersion,
         noVerify: noVerify as boolean,
         preset,
         projectRoot,

@@ -220,8 +220,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toBeUndefined();
-
+    expect(newVersion).toBeNull();
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',

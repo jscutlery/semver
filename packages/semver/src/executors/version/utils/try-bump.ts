@@ -28,7 +28,7 @@ export function tryBump({
   dependencyRoots?: string[];
   releaseType?: ReleaseIdentifier;
   preid?: string;
-}) {
+}): Observable<string | null> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({ tagPrefix }).pipe(
     catchError(() => {
@@ -87,7 +87,7 @@ If your project is already versioned, please tag the latest release commit with 
       const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
       /* No commits since last release so don't bump. */
       if (numOfCommits === 0) {
-        return of(undefined);
+        return of(null);
       }
 
       const dependencyChecks$ = dependencyRoots.map((root) =>
@@ -102,8 +102,9 @@ If your project is already versioned, please tag the latest release commit with 
       const dependencyBump$ = combineLatest(dependencyChecks$).pipe(
         map((bumps) => {
           // See if there's an increment indicated by a dependency.
-          const positiveBumps = bumps
-            .filter(b => b !== null && b !== '0.0.0');
+          const positiveBumps = bumps.filter(
+            (b) => b !== null && b !== '0.0.0'
+          );
 
           /** If there's an increment, then the target project should
            * receive a patch increment. **/
@@ -114,20 +115,19 @@ If your project is already versioned, please tag the latest release commit with 
         })
       );
       return _semverBump({
-          since: lastVersion,
-          preset,
-          projectRoot,
-          tagPrefix,
-        })
-        .pipe(
-          switchMap((projectVersionBump) => {
-            if (projectVersionBump !== null) {
-              return of(projectVersionBump);
-            }
+        since: lastVersion,
+        preset,
+        projectRoot,
+        tagPrefix,
+      }).pipe(
+        switchMap((projectVersionBump) => {
+          if (projectVersionBump !== null) {
+            return of(projectVersionBump);
+          }
 
-            return dependencyBump$;
-          })
-        );
+          return dependencyBump$;
+        })
+      );
     })
   );
 }
@@ -142,15 +142,16 @@ export function _semverBump({
   preset: string;
   projectRoot: string;
   tagPrefix: string;
-}): Observable<string> {
-  return defer(async (): Promise<string> => {
+}) {
+  return defer(async () => {
     const recommended = (await promisify(conventionalRecommendedBump)({
       path: projectRoot,
       preset,
       tagPrefix,
     })) as { releaseType: semver.ReleaseType };
     const { releaseType } = recommended;
-    return semver.inc(since, releaseType) as string;
+
+    return semver.inc(since, releaseType);
   });
 }
 
@@ -162,8 +163,8 @@ export function _manualBump({
   since: string;
   releaseType: string;
   preid: string;
-}): Observable<string> {
-  return defer((): Observable<string> => {
+}) {
+  return defer(() => {
     const hasPreid =
       ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
         releaseType
@@ -175,6 +176,6 @@ export function _manualBump({
       ...(hasPreid ? [preid] : []),
     ];
 
-    return of<string>(semver.inc(...semverArgs) as string);
+    return of(semver.inc(...semverArgs));
   });
 }

@@ -202,7 +202,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(undefined));
+      mockTryBump.mockReturnValue(of(null));
 
       const { success } = await version(options, context);
 
@@ -312,7 +312,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(undefined));
+      mockTryBump.mockReturnValue(of(null));
 
       const { success } = await version(
         {
@@ -482,7 +482,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should skip executing post targets if no bump occurred', async () => {
-      mockTryBump.mockReturnValue(of(undefined));
+      mockTryBump.mockReturnValue(of(null));
 
       const { success } = await version(
         {
