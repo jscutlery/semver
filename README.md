@@ -75,22 +75,22 @@ nx run workspace:version [...options]
 
 #### Available options:
 
-| name                         | type       | default    | description                                          |
-| ---------------------------- | ---------- | ---------- | ---------------------------------------------------- |
-| **`--dryRun`**               | `bool`     | `false`    | run with dry mode                                    |
-| **`--noVerify`**             | `bool`     | `false`    | skip git hooks                                       |
-| **`--push`**                 | `bool`     | `false`    | push the release against git origin                  |
-| **`--syncVersions`**         | `bool`     | `false`    | lock/sync versions between projects                  |
-| **`--skipRootChangelog`**    | `bool`     | `false`    | skip generating root changelog _(sync mode only)_    |
-| **`--skipProjectChangelog`** | `bool`     | `false`    | skip generating project changelog _(sync mode only)_ |
-| **`--changelogHeader`**      | `string`   | `null`     | custom Markdown header for changelogs                |
-| **`--origin`**               | `string`   | `'origin'` | push against git remote repository                   |
-| **`--baseBranch`**           | `string`   | `'main'`   | push against git base branch                         |
-| **`--releaseAs`**            | `string`   | `null`     | specify the level of change                          |
-| **`--preid`**                | `string`   | `null`     | prerelease identifier                                |
-| **`--versionTagPrefix`**     | `string`   | `null`     | specify the tag prefix                               |
-| **`--postTargets`**          | `string[]` | `[]`       | specify a list of target to execute post-release     |
-| **`--trackDeps`**              | `boolean`| `false`    | use dependencies when calculating a version bump     |
+| name                         | type       | default    | description                                      |
+| ---------------------------- | ---------- | ---------- | ------------------------------------------------ |
+| **`--dryRun`**               | `bool`     | `false`    | run with dry mode                                |
+| **`--noVerify`**             | `bool`     | `false`    | skip git hooks                                   |
+| **`--push`**                 | `bool`     | `false`    | push the release against git origin              |
+| **`--syncVersions`**         | `bool`     | `false`    | lock/sync versions between projects              |
+| **`--skipRootChangelog`**    | `bool`     | `false`    | skip generating root changelog                   |
+| **`--skipProjectChangelog`** | `bool`     | `false`    | skip generating project changelog                |
+| **`--changelogHeader`**      | `string`   | `null`     | custom Markdown header for changelogs            |
+| **`--origin`**               | `string`   | `'origin'` | push against git remote repository               |
+| **`--baseBranch`**           | `string`   | `'main'`   | push against git base branch                     |
+| **`--releaseAs`**            | `string`   | `null`     | specify the level of change                      |
+| **`--preid`**                | `string`   | `null`     | prerelease identifier                            |
+| **`--versionTagPrefix`**     | `string`   | `null`     | specify the tag prefix                           |
+| **`--postTargets`**          | `string[]` | `[]`       | specify a list of target to execute post-release |
+| **`--trackDeps`**            | `boolean`  | `false`    | use dependencies when calculating a version bump |
 
 #### Configuration using the file
 
@@ -130,7 +130,7 @@ With independent mode the tag prefix uses the context target value, the default 
 
 #### Post-targets
 
-The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task. 
+The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task.
 
 Here is a configuration example using `@jscutlery/semver:github` to create GitHub Release for _my-project_ library:
 
