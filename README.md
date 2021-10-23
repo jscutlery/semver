@@ -90,7 +90,7 @@ nx run workspace:version [...options]
 | **`--preid`**                | `string`   | `null`     | prerelease identifier                            |
 | **`--versionTagPrefix`**     | `string`   | `null`     | specify the tag prefix                           |
 | **`--postTargets`**          | `string[]` | `[]`       | specify a list of target to execute post-release |
-| **`--trackDeps`**            | `boolean`  | `false`    | use dependencies when calculating a version bump |
+| **`--trackDeps`**            | `bool`     | `false`    | use dependencies when calculating a version bump |
 
 #### Configuration using the file
 
