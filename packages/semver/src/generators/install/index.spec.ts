@@ -81,15 +81,6 @@ describe('Install generator', () => {
           })
         );
       });
-
-      it('should add workspace project to nx.json', async () => {
-        await install(tree, options);
-
-        const nxConfig = readJson(tree, 'nx.json');
-
-        expect(nxConfig.projects.workspace).toBeDefined();
-        expect(nxConfig.projects.workspace).toEqual({});
-      });
     });
 
     describe('Independent versions', () => {
@@ -135,7 +126,8 @@ describe('Install generator', () => {
       it('should prompt user to select which projects should be versioned', async () => {
         await install(tree, options);
 
-        const workspace = readJson(tree, 'workspace.json');
+        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib2 = readJson(tree, 'libs/lib2/project.json');
 
         expect(inquirer.prompt).toBeCalledWith(
           expect.objectContaining({
@@ -145,7 +137,7 @@ describe('Install generator', () => {
           })
         );
         /* Project "lib1" selected by the prompt. */
-        expect(workspace.projects.lib1.targets).toEqual(
+        expect(lib1.targets).toEqual(
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
@@ -153,17 +145,18 @@ describe('Install generator', () => {
           })
         );
         /* Project "lib2" not selected by the prompt. */
-        expect(workspace.projects.lib2.targets.version).toBeUndefined();
+        expect(lib2.targets.version).toBeUndefined();
       });
 
       it('should use --projects option', async () => {
         await install(tree, { ...options, projects: ['lib2'] });
 
-        const workspace = readJson(tree, 'workspace.json');
+        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib2 = readJson(tree, 'libs/lib2/project.json');
 
         expect(inquirer.prompt).not.toBeCalled();
-        expect(workspace.projects.lib1.targets.version).toBeUndefined();
-        expect(workspace.projects.lib2.targets).toEqual(
+        expect(lib1.targets.version).toBeUndefined();
+        expect(lib2.targets).toEqual(
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
