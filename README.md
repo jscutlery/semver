@@ -255,6 +255,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://github.com/hinogi"><img src="https://avatars.githubusercontent.com/u/4602609?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Stefan Schneider</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=hinogi" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/CaffeinatedCodeMonkey"><img src="https://avatars.githubusercontent.com/u/5892586?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Travis Jones</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=CaffeinatedCodeMonkey" title="Code">💻</a> <a href="https://github.com/jscutlery/semver/commits?author=CaffeinatedCodeMonkey" title="Documentation">📖</a> <a href="#ideas-CaffeinatedCodeMonkey" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/HassenHichri"><img src="https://avatars.githubusercontent.com/u/10193983?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hichri Hassen</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3AHassenHichri" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/GarethDJohn"><img src="https://avatars.githubusercontent.com/u/28591718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gareth John</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=GarethDJohn" title="Code">💻</a></td>
   </tr>
 </table>
 
