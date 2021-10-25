@@ -119,12 +119,13 @@ describe(executePostTargets.name, () => {
     });
   });
 
-  fit('should forward and resolve options', (done) => {
+  it('should forward and resolve options', (done) => {
     mockReadTargetOptions.mockReturnValueOnce({
       optionA: 'optionA',
       version: '${version}',
       dryRun: '${dryRun}',
       numeric: '${num}',
+      falseyValue: '${falseyValue}',
     });
     mockReadTargetOptions.mockReturnValueOnce({
       optionB: 'optionB',
@@ -135,6 +136,7 @@ describe(executePostTargets.name, () => {
       version: '2.0.0',
       dryRun: true,
       num: 42,
+      falseyValue: false
     };
 
     executePostTargets({
@@ -148,6 +150,7 @@ describe(executePostTargets.name, () => {
           version: '2.0.0',
           dryRun: true,
           numeric: 42,
+          falseyValue: false,
         });
         expect(mockRunExecutor.mock.calls[1][1]).toEqual({
           optionB: 'optionB',
