@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.11.0](https://github.com/jscutlery/semver/compare/semver-2.10.0...semver-2.11.0) (2021-10-25)
+
+
+### Bug Fixes
+
+* :label: Adde shim for standard-lib deep imports ([c66acbf](https://github.com/jscutlery/semver/commit/c66acbf1058e01b9c2e27f38d4469ec767e5fdeb)), closes [#324](https://github.com/jscutlery/semver/issues/324)
+* :label: Fixed types ([d31ccfe](https://github.com/jscutlery/semver/commit/d31ccfe301970aa111667779644427448250fb52)), closes [#324](https://github.com/jscutlery/semver/issues/324)
+* :label: Fixed types and operators ([b1ec423](https://github.com/jscutlery/semver/commit/b1ec4238b8db55f75d11522ce104c8955c7e3b7c)), closes [#324](https://github.com/jscutlery/semver/issues/324)
+* :label: Fixed types and operators ([5f87262](https://github.com/jscutlery/semver/commit/5f87262239488564ef00163f5aef2d6150d47628)), closes [#324](https://github.com/jscutlery/semver/issues/324)
+* :label: Fixed typescript strict issues and deprecations ([c38a38e](https://github.com/jscutlery/semver/commit/c38a38ee13f0e9c883152b2b08ed961573c29c58)), closes [#342](https://github.com/jscutlery/semver/issues/342)
+* :package: Added dep to rxjs 7 to semver ([d937eda](https://github.com/jscutlery/semver/commit/d937eda553d629afb745dd1c77ddff0e1b08a977)), closes [#324](https://github.com/jscutlery/semver/issues/324)
+* :wrench: Added missing types and use esModuleInterop ([f5d2b03](https://github.com/jscutlery/semver/commit/f5d2b0308d7b51e68cbe75bd7434a9850982b8a1)), closes [#324](https://github.com/jscutlery/semver/issues/324)
+* changing the --track-deps option to only increment a patch ([a27e76e](https://github.com/jscutlery/semver/commit/a27e76e7a408537ed1410a1322851f9d9379eef3))
+* cleaning up a merge issue ([ca98d55](https://github.com/jscutlery/semver/commit/ca98d554200bcce4c5e3cc85f43c9a683c1b3d06))
+* cleaning up after a rebase ([7e4fa79](https://github.com/jscutlery/semver/commit/7e4fa790bcb0125ac08933a7fe742682d6b5ef4d))
+* fixing a messed up merge of the version schema ([4d02faf](https://github.com/jscutlery/semver/commit/4d02faf149a9bb14c92b8e16e1203815aa21fdad))
+* fixing a rebase issue ([75c37ca](https://github.com/jscutlery/semver/commit/75c37ca619b4bef0ec4369600c58bf2a943253ab))
+* **semver:** bump dependencies ([12468de](https://github.com/jscutlery/semver/commit/12468dea3e5a9b18968e33b5d50af4ff4576f898))
+* **semver:** bump generator deps ([e1c9052](https://github.com/jscutlery/semver/commit/e1c90522ede345cb316aa4b88e0f25f9a7c68e9b))
+* **semver:** changing the --use-deps option to --track-deps ([f909d5e](https://github.com/jscutlery/semver/commit/f909d5ed052ca3743dd22b69799229465e0eea5b))
+* **semver:** fixing some linting issues ([c6c29de](https://github.com/jscutlery/semver/commit/c6c29de14f706dd9a48823722c73906d44942cc8))
+* **semver:** fixing some linting issues ([27af0f8](https://github.com/jscutlery/semver/commit/27af0f842ca26bad5c4ac4f5db0eb209eaa0048c))
+* **semver:** making --track-deps only read one dependency deep ([62468eb](https://github.com/jscutlery/semver/commit/62468eb296a57b3be2bfc143f068c42a6d41daa6))
+* **semver:** resolve boolean arguments correctly ([bbd55dd](https://github.com/jscutlery/semver/commit/bbd55dd139d0afe9c1951e2d5988871b53303573)), closes [#353](https://github.com/jscutlery/semver/issues/353)
+* **semver:** Switching to using project graph functions directly, instead of the CLI. ([dedde3f](https://github.com/jscutlery/semver/commit/dedde3f5c90c65df4c27dcf16dd619d8be36fc2c))
+
+
+### Features
+
+* :heavy_plus_sign: Added types and config entries ([b22875e](https://github.com/jscutlery/semver/commit/b22875ebd9c94e2ce23d94f2252c90499b7715d7)), closes [#342](https://github.com/jscutlery/semver/issues/342)
+* **github:** ✅ add missing options to github executor ([603ac25](https://github.com/jscutlery/semver/commit/603ac25737fde7f0fcd006ced8afd13293683779))
+* **github:** ✅ add missing options to github executor ([bfb466d](https://github.com/jscutlery/semver/commit/bfb466de466b3940eb4f50e02ed76176fb785761))
+* **github:** ✅ add test for missing github executor ([7480e1e](https://github.com/jscutlery/semver/commit/7480e1e022e6f5c73444c56e0e4014b078c31e6a))
+* **semver:** Adding in a `--use-deps` flag to include dependencies when calculating the version bump ([7d9e4c9](https://github.com/jscutlery/semver/commit/7d9e4c9a2e50cbe4dbd77fe7e6a77ba2a2946351))
+* **semver:** Adding in a `--use-deps` flag to include dependencies when calculating the version bump ([8f23095](https://github.com/jscutlery/semver/commit/8f23095aae6e40b5b8fd4400dcfae660ee4015ad))
+
+
+
 # [2.10.0](https://github.com/jscutlery/nx-plugin-semver/compare/semver-2.9.0...semver-2.10.0) (2021-10-07)
 
 
