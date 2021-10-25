@@ -14,7 +14,7 @@ export function resolveInterpolation(
   );
 
   if (_isBool(resolvedValue)) {
-    return !!resolvedValue;
+    return resolvedValue === "true";
   }
 
   if (_isNumeric(resolvedValue)) {

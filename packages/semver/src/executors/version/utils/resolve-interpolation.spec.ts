@@ -39,13 +39,22 @@ describe(resolveInterpolation.name, () => {
     ).toBe('test string with 42 and true');
   });
 
-  it('should resolve boolean', () => {
+  it('should resolve true boolean', () => {
     expect(
       resolveInterpolation(
         '${bool}',
         { bool: true }
       )
     ).toBe(true);
+  });
+
+  it('should resolve false boolean', () => {
+    expect(
+      resolveInterpolation(
+        '${bool}',
+        { bool: false }
+      )
+    ).toBe(false);
   });
 
   it('should resolve number', () => {
