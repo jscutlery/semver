@@ -10,9 +10,9 @@
 
 **Nx plugin for versioning** using [SemVer](https://semver.org/) and **CHANGELOG generation** powered by [Conventional Commits](https://conventionalcommits.org).
 
-## Setup
+## Setup :
 
-### Install
+### Install:
 
 Using Nx:
 
@@ -33,15 +33,15 @@ This package allows you to manage your monorepo using one of two modes: Synced o
 
 Allow multiple projects to be versioned independently. This way you release only what you want and consumers don't get updates they don't need. This allows small, rapid and incremental adoption of your packages.
 
-#### Synced mode
+#### Synced mode:
 
 Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together. This mode is useful when you are working with only one product. One issue with this approach is that a major change in any project will result in all projects having a new major version.
 
-## Usage
+## Usage :
 
-### Release
+### Release :
 
-#### Independent mode
+#### Independent mode:
 
 Release project independently by running:
 
@@ -55,12 +55,12 @@ You can leverage the built-in affected command to only version changed packages:
 nx affected --target version [...options]
 ```
 
-#### Synced mode
+#### Synced mode:
 
 Release multiple projects at once:
 
 ```
-nx run workspace:version [...options]
+nx run workspace:version [....options]
 ```
 
 #### When run, this executor does the following:
@@ -92,7 +92,7 @@ nx run workspace:version [...options]
 | **`--postTargets`**          | `string[]` | `[]`       | specify a list of target to execute post-release |
 | **`--trackDeps`**            | `bool`     | `false`    | use dependencies when calculating a version bump |
 
-#### Configuration using the file
+#### Configuration using the file:
 
 Note that you can define the options you want to customize using the `workspace.json` file, eg:
 
@@ -106,7 +106,7 @@ Note that you can define the options you want to customize using the `workspace.
 }
 ```
 
-#### Specify the level of change
+#### Specify the level of change:
 
 The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level.
 
@@ -120,7 +120,7 @@ nx run workspace:version --releaseAs=prerelease --preid=alpha
 nx run workspace:version --releaseAs=prerelease --preid=beta
 ```
 
-#### Tag prefix customization
+#### Tag prefix customization:
 
 The **`--versionTagPrefix`** option allows you to customize the tag prefix.
 
@@ -128,7 +128,7 @@ With the sync mode the tag prefix is set to `"v"` by default, which is resolved 
 
 With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
 
-#### Post-targets
+#### Post-targets:
 
 The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task.
 
