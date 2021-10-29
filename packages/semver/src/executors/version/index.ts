@@ -3,6 +3,7 @@ import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo, switchMap } from 'rxjs/operators';
 
+import { getProjectDependencies } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
 import { resolveTagPrefix } from './utils/resolve-tag-prefix';
@@ -13,13 +14,11 @@ import { versionProject, versionWorkspace } from './version';
 import type { ExecutorContext } from '@nrwl/devkit';
 import type { CommonVersionOptions } from './version';
 import type { VersionBuilderSchema } from './schema';
-import { getProjectDependencies } from './utils/get-project-dependencies';
-
 export default async function version(
   options: VersionBuilderSchema,
   context: ExecutorContext
 ): Promise<{ success: boolean }> {
-  const  {
+  const {
     push,
     remote,
     dryRun,
