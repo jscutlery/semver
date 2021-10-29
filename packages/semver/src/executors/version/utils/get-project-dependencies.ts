@@ -11,7 +11,7 @@ export async function getProjectDependencies(
 ): Promise<string[]> {
   // The shape of the project graph can still change. So we're pinning the
   // version of the graph to 3.0.
-  const dependencyGraph = await createProjectGraphAsync('3.0');
+  const dependencyGraph = await createProjectGraphAsync('5.0');
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);
 }
 
