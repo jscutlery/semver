@@ -14,6 +14,7 @@ import { versionProject, versionWorkspace } from './version';
 import type { ExecutorContext } from '@nrwl/devkit';
 import type { CommonVersionOptions } from './version';
 import type { VersionBuilderSchema } from './schema';
+
 export default async function version(
   options: VersionBuilderSchema,
   context: ExecutorContext
