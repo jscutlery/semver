@@ -16,7 +16,10 @@ import type { VersionBuilderSchema } from './schema';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 
 export default async function version(
-  {
+  options: VersionBuilderSchema,
+  context: ExecutorContext
+): Promise<{ success: boolean }> {
+  const  {
     push,
     remote,
     dryRun,
@@ -27,23 +30,22 @@ export default async function version(
     skipRootChangelog,
     skipProjectChangelog,
     version,
-    releaseAs,
+    releaseAs: _releaseAs,
     preid,
     changelogHeader,
     versionTagPrefix,
     postTargets,
-  }: VersionBuilderSchema,
-  context: ExecutorContext
-): Promise<{ success: boolean }> {
-  releaseAs = releaseAs ?? version;
+  } = normalizeOptions(options);
+  const releaseAs = _releaseAs ?? version;
 
   const workspaceRoot = context.root;
+  const projectName = context.projectName as string;
   const preset = 'angular';
 
   const tagPrefix = resolveTagPrefix({
     versionTagPrefix,
-    projectName: context.projectName as string,
-    syncVersions: syncVersions as boolean
+    projectName,
+    syncVersions,
   });
 
   const projectRoot = getProjectRoot(context);
@@ -52,9 +54,10 @@ export default async function version(
   if (trackDeps && !releaseAs) {
     // Include any depended-upon libraries in determining the version bump.
     try {
-      const dependencyLibs = await getProjectDependencies(context.projectName as string);
-      dependencyRoots = dependencyLibs
-        .map(name => context.workspace.projects[name].root);
+      const dependencyLibs = await getProjectDependencies(projectName);
+      dependencyRoots = dependencyLibs.map(
+        (name) => context.workspace.projects[name].root
+      );
     } catch (e) {
       logger.error('Failed to determine dependencies.');
       return Promise.reject(e);
@@ -78,10 +81,10 @@ export default async function version(
       }
 
       const options: CommonVersionOptions = {
-        dryRun: dryRun as boolean,
-        trackDeps: trackDeps as boolean,
+        dryRun,
+        trackDeps,
         newVersion: newVersion,
-        noVerify: noVerify as boolean,
+        noVerify,
         preset,
         projectRoot,
         tagPrefix,
@@ -92,8 +95,8 @@ export default async function version(
         syncVersions
           ? versionWorkspace({
               ...options,
-              skipRootChangelog: skipRootChangelog as boolean,
-              skipProjectChangelog: skipProjectChangelog as boolean,
+              skipRootChangelog,
+              skipProjectChangelog,
               workspaceRoot,
             })
           : versionProject(options)
@@ -104,9 +107,9 @@ export default async function version(
        */
       const pushToGitRemote$ = defer(() =>
         tryPushToGitRemote({
-          branch: baseBranch as string,
-          noVerify: noVerify as boolean,
-          remote: remote as string,
+          branch: baseBranch,
+          noVerify,
+          remote,
         })
       );
 
@@ -133,8 +136,8 @@ export default async function version(
     })
   );
 
-  return lastValueFrom(action$
-    .pipe(
+  return lastValueFrom(
+    action$.pipe(
       mapTo({ success: true }),
       catchError((error) => {
         if (error instanceof SchemaError) {
@@ -145,5 +148,26 @@ export default async function version(
 
         return of({ success: false });
       })
-    ));
+    )
+  );
+}
+
+function normalizeOptions(options: VersionBuilderSchema) {
+  return {
+    push: options.push as boolean,
+    remote: options.remote as string,
+    dryRun: options.dryRun as boolean,
+    trackDeps: options.trackDeps as boolean,
+    baseBranch: options.baseBranch as string,
+    noVerify: options.noVerify as boolean,
+    syncVersions: options.syncVersions as boolean,
+    skipRootChangelog: options.skipRootChangelog as boolean,
+    skipProjectChangelog: options.skipProjectChangelog as boolean,
+    version: options.version,
+    releaseAs: options.releaseAs,
+    preid: options.preid,
+    changelogHeader: options.changelogHeader,
+    versionTagPrefix: options.versionTagPrefix,
+    postTargets: options.postTargets,
+  };
 }
