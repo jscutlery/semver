@@ -45,7 +45,7 @@ jobs:
         # Use npx instead of yarn because yarn automagically sets NPM_* environment variables
         # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
         # which is set up by `setup-node` action.
-        run: npx nx affected --base=last-release --target=version
+        run: npx nx affected --base=origin/main --target=version
       - name: Tag last-release
         run: git tag -f last-release
       - name: Push changes
