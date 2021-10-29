@@ -1,0 +1,34 @@
+name: Setup
+description: Setup Node.js, cache and install dependencies
+inputs:
+  node-version:
+    description: Node.js version
+    required: false
+    default: '16'
+runs:
+  using: composite
+  steps:
+    - name: Checkout all commits
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        # This doesn't just set the registry url, but also sets
+        # the right configuration in .npmrc that reads NPM token
+        # from NPM_AUTH_TOKEN environment variable.
+        # It actually creates a .npmrc in a temporary folder
+        # and sets the NPM_CONFIG_USERCONFIG environment variable.
+        registry-url: https://registry.npmjs.org
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./yarn.lock') }}
+    - name: yarn install
+      shell: bash
+      run: yarn --frozen-lockfile --no-progress --non-interactive --prefer-offline
