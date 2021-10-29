@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.1](https://github.com/jscutlery/semver/compare/semver-2.11.0...semver-2.11.1) (2021-10-29)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 ensure projects option is defined ([#362](https://github.com/jscutlery/semver/issues/362)) ([51bac25](https://github.com/jscutlery/semver/commit/51bac25c7cec865dbd9125a7740d8f845166cfef))
+
+
+
 # [2.11.0](https://github.com/jscutlery/semver/compare/semver-2.10.0...semver-2.11.0) (2021-10-25)
 
 
