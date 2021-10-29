@@ -8,11 +8,11 @@
       "executor": "./dist/packages/semver:version",
       "options": {
         "push": true,
-        "postTargets": ["semver:build", "semver:publish", "semver:github"]
+        "postTargets": ["semver:publish", "semver:github"]
       }
     },
     "github": {
-      "executor": "@jscutlery/semver:github",
+      "executor": "./dist/packages/semver:github",
       "options": {
         "tag": "${tag}",
         "notesFile": "packages/semver/CHANGELOG.md"
