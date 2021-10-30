@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.3](https://github.com/jscutlery/semver/compare/semver-2.11.2...semver-2.11.3) (2021-10-30)
+
+
+### Bug Fixes
+
+* **semver:** bump project graph version ([#369](https://github.com/jscutlery/semver/issues/369)) ([69dd708](https://github.com/jscutlery/semver/commit/69dd708725b2bdd6ec8c3526d304fbf5cf8d220b))
+
+
+
 ## [2.11.2](https://github.com/jscutlery/semver/compare/semver-2.11.1...semver-2.11.2) (2021-10-29)
 
 
