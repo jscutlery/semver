@@ -27,7 +27,7 @@ In the workspace definition:
 
 #### Run manually
 
-Publish the `v.1.0.0` release:
+Publish the `v1.0.0` release:
 
 ```
 nx run my-project:github --tag v1.0.0 --notesFile "libs/my-project/CHANGELOG.md" [...options]
