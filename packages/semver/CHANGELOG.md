@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.4](https://github.com/jscutlery/semver/compare/semver-2.11.3...semver-2.11.4) (2021-10-30)
+
+
+### Bug Fixes
+
+* **github:** use correct property type ([#370](https://github.com/jscutlery/semver/issues/370)) ([0e67599](https://github.com/jscutlery/semver/commit/0e67599e369555e4181bb7055f9e1181e3baeaf1))
+
+
+
 ## [2.11.3](https://github.com/jscutlery/semver/compare/semver-2.11.2...semver-2.11.3) (2021-10-30)
 
 
