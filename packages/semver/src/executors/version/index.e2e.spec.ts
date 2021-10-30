@@ -9,8 +9,9 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
-import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph';
+import { createProjectGraphAsync, getSortedProjectNodes } from '@nrwl/workspace/src/core/project-graph';
 import { lastValueFrom } from 'rxjs';
+import { getProjectDependencies } from './utils/get-project-dependencies';
 
 jest.mock('@nrwl/workspace/src/core/project-graph');
 
@@ -466,7 +467,31 @@ $`)
   });
 
   describe('option --track-deps', () => {
+    /**
+     * Ideally, these would not be mocked in an e2e test, but in order to truly
+     * test its use in `getProjectDependencies`, it would require a full NX workspace
+     * testing environment with interdependent projects.
+     */
     const mockCreateProjectGraphAsync = createProjectGraphAsync as jest.MockedFunction<typeof createProjectGraphAsync>;
+    const mockGetSortedProjectNodes = getSortedProjectNodes as jest.MockedFunction<typeof getSortedProjectNodes>;
+
+    describe('utilizes the project graph', () => {
+      beforeEach(() => {
+        const originalModule = jest.requireActual('@nrwl/workspace/src/core/project-graph');
+        mockCreateProjectGraphAsync.mockImplementation(originalModule.createProjectGraphAsync);
+        mockGetSortedProjectNodes.mockImplementation(originalModule.getSortedProjectNodes);
+      })
+      afterEach(() => jest.resetAllMocks());
+
+      it('uses a valid project graph version', async () => {
+        await expect(getProjectDependencies('semver')).resolves.not.toThrow();
+        /** If this failed, then the pinned version of the project graph
+         * is no longer supported for the current version of NX. The version should
+         * be bumped and the tests should be run against an example of the updated
+         * project graph.
+         */
+      });
+    })
 
     describe('when disabled with an unchanged project', () => {
       beforeAll(async () => {
