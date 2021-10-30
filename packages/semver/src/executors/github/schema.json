@@ -26,7 +26,7 @@
       "description": "Read release notes from file."
     },
     "draft": {
-      "type": "string",
+      "type": "boolean",
       "description": "Save the release as a draft instead of publishing it"
     },
     "title": {
@@ -34,7 +34,7 @@
       "description": "Release title"
     },
     "prerelease": {
-      "type": "string",
+      "type": "boolean",
       "description": "Mark the release as a prerelease"
     },
     "discussion-category": {
