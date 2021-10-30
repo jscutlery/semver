@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.11.5](https://github.com/jscutlery/semver/compare/semver-2.11.4...semver-2.11.5) (2021-10-30)
+
+
+
 ## [2.11.4](https://github.com/jscutlery/semver/compare/semver-2.11.3...semver-2.11.4) (2021-10-30)
 
 
