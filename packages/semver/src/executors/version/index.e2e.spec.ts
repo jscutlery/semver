@@ -467,6 +467,11 @@ $`)
   });
 
   describe('option --track-deps', () => {
+    /**
+     * Ideally, these would not be mocked in an e2e test, but in order to truly
+     * test its use in `getProjectDependencies`, it would require a full NX workspace
+     * testing environment with interdependent projects.
+     */
     const mockCreateProjectGraphAsync = createProjectGraphAsync as jest.MockedFunction<typeof createProjectGraphAsync>;
     const mockGetSortedProjectNodes = getSortedProjectNodes as jest.MockedFunction<typeof getSortedProjectNodes>;
 
@@ -479,13 +484,7 @@ $`)
       afterEach(() => jest.resetAllMocks());
 
       it('uses a valid project graph version', async () => {
-        let errored = false;
-        try {
-          await getProjectDependencies('semver');
-        } catch (e) {
-          errored = true;
-        }
-        expect(errored).toEqual(false);
+        await expect(getProjectDependencies('semver')).resolves.not.toThrow();
         /** If this failed, then the pinned version of the project graph
          * is no longer supported for the current version of NX. The version should
          * be bumped and the tests should be run against an example of the updated
