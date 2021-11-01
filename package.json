@@ -32,8 +32,8 @@
   "private": true,
   "devDependencies": {
     "@angular-devkit/schematics": "12.2.12",
-    "@commitlint/cli": "^13.2.0",
-    "@commitlint/config-angular": "^13.2.0",
+    "@commitlint/cli": "^14.0.0",
+    "@commitlint/config-angular": "^14.0.0",
     "@nrwl/cli": "13.1.2",
     "@nrwl/eslint-plugin-nx": "13.1.2",
     "@nrwl/jest": "13.1.2",
