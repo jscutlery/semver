@@ -181,11 +181,24 @@ If you wish to track changes at any depth of your dependency graph, then you sho
 
 1. Enable versioning for each project in the dependency graph
 2. Set the `trackDeps` option to `true` on each of the projects
-3. Call the `version` executor with `--withDeps`
+3. Make sure that `version` is run on projects in the right order by configuring `version`'s target dependencies in `nx.json`:
+```json
+...
+"targetDependencies": {
+  "version": [
+    {
+      "target": "version",
+      "projects": "dependencies"
+    }
+  ]
+}
+...
+```
 
-This setup will cause a cascade of version increments starting at the deepest changed dependency, then continuing up the graph until the indicated
-project is reached. Additionally, if used in conjunction with `nx run-many --all`, or _affected_, then it will avoid attempting to version dependencies
-multiple times.
+This setup will cause a cascade of version increments starting at the deepest changed dependency,
+then continuing up the graph until the indicated project is reached. 
+Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`, 
+then it will avoid attempting to version dependencies multiple times.
 
 ### CI/CD usage
 
