@@ -39,9 +39,6 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Setup git user to "🤖 JSCutlery Bot"
         run: git config user.email "-" && git config user.name "🤖 JSCutlery Bot"
-      - name: Build
-        # Build before versioning because the version executor point to the distribution bundle.
-        run: yarn nx affected --base=last-release --target=build
       - name: Version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
