@@ -32,6 +32,18 @@
         "target": "build",
         "projects": "dependencies"
       }
+    ],
+    "github": [
+      {
+        "target": "build",
+        "projects": "self"
+      }
+    ],
+    "version": [
+      {
+        "target": "build",
+        "projects": "self"
+      }
     ]
   },
   "cli": {
