@@ -59,15 +59,27 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
 
 #### Available Options
 
-| name              | type       | default     | description                                                     |
-| ----------------- | ---------- | ----------- | --------------------------------------------------------------- |
-| **`--tag`**       | `string`   | `undefined` | attach the release to the specified tag                         |
-| **`--branch`**    | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
-| **`--files`**     | `string[]` | `undefined` | a list of asset files may be given to upload to the new release |
-| **`--notes`**     | `string`   | `undefined` | release notes                                                   |
-| **`--notesFile`** | `string`   | `undefined` | read release notes from file                                    |
-| **`--draft`**     | `boolean`  | `undefined` | save the release as a draft instead of publishing               |
-| **`--title`**     | `string`   | `undefined` | release title                                                   |
-| **`--prerelease`**| `boolean`  | `undefined` | mark the release as a prerelease                                |
-| **`--discussion-category`** | `string`   | `undefined` | start a discussion of the specified category          |
-| **`--repo`**      | `string`   | `undefined` | select another repository using the [HOST/]OWNER/REPO format    |
+| name                        | type       | default     | description                                                     |
+| --------------------------- | ---------- | ----------- | --------------------------------------------------------------- |
+| **`--tag`**                 | `string`   | `undefined` | attach the release to the specified tag                         |
+| **`--branch`**              | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
+| **`--files`**               | `string[]` | `undefined` | a list of asset files may be given to upload to the new release |
+| **`--notes`**               | `string`   | `undefined` | release notes                                                   |
+| **`--notesFile`**           | `string`   | `undefined` | read release notes from file                                    |
+| **`--draft`**               | `boolean`  | `undefined` | save the release as a draft instead of publishing               |
+| **`--title`**               | `string`   | `undefined` | release title                                                   |
+| **`--prerelease`**          | `boolean`  | `undefined` | mark the release as a prerelease                                |
+| **`--discussion-category`** | `string`   | `undefined` | start a discussion of the specified category                    |
+| **`--repo`**                | `string`   | `undefined` | select another repository using the [HOST/]OWNER/REPO format    |
+
+#### CI/CD
+
+
+To make this executor work in your GitHub workflows you should provide the `GITHUB_TOKEN` environment variable.
+
+```yml
+- name: Version
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: npx nx affected --target=version
+```
