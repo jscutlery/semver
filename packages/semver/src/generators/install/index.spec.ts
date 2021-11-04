@@ -13,9 +13,6 @@ jest.mock('inquirer');
 
 const defaultOptions: SchemaOptions = {
   syncVersions: false,
-  push: true,
-  branch: 'main',
-  remote: 'origin',
   enforceConventionalCommits: true,
   projects: [],
 };
@@ -27,9 +24,11 @@ describe('Install generator', () => {
     jest.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined);
     jest
       .spyOn(fs, 'writeFileSync')
-      .mockImplementation((_path: number | PathLike, _content: string | ArrayBufferView) => {
-        tree.write(_path as string, _content as string);
-      });
+      .mockImplementation(
+        (_path: number | PathLike, _content: string | ArrayBufferView) => {
+          tree.write(_path as string, _content as string);
+        }
+      );
   });
 
   describe('Workspace Version 1', () => {
@@ -114,7 +113,9 @@ describe('Install generator', () => {
           references: [],
         });
 
-        jest.spyOn(inquirer, 'prompt').mockResolvedValue({ projects: ['lib1'] });
+        jest
+          .spyOn(inquirer, 'prompt')
+          .mockResolvedValue({ projects: ['lib1'] });
       });
 
       afterEach(() =>
@@ -160,6 +161,34 @@ describe('Install generator', () => {
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
+            },
+          })
+        );
+      });
+
+      it('should forward --baseBranch option to all projects', async () => {
+        jest
+          .spyOn(inquirer, 'prompt')
+          .mockResolvedValue({ projects: ['lib1', 'lib2'] });
+
+        await install(tree, { ...options, baseBranch: 'master' });
+
+        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib2 = readJson(tree, 'libs/lib2/project.json');
+
+        expect(lib1.targets).toEqual(
+          expect.objectContaining({
+            version: {
+              executor: '@jscutlery/semver:version',
+              options: { baseBranch: 'master' },
+            },
+          })
+        );
+        expect(lib2.targets).toEqual(
+          expect.objectContaining({
+            version: {
+              executor: '@jscutlery/semver:version',
+              options: { baseBranch: 'master' },
             },
           })
         );
@@ -299,6 +328,5 @@ describe('Install generator', () => {
         expect(packageJson.devDependencies.husky).toBeUndefined();
       });
     });
-
   });
 });

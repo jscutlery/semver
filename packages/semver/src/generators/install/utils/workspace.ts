@@ -18,23 +18,36 @@ export function listProjects(tree: Tree): ProjectDefinition[] {
 
 export function updateProjects(
   tree: Tree,
+  options: SchemaOptions,
   predicate: (projectName: string) => boolean
 ) {
   getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
-      project.targets!.version = {
-        executor: '@jscutlery/semver:version'
+
+      const targets = project.targets ?? {};
+      targets.version = {
+        executor: '@jscutlery/semver:version',
       };
+
+      if (options.baseBranch) {
+        targets.version.options = {
+          baseBranch: options.baseBranch
+        }
+      }
+
       updateProjectConfiguration(tree, projectName, project);
     }
   });
 }
 
-export async function updateWorkspaceFromPrompt(tree: Tree): Promise<void> {
+export async function updateWorkspaceFromPrompt(
+  tree: Tree,
+  options: SchemaOptions
+): Promise<void> {
   const projects = listProjects(tree);
   const answers = await createPrompt(projects);
 
-  return updateProjects(tree, (projectName) =>
+  return updateProjects(tree, options, (projectName) =>
     answers.projects.includes(projectName)
   );
 }
@@ -43,7 +56,9 @@ export function updateWorkspaceFromSchema(
   tree: Tree,
   options: SchemaOptions
 ): void {
-  return updateProjects(tree, (projectName) =>
-    options.projects?.includes(projectName) as boolean
+  return updateProjects(
+    tree,
+    options,
+    (projectName) => options.projects?.includes(projectName) as boolean
   );
 }

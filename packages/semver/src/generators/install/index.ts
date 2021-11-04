@@ -35,7 +35,7 @@ export default async function install(tree: Tree, options: SchemaOptions) {
   } else {
     options.projects && options.projects.length > 0
       ? updateWorkspaceFromSchema(tree, options)
-      : await updateWorkspaceFromPrompt(tree);
+      : await updateWorkspaceFromPrompt(tree, options);
   }
 
   addDependencies(tree, options);

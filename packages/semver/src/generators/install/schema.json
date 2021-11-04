@@ -15,6 +15,10 @@
       "description": "Which projects should be versioned independently",
       "type": "array"
     },
+    "baseBranch": {
+      "description": "Configure base branch",
+      "type": "string"
+    },
     "enforceConventionalCommits": {
       "description": "Install & configure commitlint, husky & commitizen",
       "type": "boolean",
