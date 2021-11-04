@@ -17,6 +17,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           node-version: ${{ matrix.node-version }}
+      - run: yarn commitlint --from=last-release
       - run: yarn nx affected:lint --base=last-release
       - run: yarn nx affected:build --base=last-release
       # @NOTICE find a way to use affected:test with --code-coverage flag (if that possible??)
