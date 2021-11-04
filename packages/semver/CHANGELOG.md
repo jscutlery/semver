@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.12.0](https://github.com/jscutlery/semver/compare/semver-2.11.5...semver-2.12.0) (2021-11-04)
+
+
+### Features
+
+* **semver:** add `--baseBranch` option to install generator ([0aa8626](https://github.com/jscutlery/semver/commit/0aa8626cdd4d4ad4f8764f197f48f55a53532fcc))
+
+
+
 ## [2.11.5](https://github.com/jscutlery/semver/compare/semver-2.11.4...semver-2.11.5) (2021-10-30)
 
 
