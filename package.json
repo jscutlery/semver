@@ -69,11 +69,6 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
   "dependencies": {},
   "resolutions": {
     "rxjs": "^7.4.0"
