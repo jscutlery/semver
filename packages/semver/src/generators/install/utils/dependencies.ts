@@ -1,4 +1,4 @@
-import type { Tree } from '@nrwl/devkit';
+import { readJson, Tree } from '@nrwl/devkit';
 import { addDependenciesToPackageJson } from '@nrwl/devkit';
 import { updateJson } from '@nrwl/devkit';
 import { constants } from 'fs';
@@ -38,8 +38,9 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       {
         commitizen: '^4.2.4',
         'cz-conventional-changelog': '^3.3.0',
-        '@commitlint/cli': '^13.2.1',
-        '@commitlint/config-conventional': '^13.2.0',
+        '@commitlint/cli': '^14.1.0',
+        '@commitlint/config-conventional': '^14.1.0',
+        '@commitlint/config-angular': '^14.1.0',
         husky: '^7.0.4',
       }
     );
@@ -64,24 +65,31 @@ function _addCommitizenConfig(tree: Tree) {
 }
 
 function _addCommitlintConfig(tree: Tree) {
-  return updateJson(tree, PACKAGE_JSON, (packageJson: PackageJson) => {
-    const hasConfig: boolean =
-      packageJson.commitlint != null ||
-      tree.exists('commitlint.config.js') ||
-      tree.exists('commitlint') ||
-      tree.exists('.commitlintrc.js') ||
-      tree.exists('.commitlintrc.json') ||
-      tree.exists('.commitlintrc.yml');
+  const packageJson = readJson(tree, PACKAGE_JSON);
 
-    if (!hasConfig) {
-      packageJson.commitlint = {
-        ...packageJson.commitlint,
-        extends: ['@commitlint/config-conventional'],
-      };
-    }
+  const hasConfig: boolean =
+    packageJson.commitlint != null ||
+    tree.exists('commitlint.config.js') ||
+    tree.exists('commitlint') ||
+    tree.exists('.commitlintrc.js') ||
+    tree.exists('.commitlintrc.json') ||
+    tree.exists('.commitlintrc.yml');
 
-    return packageJson;
-  });
+  if (!hasConfig) {
+    tree.write(
+      '.commitlintrc.js',
+      JSON.stringify(
+        {
+          extends: ['@commitlint/config-angular'],
+          rules: {},
+        },
+        null,
+        2
+      )
+    );
+  }
+
+  return tree;
 }
 
 function _addHuskyConfig(tree: Tree) {

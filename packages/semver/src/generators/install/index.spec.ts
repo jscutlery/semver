@@ -245,27 +245,29 @@ describe('Install generator', () => {
 
         await install(tree, options);
 
-        const packageJson2 = readJson(tree, 'package.json');
-        expect(packageJson2.config.commitizen.path).toEqual('other');
+        expect(readJson(tree, 'package.json').config.commitizen.path).toEqual(
+          'other'
+        );
       });
 
       it('add commitlint to package.json devDepencencies', async () => {
         await install(tree, options);
 
         const packageJson = readJson(tree, 'package.json');
-        expect(packageJson.devDependencies['@commitlint/cli']).toBeDefined();
-        expect(
-          packageJson.devDependencies['@commitlint/config-conventional']
-        ).toBeDefined();
+        expect(packageJson.devDependencies).toContainKeys([
+          '@commitlint/cli',
+          '@commitlint/config-conventional',
+          '@commitlint/config-angular',
+        ]);
       });
 
       it('adds commitlint config to package.json if does not exist', async () => {
         await install(tree, options);
 
-        const packageJson = readJson(tree, 'package.json');
+        const commitlintConfig = readJson(tree, '.commitlintrc.js');
 
-        expect(packageJson.commitlint.extends).toEqual([
-          '@commitlint/config-conventional',
+        expect(commitlintConfig.extends).toEqual([
+          '@commitlint/config-angular',
         ]);
       });
 
@@ -279,9 +281,9 @@ describe('Install generator', () => {
 
         await install(tree, options);
 
-        const packageJson2 = readJson(tree, 'package.json');
-
-        expect(packageJson2.commitlint.extends).toEqual(['other']);
+        expect(readJson(tree, 'package.json').commitlint.extends).toEqual([
+          'other',
+        ]);
       });
 
       it('add husky to package.json devDepencencies', async () => {
@@ -317,15 +319,13 @@ describe('Install generator', () => {
 
         const packageJson = readJson(tree, 'package.json');
 
-        expect(packageJson.devDependencies.commitizen).toBeUndefined();
-        expect(
-          packageJson.devDependencies['cz-conventional-changelog']
-        ).toBeUndefined();
-        expect(packageJson.devDependencies['@commitlint/cli']).toBeUndefined();
-        expect(
-          packageJson.devDependencies['@commitlint/config-conventional']
-        ).toBeUndefined();
-        expect(packageJson.devDependencies.husky).toBeUndefined();
+        expect(packageJson.devDependencies).not.toContainKeys([
+          'commitizen',
+          'cz-conventional-changelog',
+          '@commitlint/cli',
+          '@commitlint/config-conventional',
+          '@commitlint/config-angular',
+        ]);
       });
     });
   });
