@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.13.0](https://github.com/jscutlery/semver/compare/semver-2.12.0...semver-2.13.0) (2021-11-04)
+
+
+### Features
+
+* **semver:** follow `@commitlint/config-angular` rules ([71f3fed](https://github.com/jscutlery/semver/commit/71f3fedf49f26b47da9e28fae56dfe11540ecd06))
+
+
+
 # [2.12.0](https://github.com/jscutlery/semver/compare/semver-2.11.5...semver-2.12.0) (2021-11-04)
 
 
