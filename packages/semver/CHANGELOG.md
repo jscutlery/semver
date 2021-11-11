@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.13.1](https://github.com/jscutlery/semver/compare/semver-2.13.0...semver-2.13.1) (2021-11-11)
+
+
+### Bug Fixes
+
+* **semver:** write commitlint config into json ([#383](https://github.com/jscutlery/semver/issues/383)) ([f4013fd](https://github.com/jscutlery/semver/commit/f4013fd3d25fb9999d55db3e087550c33f16b225))
+
+
+
 # [2.13.0](https://github.com/jscutlery/semver/compare/semver-2.12.0...semver-2.13.0) (2021-11-04)
 
 
