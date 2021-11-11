@@ -264,7 +264,7 @@ describe('Install generator', () => {
       it('adds commitlint config to package.json if does not exist', async () => {
         await install(tree, options);
 
-        const commitlintConfig = readJson(tree, '.commitlintrc.js');
+        const commitlintConfig = readJson(tree, '.commitlintrc.json');
 
         expect(commitlintConfig.extends).toEqual([
           '@commitlint/config-angular',

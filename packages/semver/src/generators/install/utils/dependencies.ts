@@ -77,7 +77,7 @@ function _addCommitlintConfig(tree: Tree) {
 
   if (!hasConfig) {
     tree.write(
-      '.commitlintrc.js',
+      '.commitlintrc.json',
       JSON.stringify(
         {
           extends: ['@commitlint/config-angular'],
