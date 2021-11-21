@@ -206,62 +206,17 @@ describe('Install generator', () => {
     describe('Enforce Conventional Commits', () => {
       const options = { ...defaultOptions, enforce: true };
 
-      it('add commitizen to package.json devDepencencies', async () => {
-        const packageJson = readJson(tree, 'package.json');
-        packageJson.config = {
-          other: 'test',
-        };
-        tree.write('package.json', JSON.stringify(packageJson, null, 2));
-
-        await install(tree, options);
-
-        const packageJson2 = readJson(tree, 'package.json');
-
-        expect(packageJson2.devDependencies.commitizen).toBeDefined();
-        expect(
-          packageJson2.devDependencies['cz-conventional-changelog']
-        ).toBeDefined();
-      });
-
-      it('adds commitizen config to package.json if does not exist', async () => {
-        await install(tree, options);
-
-        const packageJson = readJson(tree, 'package.json');
-
-        expect(packageJson.config.commitizen.path).toEqual(
-          'cz-conventional-changelog'
-        );
-      });
-
-      it('does not add commitizen config to package.json if exists', async () => {
-        const packageJson = readJson(tree, 'package.json');
-
-        packageJson.config = {
-          commitizen: {
-            path: 'other',
-          },
-        };
-        tree.write('package.json', JSON.stringify(packageJson, null, 2));
-
-        await install(tree, options);
-
-        expect(readJson(tree, 'package.json').config.commitizen.path).toEqual(
-          'other'
-        );
-      });
-
       it('add commitlint to package.json devDepencencies', async () => {
         await install(tree, options);
 
         const packageJson = readJson(tree, 'package.json');
         expect(packageJson.devDependencies).toContainKeys([
           '@commitlint/cli',
-          '@commitlint/config-conventional',
           '@commitlint/config-angular',
         ]);
       });
 
-      it('adds commitlint config to package.json if does not exist', async () => {
+      it('adds commitlint config if does not exist', async () => {
         await install(tree, options);
 
         const commitlintConfig = readJson(tree, '.commitlintrc.json');
@@ -311,7 +266,7 @@ describe('Install generator', () => {
         const packageJson = readJson(tree, 'package.json');
 
         expect(tree.read('.husky/commit-msg')?.toString()).toEqual('test');
-        expect(packageJson.scripts.prepare).toBeUndefined();
+        expect(packageJson?.scripts?.prepare).toBeUndefined();
       });
 
       it('does nothing if no enforceConventionalCommits', async () => {
@@ -320,10 +275,7 @@ describe('Install generator', () => {
         const packageJson = readJson(tree, 'package.json');
 
         expect(packageJson.devDependencies).not.toContainKeys([
-          'commitizen',
-          'cz-conventional-changelog',
           '@commitlint/cli',
-          '@commitlint/config-conventional',
           '@commitlint/config-angular',
         ]);
       });

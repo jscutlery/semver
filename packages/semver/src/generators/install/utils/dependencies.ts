@@ -10,9 +10,6 @@ const PACKAGE_JSON = 'package.json';
 export interface PackageJson {
   scripts: PackageJsonPart<string>;
   devDependencies: PackageJsonPart<string>;
-  config?: {
-    commitizen?: PackageJsonPart<string>;
-  };
   commitlint: PackageJsonPart<string[]>;
 }
 
@@ -22,7 +19,6 @@ export interface PackageJsonPart<T> {
 
 export function addDependencies(tree: Tree, options: SchemaOptions) {
   if (options.enforceConventionalCommits) {
-    _addCommitizenConfig(tree);
     _addCommitlintConfig(tree);
     _addHuskyConfig(tree);
     _addHuskyConfigMsg(tree);
@@ -36,31 +32,12 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       tree,
       {},
       {
-        commitizen: '^4.2.4',
-        'cz-conventional-changelog': '^3.3.0',
         '@commitlint/cli': '^15.0.0',
         '@commitlint/config-angular': '^15.0.0',
         husky: '^7.0.4',
       }
     );
   }
-}
-
-function _addCommitizenConfig(tree: Tree) {
-  return updateJson(tree, PACKAGE_JSON, (packageJson: PackageJson) => {
-    const hasConfig: boolean =
-      packageJson.config?.commitizen != null || tree.exists('.czrc');
-
-    if (!hasConfig) {
-      packageJson.scripts = { ...packageJson.scripts, ...{ cz: 'cz' } };
-      packageJson.config = {
-        ...packageJson.config,
-        commitizen: { path: 'cz-conventional-changelog' },
-      };
-    }
-
-    return packageJson;
-  });
 }
 
 function _addCommitlintConfig(tree: Tree) {
