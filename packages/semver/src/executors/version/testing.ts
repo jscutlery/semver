@@ -4,7 +4,7 @@ import * as rimraf from 'rimraf';
 import * as tmp from 'tmp';
 import { promisify } from 'util';
 
-import type { ExecutorContext } from '@nrwl/devkit';
+import type { ExecutorContext, Target } from '@nrwl/devkit';
 
 export interface TestingWorkspace {
   tearDown(): Promise<void>;
@@ -50,14 +50,17 @@ export function createFakeContext({
   project,
   projectRoot,
   workspaceRoot,
-  additionalProjects = []
+  additionalProjects = [],
 }: {
   project: string;
   projectRoot: string;
   workspaceRoot: string;
-  additionalProjects?: {project: string, projectRoot: string}[];
+  additionalProjects?: {
+    project: string;
+    projectRoot: string;
+    targets?: Record<string, Target>;
+  }[];
 }): ExecutorContext {
-
   return {
     root: workspaceRoot,
     projectName: project,
@@ -65,15 +68,21 @@ export function createFakeContext({
       version: 2,
       projects: {
         [project]: { root: projectRoot, targets: {} },
-        ...assembleAdditionalProjects(additionalProjects)
+        ...assembleAdditionalProjects(additionalProjects),
       },
     },
   } as ExecutorContext;
 }
 
-function assembleAdditionalProjects(additionalProjects: {project: string, projectRoot: string}[]) {
+function assembleAdditionalProjects(
+  additionalProjects: {
+    project: string;
+    projectRoot: string;
+    targets?: Record<string, Target>;
+  }[]
+) {
   return additionalProjects.reduce((acc, p) => {
-    acc[p.project] = { root: p.projectRoot, targets: {} };
+    acc[p.project] = { root: p.projectRoot, targets: p.targets || {} };
     return acc;
-  }, {} as {[project: string]: any});
+  }, {} as { [project: string]: any });
 }
