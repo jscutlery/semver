@@ -44,7 +44,6 @@
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/parser": "5.3.0",
     "all-contributors-cli": "^6.19.0",
-    "cz-conventional-changelog": "^3.3.0",
     "dotenv": "10.0.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
@@ -62,11 +61,6 @@
   "workspaces": [
     "./packages/*"
   ],
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
   "dependencies": {},
   "resolutions": {
     "rxjs": "^7.4.0"
