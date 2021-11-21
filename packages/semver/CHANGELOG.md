@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.13.2](https://github.com/jscutlery/semver/compare/semver-2.13.1...semver-2.13.2) (2021-11-21)
+
+
+### Bug Fixes
+
+* **semver:** bump [@commitlint](https://github.com/commitlint) deps + remove config-conventional ([0cf6d9b](https://github.com/jscutlery/semver/commit/0cf6d9bcae761e394d5436622df473b87d06705b))
+* **semver:** remove commitizen from install generator ([2a9b731](https://github.com/jscutlery/semver/commit/2a9b7314569a04be69719e14b2f1a809420cc16c))
+
+
+
 ## [2.13.1](https://github.com/jscutlery/semver/compare/semver-2.13.0...semver-2.13.1) (2021-11-11)
 
 
