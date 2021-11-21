@@ -38,9 +38,8 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       {
         commitizen: '^4.2.4',
         'cz-conventional-changelog': '^3.3.0',
-        '@commitlint/cli': '^14.1.0',
-        '@commitlint/config-conventional': '^14.1.0',
-        '@commitlint/config-angular': '^14.1.0',
+        '@commitlint/cli': '^15.0.0',
+        '@commitlint/config-angular': '^15.0.0',
         husky: '^7.0.4',
       }
     );
