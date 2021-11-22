@@ -47,6 +47,7 @@ export function executePostTargets({
   );
 }
 
+/* istanbul ignore next */
 export function _resolveTargetOptions({
   targetOptions = {},
   resolvableOptions,
@@ -73,6 +74,7 @@ export function _resolveTargetOptions({
   );
 }
 
+/* istanbul ignore next */
 export function _checkTargetExist(target: Target, context: ExecutorContext) {
   const project = context.workspace.projects[target.project];
 
