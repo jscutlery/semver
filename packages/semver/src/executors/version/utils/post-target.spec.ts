@@ -15,10 +15,44 @@ describe(executePostTargets.name, () => {
 
   let nextSpy: jest.Mock;
 
+  const additionalProjects = [
+    {
+      project: 'project-a',
+      projectRoot: 'libs/project-a',
+      targets: {
+        test: {
+          project: 'project-a',
+          target: '@test',
+        },
+      },
+    },
+    {
+      project: 'project-b',
+      projectRoot: 'libs/project-b',
+      targets: {
+        test: {
+          project: 'project-b',
+          target: '@test',
+        },
+      },
+    },
+    {
+      project: 'project-c',
+      projectRoot: 'libs/project-c',
+      targets: {
+        test: {
+          project: 'project-c',
+          target: '@test',
+        },
+      },
+    },
+  ];
+
   const context = createFakeContext({
     project: 'test',
     projectRoot: 'libs/test',
     workspaceRoot: '/root',
+    additionalProjects: additionalProjects,
   });
 
   beforeEach(() => {
@@ -35,7 +69,7 @@ describe(executePostTargets.name, () => {
 
   it('should successfully execute post targets', (done) => {
     mockReadTargetOptions.mockReturnValue({
-      optionA: 'optionA'
+      optionA: 'optionA',
     });
 
     executePostTargets({
@@ -119,6 +153,42 @@ describe(executePostTargets.name, () => {
     });
   });
 
+  it('should handle wrong post target project', (done) => {
+    executePostTargets({
+      /* The second project "project-foo" is not defined in the workspace. */
+      postTargets: ['project-a:test', 'project-foo:test'],
+      context,
+    }).subscribe({
+      next: nextSpy,
+      error: (error) => {
+        expect(nextSpy).toBeCalledTimes(1);
+        expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(error.toString()).toEqual(
+          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c"'
+        );
+        done();
+      },
+    });
+  });
+
+  it('should handle wrong post target name', (done) => {
+    executePostTargets({
+      /* The second target "foo" is not defined in the workspace. */
+      postTargets: ['project-a:test', 'project-b:foo'],
+      context,
+    }).subscribe({
+      next: nextSpy,
+      error: (error) => {
+        expect(nextSpy).toBeCalledTimes(1);
+        expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(error.toString()).toEqual(
+          'Error: The target name "foo" does not exist. Available targets for "project-b": "test"'
+        );
+        done();
+      },
+    });
+  });
+
   it('should forward and resolve options', (done) => {
     mockReadTargetOptions.mockReturnValueOnce({
       optionA: 'optionA',
@@ -136,7 +206,7 @@ describe(executePostTargets.name, () => {
       version: '2.0.0',
       dryRun: true,
       num: 42,
-      falseyValue: false
+      falseyValue: false,
     };
 
     executePostTargets({

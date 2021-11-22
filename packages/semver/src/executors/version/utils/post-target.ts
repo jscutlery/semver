@@ -2,6 +2,7 @@ import {
   parseTargetString,
   readTargetOptions,
   runExecutor,
+  Target,
 } from '@nrwl/devkit';
 import { concat, defer } from 'rxjs';
 
@@ -23,6 +24,8 @@ export function executePostTargets({
     ...postTargets.map((postTargetSchema) => {
       return defer(async () => {
         const target = parseTargetString(postTargetSchema);
+        _checkTargetExist(target, context);
+
         const resolvedOptions = _resolveTargetOptions({
           targetOptions: readTargetOptions(target, context),
           resolvableOptions,
@@ -44,6 +47,7 @@ export function executePostTargets({
   );
 }
 
+/* istanbul ignore next */
 export function _resolveTargetOptions({
   targetOptions = {},
   resolvableOptions,
@@ -56,7 +60,10 @@ export function _resolveTargetOptions({
       const resolvedOption =
         typeof value === 'object'
           ? value
-          : resolveInterpolation((value as number | string).toString(), resolvableOptions);
+          : resolveInterpolation(
+              (value as number | string).toString(),
+              resolvableOptions
+            );
 
       return {
         ...resolvedOptions,
@@ -65,4 +72,31 @@ export function _resolveTargetOptions({
     },
     {}
   );
+}
+
+/* istanbul ignore next */
+export function _checkTargetExist(target: Target, context: ExecutorContext) {
+  const project = context.workspace.projects[target.project];
+
+  if (project === undefined) {
+    throw new Error(
+      `The target project "${
+        target.project
+      }" does not exist in your workspace. Available projects: ${Object.keys(
+        context.workspace.projects
+      ).map((project) => `"${project}"`)}`
+    );
+  }
+
+  const projectTarget = project.targets?.[target.target];
+
+  if (projectTarget === undefined) {
+    throw new Error(
+      `The target name "${
+        target.target
+      }" does not exist. Available targets for "${
+        target.project
+      }": ${Object.keys(project.targets || {}).map((target) => `"${target}"`)}`
+    );
+  }
 }
