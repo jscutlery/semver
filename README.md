@@ -272,6 +272,9 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://github.com/dianjuar"><img src="https://avatars.githubusercontent.com/u/7026066?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Diego Juliao</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Adianjuar" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=dianjuar" title="Code">💻</a> <a href="#ideas-dianjuar" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/ChazUK"><img src="https://avatars.githubusercontent.com/u/768108?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Charlie Francis</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3AChazUK" title="Bug reports">🐛</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/hpierre74"><img src="https://avatars.githubusercontent.com/u/25172711?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pierre Huyghe</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=hpierre74" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
