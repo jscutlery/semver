@@ -22,7 +22,7 @@ describe(executePostTargets.name, () => {
       targets: {
         test: {
           project: 'project-a',
-          target: 'test',
+          target: '@test',
         },
       },
     },
@@ -32,7 +32,7 @@ describe(executePostTargets.name, () => {
       targets: {
         test: {
           project: 'project-b',
-          target: 'test',
+          target: '@test',
         },
       },
     },
@@ -42,7 +42,7 @@ describe(executePostTargets.name, () => {
       targets: {
         test: {
           project: 'project-c',
-          target: 'test',
+          target: '@test',
         },
       },
     },
@@ -155,33 +155,35 @@ describe(executePostTargets.name, () => {
 
   it('should handle wrong post target project', (done) => {
     executePostTargets({
+      /* The second project "project-foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-foo:test'],
       context,
     }).subscribe({
       next: nextSpy,
       error: (error) => {
         expect(nextSpy).toBeCalledTimes(1);
-        expect(error.toString()).toEqual(
-          `Error: The target project "project-foo" does not exist in your workspace.\nAvailable projects: [test,project-a,project-b,project-c]`
-        );
         expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(error.toString()).toEqual(
+          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c"'
+        );
         done();
       },
     });
   });
 
-  it('should handle wrong post target target', (done) => {
+  it('should handle wrong post target name', (done) => {
     executePostTargets({
+      /* The second target "foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-b:foo'],
       context,
     }).subscribe({
       next: nextSpy,
       error: (error) => {
         expect(nextSpy).toBeCalledTimes(1);
-        expect(error.toString()).toEqual(
-          `Error: The target name "foo" does not exist.\nAvailable targets for "project-b": [test]`
-        );
         expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(error.toString()).toEqual(
+          'Error: The target name "foo" does not exist. Available targets for "project-b": "test"'
+        );
         done();
       },
     });

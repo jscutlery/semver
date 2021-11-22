@@ -80,9 +80,9 @@ export function _checkTargetExist(target: Target, context: ExecutorContext) {
     throw new Error(
       `The target project "${
         target.project
-      }" does not exist in your workspace.\nAvailable projects: [${Object.keys(
+      }" does not exist in your workspace. Available projects: ${Object.keys(
         context.workspace.projects
-      )}]`
+      ).map((project) => `"${project}"`)}`
     );
   }
 
@@ -92,9 +92,9 @@ export function _checkTargetExist(target: Target, context: ExecutorContext) {
     throw new Error(
       `The target name "${
         target.target
-      }" does not exist.\nAvailable targets for "${
+      }" does not exist. Available targets for "${
         target.project
-      }": [${Object.keys(project.targets || {})}]`
+      }": ${Object.keys(project.targets || {}).map((target) => `"${target}"`)}`
     );
   }
 }
