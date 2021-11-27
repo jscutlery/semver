@@ -39,7 +39,7 @@
     "@nrwl/nx-plugin": "13.2.1",
     "@nrwl/tao": "13.2.1",
     "@nrwl/workspace": "13.2.1",
-    "@types/jest": "27.0.2",
+    "@types/jest": "27.0.3",
     "@types/node": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/parser": "5.3.0",
