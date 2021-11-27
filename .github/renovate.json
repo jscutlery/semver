@@ -1,10 +1,9 @@
 {
   "$schema": "http://json.schemastore.org/renovate",
-  "extends": ["config:base", ":semanticCommitScopeDisabled", ":semanticCommitType(ci)"],
+  "extends": ["config:base", ":semanticCommitScopeDisabled"],
   "automerge": true,
   "automergeType": "branch",
   "baseBranches": ["main"],
-  "semanticCommits": "enabled",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
@@ -25,6 +24,14 @@
         ],
         "fileFilters": ["**/**"]
       }
+    },
+    {
+      "packagePatterns": ["*"],
+      "semanticCommitType": "ci"
+    },
+    {
+      "depTypeList": ["dependencies"],
+      "semanticCommitType": "fix"
     }
   ]
 }
