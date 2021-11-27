@@ -1,10 +1,10 @@
 {
   "$schema": "http://json.schemastore.org/renovate",
-  "extends": ["config:base", ":semanticCommitScopeDisabled"],
+  "extends": ["config:base", ":semanticCommitScopeDisabled", ":semanticCommitType(ci)"],
   "automerge": true,
   "automergeType": "branch",
   "baseBranches": ["main"],
-  "semanticCommits": true,
+  "semanticCommits": "enabled",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
