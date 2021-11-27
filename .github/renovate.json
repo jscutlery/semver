@@ -11,5 +11,20 @@
     "automergeType": "branch"
   },
   "rangeStrategy": "update-lockfile",
-  "commitMessage": "{{{commitMessagePrefix}}} 📦 {{{commitMessageAction}}} {{{commitMessageTopic}}} {{{commitMessageExtra}}} {{{commitMessageSuffix}}}"
+  "commitMessage": "{{{commitMessagePrefix}}} 📦 {{{commitMessageAction}}} {{{commitMessageTopic}}} {{{commitMessageExtra}}} {{{commitMessageSuffix}}}",
+  "packageRules": [
+    {
+      "packageNames": ["@nrwl/workspace"],
+      "packagePatterns": ["^@nrwl/"],
+      "groupName": "Nrwl workspace",
+      "postUpgradeTasks": {
+        "commands": [
+          "yarn --frozen-lockfile --no-progress --non-interactive --prefer-offline",
+          "yarn nx migrate @nrwl/workspace",
+          "[ -f migrations.json ] && npx nx migrate --run-migrations=migrations.json"
+        ],
+        "fileFilters": ["**/**"]
+      }
+    }
+  ]
 }
