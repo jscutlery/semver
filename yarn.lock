@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@angular-devkit/core@13.0.1":
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-13.0.1.tgz#f84d3290a9d99f83a1431438860c8c6bfb89c777"
-  integrity sha512-RfhpPw7vU5ok7ICUwEx4Lic+HCHrMjKnj/Tbk+CfSqONTFtqDaMoC8itQE2risLugT4mzO+3Cy95eccpf282kQ==
+"@angular-devkit/core@13.0.3":
+  version "13.0.3"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-13.0.3.tgz#05911ab964f8cbd5cade9bd48215424836ab9c87"
+  integrity sha512-5yTYW6m4pkDPSYNxThm+47h+UZ6XVEfdfsXR3o+WlRG0hc18EuQ+sXZkzhvZrk5KMLlXFex4eO40RPq2vvWS/w==
   dependencies:
     ajv "8.6.3"
     ajv-formats "2.1.1"
@@ -14,12 +14,12 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-"@angular-devkit/schematics@13.0.1":
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-13.0.1.tgz#6e1ddc2b7d6b031f0e6362e62fd5c56bb08a1b67"
-  integrity sha512-WEhotd5H82W8LHo9tgTh547A1pxwmcKDHLhlsko5dg/HuHHhEYuxUxlLaBs1yHl+VVPG+Cwnf3pEbVhWGHVS3Q==
+"@angular-devkit/schematics@13.0.3":
+  version "13.0.3"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-13.0.3.tgz#255895e10c2b025df8ee4ff93428cb2249ae5fc0"
+  integrity sha512-+Va1E0zJBCg5jqSfITusghoMJgPAwlU+WUs49fuGVCzfJPwfSjTKSrsbhanahMd27+Ys3rovGZq0F2JUdL801A==
   dependencies:
-    "@angular-devkit/core" "13.0.1"
+    "@angular-devkit/core" "13.0.3"
     jsonc-parser "3.0.0"
     magic-string "0.25.7"
     ora "5.4.1"
