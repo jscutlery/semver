@@ -35,6 +35,7 @@ export default async function version(
     changelogHeader,
     versionTagPrefix,
     postTargets,
+    releaseCommitMessageFormat
   } = normalizeOptions(options);
   const releaseAs = _releaseAs ?? version;
 
@@ -89,6 +90,7 @@ export default async function version(
         projectRoot,
         tagPrefix,
         changelogHeader,
+        releaseCommitMessageFormat
       };
 
       const runStandardVersion$ = defer(() =>
@@ -169,5 +171,6 @@ function normalizeOptions(options: VersionBuilderSchema) {
     changelogHeader: options.changelogHeader,
     versionTagPrefix: options.versionTagPrefix,
     postTargets: options.postTargets,
+    releaseCommitMessageFormat: options.releaseCommitMessageFormat
   };
 }

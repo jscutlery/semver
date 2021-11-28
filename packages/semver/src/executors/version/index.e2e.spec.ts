@@ -1040,6 +1040,34 @@ $`)
       );
     });
   });
+
+  describe('--releaseCommitMessageFormat', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          releaseCommitMessageFormat: 'chore: 🎸 release {{currentTag}} [skip ci]'
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it('should have the latest commit following the provided format', () => {
+      expect(commitMessage()).toBe('chore: 🎸 release 0.1.0 [skip ci]')
+    });
+  })
 });
 
 function commitChanges() {
@@ -1070,6 +1098,12 @@ function uncommitedChanges() {
       .split('\n')
       /* Remove empty line. */
       .filter((line) => line.length !== 0)
+  );
+}
+
+function commitMessage() {
+  return (
+    execSync('git show -s --format=%s', { encoding: 'utf-8' }).trim()
   );
 }
 

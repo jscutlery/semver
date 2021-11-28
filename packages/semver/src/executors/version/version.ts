@@ -20,6 +20,7 @@ export interface CommonVersionOptions {
   projectRoot: string;
   tagPrefix: string;
   changelogHeader?: string;
+  releaseCommitMessageFormat?: string;
 }
 
 export function versionWorkspace({
@@ -107,6 +108,7 @@ export function _runStandardVersion({
   preset,
   tagPrefix,
   skipChangelog,
+  releaseCommitMessageFormat,
   changelogHeader = defaultHeader,
 }: {
   bumpFiles: string[];
@@ -129,6 +131,7 @@ export function _runStandardVersion({
     path: projectRoot,
     preset,
     tagPrefix,
+    releaseCommitMessageFormat,
     skip: {
       changelog: skipChangelog,
     },

@@ -79,6 +79,10 @@
       "description": "Includes the project's dependencies in calculating a recommended version bump.",
       "type": "boolean",
       "default": false
+    },
+    "releaseCommitMessageFormat": {
+      "description": "A string to be used to format the auto-generated release commit message.",
+      "type": "string"
     }
   },
 

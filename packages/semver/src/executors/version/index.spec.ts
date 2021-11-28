@@ -495,5 +495,23 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockExecutePostTargets).not.toBeCalled();
     });
+
+    it('pass `releaseCommitMessageFormat` through to standard-version', async () => {
+      await version(
+        {
+          ...options,
+          releaseCommitMessageFormat: 'chore(release): {{currentTag}} [skip ci]',
+          postTargets: ['project-a:test'],
+        },
+        context
+      );
+
+      expect(mockStandardVersion).toHaveBeenCalledWith(
+        expect.objectContaining({
+          releaseCommitMessageFormat:
+            'chore(release): {{currentTag}} [skip ci]',
+        })
+      );
+    })
   });
 });
