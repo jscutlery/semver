@@ -1,7 +1,7 @@
 import { logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
-import { catchError, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 
 import { getProjectDependencies } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
@@ -77,7 +77,7 @@ export default async function version(
     switchMap((newVersion) => {
       if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
-        return of(undefined);
+        return of({ success: true });
       }
 
       const options: CommonVersionOptions = {
@@ -115,32 +115,40 @@ export default async function version(
         })
       );
 
-      return concat(
-        runStandardVersion$,
-        ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        dryRun === false
-          ? executePostTargets({
-              postTargets,
-              resolvableOptions: {
-                project: context.projectName,
-                version: newVersion,
-                tag: `${tagPrefix}${newVersion}`,
-                tagPrefix,
-                noVerify,
-                dryRun,
-                remote,
-                baseBranch,
-              },
-              context,
-            })
-          : []
+
+
+      return runStandardVersion$.pipe(
+        concatMap((notes) =>
+          concat(
+            ...(push && dryRun === false ? [pushToGitRemote$] : []),
+            ...(dryRun === false
+              ? [
+                  executePostTargets({
+                    postTargets,
+                    resolvableOptions: {
+                      project: context.projectName,
+                      version: newVersion,
+                      tag: `${tagPrefix}${newVersion}`,
+                      tagPrefix,
+                      noVerify,
+                      dryRun,
+                      remote,
+                      baseBranch,
+                      notes,
+                    },
+                    context,
+                  }),
+                ]
+              : [])
+          )
+        ),
+        reduce((result) => result, { success: true } as const)
       );
     })
   );
 
   return lastValueFrom(
     action$.pipe(
-      mapTo({ success: true }),
       catchError((error) => {
         if (error instanceof SchemaError) {
           logger.error(`Post-targets Error: ${error.message}`);
