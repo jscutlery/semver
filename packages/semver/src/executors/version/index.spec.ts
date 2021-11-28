@@ -135,7 +135,7 @@ describe('@jscutlery/semver:version', () => {
           silent: false,
           preset: 'angular',
           dryRun: false,
-          noVerify: false,
+          verify: true,
           tagPrefix: 'a-',
           path: '/root/packages/a',
           infile: '/root/packages/a/CHANGELOG.md',
@@ -163,7 +163,7 @@ describe('@jscutlery/semver:version', () => {
           silent: false,
           preset: 'angular',
           dryRun: false,
-          noVerify: false,
+          verify: true,
           tagPrefix: 'a-',
           path: '/root/packages/a',
           infile: '/root/packages/a/CHANGELOG.md',
@@ -263,7 +263,7 @@ describe('@jscutlery/semver:version', () => {
           silent: false,
           preset: 'angular',
           dryRun: false,
-          noVerify: false,
+          verify: true,
           path: '/root',
           infile: '/root/CHANGELOG.md',
           bumpFiles: [
@@ -374,7 +374,7 @@ describe('@jscutlery/semver:version', () => {
     const { success } = await version({ ...options, noVerify: true }, context);
     expect(success).toBe(true);
     expect(mockStandardVersion).toBeCalledWith(
-      expect.objectContaining({ noVerify: true })
+      expect.objectContaining({ verify: false })
     );
   });
 
