@@ -80,7 +80,7 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(''));
-    jest.spyOn(git, 'addToStage').mockReturnValue(of(''));
+    jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
 
     mockExecutePostTargets.mockReturnValue(of(undefined));
 
