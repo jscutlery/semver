@@ -24,4 +24,5 @@ export interface VersionBuilderSchema {
   changelogHeader?: string;
   versionTagPrefix?: string;
   postTargets: string[];
+  commitMessageFormat?: string;
 }

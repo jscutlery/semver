@@ -38,9 +38,10 @@ describe('@jscutlery/semver:version', () => {
   const mockStandardVersion = standardVersion as jest.MockedFunction<
     typeof standardVersion
   >;
-  const mockGetProjectDependencies = getProjectDependencies as jest.MockedFunction<
-    typeof getProjectDependencies
-  >;
+  const mockGetProjectDependencies =
+    getProjectDependencies as jest.MockedFunction<
+      typeof getProjectDependencies
+    >;
   const mockExecutePostTargets = executePostTargets as jest.MockedFunction<
     typeof executePostTargets
   >;
@@ -66,9 +67,9 @@ describe('@jscutlery/semver:version', () => {
       projectRoot: '/root/packages/a',
       workspaceRoot: '/root',
       additionalProjects: [
-        {project: 'lib1', projectRoot: '/root/libs/lib1'},
-        {project: 'lib2', projectRoot: '/root/libs/lib2'},
-      ]
+        { project: 'lib1', projectRoot: '/root/libs/lib1' },
+        { project: 'lib2', projectRoot: '/root/libs/lib2' },
+      ],
     });
 
     jest.spyOn(logger, 'info');
@@ -105,7 +106,14 @@ describe('@jscutlery/semver:version', () => {
     /* Mock getProjectRoots. */
     jest
       .spyOn(workspace, 'getProjectRoots')
-      .mockReturnValue(of(['/root/packages/a', '/root/packages/b', '/root/libs/lib1', '/root/libs/lib2']));
+      .mockReturnValue(
+        of([
+          '/root/packages/a',
+          '/root/packages/b',
+          '/root/libs/lib1',
+          '/root/libs/lib2',
+        ])
+      );
   });
 
   afterEach(() => {
@@ -117,12 +125,11 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await version(options, context);
 
       expect(success).toBe(true);
-      expect(mockTryBump)
-        .toBeCalledWith(
-          expect.objectContaining({
-            dependencyRoots: []
-          })
-        );
+      expect(mockTryBump).toBeCalledWith(
+        expect.objectContaining({
+          dependencyRoots: [],
+        })
+      );
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
@@ -146,12 +153,11 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await version(tempOptions, context);
 
       expect(success).toBe(true);
-      expect(mockTryBump)
-        .toBeCalledWith(
-          expect.objectContaining({
-            dependencyRoots: ['/root/libs/lib1', '/root/libs/lib2']
-          })
-        );
+      expect(mockTryBump).toBeCalledWith(
+        expect.objectContaining({
+          dependencyRoots: ['/root/libs/lib1', '/root/libs/lib2'],
+        })
+      );
       expect(standardVersion).toBeCalledWith(
         expect.objectContaining({
           silent: false,
@@ -179,9 +185,7 @@ describe('@jscutlery/semver:version', () => {
         error = e;
       }
       expect(error).toEqual('thrown error');
-      expect(logger.error).toBeCalledWith(
-        'Failed to determine dependencies.'
-      );
+      expect(logger.error).toBeCalledWith('Failed to determine dependencies.');
       expect(standardVersion).not.toBeCalled();
     });
 
@@ -358,7 +362,7 @@ describe('@jscutlery/semver:version', () => {
     expect(success).toBe(true);
     expect(mockTryBump).toBeCalledWith(
       expect.objectContaining({
-        releaseType: 'major'
+        releaseType: 'major',
       })
     );
     expect(mockStandardVersion).toBeCalledWith(
@@ -367,14 +371,33 @@ describe('@jscutlery/semver:version', () => {
   });
 
   it('should version with --noVerify', async () => {
-    const { success } = await version(
-      { ...options, noVerify: true },
-      context
-    );
+    const { success } = await version({ ...options, noVerify: true }, context);
     expect(success).toBe(true);
     expect(mockStandardVersion).toBeCalledWith(
       expect.objectContaining({ noVerify: true })
     );
+  });
+
+  describe('with --commitMessageFormat option', () => {
+    it('should handle given format', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          commitMessageFormat:
+            'chore: bump "${projectName}" to ${version} [skip ci]',
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockStandardVersion).toBeCalledWith(
+        expect.objectContaining({
+          releaseCommitMessageFormat:
+            /* {{currentTag}} is resolved by standard-version itself.  */
+            'chore: bump "a" to {{currentTag}} [skip ci]',
+        })
+      );
+    });
   });
 
   describe('Git push', () => {
