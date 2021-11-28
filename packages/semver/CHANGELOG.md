@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.14.0](https://github.com/jscutlery/semver/compare/semver-2.13.3...semver-2.14.0) (2021-11-28)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 correctly forward `--no-verify` ([50ec0ed](https://github.com/jscutlery/semver/commit/50ec0ed5b153213a623102285865a1694db3f258))
+
+
+### Features
+
+* **semver:** ✅ add `--commitMessageFormat` option ([b8e9674](https://github.com/jscutlery/semver/commit/b8e9674c257594f31e744cae6cf6a35af40f1a3b))
+
+
+
 ## [2.13.3](https://github.com/jscutlery/semver/compare/semver-2.13.2...semver-2.13.3) (2021-11-22)
 
 
