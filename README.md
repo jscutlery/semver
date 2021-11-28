@@ -294,6 +294,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://github.com/hpierre74"><img src="https://avatars.githubusercontent.com/u/25172711?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pierre Huyghe</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=hpierre74" title="Code">💻</a></td>
     <td align="center"><a href="https://gitlab.com/wsedlacek"><img src="https://avatars.githubusercontent.com/u/8206108?v=4?s=100" width="100px;" alt=""/><br /><sub><b>William Sedlacek</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=wSedlacek" title="Code">💻</a> <a href="#ideas-wSedlacek" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://palmtreecoding.com/"><img src="https://avatars.githubusercontent.com/u/7668692?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tycho Bokdam</b></sub></a><br /><a href="#ideas-TriPSs" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/nicolashzmor"><img src="https://avatars.githubusercontent.com/u/66749276?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nicolashzmor</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Anicolashzmor" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

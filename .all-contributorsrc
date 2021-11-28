@@ -243,6 +243,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "nicolashzmor",
+      "name": "nicolashzmor",
+      "avatar_url": "https://avatars.githubusercontent.com/u/66749276?v=4",
+      "profile": "https://github.com/nicolashzmor",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
