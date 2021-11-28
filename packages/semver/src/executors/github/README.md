@@ -57,6 +57,31 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
 }
 ```
 
+##### Only new notes
+
+Rather than using the entire changelog on every release as your notes you can use the `notes`
+context provided by `@jscutlery/semver:version` to only include the new changes
+
+```json
+{
+  "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "postTargets": ["my-project:github"]
+      }
+    },
+    "github": {
+      "executor": "@jscutlery/semver:github",
+      "options": {
+        "tag": "${tag}",
+        "notes": "${notes}"
+      }
+    }
+  }
+}
+```
+
 #### Available Options
 
 | name                        | type       | default     | description                                                     |
