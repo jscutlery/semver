@@ -1113,6 +1113,53 @@ $`)
       expect(commitMessage()).toBe('chore(release): 0.1.0');
     });
   });
+
+  // The testing workspace isn't really configured for
+  // executors, perhaps using the `new FSTree()` from
+  // and `new Workspace()` @nrwl/toa would give a
+  // more suitable test environment
+  xdescribe('workspace with postTargets', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          syncVersions: true,
+          version: 'prerelease',
+          preid: 'beta',
+          postTargets: ['e:github'],
+        },
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+          additionalProjects: [
+            {
+              project: 'e',
+              projectRoot: './libs/e',
+              targets: {
+                github: {
+                  executor: '@nrwl/workspace:run-script',
+                  options: {
+                    script: 'echo ${notes}',
+                  },
+                },
+              },
+            },
+          ],
+        })
+      );
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it.todo('should pass in only the new lines from the changelog as ${notes}');
+  });
 });
 
 function commitChanges() {

@@ -1,3 +1,4 @@
+import { TargetConfiguration } from '@nrwl/devkit';
 import { runExecutor, readTargetOptions } from '@nrwl/devkit';
 
 import { createFakeContext } from '../testing';
@@ -15,14 +16,17 @@ describe(executePostTargets.name, () => {
 
   let nextSpy: jest.Mock;
 
-  const additionalProjects = [
+  const additionalProjects: {
+    project: string;
+    projectRoot: string;
+    targets?: Record<string, TargetConfiguration>;
+  }[] = [
     {
       project: 'project-a',
       projectRoot: 'libs/project-a',
       targets: {
         test: {
-          project: 'project-a',
-          target: '@test',
+          executor: 'test',
         },
       },
     },
@@ -31,8 +35,7 @@ describe(executePostTargets.name, () => {
       projectRoot: 'libs/project-b',
       targets: {
         test: {
-          project: 'project-b',
-          target: '@test',
+          executor: 'test',
         },
       },
     },
@@ -41,8 +44,7 @@ describe(executePostTargets.name, () => {
       projectRoot: 'libs/project-c',
       targets: {
         test: {
-          project: 'project-c',
-          target: '@test',
+          executor: 'test',
         },
       },
     },

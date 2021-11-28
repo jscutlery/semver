@@ -1,6 +1,6 @@
 import { resolve } from 'path';
-import { concat, forkJoin, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { firstValueFrom, forkJoin, noop, Observable, of } from 'rxjs';
+import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
 import {
@@ -8,6 +8,8 @@ import {
   getChangelogPath,
   updateChangelog,
 } from './utils/changelog';
+import { diff } from './utils/diff';
+import { readFileIfExists } from './utils/filesystem';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -34,27 +36,28 @@ export function versionWorkspace({
   skipProjectChangelog: boolean;
   workspaceRoot: string;
 } & CommonVersionOptions) {
-  return concat(
-    getProjectRoots(workspaceRoot).pipe(
-      switchMap((projectRoots) =>
-        _generateProjectChangelogs({
-          workspaceRoot,
-          projectRoots,
-          ...options,
-        })
-      ),
-      /* Run Git add only once, after changelogs get generated in parallel. */
-      switchMap((changelogPaths) =>
-        addToStage({ paths: changelogPaths, dryRun: options.dryRun })
-      )
+  return getProjectRoots(workspaceRoot).pipe(
+    concatMap((projectRoots) =>
+      _generateProjectChangelogs({
+        workspaceRoot,
+        projectRoots,
+        ...options,
+      })
     ),
-    getPackageFiles(workspaceRoot).pipe(
-      switchMap((packageFiles) =>
-        _runStandardVersion({
-          bumpFiles: packageFiles,
-          skipChangelog: skipRootChangelog,
-          ...options,
-        })
+    /* Run Git add only once, after changelogs get generated in parallel. */
+    concatMap((changelogPaths) =>
+      addToStage({ paths: changelogPaths, dryRun: options.dryRun })
+    ),
+    reduce(noop),
+    concatMap(() =>
+      getPackageFiles(workspaceRoot).pipe(
+        switchMap((packageFiles) =>
+          _runStandardVersion({
+            bumpFiles: packageFiles,
+            skipChangelog: skipRootChangelog,
+            ...options,
+          })
+        )
       )
     )
   );
@@ -122,8 +125,9 @@ export function _createCommitMessageFormatConfig({
     : {};
 }
 
+
 /* istanbul ignore next */
-export function _runStandardVersion({
+export async function _runStandardVersion({
   bumpFiles,
   dryRun,
   projectRoot,
@@ -139,14 +143,20 @@ export function _runStandardVersion({
   bumpFiles: string[];
   skipChangelog: boolean;
 } & CommonVersionOptions) {
-  return standardVersion({
+  const changeLogPath = getChangelogPath(projectRoot);
+
+  const currentChangeLog = await firstValueFrom(
+    readFileIfExists(changeLogPath, changelogHeader)
+  );
+
+  await standardVersion({
     bumpFiles,
     /* Make sure that we commit the manually generated changelogs that
      * we staged. */
     commitAll: true,
     dryRun,
     header: changelogHeader,
-    infile: getChangelogPath(projectRoot),
+    infile: changeLogPath,
     /* Control version to avoid different results between the value
      * returned by `tryBump` and the one computed by standard-version. */
     releaseAs: newVersion,
@@ -171,4 +181,10 @@ export function _runStandardVersion({
       changelog: skipChangelog,
     },
   });
+
+  const updatedChangeLog = await firstValueFrom(
+    readFileIfExists(changeLogPath)
+  );
+
+  return diff(currentChangeLog, updatedChangeLog);
 }
