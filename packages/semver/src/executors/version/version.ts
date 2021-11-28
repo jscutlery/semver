@@ -149,7 +149,11 @@ export function _runStandardVersion({
      * returned by `tryBump` and the one computed by standard-version. */
     releaseAs: newVersion,
     silent: false,
-    noVerify,
+
+    /* @Notice: For an obscure reason standard-version checks for `verify` instead of `no-verify`,
+     * Here is the source code: https://github.com/conventional-changelog/standard-version/blob/095e1ebc1ab393c202984b694395224a6888b825/lib/lifecycles/commit.js#L19 */
+    ...({ verify: noVerify === false } as any),
+
     packageFiles: [resolve(projectRoot, 'package.json')],
     path: projectRoot,
     preset,
