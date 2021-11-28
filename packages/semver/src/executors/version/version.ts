@@ -9,6 +9,7 @@ import {
   updateChangelog,
 } from './utils/changelog';
 import { addToStage } from './utils/git';
+import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
 
 export interface CommonVersionOptions {
@@ -20,6 +21,8 @@ export interface CommonVersionOptions {
   projectRoot: string;
   tagPrefix: string;
   changelogHeader?: string;
+  commitMessageFormat?: string;
+  projectName: string;
 }
 
 export function versionWorkspace({
@@ -68,6 +71,8 @@ export function versionProject(options: CommonVersionOptions) {
 /**
  * Generate project's changelogs and return an array containing their path.
  * Skip generation if --skip-project-changelog enabled and return an empty array.
+ *
+ * istanbul ignore next
  */
 export function _generateProjectChangelogs({
   projectRoots,
@@ -98,6 +103,24 @@ export function _generateProjectChangelogs({
   );
 }
 
+/* istanbul ignore next */
+export function _resolveCommitMessageInterpolations({
+  projectName,
+  commitMessageFormat,
+}: {
+  projectName: string;
+  commitMessageFormat: string | undefined;
+}) {
+  return typeof commitMessageFormat === 'string'
+    ? (resolveInterpolation(commitMessageFormat, {
+        projectName,
+        /* Standard Version do the interpolation itself if we pass {{currentTag}} in the commit message format. */
+        version: '{{currentTag}}',
+      }) as string)
+    : undefined;
+}
+
+/* istanbul ignore next */
 export function _runStandardVersion({
   bumpFiles,
   dryRun,
@@ -107,6 +130,8 @@ export function _runStandardVersion({
   preset,
   tagPrefix,
   skipChangelog,
+  projectName,
+  commitMessageFormat,
   changelogHeader = defaultHeader,
 }: {
   bumpFiles: string[];
@@ -129,6 +154,10 @@ export function _runStandardVersion({
     path: projectRoot,
     preset,
     tagPrefix,
+    releaseCommitMessageFormat: _resolveCommitMessageInterpolations({
+      commitMessageFormat,
+      projectName,
+    }),
     skip: {
       changelog: skipChangelog,
     },

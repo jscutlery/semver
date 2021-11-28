@@ -35,9 +35,9 @@ export default async function version(
     changelogHeader,
     versionTagPrefix,
     postTargets,
+    commitMessageFormat,
   } = normalizeOptions(options);
   const releaseAs = _releaseAs ?? version;
-
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
   const preset = 'angular';
@@ -89,6 +89,8 @@ export default async function version(
         projectRoot,
         tagPrefix,
         changelogHeader,
+        commitMessageFormat,
+        projectName,
       };
 
       const runStandardVersion$ = defer(() =>
@@ -169,5 +171,6 @@ function normalizeOptions(options: VersionBuilderSchema) {
     changelogHeader: options.changelogHeader,
     versionTagPrefix: options.versionTagPrefix,
     postTargets: options.postTargets,
+    commitMessageFormat: options.commitMessageFormat,
   };
 }

@@ -75,22 +75,23 @@ nx run workspace:version [....options]
 
 #### Available options
 
-| name                         | type       | default    | description                                      |
-| ---------------------------- | ---------- | ---------- | ------------------------------------------------ |
-| **`--dryRun`**               | `bool`     | `false`    | run with dry mode                                |
-| **`--noVerify`**             | `bool`     | `false`    | skip git hooks                                   |
-| **`--push`**                 | `bool`     | `false`    | push the release against git origin              |
-| **`--syncVersions`**         | `bool`     | `false`    | lock/sync versions between projects              |
-| **`--skipRootChangelog`**    | `bool`     | `false`    | skip generating root changelog                   |
-| **`--skipProjectChangelog`** | `bool`     | `false`    | skip generating project changelog                |
-| **`--changelogHeader`**      | `string`   | `null`     | custom Markdown header for changelogs            |
-| **`--origin`**               | `string`   | `'origin'` | push against git remote repository               |
-| **`--baseBranch`**           | `string`   | `'main'`   | push against git base branch                     |
-| **`--releaseAs`**            | `string`   | `null`     | specify the level of change                      |
-| **`--preid`**                | `string`   | `null`     | prerelease identifier                            |
-| **`--versionTagPrefix`**     | `string`   | `null`     | specify the tag prefix                           |
-| **`--postTargets`**          | `string[]` | `[]`       | specify a list of target to execute post-release |
-| **`--trackDeps`**            | `bool`     | `false`    | use dependencies when calculating a version bump |
+| name                         | type       | default     | description                                      |
+| ---------------------------- | ---------- | ----------- | ------------------------------------------------ |
+| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                |
+| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                   |
+| **`--push`**                 | `boolean`  | `false`     | push the release against git origin              |
+| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects              |
+| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                   |
+| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                |
+| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository               |
+| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                     |
+| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs            |
+| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change                      |
+| **`--preid`**                | `string`   | `undefined` | prerelease identifier                            |
+| **`--versionTagPrefix`**     | `string`   | `undefined` | specify the tag prefix                           |
+| **`--postTargets`**          | `string[]` | `[]`        | specify a list of target to execute post-release |
+| **`--trackDeps`**            | `boolean`  | `false`     | use dependencies when calculating a version bump |
+| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit         |
 
 #### Configuration using the file
 
@@ -127,6 +128,22 @@ The **`--versionTagPrefix`** option allows you to customize the tag prefix.
 With the sync mode the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for example. Note that only one tag is created for the whole workspace.
 
 With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
+
+#### Commit message customization
+
+The **`--commitMessageFormat`** option allows you to customize the commit message. By default, the commit message is formatted as the following:
+
+```
+chore(release): ${version}
+```
+
+The `version` interpolation is resolved to the current release version, for instance `1.0.1`. The customization option also allows you to interpolate the `projectName` variable:
+
+```
+chore(release): bump ${projectName} to ${version} [skip ci]
+```
+
+Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub.
 
 #### Post-targets
 
@@ -182,22 +199,23 @@ If you wish to track changes at any depth of your dependency graph, then you sho
 1. Enable versioning for each project in the dependency graph
 2. Set the `trackDeps` option to `true` on each of the projects
 3. Make sure that `version` is run on projects in the right order by configuring `version`'s target dependencies in `nx.json`:
+
 ```json
-...
-"targetDependencies": {
-  "version": [
-    {
-      "target": "version",
-      "projects": "dependencies"
-    }
-  ]
+{
+  "targetDependencies": {
+    "version": [
+      {
+        "target": "version",
+        "projects": "dependencies"
+      }
+    ]
+  }
 }
-...
 ```
 
 This setup will cause a cascade of version increments starting at the deepest changed dependency,
-then continuing up the graph until the indicated project is reached. 
-Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`, 
+then continuing up the graph until the indicated project is reached.
+Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`,
 then it will avoid attempting to version dependencies multiple times.
 
 ### CI/CD usage
@@ -274,6 +292,8 @@ This project follows the [all-contributors](https://github.com/all-contributors/
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/hpierre74"><img src="https://avatars.githubusercontent.com/u/25172711?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pierre Huyghe</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=hpierre74" title="Code">💻</a></td>
+    <td align="center"><a href="https://gitlab.com/wsedlacek"><img src="https://avatars.githubusercontent.com/u/8206108?v=4?s=100" width="100px;" alt=""/><br /><sub><b>William Sedlacek</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=wSedlacek" title="Code">💻</a> <a href="#ideas-wSedlacek" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://palmtreecoding.com/"><img src="https://avatars.githubusercontent.com/u/7668692?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tycho Bokdam</b></sub></a><br /><a href="#ideas-TriPSs" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
