@@ -1,6 +1,7 @@
+import { logger } from '@nrwl/devkit';
 import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
-import { catchError, last, map, scan, startWith } from 'rxjs/operators';
+import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
 
 import { execAsync } from '../../common/exec-async';
 
@@ -82,7 +83,10 @@ export function tryPushToGitRemote({
         return throwError(() => new Error(error.stderr));
       })
     );
-  }).pipe(map((process) => process.stdout));
+  }).pipe(
+    map((process) => process.stdout),
+    tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`))
+  );
 }
 
 export function addToStage({
