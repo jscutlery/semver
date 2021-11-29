@@ -104,7 +104,7 @@ export function _generateProjectChangelogs({
 }
 
 /* istanbul ignore next */
-export function _resolveCommitMessageInterpolations({
+export function _createCommitMessageFormatConfig({
   projectName,
   commitMessageFormat,
 }: {
@@ -112,12 +112,14 @@ export function _resolveCommitMessageInterpolations({
   commitMessageFormat: string | undefined;
 }) {
   return typeof commitMessageFormat === 'string'
-    ? (resolveInterpolation(commitMessageFormat, {
-        projectName,
-        /* Standard Version do the interpolation itself if we pass {{currentTag}} in the commit message format. */
-        version: '{{currentTag}}',
-      }) as string)
-    : undefined;
+    ? {
+        releaseCommitMessageFormat: resolveInterpolation(commitMessageFormat, {
+          projectName,
+          /* Standard Version do the interpolation itself if we pass {{currentTag}} in the commit message format. */
+          version: '{{currentTag}}',
+        }) as string,
+      }
+    : {};
 }
 
 /* istanbul ignore next */
@@ -158,10 +160,13 @@ export function _runStandardVersion({
     path: projectRoot,
     preset,
     tagPrefix,
-    releaseCommitMessageFormat: _resolveCommitMessageInterpolations({
+
+    /* @Notice: conditionally sets the config to avoid having `undefined` as a commit message. */
+    ..._createCommitMessageFormatConfig({
       commitMessageFormat,
       projectName,
     }),
+
     skip: {
       changelog: skipChangelog,
     },

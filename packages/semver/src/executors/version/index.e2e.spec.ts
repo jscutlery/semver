@@ -9,7 +9,10 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
-import { createProjectGraphAsync, getSortedProjectNodes } from '@nrwl/workspace/src/core/project-graph';
+import {
+  createProjectGraphAsync,
+  getSortedProjectNodes,
+} from '@nrwl/workspace/src/core/project-graph';
 import { lastValueFrom } from 'rxjs';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 
@@ -51,7 +54,7 @@ describe('@jscutlery/semver:version', () => {
           },
           e: {
             root: 'libs/e',
-          }
+          },
         },
       }),
     ],
@@ -105,13 +108,15 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not bump root package.json', async () => {
-      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.0.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
+        '0.0.0'
+      );
     });
 
     it(`should bump a's package.json`, async () => {
-      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
-        '0.1.0'
-      );
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.1.0');
     });
 
     it('should not generate root changelog', () => {
@@ -164,7 +169,9 @@ $`)
     });
 
     it('should not bump root package.json', async () => {
-      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.0.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
+        '0.0.0'
+      );
     });
 
     it('should not generate root changelog', () => {
@@ -220,13 +227,15 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.1.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
+        '0.1.0'
+      );
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
-        '0.1.0'
-      );
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.1.0');
     });
 
     it('should generate root changelog', async () => {
@@ -332,14 +341,16 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.2.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
+        '0.2.0'
+      );
     });
 
     /* In sync mode, we bump "a" even if change concerns "b". */
     it(`should bump "a"'s package.json`, async () => {
-      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
-        '0.2.0'
-      );
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.2.0');
     });
 
     it('should update root changelog', async () => {
@@ -422,13 +433,15 @@ $`)
     });
 
     it('should bump root package.json', async () => {
-      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('0.1.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
+        '0.1.0'
+      );
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
-        '0.1.0'
-      );
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.1.0');
     });
 
     it('should not generate root changelog', () => {
@@ -472,15 +485,27 @@ $`)
      * test its use in `getProjectDependencies`, it would require a full NX workspace
      * testing environment with interdependent projects.
      */
-    const mockCreateProjectGraphAsync = createProjectGraphAsync as jest.MockedFunction<typeof createProjectGraphAsync>;
-    const mockGetSortedProjectNodes = getSortedProjectNodes as jest.MockedFunction<typeof getSortedProjectNodes>;
+    const mockCreateProjectGraphAsync =
+      createProjectGraphAsync as jest.MockedFunction<
+        typeof createProjectGraphAsync
+      >;
+    const mockGetSortedProjectNodes =
+      getSortedProjectNodes as jest.MockedFunction<
+        typeof getSortedProjectNodes
+      >;
 
     describe('utilizes the project graph', () => {
       beforeEach(() => {
-        const originalModule = jest.requireActual('@nrwl/workspace/src/core/project-graph');
-        mockCreateProjectGraphAsync.mockImplementation(originalModule.createProjectGraphAsync);
-        mockGetSortedProjectNodes.mockImplementation(originalModule.getSortedProjectNodes);
-      })
+        const originalModule = jest.requireActual(
+          '@nrwl/workspace/src/core/project-graph'
+        );
+        mockCreateProjectGraphAsync.mockImplementation(
+          originalModule.createProjectGraphAsync
+        );
+        mockGetSortedProjectNodes.mockImplementation(
+          originalModule.getSortedProjectNodes
+        );
+      });
       afterEach(() => jest.resetAllMocks());
 
       it('uses a valid project graph version', async () => {
@@ -491,13 +516,11 @@ $`)
          * project graph.
          */
       });
-    })
+    });
 
     describe('when disabled with an unchanged project', () => {
       beforeAll(async () => {
-        mockCreateProjectGraphAsync.mockReturnValue(
-          projectGraph()
-        );
+        mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -515,18 +538,21 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects: [
-              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
-            ]
+              {
+                project: 'e',
+                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
+              },
+            ],
           })
         );
       });
 
       afterAll(() => {
-        mockCreateProjectGraphAsync.mockRestore()
+        mockCreateProjectGraphAsync.mockRestore();
         return testingWorkspace.tearDown();
       });
 
-      it('should not get affected projects',  () => {
+      it('should not get affected projects', () => {
         expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(0);
       });
 
@@ -544,9 +570,7 @@ $`)
      */
     describe('used with unchanged package with unchanged libs', () => {
       beforeAll(async () => {
-        mockCreateProjectGraphAsync.mockReturnValue(
-          projectGraph()
-        );
+        mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -565,8 +589,11 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects: [
-              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
-            ]
+              {
+                project: 'e',
+                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
+              },
+            ],
           })
         );
       });
@@ -576,7 +603,7 @@ $`)
         return testingWorkspace.tearDown();
       });
 
-      it('should get affected projects',  () => {
+      it('should get affected projects', () => {
         expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
@@ -587,9 +614,7 @@ $`)
 
     describe('used with unchanged package with changed lib', () => {
       beforeAll(async () => {
-        mockCreateProjectGraphAsync.mockReturnValue(
-          projectGraph()
-        );
+        mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -615,8 +640,11 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects: [
-              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
-            ]
+              {
+                project: 'e',
+                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
+              },
+            ],
           })
         );
       });
@@ -626,7 +654,7 @@ $`)
         return testingWorkspace.tearDown();
       });
 
-      it('should get affected projects',  () => {
+      it('should get affected projects', () => {
         expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
@@ -644,9 +672,7 @@ $`)
 
     describe('used with changed package with changed lib', () => {
       beforeAll(async () => {
-        mockCreateProjectGraphAsync.mockReturnValue(
-          projectGraph()
-        );
+        mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -675,8 +701,11 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects: [
-              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
-            ]
+              {
+                project: 'e',
+                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
+              },
+            ],
           })
         );
       });
@@ -686,7 +715,7 @@ $`)
         return testingWorkspace.tearDown();
       });
 
-      it('should get affected projects',  () => {
+      it('should get affected projects', () => {
         expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
@@ -709,9 +738,7 @@ $`)
 
     describe('used with changed package with unchanged lib', () => {
       beforeAll(async () => {
-        mockCreateProjectGraphAsync.mockReturnValue(
-          projectGraph()
-        );
+        mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -730,18 +757,21 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/a'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects: [
-              {project: 'd', projectRoot: resolve(testingWorkspace.root, 'libs/d')}
-            ]
+              {
+                project: 'd',
+                projectRoot: resolve(testingWorkspace.root, 'libs/d'),
+              },
+            ],
           })
         );
       });
 
       afterAll(() => {
-        mockCreateProjectGraphAsync.mockRestore()
+        mockCreateProjectGraphAsync.mockRestore();
         return testingWorkspace.tearDown();
       });
 
-      it('should get affected projects',  () => {
+      it('should get affected projects', () => {
         expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
@@ -764,9 +794,7 @@ $`)
 
     describe('used with unchanged package with changed lib (--sync-versions=true)', () => {
       beforeAll(async () => {
-        mockCreateProjectGraphAsync.mockReturnValue(
-          projectGraph()
-        );
+        mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
         testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -792,18 +820,21 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects: [
-              {project: 'e', projectRoot: resolve(testingWorkspace.root, 'libs/e')}
-            ]
+              {
+                project: 'e',
+                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
+              },
+            ],
           })
         );
       });
 
       afterAll(() => {
-        mockCreateProjectGraphAsync.mockRestore()
+        mockCreateProjectGraphAsync.mockRestore();
         return testingWorkspace.tearDown();
       });
 
-      it('should get affected projects',  () => {
+      it('should get affected projects', () => {
         expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
       });
 
@@ -853,13 +884,15 @@ This file was generated.*
     });
 
     it('should bump root package.json', async () => {
-      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual('1.0.0');
+      expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
+        '1.0.0'
+      );
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
-        '1.0.0'
-      );
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('1.0.0');
     });
 
     it('should generate root changelog', async () => {
@@ -954,9 +987,9 @@ $`)
     });
 
     it(`should bump "a"'s package.json`, async () => {
-      expect((await lastValueFrom(readPackageJson('packages/a'))).version).toEqual(
-        '0.0.1-beta.0'
-      );
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.0.1-beta.0');
     });
 
     it('should generate root changelog', async () => {
@@ -1042,17 +1075,20 @@ $`)
   });
 
   describe('--commitMessageFormat', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
       /* Commit changes. */
       commitChanges();
+    });
 
-      /* Run builder. */
+    afterEach(() => testingWorkspace.tearDown());
+
+    it('should have the latest commit following the provided format', async () => {
       result = await version(
         {
           ...defaultBuilderOptions,
-          commitMessageFormat: 'chore: 🎸 release ${version} [skip ci]'
+          commitMessageFormat: 'chore: 🎸 release ${version} [skip ci]',
         },
         createFakeContext({
           project: 'workspace',
@@ -1060,14 +1096,23 @@ $`)
           workspaceRoot: testingWorkspace.root,
         })
       );
+
+      expect(commitMessage()).toBe('chore: 🎸 release 0.1.0 [skip ci]');
     });
 
-    afterAll(() => testingWorkspace.tearDown());
+    it('should have the latest commit following the default format', async () => {
+      result = await version(
+        defaultBuilderOptions,
+        createFakeContext({
+          project: 'workspace',
+          projectRoot: testingWorkspace.root,
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
 
-    it('should have the latest commit following the provided format', () => {
-      expect(commitMessage()).toBe('chore: 🎸 release 0.1.0 [skip ci]')
+      expect(commitMessage()).toBe('chore(release): 0.1.0');
     });
-  })
+  });
 });
 
 function commitChanges() {
@@ -1102,9 +1147,7 @@ function uncommitedChanges() {
 }
 
 function commitMessage() {
-  return (
-    execSync('git show -s --format=%s', { encoding: 'utf-8' }).trim()
-  );
+  return execSync('git show -s --format=%s', { encoding: 'utf-8' }).trim();
 }
 
 function projectGraph() {
@@ -1123,7 +1166,7 @@ function projectGraph() {
           type: 'implicit',
           source: 'a',
           target: 'd',
-        }
+        },
       ],
       c: [
         {
@@ -1138,7 +1181,7 @@ function projectGraph() {
         },
       ],
       d: [],
-      e: []
-    }
+      e: [],
+    },
   });
 }

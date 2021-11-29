@@ -398,6 +398,17 @@ describe('@jscutlery/semver:version', () => {
         })
       );
     });
+
+    it('should commit with default format', async () => {
+      const { success } = await version(options, context);
+
+      expect(success).toBe(true);
+      expect(mockStandardVersion).toBeCalledWith(
+        expect.not.objectContaining({
+          releaseCommitMessageFormat: expect.any(String),
+        })
+      );
+    });
   });
 
   describe('Git push', () => {
