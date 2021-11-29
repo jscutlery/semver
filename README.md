@@ -137,7 +137,7 @@ The **`--commitMessageFormat`** option allows you to customize the commit messag
 chore(release): ${version}
 ```
 
-The `version` interpolation is resolved to the current release version, for instance `1.0.1`. The customization option also allows you to interpolate the `projectName` variable:
+The `version` variable is resolved to the current release version, for instance `1.0.1`. This option also allows you to interpolate the `projectName` variable:
 
 ```
 chore(release): bump ${projectName} to ${version} [skip ci]
