@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.14.3](https://github.com/jscutlery/semver/compare/semver-2.14.2...semver-2.14.3) (2021-11-29)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 add log when push succeed ([bdf7abf](https://github.com/jscutlery/semver/commit/bdf7abf8e231f9d3c83a50877cc1180abc4fb7ae))
+* **semver:** 🐞 fallback to default commit message format ([5bdc696](https://github.com/jscutlery/semver/commit/5bdc6964f8f41cd70ce6ca1a90d37553c13f01a8))
+
+
+
 ## [2.14.2](https://github.com/jscutlery/semver/compare/semver-2.14.1...semver-2.14.2) (2021-11-29)
 
 
