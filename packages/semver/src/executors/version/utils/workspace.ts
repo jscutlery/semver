@@ -1,17 +1,10 @@
-import { ExecutorContext } from '@nrwl/devkit';
 import { resolve } from 'path';
-import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { readJsonFile } from './filesystem';
 
-export interface WorkspaceDefinition {
-  projects: {
-    [key: string]: {
-      root: string;
-    };
-  };
-}
+import type { Observable } from 'rxjs';
+import type { ExecutorContext, WorkspaceJsonConfiguration } from '@nrwl/devkit';
 
 export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
   return getProjectRoots(workspaceRoot).pipe(
@@ -39,7 +32,7 @@ export function getProjectRoots(workspaceRoot: string): Observable<string[]> {
 
 export function _getWorkspaceDefinition(
   workspaceRoot: string
-): Observable<WorkspaceDefinition> {
+): Observable<WorkspaceJsonConfiguration> {
   return readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
     catchError(() => readJsonFile(resolve(workspaceRoot, 'angular.json')))
   );
