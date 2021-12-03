@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.15.0](https://github.com/wSedlacek/semver/compare/semver-2.14.3...semver-2.15.0) (2021-12-03)
+
+
+### Features
+
+* **semver:** provide relative notes to post targets ([9b3afba](https://github.com/wSedlacek/semver/commit/9b3afbabfed9fe1e52502f1b22697fd971cf0116))
+
+
+
 ## [2.14.3](https://github.com/jscutlery/semver/compare/semver-2.14.2...semver-2.14.3) (2021-11-29)
 
 

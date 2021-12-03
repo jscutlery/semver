@@ -1,7 +1,7 @@
 import { logger } from '@nrwl/devkit';
 import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
-import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
+import { catchError, last, map, mapTo, scan, startWith, tap } from 'rxjs/operators';
 
 import { execAsync } from '../../common/exec-async';
 
@@ -102,7 +102,7 @@ export function addToStage({
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
   return execAsync('git', ['add', ...gitAddOptions]).pipe(
-    map(() => undefined),
+    mapTo(undefined),
     catchError((error) => throwError(() => new Error(error.stderr)))
   );
 }
