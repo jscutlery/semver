@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { firstValueFrom, forkJoin, noop, Observable, of } from 'rxjs';
+import { forkJoin, noop, Observable, of } from 'rxjs';
 import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -8,8 +8,6 @@ import {
   getChangelogPath,
   updateChangelog,
 } from './utils/changelog';
-import { diff } from './utils/diff';
-import { readFileIfExists } from './utils/filesystem';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -143,12 +141,6 @@ export async function _runStandardVersion({
   bumpFiles: string[];
   skipChangelog: boolean;
 } & CommonVersionOptions) {
-  const changeLogPath = getChangelogPath(projectRoot);
-
-  const currentChangeLog = await firstValueFrom(
-    readFileIfExists(changeLogPath, changelogHeader)
-  );
-
   await standardVersion({
     bumpFiles,
     /* Make sure that we commit the manually generated changelogs that
@@ -156,7 +148,7 @@ export async function _runStandardVersion({
     commitAll: true,
     dryRun,
     header: changelogHeader,
-    infile: changeLogPath,
+    infile: getChangelogPath(projectRoot),
     /* Control version to avoid different results between the value
      * returned by `tryBump` and the one computed by standard-version. */
     releaseAs: newVersion,
@@ -181,10 +173,4 @@ export async function _runStandardVersion({
       changelog: skipChangelog,
     },
   });
-
-  const updatedChangeLog = await firstValueFrom(
-    readFileIfExists(changeLogPath)
-  );
-
-  return diff(currentChangeLog, updatedChangeLog);
 }
