@@ -9,7 +9,8 @@
       "options": {
         "push": true,
         "noVerify": true,
-        "postTargets": ["semver:publish", "semver:github"]
+        "postTargets": ["semver:publish", "semver:github"],
+        "commitMessageFormat": "release(${projectName}): 🎸 cut release to ${version}"
       }
     },
     "github": {

@@ -20,7 +20,7 @@
         "commands": [
           "yarn --frozen-lockfile --no-progress --non-interactive --prefer-offline",
           "yarn nx migrate @nrwl/workspace",
-          "[ -f migrations.json ] && npx nx migrate --run-migrations=migrations.json"
+          "[ -f migrations.json ] && yarn nx migrate --run-migrations"
         ],
         "fileFilters": ["**/**"]
       }
