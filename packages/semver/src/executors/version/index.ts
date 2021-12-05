@@ -1,9 +1,10 @@
 import { logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
-import { catchError, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 
-import { getProjectDependencies } from './utils/get-project-dependencies';
+import { calculateChangelogChanges, defaultHeader, getChangelogPath } from './utils/changelog';
+import { getDependencyRoots } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
 import { resolveTagPrefix } from './utils/resolve-tag-prefix';
@@ -29,15 +30,13 @@ export default async function version(
     syncVersions,
     skipRootChangelog,
     skipProjectChangelog,
-    version,
-    releaseAs: _releaseAs,
+    releaseAs,
     preid,
     changelogHeader,
     versionTagPrefix,
     postTargets,
     commitMessageFormat,
   } = normalizeOptions(options);
-  const releaseAs = _releaseAs ?? version;
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
   const preset = 'angular';
@@ -48,22 +47,20 @@ export default async function version(
     syncVersions,
   });
 
-  const projectRoot = getProjectRoot(context);
-
   let dependencyRoots: string[] = [];
-  if (trackDeps && !releaseAs) {
-    // Include any depended-upon libraries in determining the version bump.
-    try {
-      const dependencyLibs = await getProjectDependencies(projectName);
-      dependencyRoots = dependencyLibs.map(
-        (name) => context.workspace.projects[name].root
-      );
-    } catch (e) {
-      logger.error('Failed to determine dependencies.');
-      return Promise.reject(e);
-    }
+  try {
+    dependencyRoots = await getDependencyRoots({
+      projectName,
+      releaseAs,
+      trackDeps,
+      context,
+    });
+  } catch (e) {
+    logger.error('Failed to determine dependencies.');
+    return { success: false };
   }
 
+  const projectRoot = getProjectRoot(context);
   const newVersion$ = tryBump({
     preset,
     projectRoot,
@@ -77,7 +74,7 @@ export default async function version(
     switchMap((newVersion) => {
       if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
-        return of(undefined);
+        return of({ success: true } as const);
       }
 
       const options: CommonVersionOptions = {
@@ -115,32 +112,49 @@ export default async function version(
         })
       );
 
-      return concat(
-        runStandardVersion$,
-        ...(push && dryRun === false ? [pushToGitRemote$] : []),
-        dryRun === false
-          ? executePostTargets({
-              postTargets,
-              resolvableOptions: {
-                project: context.projectName,
-                version: newVersion,
-                tag: `${tagPrefix}${newVersion}`,
-                tagPrefix,
-                noVerify,
-                dryRun,
-                remote,
-                baseBranch,
-              },
-              context,
-            })
-          : []
+      /**
+       * 1. Calculate new version
+       * 2. Release (create changelog -> add to stage -> commit -> tag)
+       * 3. Calculate changelog changes
+       * 4. Push to Git
+       * 5. Run post targets
+       */
+      return runStandardVersion$.pipe(
+        calculateChangelogChanges({
+          changelogHeader,
+          changelogPath: getChangelogPath(projectRoot),
+        }),
+        concatMap((notes) =>
+          concat(
+            ...(push && dryRun === false ? [pushToGitRemote$] : []),
+            ...(dryRun === false
+              ? [
+                  executePostTargets({
+                    postTargets,
+                    resolvableOptions: {
+                      project: context.projectName,
+                      version: newVersion,
+                      tag: `${tagPrefix}${newVersion}`,
+                      tagPrefix,
+                      noVerify,
+                      dryRun,
+                      remote,
+                      baseBranch,
+                      notes,
+                    },
+                    context,
+                  }),
+                ]
+              : [])
+          )
+        ),
+        reduce((result) => result, { success: true } as const)
       );
     })
   );
 
   return lastValueFrom(
     action$.pipe(
-      mapTo({ success: true }),
       catchError((error) => {
         if (error instanceof SchemaError) {
           logger.error(`Post-targets Error: ${error.message}`);
@@ -148,7 +162,7 @@ export default async function version(
           logger.error(error.stack ?? error.toString());
         }
 
-        return of({ success: false });
+        return of({ success: false } as const);
       })
     )
   );
@@ -165,10 +179,9 @@ function normalizeOptions(options: VersionBuilderSchema) {
     syncVersions: options.syncVersions as boolean,
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
-    version: options.version,
-    releaseAs: options.releaseAs,
+    releaseAs: options.releaseAs ?? options.version,
     preid: options.preid,
-    changelogHeader: options.changelogHeader,
+    changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.versionTagPrefix,
     postTargets: options.postTargets,
     commitMessageFormat: options.commitMessageFormat,

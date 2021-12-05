@@ -183,6 +183,7 @@ The `postTargets` option declares `my-project:github` target which runs the `@js
 - `dryRun`
 - `remote`
 - `baseBranch`
+- `notes`
 
 #### Built-in post-targets
 

@@ -17,7 +17,7 @@
       "executor": "./dist/packages/semver:github",
       "options": {
         "tag": "${tag}",
-        "notesFile": "packages/semver/CHANGELOG.md"
+        "notes": "${notes}"
       }
     },
     "publish": {

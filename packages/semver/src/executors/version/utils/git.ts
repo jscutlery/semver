@@ -95,14 +95,14 @@ export function addToStage({
 }: {
   paths: string[];
   dryRun: boolean;
-}): Observable<string> {
+}): Observable<void> {
   if (paths.length === 0) {
     return EMPTY;
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
   return execAsync('git', ['add', ...gitAddOptions]).pipe(
-    map((process) => process.stdout),
+    map(() => undefined),
     catchError((error) => throwError(() => new Error(error.stderr)))
   );
 }

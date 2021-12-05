@@ -1,7 +1,32 @@
 // The shape of the project graph is still subject to changes, but
 // can still be used, according to the NX devs. That's why we're
 // doing a deep import here.
-import { createProjectGraphAsync, ProjectGraphDependency } from '@nrwl/workspace/src/core/project-graph';
+import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph';
+
+import { ExecutorContext } from '@nrwl/devkit';
+import type { ProjectGraphDependency } from '@nrwl/workspace/src/core/project-graph';
+
+import type { VersionBuilderSchema } from '../schema';
+
+export async function getDependencyRoots({
+  trackDeps,
+  releaseAs,
+  projectName,
+  context,
+}: Required<Pick<VersionBuilderSchema, 'trackDeps'>> &
+  Pick<VersionBuilderSchema, 'releaseAs'> & {
+    projectName: string;
+    context: ExecutorContext;
+  }): Promise<string[]> {
+  if (trackDeps && !releaseAs) {
+    // Include any depended-upon libraries in determining the version bump.
+    return (await getProjectDependencies(projectName)).map(
+      (name) => context.workspace.projects[name].root
+    );
+  }
+
+  return [];
+}
 
 /**
  * Returns a list of in-repo dependencies based on NX's dependency graph.

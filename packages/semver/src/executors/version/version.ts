@@ -1,13 +1,9 @@
 import { resolve } from 'path';
-import { concat, forkJoin, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { forkJoin, noop, Observable, of } from 'rxjs';
+import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import {
-  defaultHeader,
-  getChangelogPath,
-  updateChangelog,
-} from './utils/changelog';
+import { getChangelogPath, updateChangelog } from './utils/changelog';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -34,27 +30,28 @@ export function versionWorkspace({
   skipProjectChangelog: boolean;
   workspaceRoot: string;
 } & CommonVersionOptions) {
-  return concat(
-    getProjectRoots(workspaceRoot).pipe(
-      switchMap((projectRoots) =>
-        _generateProjectChangelogs({
-          workspaceRoot,
-          projectRoots,
-          ...options,
-        })
-      ),
-      /* Run Git add only once, after changelogs get generated in parallel. */
-      switchMap((changelogPaths) =>
-        addToStage({ paths: changelogPaths, dryRun: options.dryRun })
-      )
+  return getProjectRoots(workspaceRoot).pipe(
+    concatMap((projectRoots) =>
+      _generateProjectChangelogs({
+        workspaceRoot,
+        projectRoots,
+        ...options,
+      })
     ),
-    getPackageFiles(workspaceRoot).pipe(
-      switchMap((packageFiles) =>
-        _runStandardVersion({
-          bumpFiles: packageFiles,
-          skipChangelog: skipRootChangelog,
-          ...options,
-        })
+    /* Run Git add only once, after changelogs get generated in parallel. */
+    concatMap((changelogPaths) =>
+      addToStage({ paths: changelogPaths, dryRun: options.dryRun })
+    ),
+    reduce(noop),
+    concatMap(() =>
+      getPackageFiles(workspaceRoot).pipe(
+        switchMap((packageFiles) =>
+          _runStandardVersion({
+            bumpFiles: packageFiles,
+            skipChangelog: skipRootChangelog,
+            ...options,
+          })
+        )
       )
     )
   );
@@ -122,8 +119,9 @@ export function _createCommitMessageFormatConfig({
     : {};
 }
 
+
 /* istanbul ignore next */
-export function _runStandardVersion({
+export async function _runStandardVersion({
   bumpFiles,
   dryRun,
   projectRoot,
@@ -134,12 +132,12 @@ export function _runStandardVersion({
   skipChangelog,
   projectName,
   commitMessageFormat,
-  changelogHeader = defaultHeader,
+  changelogHeader
 }: {
   bumpFiles: string[];
   skipChangelog: boolean;
 } & CommonVersionOptions) {
-  return standardVersion({
+  await standardVersion({
     bumpFiles,
     /* Make sure that we commit the manually generated changelogs that
      * we staged. */
