@@ -1,7 +1,10 @@
 import { resolve } from 'path';
-import { defer } from 'rxjs';
-import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import { combineLatestWith, concatMap, defer, lastValueFrom, OperatorFunction } from 'rxjs';
 import * as standardVersionDefaults from 'standard-version/defaults';
+import * as changelog from 'standard-version/lib/lifecycles/changelog';
+
+import { diff } from './diff';
+import { readFileIfExists } from './filesystem';
 
 export const defaultHeader = `# Changelog
 
@@ -38,4 +41,25 @@ export function updateChangelog({
     );
     return changelogPath;
   });
+}
+
+export function calculateChangelogChanges<T>({
+  changelogPath,
+  changelogHeader,
+}: {
+  changelogPath: string;
+  changelogHeader: string;
+}): OperatorFunction<T, string> {
+  return (source) => {
+    return readFileIfExists(changelogPath, changelogHeader).pipe(
+      combineLatestWith(source),
+      concatMap(async ([input]) => {
+        const output = await lastValueFrom(
+          readFileIfExists(changelogPath, changelogHeader)
+        );
+
+        return diff(input, output);
+      })
+    );
+  };
 }

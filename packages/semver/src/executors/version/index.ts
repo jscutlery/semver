@@ -1,8 +1,13 @@
 import { logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
-import { concat, defer, lastValueFrom, of, OperatorFunction } from 'rxjs';
-import { catchError, combineLatestWith, concatMap, reduce, switchMap } from 'rxjs/operators';
+import { concat, defer, lastValueFrom, of } from 'rxjs';
+import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 
+import {
+  calculateChangelogChanges,
+  defaultHeader,
+  getChangelogPath,
+} from './utils/changelog';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
@@ -14,9 +19,6 @@ import { versionProject, versionWorkspace } from './version';
 import type { ExecutorContext } from '@nrwl/devkit';
 import type { CommonVersionOptions } from './version';
 import type { VersionBuilderSchema } from './schema';
-import { getChangelogPath } from './utils/changelog';
-import { readFileIfExists } from './utils/filesystem';
-import { diff } from './utils/diff';
 
 export default async function version(
   options: VersionBuilderSchema,
@@ -32,15 +34,13 @@ export default async function version(
     syncVersions,
     skipRootChangelog,
     skipProjectChangelog,
-    version,
-    releaseAs: _releaseAs,
+    releaseAs,
     preid,
     changelogHeader,
     versionTagPrefix,
     postTargets,
     commitMessageFormat,
   } = normalizeOptions(options);
-  const releaseAs = _releaseAs ?? version;
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
   const preset = 'angular';
@@ -107,21 +107,6 @@ export default async function version(
           : versionProject(options)
       );
 
-      const captureChangeLogDiff =
-        <T>(changeLogPath: string): OperatorFunction<T, string> =>
-        (source) => {
-          return readFileIfExists(changeLogPath, changelogHeader).pipe(
-            combineLatestWith(source),
-            concatMap(async ([input]) => {
-              const output = await lastValueFrom(
-                readFileIfExists(changeLogPath, changelogHeader)
-              );
-
-              return diff(input, output);
-            })
-          );
-        };
-
       /**
        * @todo 3.0.0: remove this in favor of @jscutlery/semver:push postTarget.
        */
@@ -133,10 +118,11 @@ export default async function version(
         })
       );
 
-
-      const changeLogPath = getChangelogPath(projectRoot);
       return runStandardVersion$.pipe(
-        captureChangeLogDiff(changeLogPath),
+        calculateChangelogChanges({
+          changelogHeader,
+          changelogPath: getChangelogPath(projectRoot),
+        }),
         concatMap((notes) =>
           concat(
             ...(push && dryRun === false ? [pushToGitRemote$] : []),
@@ -192,10 +178,9 @@ function normalizeOptions(options: VersionBuilderSchema) {
     syncVersions: options.syncVersions as boolean,
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
-    version: options.version,
-    releaseAs: options.releaseAs,
+    releaseAs: options.releaseAs ?? options.version,
     preid: options.preid,
-    changelogHeader: options.changelogHeader,
+    changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.versionTagPrefix,
     postTargets: options.postTargets,
     commitMessageFormat: options.commitMessageFormat,
