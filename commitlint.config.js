@@ -4,7 +4,7 @@ module.exports = {
     'scope-enum': [
       2,
       'always',
-      ['semver', 'github']
+      ['semver']
     ]
   },
 };
