@@ -3,12 +3,8 @@ import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 
-import {
-  calculateChangelogChanges,
-  defaultHeader,
-  getChangelogPath,
-} from './utils/changelog';
-import { getProjectDependencies } from './utils/get-project-dependencies';
+import { calculateChangelogChanges, defaultHeader, getChangelogPath } from './utils/changelog';
+import { getDependencyRoots } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
 import { resolveTagPrefix } from './utils/resolve-tag-prefix';
@@ -51,22 +47,20 @@ export default async function version(
     syncVersions,
   });
 
-  const projectRoot = getProjectRoot(context);
-
   let dependencyRoots: string[] = [];
-  if (trackDeps && !releaseAs) {
-    // Include any depended-upon libraries in determining the version bump.
-    try {
-      const dependencyLibs = await getProjectDependencies(projectName);
-      dependencyRoots = dependencyLibs.map(
-        (name) => context.workspace.projects[name].root
-      );
-    } catch (e) {
-      logger.error('Failed to determine dependencies.');
-      return Promise.reject(e);
-    }
+  try {
+    dependencyRoots = await getDependencyRoots({
+      projectName,
+      releaseAs,
+      trackDeps,
+      context,
+    });
+  } catch (e) {
+    logger.error('Failed to determine dependencies.');
+    return { success: false };
   }
 
+  const projectRoot = getProjectRoot(context);
   const newVersion$ = tryBump({
     preset,
     projectRoot,
@@ -80,7 +74,7 @@ export default async function version(
     switchMap((newVersion) => {
       if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
-        return of({ success: true });
+        return of({ success: true } as const);
       }
 
       const options: CommonVersionOptions = {
@@ -118,6 +112,13 @@ export default async function version(
         })
       );
 
+      /**
+       * 1. Calculate new version
+       * 2. Release (create changelog -> add to stage -> commit -> tag)
+       * 3. Calculate changelog changes
+       * 4. Push to Git
+       * 5. Run post targets
+       */
       return runStandardVersion$.pipe(
         calculateChangelogChanges({
           changelogHeader,
@@ -161,7 +162,7 @@ export default async function version(
           logger.error(error.stack ?? error.toString());
         }
 
-        return of({ success: false });
+        return of({ success: false } as const);
       })
     )
   );

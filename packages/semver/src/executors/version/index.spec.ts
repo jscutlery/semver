@@ -14,7 +14,7 @@ import * as git from './utils/git';
 import { executePostTargets } from './utils/post-target';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-import { getProjectDependencies } from './utils/get-project-dependencies';
+import { getDependencyRoots } from './utils/get-project-dependencies';
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -38,10 +38,9 @@ describe('@jscutlery/semver:version', () => {
   const mockStandardVersion = standardVersion as jest.MockedFunction<
     typeof standardVersion
   >;
-  const mockGetProjectDependencies =
-    getProjectDependencies as jest.MockedFunction<
-      typeof getProjectDependencies
-    >;
+  const mockGetDependencyRoots = getDependencyRoots as jest.MockedFunction<
+    typeof getDependencyRoots
+  >;
   const mockExecutePostTargets = executePostTargets as jest.MockedFunction<
     typeof executePostTargets
   >;
@@ -83,6 +82,7 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
 
     mockExecutePostTargets.mockReturnValue(of(undefined));
+    mockGetDependencyRoots.mockReturnValue(Promise.resolve([]));
 
     /* Mock a dependency, don't ask me which one. */
     mockExecFile.mockImplementation(
@@ -146,11 +146,13 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version independently on a project with dependencies', async () => {
-      mockGetProjectDependencies.mockReturnValue(
-        Promise.resolve(['lib1', 'lib2'])
+      mockGetDependencyRoots.mockReturnValue(
+        Promise.resolve(['/root/libs/lib1', '/root/libs/lib2'])
       );
-      const tempOptions = { ...options, trackDeps: true };
-      const { success } = await version(tempOptions, context);
+      const { success } = await version(
+        { ...options, trackDeps: true },
+        context
+      );
 
       expect(success).toBe(true);
       expect(mockTryBump).toBeCalledWith(
@@ -174,17 +176,11 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run standard-version independently on a project with failure on dependencies', async () => {
-      mockGetProjectDependencies.mockReturnValue(
-        Promise.reject('thrown error')
-      );
-      const tempOptions = { ...options, trackDeps: true };
-      let error;
-      try {
-        await version(tempOptions, context);
-      } catch (e) {
-        error = e;
-      }
-      expect(error).toEqual('thrown error');
+      mockGetDependencyRoots.mockReturnValue(Promise.reject('thrown error'));
+
+      expect(await version({ ...options, trackDeps: true }, context)).toEqual({
+        success: false,
+      });
       expect(logger.error).toBeCalledWith('Failed to determine dependencies.');
       expect(standardVersion).not.toBeCalled();
     });
@@ -466,7 +462,21 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockExecutePostTargets).toBeCalled();
+      expect(mockExecutePostTargets).toBeCalledWith(
+        expect.objectContaining({
+          resolvableOptions: {
+            baseBranch: 'main',
+            dryRun: false,
+            noVerify: false,
+            notes: '',
+            project: 'a',
+            remote: 'origin',
+            tag: 'a-2.1.0',
+            tagPrefix: 'a-',
+            version: '2.1.0',
+          },
+        })
+      );
     });
 
     it('should handle post targets failure', async () => {
