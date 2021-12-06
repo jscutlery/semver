@@ -145,11 +145,11 @@ chore(release): bump ${projectName} to ${version} [skip ci]
 
 Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub.
 
-#### Post-targets
+#### Triggering executors post-release
 
 The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task.
 
-Here is a configuration example using `@jscutlery/semver:github` to create GitHub Release for _my-project_ library:
+Here is a configuration example using [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) to create a GitHub Release and [`ngx-deploy-npm:deploy`](https://github.com/bikecoders/ngx-deploy-npm) to publish on NPM:
 
 ```json
 {
@@ -157,21 +157,27 @@ Here is a configuration example using `@jscutlery/semver:github` to create GitHu
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "postTargets": ["my-project:github"]
+        "postTargets": ["my-project:publish", "my-project:github"]
       }
     },
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "notesFile": "libs/my-project/CHANGELOG.md"
+        "notes": "${notes}"
+      }
+    },
+    "publish": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
       }
     }
   }
 }
 ```
 
-The `postTargets` option declares `my-project:github` target which runs the `@jscutlery/semver:github` executor. Note that options using the interpolation notation `${variable}` are resolved with their corresponding value.
+Note that options using the interpolation notation `${variable}` are resolved with their corresponding value.
 
 #### Resolved options
 
