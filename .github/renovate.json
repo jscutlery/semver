@@ -13,17 +13,9 @@
   "commitMessage": "{{{commitMessagePrefix}}} 📦 {{{commitMessageAction}}} {{{commitMessageTopic}}} {{{commitMessageExtra}}} {{{commitMessageSuffix}}}",
   "packageRules": [
     {
-      "packageNames": ["@nrwl/workspace"],
-      "packagePatterns": ["^@nrwl/"],
+      "matchPackagePatterns": ["^@angular/", "^@nrwl/"],
       "groupName": "Nrwl workspace",
-      "postUpgradeTasks": {
-        "commands": [
-          "yarn --frozen-lockfile --no-progress --non-interactive --prefer-offline",
-          "yarn nx migrate @nrwl/workspace",
-          "[ -f migrations.json ] && yarn nx migrate --run-migrations"
-        ],
-        "fileFilters": ["**/**"]
-      }
+      "enabled": false
     },
     {
       "packagePatterns": ["*"],

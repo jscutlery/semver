@@ -1,0 +1,51 @@
+name: 'Nx migrate'
+
+on:
+  schedule:
+    # Everyday at 8:00 AM UTC
+    - cron: '0 8 * * *'
+
+jobs:
+  nx-migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+      - name: Check if @nrwl/workspace is outdated
+        id: nrwl-workspace-outdated
+        run: |
+          IS_OUTDATED=$(test ! -z "$(npm outdated @nrwl/workspace)" && echo true || echo false)
+          echo "::set-output name=outdated::$IS_OUTDATED"
+      - name: Update @nrwl/workspace
+        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: yarn nx migrate latest && yarn nx migrate --run-migrations
+      - if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: yarn nx affected --base=last-release --target=lint
+      - if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: yarn nx affected --base=last-release --target=build
+      - if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: yarn nx affected --base=last-release --target=test
+      - if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: yarn nx affected --base=last-release --target=e2e --parallel=1
+      - name: Setup git user to "🤖 JSCutlery Bot"
+        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: git config user.email "-" && git config user.name "🤖 JSCutlery Bot"
+      - name: Commit changes
+        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: |
+          git add . 
+          git commit -m "ci: 📦 update nrwl workspace"
+      - name: Remove migrations.json
+        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: |
+          git rm -f migrations.json 
+          git commit -m "ci: 📦 remove migrations.json"
+      - name: Push changes
+        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          force: true
+          tags: true
