@@ -1,12 +1,12 @@
 {
   "migrations": [
     {
-      "version": "13.2.0",
-      "description": "Set --parallel=1 for existing repos to preserve the existing behavior",
+      "version": "13.3.0-beta.0",
+      "description": "@nrwl/workspace:tsc is now @nrwl/js:tsc",
       "cli": "nx",
-      "implementation": "./src/migrations/update-13-2-0/set-parallel-default",
+      "implementation": "./src/migrations/update-13-3-0/update-tsc-executor-location",
       "package": "@nrwl/workspace",
-      "name": "set-parallel-default"
+      "name": "13-3-0-tsc-location"
     }
   ]
 }
