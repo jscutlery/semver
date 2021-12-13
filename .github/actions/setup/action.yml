@@ -1,10 +1,13 @@
 name: Setup
+
 description: Setup Node.js, cache and install dependencies
+
 inputs:
   node-version:
     description: Node.js version
     required: false
     default: '16'
+
 runs:
   using: composite
   steps:
@@ -12,6 +15,11 @@ runs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
+    - name: Setup git user to "🤖 JSCutlery Bot"
+      shell: bash
+      run: git config user.email "-" && git config user.name "🤖 JSCutlery Bot"
+
     - name: Use Node.js
       uses: actions/setup-node@v2
       with:
@@ -23,6 +31,7 @@ runs:
         # It actually creates a .npmrc in a temporary folder
         # and sets the NPM_CONFIG_USERCONFIG environment variable.
         registry-url: https://registry.npmjs.org
+
     - name: yarn install
       shell: bash
       run: yarn --frozen-lockfile --no-progress --non-interactive --prefer-offline
