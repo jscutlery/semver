@@ -1,4 +1,4 @@
-name: '@jscutlery/semver CI'
+name: Test & Release
 
 on:
   - push
@@ -10,23 +10,19 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12, 14, 16]
+        node_version: [14, 16]
 
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/setup
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: yarn commitlint --from=last-release
-      - run: yarn nx affected:lint --base=last-release
-      - run: yarn nx affected:build --base=last-release
-      # @NOTICE find a way to use affected:test with --code-coverage flag (if that possible??)
-      - run: yarn nx test semver --code-coverage
-      - run: yarn nx affected:e2e --headless --base=last-release
-      - name: Codecov upload
-        uses: codecov/codecov-action@v2
+          node_version: ${{ matrix.node_version }}
+
+      - name: Test
+        uses: ./.github/actions/test
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
   release:
     runs-on: ubuntu-latest
@@ -37,23 +33,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/setup
-      - name: Setup git user to "🤖 JSCutlery Bot"
-        run: git config user.email "-" && git config user.name "🤖 JSCutlery Bot"
-      - name: Version
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # Use npx instead of yarn because yarn automagically sets NPM_* environment variables
-        # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
-        # which is set up by `setup-node` action.
-        run: npx nx affected --base=last-release --target=version
-      - name: Tag last-release
-        run: git tag -f last-release
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Release
+        uses: ./.github/actions/release
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          force: true
-          tags: true
+          npm_token: ${{ secrets.NPM_TOKEN }}

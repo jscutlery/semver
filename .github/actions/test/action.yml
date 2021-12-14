@@ -1,0 +1,33 @@
+name: Test
+
+description: Test
+
+inputs:
+  codecov_token:
+    description: Codecov token
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: Commitlint
+      shell: bash
+      run: yarn commitlint --from=last-release
+    - name: Lint
+      shell: bash
+      run: yarn nx affected:lint --base=last-release
+    - name: Build
+      shell: bash
+      run: yarn nx affected:build --base=last-release
+    # @NOTICE find a way to use affected:test with --code-coverage flag (if that possible??)
+    - name: Test
+      shell: bash
+      run: yarn nx test semver --code-coverage
+    - name: E2E
+      shell: bash
+      run: yarn nx affected:e2e --headless --base=last-release
+    - name: Codecov upload
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ inputs.codecov_token }}
