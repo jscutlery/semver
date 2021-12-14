@@ -21,9 +21,24 @@ jobs:
           echo $IS_OUTDATED
           echo "::set-output name=outdated::$IS_OUTDATED"
 
+      - name: Check if has migrations
+        id: nrwl-workspace-has-migrations
+        run: |
+          HAS_MIGRATIONS=$(test -f migrations.json && echo true || echo false)
+          echo $HAS_MIGRATIONS
+          echo "::set-output name=has_migrations::$HAS_MIGRATIONS"
+
       - name: Update @nrwl/workspace
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
-        run: yarn nx migrate latest && yarn nx migrate --run-migrations
+        run: yarn nx migrate latest
+
+      - name: Install dependencies
+        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        run: yarn install
+
+      - name: Run @nrwl/workspace migrations
+        if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
+        run: yarn nx migrate --run-migrations
 
       - name: Test
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
@@ -36,9 +51,9 @@ jobs:
           git commit -m "ci: 📦 update nrwl workspace"
 
       - name: Remove migrations.json & commit
-        if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
         run: |
-          git rm -f migrations.json 
+          git rm -f migrations.json
           git commit -m "ci: 📦 remove migrations.json"
 
       - name: Push changes
