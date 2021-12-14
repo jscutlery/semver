@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: jscutlery/devkit/.github/actions/setup@main
 
       - name: Check if @nrwl/workspace is outdated
         id: nrwl-workspace-outdated
@@ -76,7 +76,7 @@ jobs:
       # events triggered by the GITHUB_TOKEN will not create a new workflow run.
       # This prevents you from accidentally creating recursive workflow runs.""
       - name: Release
-        uses: ./.github/actions/release
+        uses: jscutlery/devkit/.github/actions/release@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           npm_token: ${{ secrets.NPM_TOKEN }}
