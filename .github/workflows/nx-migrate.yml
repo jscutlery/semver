@@ -2,8 +2,8 @@ name: 'Nx migrate'
 
 on:
   schedule:
-    # Everyday at 6:00 AM UTC
-    - cron: '0 6 * * *'
+    # Every hour
+    - cron: '0 * * * *'
 
 jobs:
   nx-migrate:
