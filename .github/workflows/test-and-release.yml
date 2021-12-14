@@ -10,17 +10,19 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, 16]
+        node_version: [14, 16]
 
     steps:
       - uses: actions/checkout@v2
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node_version: ${{ matrix.node_version }}
 
       - name: Test
         uses: ./.github/actions/test
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
   release:
     runs-on: ubuntu-latest

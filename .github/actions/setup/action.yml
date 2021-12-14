@@ -3,7 +3,7 @@ name: Setup
 description: Setup Node.js, cache and install dependencies
 
 inputs:
-  node-version:
+  node_version:
     description: Node.js version
     required: false
     default: '16'
@@ -24,7 +24,7 @@ runs:
       uses: actions/setup-node@v2
       with:
         cache: yarn
-        node-version: ${{ inputs.node-version }}
+        node-version: ${{ inputs.node_version }}
         # This doesn't just set the registry url, but also sets
         # the right configuration in .npmrc that reads NPM token
         # from NPM_AUTH_TOKEN environment variable.

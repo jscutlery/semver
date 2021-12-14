@@ -43,6 +43,8 @@ jobs:
       - name: Test
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
         uses: ./.github/actions/test
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Commit changes
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
