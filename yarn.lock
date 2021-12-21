@@ -1496,14 +1496,7 @@
     "@types/node" "*"
 
 "@types/tmp@^0.2.1":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@types/tmp/-/tmp-0.2.2.tgz#424537a3b91828cb26aaf697f21ae3cd1b69f7e7"
-  integrity sha512-MhSa0yylXtVMsyT8qFpHA1DLHj4DvQGH5ntxrhHSh8PxUVNi35Wk+P5hVgqbO2qZqOotqr9jaoPRL+iRjWYm/A==
-
-"@types/webpack-sources@^0.1.5":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-0.1.9.tgz#da69b06eb34f6432e6658acb5a6893c55d983920"
-  integrity sha512-bvzMnzqoK16PQIC8AYHNdW45eREJQMd6WG/msQWX5V2+vZmODCOPb4TJcbgRljTZZTwTM4wUMcsI8FftNA7new==
+  version: "0.2.3"
   dependencies:
     "@types/node" "*"
     "@types/source-list-map" "*"
