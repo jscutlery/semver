@@ -1,14 +1,8 @@
-import {
-  addProjectConfiguration,
-  formatFiles,
-  installPackagesTask,
-} from '@nrwl/devkit';
+import { addProjectConfiguration, formatFiles, installPackagesTask } from '@nrwl/devkit';
 
+import { createTarget } from './utils/create-target';
 import { addDependencies } from './utils/dependencies';
-import {
-  updateWorkspaceFromPrompt,
-  updateWorkspaceFromSchema,
-} from './utils/workspace';
+import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
 
 import type { Tree } from '@nrwl/devkit';
 import type { SchemaOptions } from './schema';
@@ -22,10 +16,7 @@ export default async function install(tree: Tree, options: SchemaOptions) {
       {
         root: '.',
         targets: {
-          version: {
-            executor: '@jscutlery/semver:version',
-            options: { syncVersions: true },
-          },
+          version: createTarget(options),
         },
       },
       false

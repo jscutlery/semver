@@ -1,9 +1,12 @@
-import type { Tree } from '@nrwl/devkit';
 import { getProjects, updateProjectConfiguration } from '@nrwl/devkit';
-import { ProjectConfiguration } from '@nrwl/tao/src/shared/workspace';
 
-import { SchemaOptions } from '../schema';
+import { createTarget } from './create-target';
 import { createPrompt } from './prompt';
+
+import type { Tree } from '@nrwl/devkit';
+import type { ProjectConfiguration } from '@nrwl/tao/src/shared/workspace';
+
+import type { SchemaOptions } from '../schema';
 
 export type ProjectDefinition = ProjectConfiguration & { projectName: string };
 
@@ -25,15 +28,7 @@ export function updateProjects(
     if (predicate(projectName)) {
 
       const targets = project.targets ?? {};
-      targets.version = {
-        executor: '@jscutlery/semver:version',
-      };
-
-      if (options.baseBranch) {
-        targets.version.options = {
-          baseBranch: options.baseBranch
-        }
-      }
+      targets.version = createTarget(options);
 
       updateProjectConfiguration(tree, projectName, project);
     }
