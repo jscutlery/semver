@@ -28,5 +28,11 @@ export function _createOptions(
     targetOptions.baseBranch = options.baseBranch;
   }
 
+  /* @notice: to avoid breaking old users, default --commitMessageFormat option is set for new users in the install generator
+  but should be set in the executor for the next major 3.0.0 */
+  if (options.commitMessageFormat) {
+    targetOptions.commitMessageFormat = options.commitMessageFormat;
+  }
+
   return targetOptions;
 }

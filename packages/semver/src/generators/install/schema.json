@@ -19,8 +19,13 @@
       "description": "Configure base branch",
       "type": "string"
     },
+    "commitMessageFormat": {
+      "description": "A string to be used to format the auto-generated release commit message.",
+      "type": "string",
+      "default": "chore(${projectName}): release version ${version}"
+    },
     "enforceConventionalCommits": {
-      "description": "Install & configure commitlint, husky & commitizen",
+      "description": "Install & configure commitlint and husky.",
       "type": "boolean",
       "default": true,
       "x-prompt": "Enforce conventional commits?"

@@ -134,13 +134,13 @@ With independent mode the tag prefix uses the context target value, the default 
 The **`--commitMessageFormat`** option allows you to customize the commit message. By default, the commit message is formatted as the following:
 
 ```
-chore(release): ${version}
+chore(${projectName}): release version ${version}
 ```
 
 The `version` variable is resolved to the current release version, for instance `1.0.1`. This option also allows you to interpolate the `projectName` variable:
 
 ```
-chore(release): bump ${projectName} to ${version} [skip ci]
+release: bump ${projectName} to ${version} [skip ci]
 ```
 
 Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub.

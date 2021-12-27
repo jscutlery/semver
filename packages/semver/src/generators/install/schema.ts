@@ -4,4 +4,5 @@ export interface SchemaOptions {
   projects?: string[];
   enforceConventionalCommits?: boolean;
   skipInstall?: boolean;
+  commitMessageFormat?: string;
 }
