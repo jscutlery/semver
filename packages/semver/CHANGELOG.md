@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.16.0](https://github.com/jscutlery/semver/compare/semver-2.15.0...semver-2.16.0) (2021-12-27)
+
+
+### Features
+
+* **semver:** ✅ configure default `--commitMessageFormat` ([6388bc7](https://github.com/jscutlery/semver/commit/6388bc7e793a9b878a5623c7c2220fc028691f47))
+
+
+
 # [2.15.0](https://github.com/jscutlery/semver/compare/semver-2.14.4...semver-2.15.0) (2021-12-05)
 
 
