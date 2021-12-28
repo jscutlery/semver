@@ -34,10 +34,19 @@ describe('_execAsync (Promise)', () => {
     );
   });
 
+  it('should escape string', async () => {
+    const result = await _execAsync('echo', ['--arg', '`--arg`']);
+    expect(result).toEqual(
+      expect.objectContaining({
+        stderr: '',
+        stdout: expect.stringMatching('--arg `--arg`'),
+      })
+    );
+  });
+
   it('should handle failure', async () => {
     await expect(_execAsync('exit 1')).rejects.toEqual(
       expect.objectContaining({
-        error: expect.objectContaining({ cmd: 'exit 1' }),
         stderr: '',
         stdout: '',
       })

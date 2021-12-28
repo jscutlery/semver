@@ -44,7 +44,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['--branch master'])
+      expect.arrayContaining(['--branch', 'master'])
     );
     expect(output.success).toBe(true);
   });
@@ -54,7 +54,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['--notes "add feature"'])
+      expect.arrayContaining(['--notes', 'add feature'])
     );
     expect(output.success).toBe(true);
   });
@@ -67,12 +67,11 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['--notes-file libs/my-lib/CHANGELOG.md'])
+      expect.arrayContaining(['--notes-file', 'libs/my-lib/CHANGELOG.md'])
     );
     expect(output.success).toBe(true);
   });
 
-  
   it('create release with specified --draft', async () => {
     const output = await executor({ ...options, draft: true });
 
@@ -88,7 +87,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['--title "Title for release"'])
+      expect.arrayContaining(['--title', 'Title for release'])
     );
     expect(output.success).toBe(true);
   });
@@ -104,11 +103,14 @@ describe('@jscutlery/semver:github', () => {
   });
 
   it('create release with specified --discussion-category', async () => {
-    const output = await executor({ ...options, discussionCategory: 'General' });
+    const output = await executor({
+      ...options,
+      discussionCategory: 'General',
+    });
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['--discussion-category "General"'])
+      expect.arrayContaining(['--discussion-category', 'General'])
     );
     expect(output.success).toBe(true);
   });
@@ -118,7 +120,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh release create',
-      expect.arrayContaining(['--repo "repo:MYORG/REPO"'])
+      expect.arrayContaining(['--repo', 'repo:MYORG/REPO'])
     );
     expect(output.success).toBe(true);
   });

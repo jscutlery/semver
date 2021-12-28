@@ -15,19 +15,21 @@ export default async function runExecutor({
   title,
   prerelease,
   discussionCategory,
-  repo
+  repo,
 }: GithubExecutorSchema) {
   const createRelease$ = execAsync('gh release create', [
     tag,
     ...(files ? [files.toString()] : []),
-    ...(notes ? [`--notes "${notes}"`] : []),
-    ...(notesFile ? [`--notes-file ${notesFile}`] : []),
-    ...(branch ? [`--branch ${branch}`] : []),
-    ...(draft ? [`--draft`] : []),
-    ...(title ? [`--title "${title}"`] : []),
-    ...(prerelease ? [`--prerelease`] : []),
-    ...(discussionCategory ? [`--discussion-category "${discussionCategory}"`] : []),
-    ...(repo ? [`--repo "${repo}"`] : []),
+    ...(notes ? ['--notes', notes] : []),
+    ...(notesFile ? ['--notes-file', notesFile] : []),
+    ...(branch ? ['--branch', branch] : []),
+    ...(draft ? ['--draft'] : []),
+    ...(title ? ['--title', title] : []),
+    ...(prerelease ? ['--prerelease'] : []),
+    ...(discussionCategory
+      ? [`--discussion-category`, discussionCategory]
+      : []),
+    ...(repo ? [`--repo`, repo] : []),
   ]).pipe(
     catchError((response) => throwError(() => new Error(response.error))),
     mapTo({ success: true })
