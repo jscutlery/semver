@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.16.1](https://github.com/jscutlery/semver/compare/semver-2.16.0...semver-2.16.1) (2021-12-28)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 use `execFile` for command execution ([b51903b](https://github.com/jscutlery/semver/commit/b51903b246ed1f4876448abd1a0d3ebe64843f2c)), closes [#350](https://github.com/jscutlery/semver/issues/350)
+
+
+
 # [2.16.0](https://github.com/jscutlery/semver/compare/semver-2.15.0...semver-2.16.0) (2021-12-27)
 
 
