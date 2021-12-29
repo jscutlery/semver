@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.1](https://github.com/jscutlery/semver/compare/semver-2.17.0...semver-2.17.1) (2021-12-29)
+
+
+### Reverts
+
+* ⚙️ debug github executor ([925760d](https://github.com/jscutlery/semver/commit/925760d37ab270430177682507449c38582a78c0))
+
+
+
 # [2.17.0](https://github.com/jscutlery/semver/compare/semver-2.16.1...semver-2.17.0) (2021-12-29)
 
 
