@@ -7,9 +7,9 @@
     "version": {
       "executor": "./dist/packages/semver:version",
       "options": {
-        "push": false,
+        "push": true,
         "noVerify": true,
-        "postTargets": ["semver:github"],
+        "postTargets": ["semver:publish", "semver:github"],
         "commitMessageFormat": "release(${projectName}): 🎸 cut release to ${version}"
       }
     },
@@ -17,7 +17,7 @@
       "executor": "./dist/packages/semver:github",
       "options": {
         "tag": "${tag}",
-        "generateNotes": true
+        "notes": "${notes}"
       }
     },
     "publish": {
