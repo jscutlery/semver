@@ -1,3 +1,4 @@
+import { logger } from '@nrwl/devkit';
 import { throwError, lastValueFrom } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
 
@@ -35,7 +36,10 @@ export default async function runExecutor({
     ...(repo ? [`--repo`, repo] : []),
     ...(generateNotes ? [`--generate-notes`] : []),
   ]).pipe(
-    catchError((response) => throwError(() => new Error(response.error))),
+    catchError((response) => throwError(() => {
+      logger.error(response.stderr);
+      return throwError(() => new Error(response.stderr))
+    })),
     mapTo({ success: true })
   );
 
