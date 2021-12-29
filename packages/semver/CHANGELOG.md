@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.2](https://github.com/jscutlery/semver/compare/semver-2.17.1...semver-2.17.2) (2021-12-29)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 log `gh` CLI errors ([871a039](https://github.com/jscutlery/semver/commit/871a03982f7c70c5b15cb09b038a7573b71be572))
+* **semver:** 🐞 rename `--branch` to `--target` ([ca1c539](https://github.com/jscutlery/semver/commit/ca1c539e888d3bbb334038d888ba905dfc5e282c))
+
+
+
 ## [2.17.1](https://github.com/jscutlery/semver/compare/semver-2.17.0...semver-2.17.1) (2021-12-29)
 
 
