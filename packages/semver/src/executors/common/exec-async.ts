@@ -17,6 +17,7 @@ export function _execFile(
   return new Promise((resolve, reject) => {
     execFile(cmd, args, { cwd: process.cwd() }, (error, stdout, stderr) => {
       if (error) {
+        console.error(error);
         reject({ stdout, stderr });
         return;
       }
