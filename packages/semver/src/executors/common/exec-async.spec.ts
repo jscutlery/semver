@@ -1,4 +1,4 @@
-import { _execAsync, execAsync } from '../common/exec-async';
+import { _execFile, execAsync } from '../common/exec-async';
 
 describe('execAsync (Observable)', () => {
   it('should exec a command', (done) => {
@@ -23,9 +23,9 @@ describe('execAsync (Observable)', () => {
   });
 });
 
-describe('_execAsync (Promise)', () => {
+describe('_execFile (Promise)', () => {
   it('should exec a command', async () => {
-    const result = await _execAsync('node', ['--version']);
+    const result = await _execFile('node', ['--version']);
     expect(result).toEqual(
       expect.objectContaining({
         stderr: '',
@@ -35,7 +35,7 @@ describe('_execAsync (Promise)', () => {
   });
 
   it('should escape string', async () => {
-    const result = await _execAsync('echo', ['--arg', '`--arg`']);
+    const result = await _execFile('echo', ['--arg', '`--arg`']);
     expect(result).toEqual(
       expect.objectContaining({
         stderr: '',
@@ -45,7 +45,7 @@ describe('_execAsync (Promise)', () => {
   });
 
   it('should handle failure', async () => {
-    await expect(_execAsync('exit 1')).rejects.toEqual(
+    await expect(_execFile('exit 1')).rejects.toEqual(
       expect.objectContaining({
         stderr: '',
         stdout: '',

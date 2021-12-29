@@ -17,7 +17,9 @@ export default async function runExecutor({
   discussionCategory,
   repo,
 }: GithubExecutorSchema) {
-  const createRelease$ = execAsync('gh release create', [
+  const createRelease$ = execAsync('gh', [
+    'release',
+    'create',
     tag,
     ...(files ? [files.toString()] : []),
     ...(notes ? ['--notes', notes] : []),

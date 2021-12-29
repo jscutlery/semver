@@ -7,10 +7,10 @@ export interface ChildProcessResponse {
 };
 
 export function execAsync(cmd: string, args?: string[]) {
-  return defer(() => _execAsync(cmd, args));
+  return defer(() => _execFile(cmd, args));
 }
 
-export function _execAsync(
+export function _execFile(
   cmd: string,
   args: string[] = []
 ): Promise<ChildProcessResponse> {
