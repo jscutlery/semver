@@ -16,6 +16,7 @@ export default async function runExecutor({
   prerelease,
   discussionCategory,
   repo,
+  generateNotes,
 }: GithubExecutorSchema) {
   const createRelease$ = execAsync('gh', [
     'release',
@@ -32,6 +33,7 @@ export default async function runExecutor({
       ? [`--discussion-category`, discussionCategory]
       : []),
     ...(repo ? [`--repo`, repo] : []),
+    ...(generateNotes ? [`--generate-notes`] : []),
   ]).pipe(
     catchError((response) => throwError(() => new Error(response.error))),
     mapTo({ success: true })

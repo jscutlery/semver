@@ -18,7 +18,7 @@ In the workspace definition:
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
-        "notesFile": "libs/my-project/CHANGELOG.md"
+        "generateNotes": true
       }
     }
   }
@@ -30,7 +30,7 @@ In the workspace definition:
 Publish the `v1.0.0` release:
 
 ```
-nx run my-project:github --tag v1.0.0 --notesFile "libs/my-project/CHANGELOG.md" [...options]
+nx run my-project:github --tag v1.0.0 --generate-notes [...options]
 ```
 
 #### Run using post-targets (recommended)
@@ -50,7 +50,7 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "notesFile": "libs/my-project/CHANGELOG.md"
+        "generateNotes": true
       }
     }
   }
@@ -75,7 +75,7 @@ context provided by `@jscutlery/semver:version` to only include the new changes
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "notes": "${notes}"
+        "generateNotes": true
       }
     }
   }
@@ -96,9 +96,9 @@ context provided by `@jscutlery/semver:version` to only include the new changes
 | **`--prerelease`**          | `boolean`  | `undefined` | mark the release as a prerelease                                |
 | **`--discussion-category`** | `string`   | `undefined` | start a discussion of the specified category                    |
 | **`--repo`**                | `string`   | `undefined` | select another repository using the [HOST/]OWNER/REPO format    |
+| **`--generate-notes`**      | `boolean`  | `undefined` | automatically generate title and notes for the release          |
 
 #### CI/CD
-
 
 To make this executor work in your GitHub workflows you should provide the `GITHUB_TOKEN` environment variable.
 

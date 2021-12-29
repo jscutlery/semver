@@ -8,5 +8,6 @@ export interface GithubExecutorSchema {
   title?: string;
   prerelease?: boolean;
   discussionCategory?: string;
-  repo?: string;  
+  repo?: string;
+  generateNotes?: boolean;
 }

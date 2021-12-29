@@ -44,6 +44,10 @@
     "repo": {
       "type": "string",
       "description": "Select another repository using the [HOST/]OWNER/REPO format"
+    },
+    "generateNotes": {
+      "type": "boolean",
+      "description": "Automatically generate title and notes for the release"
     }
   },
   "required": ["tag"]
