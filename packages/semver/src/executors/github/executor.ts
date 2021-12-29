@@ -22,7 +22,7 @@ export default async function runExecutor({
     'release',
     'create',
     tag,
-    ...(files ? [files.toString()] : []),
+    ...(files ? files : []),
     ...(notes ? ['--notes', notes] : []),
     ...(notesFile ? ['--notes-file', notesFile] : []),
     ...(branch ? ['--branch', branch] : []),

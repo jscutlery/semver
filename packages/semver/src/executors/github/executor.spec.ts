@@ -25,7 +25,10 @@ describe('@jscutlery/semver:github', () => {
   it('create release with specified --tag', async () => {
     const output = await executor(options);
 
-    expect(mockExec).toBeCalledWith('gh release create', ['v1.0.0']);
+    expect(mockExec).toBeCalledWith(
+      'gh',
+      expect.arrayContaining(['release', 'create', 'v1.0.0'])
+    );
     expect(output.success).toBe(true);
   });
 
@@ -33,7 +36,7 @@ describe('@jscutlery/semver:github', () => {
     const output = await executor({ ...options, files: ['./dist/package'] });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['./dist/package'])
     );
     expect(output.success).toBe(true);
@@ -43,7 +46,7 @@ describe('@jscutlery/semver:github', () => {
     const output = await executor({ ...options, branch: 'master' });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--branch', 'master'])
     );
     expect(output.success).toBe(true);
@@ -53,7 +56,7 @@ describe('@jscutlery/semver:github', () => {
     const output = await executor({ ...options, notes: 'add feature' });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--notes', 'add feature'])
     );
     expect(output.success).toBe(true);
@@ -66,7 +69,7 @@ describe('@jscutlery/semver:github', () => {
     });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--notes-file', 'libs/my-lib/CHANGELOG.md'])
     );
     expect(output.success).toBe(true);
@@ -75,10 +78,7 @@ describe('@jscutlery/semver:github', () => {
   it('create release with specified --draft', async () => {
     const output = await executor({ ...options, draft: true });
 
-    expect(mockExec).toBeCalledWith(
-      'gh release create',
-      expect.arrayContaining(['--draft'])
-    );
+    expect(mockExec).toBeCalledWith('gh', expect.arrayContaining(['--draft']));
     expect(output.success).toBe(true);
   });
 
@@ -86,7 +86,7 @@ describe('@jscutlery/semver:github', () => {
     const output = await executor({ ...options, title: 'Title for release' });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--title', 'Title for release'])
     );
     expect(output.success).toBe(true);
@@ -96,7 +96,7 @@ describe('@jscutlery/semver:github', () => {
     const output = await executor({ ...options, prerelease: true });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--prerelease'])
     );
     expect(output.success).toBe(true);
@@ -109,7 +109,7 @@ describe('@jscutlery/semver:github', () => {
     });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--discussion-category', 'General'])
     );
     expect(output.success).toBe(true);
@@ -119,7 +119,7 @@ describe('@jscutlery/semver:github', () => {
     const output = await executor({ ...options, repo: 'repo:MYORG/REPO' });
 
     expect(mockExec).toBeCalledWith(
-      'gh release create',
+      'gh',
       expect.arrayContaining(['--repo', 'repo:MYORG/REPO'])
     );
     expect(output.success).toBe(true);
