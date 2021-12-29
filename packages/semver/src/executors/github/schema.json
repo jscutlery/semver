@@ -9,7 +9,7 @@
       "type": "string",
       "description": "Create a new release from given tag."
     },
-    "branch": {
+    "target": {
       "type": "string",
       "description": "Target branch or full commit SHA (default: main branch)."
     },

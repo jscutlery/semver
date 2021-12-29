@@ -1,6 +1,6 @@
 export interface GithubExecutorSchema {
   tag: string;
-  branch?: string;
+  target?: string;
   files?: string[];
   notes?: string;
   notesFile?: string;

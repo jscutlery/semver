@@ -42,12 +42,12 @@ describe('@jscutlery/semver:github', () => {
     expect(output.success).toBe(true);
   });
 
-  it('create release with specified --branch', async () => {
-    const output = await executor({ ...options, branch: 'master' });
+  it('create release with specified --target', async () => {
+    const output = await executor({ ...options, target: 'master' });
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--branch', 'master'])
+      expect.arrayContaining(['--target', 'master'])
     );
     expect(output.success).toBe(true);
   });

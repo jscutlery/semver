@@ -30,7 +30,7 @@ In the workspace definition:
 Publish the `v1.0.0` release:
 
 ```
-nx run my-project:github --tag v1.0.0 --generate-notes [...options]
+nx run my-project:github --tag v1.0.0 [...options]
 ```
 
 #### Run using post-targets (recommended)
@@ -87,7 +87,7 @@ context provided by `@jscutlery/semver:version` to only include the new changes
 | name                        | type       | default     | description                                                     |
 | --------------------------- | ---------- | ----------- | --------------------------------------------------------------- |
 | **`--tag`**                 | `string`   | `undefined` | attach the release to the specified tag                         |
-| **`--branch`**              | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
+| **`--target`**              | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
 | **`--files`**               | `string[]` | `undefined` | a list of asset files may be given to upload to the new release |
 | **`--notes`**               | `string`   | `undefined` | release notes                                                   |
 | **`--notesFile`**           | `string`   | `undefined` | read release notes from file                                    |
