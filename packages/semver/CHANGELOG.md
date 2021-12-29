@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.17.0](https://github.com/jscutlery/semver/compare/semver-2.16.1...semver-2.17.0) (2021-12-29)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 correctly run `gh` command ([63346e7](https://github.com/jscutlery/semver/commit/63346e7c3e05527b8631107c6ab29bcf983550e9))
+
+
+### Features
+
+* **semver:** ✅ add `--generate-notes` option ([6824a12](https://github.com/jscutlery/semver/commit/6824a12219f78d45a81a84a178f032916f874b71))
+
+
+
 ## [2.16.1](https://github.com/jscutlery/semver/compare/semver-2.16.0...semver-2.16.1) (2021-12-28)
 
 
