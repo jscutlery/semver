@@ -1,7 +1,16 @@
+import { readFile, writeFile } from 'fs';
 import { resolve } from 'path';
-import { combineLatestWith, concatMap, defer, lastValueFrom, OperatorFunction } from 'rxjs';
+import {
+  combineLatestWith,
+  concatMap,
+  defer,
+  lastValueFrom,
+  OperatorFunction,
+} from 'rxjs';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import { promisify } from 'util';
+import { Version } from '../version';
 
 import { diff } from './diff';
 import { readFileIfExists } from './filesystem';
@@ -41,6 +50,36 @@ export function updateChangelog({
     );
     return changelogPath;
   });
+}
+
+export async function insertChangelogDepedencyUpdates({
+  projectRoot,
+  version,
+  dryRun,
+  dependencyUpdates,
+}: {
+  projectRoot: string;
+  version: string;
+  dryRun: boolean;
+  dependencyUpdates: Version[];
+}) {
+  const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
+  let changelog = await promisify(readFile)(changelogPath, 'utf-8');
+  const match = changelog.match(new RegExp(`## ${version} \\(.*\\)`));
+  if (match && match.index !== undefined) {
+    const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
+      if (ver.type === 'dependency')
+        acc.push(
+          `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``
+        );
+      return acc;
+    }, [] as string[]);
+    changelog =
+      `${changelog.substring(0, match.index + match[0].length)}` +
+      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n\n')}\n\n`;
+
+    if (!dryRun) await promisify(writeFile)(changelogPath, changelog, 'utf-8');
+  }
 }
 
 export function calculateChangelogChanges<T>({

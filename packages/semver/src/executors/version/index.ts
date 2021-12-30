@@ -72,6 +72,7 @@ export default async function version(
     tagPrefix,
     releaseType: releaseAs,
     preid,
+    context,
   });
 
   const action$ = newVersion$.pipe(
@@ -84,7 +85,7 @@ export default async function version(
       const options: CommonVersionOptions = {
         dryRun,
         trackDeps,
-        newVersion: newVersion,
+        newVersion: newVersion.version,
         noVerify,
         preset,
         projectRoot,
@@ -93,6 +94,7 @@ export default async function version(
         commitMessageFormat,
         projectName,
         skipProjectChangelog,
+        dependencyUpdates: newVersion.dependencyUpdates,
       };
 
       const runStandardVersion$ = defer(() =>

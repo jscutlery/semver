@@ -1,7 +1,15 @@
-import { logger } from '@nrwl/devkit';
+import { ExecutorContext, logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { combineLatest, defer, forkJoin, iif, of } from 'rxjs';
-import { catchError, map, shareReplay, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  switchMap,
+  filter,
+  concatAll,
+  tap,
+} from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 import { inc } from 'semver';
@@ -11,6 +19,24 @@ import { getCommits, getFirstCommitRef } from './git';
 
 import type { Observable } from 'rxjs';
 import type { ReleaseIdentifier } from '../schema';
+import { getProjectNameFromPath } from './workspace';
+
+export type Version =
+  | {
+      type: 'project';
+      version: string | null;
+    }
+  | {
+      type: 'dependency';
+      version: string | null;
+      dependencyName: string;
+    };
+
+export type TryBumpReturn = {
+  version: string;
+  dependencyUpdates: Version[];
+};
+
 /**
  * Return new version or null if nothing changed.
  */
@@ -21,6 +47,7 @@ export function tryBump({
   dependencyRoots = [],
   releaseType,
   preid,
+  context,
 }: {
   preset: string;
   projectRoot: string;
@@ -28,7 +55,8 @@ export function tryBump({
   dependencyRoots?: string[];
   releaseType?: ReleaseIdentifier;
   preid?: string;
-}): Observable<string | null> {
+  context: ExecutorContext;
+}): Observable<TryBumpReturn | null> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({
     tagPrefix,
@@ -84,7 +112,11 @@ If your project is already versioned, please tag the latest release commit with 
           since: lastVersion,
           releaseType: releaseType as string,
           preid: preid as string,
-        });
+        }).pipe(
+          switchMap((version) =>
+            of({ version, dependencyUpdates: [] } as TryBumpReturn)
+          )
+        );
       }
 
       const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
@@ -99,38 +131,47 @@ If your project is already versioned, please tag the latest release commit with 
           preset,
           projectRoot: root,
           tagPrefix,
-        })
+        }).pipe(
+          switchMap((version) => {
+            return of({
+              type: 'dependency',
+              version,
+              dependencyName: getProjectNameFromPath(context, root),
+            } as Version);
+          })
+        )
       );
 
-      const dependencyBump$ = combineLatest(dependencyChecks$).pipe(
-        map((bumps) => {
-          // See if there's an increment indicated by a dependency.
-          const positiveBumps = bumps.filter(
-            (b) => b !== null && b !== '0.0.0'
-          );
-
-          /** If there's an increment, then the target project should
-           * receive a patch increment. **/
-          if (positiveBumps.length > 0) {
-            return inc(lastVersion, 'patch');
-          }
-          return null;
-        })
-      );
-      return _semverBump({
+      const projectBump$ = _semverBump({
         since: lastVersion,
         preset,
         projectRoot,
         tagPrefix,
       }).pipe(
-        switchMap((projectVersionBump) => {
-          if (projectVersionBump !== null) {
-            return of(projectVersionBump);
-          }
+        switchMap((version) => of({ type: 'project', version } as Version))
+      );
 
-          return dependencyBump$;
+      const rtn = forkJoin(dependencyChecks$.concat(projectBump$)).pipe(
+        map((versions) => {
+          return versions.reduce(
+            (acc, v) => {
+              if (
+                v.type === 'dependency' &&
+                v.version !== null &&
+                v.version !== '0.0.0'
+              ) {
+                acc.dependencyUpdates.push(v);
+              } else if (v.type === 'project' && v.version !== null) {
+                acc.version = v.version;
+              }
+              return acc;
+            },
+            { version: lastVersion, dependencyUpdates: [] } as TryBumpReturn
+          );
         })
       );
+
+      return rtn;
     })
   );
 }

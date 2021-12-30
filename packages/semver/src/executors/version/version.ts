@@ -3,10 +3,22 @@ import { forkJoin, noop, Observable, of } from 'rxjs';
 import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import { getChangelogPath, updateChangelog } from './utils/changelog';
+import { getChangelogPath, insertChangelogDepedencyUpdates, updateChangelog } from './utils/changelog';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
+
+export type Version =
+  | {
+      type: 'project';
+      version: string | null;
+    }
+  | {
+      type: 'dependency';
+      version: string | null;
+      dependencyName: string;
+    };
+
 
 export interface CommonVersionOptions {
   dryRun: boolean;
@@ -20,6 +32,7 @@ export interface CommonVersionOptions {
   commitMessageFormat?: string;
   projectName: string;
   skipProjectChangelog: boolean;
+  dependencyUpdates: Version[];
 }
 
 export function versionWorkspace({
@@ -57,12 +70,18 @@ export function versionWorkspace({
   );
 }
 
-export function versionProject(options: CommonVersionOptions) {
-  return _runStandardVersion({
+export async function versionProject(options: CommonVersionOptions) {
+  await _runStandardVersion({
     bumpFiles: [resolve(options.projectRoot, 'package.json')],
     skipChangelog: options.skipProjectChangelog,
     ...options,
   });
+  await insertChangelogDepedencyUpdates({
+    projectRoot: options.projectRoot,
+    version: options.newVersion,
+    dryRun: options.dryRun,
+    dependencyUpdates: options.dependencyUpdates,
+  })
 }
 
 /**
