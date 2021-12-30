@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.3](https://github.com/jscutlery/semver/compare/semver-2.17.2...semver-2.17.3) (2021-12-30)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 bump `@commitlint/*` deps ([5f0a4f5](https://github.com/jscutlery/semver/commit/5f0a4f547d7800b6ed19d4956e3beb646bd3dae1))
+* **semver:** 🐞 fix `gh` CLI error handling ([3d87938](https://github.com/jscutlery/semver/commit/3d87938adb7b546cdc341e1fc112187851726255))
+
+
+
 ## [2.17.2](https://github.com/jscutlery/semver/compare/semver-2.17.1...semver-2.17.2) (2021-12-29)
 
 
