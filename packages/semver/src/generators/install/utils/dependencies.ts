@@ -32,8 +32,8 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       tree,
       {},
       {
-        '@commitlint/cli': '^15.0.0',
-        '@commitlint/config-angular': '^15.0.0',
+        '@commitlint/cli': '^16.0.1',
+        '@commitlint/config-angular': '^16.0.0',
         husky: '^7.0.4',
       }
     );
