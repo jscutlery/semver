@@ -170,6 +170,7 @@ export default async function version(
 
 function normalizeOptions(options: VersionBuilderSchema) {
   return {
+    ...options,
     push: options.push as boolean,
     remote: options.remote as string,
     dryRun: options.dryRun as boolean,
@@ -180,10 +181,6 @@ function normalizeOptions(options: VersionBuilderSchema) {
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
     releaseAs: options.releaseAs ?? options.version,
-    preid: options.preid,
     changelogHeader: options.changelogHeader ?? defaultHeader,
-    versionTagPrefix: options.versionTagPrefix,
-    postTargets: options.postTargets,
-    commitMessageFormat: options.commitMessageFormat,
   };
 }
