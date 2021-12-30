@@ -1,4 +1,5 @@
-import { of } from 'rxjs';
+import { logger } from '@nrwl/devkit';
+import { of, throwError } from 'rxjs';
 
 import { execAsync } from '../common/exec-async';
 import executor from './executor';
@@ -123,5 +124,19 @@ describe('@jscutlery/semver:github', () => {
       expect.arrayContaining(['--repo', 'repo:MYORG/REPO'])
     );
     expect(output.success).toBe(true);
+  });
+
+  it('handle gh CLI errors', async () => {
+    mockExec.mockImplementation(() => {
+      return throwError(() => ({
+        stderr: 'something went wrong'
+      }));
+    });
+    jest.spyOn(logger, 'error').mockImplementation();
+
+    const output = await executor(options);
+
+    expect(logger.error).toBeCalled();
+    expect(output.success).toBe(false);
   });
 });

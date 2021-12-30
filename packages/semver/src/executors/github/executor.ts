@@ -1,8 +1,8 @@
 import { logger } from '@nrwl/devkit';
-import { throwError, lastValueFrom } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
 
-import { execAsync } from '../common/exec-async';
+import { ChildProcessResponse, execAsync } from '../common/exec-async';
 
 import type { GithubExecutorSchema } from './schema';
 
@@ -36,11 +36,11 @@ export default async function runExecutor({
     ...(repo ? [`--repo`, repo] : []),
     ...(generateNotes ? [`--generate-notes`] : []),
   ]).pipe(
-    catchError((response) => throwError(() => {
+    mapTo({ success: true }),
+    catchError((response: ChildProcessResponse) => {
       logger.error(response.stderr);
-      return throwError(() => new Error(response.stderr))
-    })),
-    mapTo({ success: true })
+      return of({ success: false });
+    }),
   );
 
   return lastValueFrom(createRelease$);
