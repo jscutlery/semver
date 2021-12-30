@@ -15,12 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: jscutlery/devkit/.github/actions/setup@main
         with:
           node_version: ${{ matrix.node_version }}
 
       - name: Test
-        uses: ./.github/actions/test
+        uses: .github/actions/test
         with:
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -34,10 +34,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: jscutlery/devkit/.github/actions/setup@main
 
       - name: Release
-        uses: ./.github/actions/release
+        uses: jscutlery/devkit/.github/actions/release@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           npm_token: ${{ secrets.NPM_TOKEN }}
