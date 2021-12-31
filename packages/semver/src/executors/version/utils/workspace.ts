@@ -30,15 +30,6 @@ export function getProjectRoots(workspaceRoot: string): Observable<string[]> {
   );
 }
 
-export function getProjectNameFromPath(
-  context: ExecutorContext,
-  path: string
-): string {
-  return Object.entries(context.workspace.projects).filter(
-    ([, v]) => v.root === path
-  )?.[0]?.[0];
-}
-
 export function _getWorkspaceDefinition(
   workspaceRoot: string
 ): Observable<WorkspaceJsonConfiguration> {

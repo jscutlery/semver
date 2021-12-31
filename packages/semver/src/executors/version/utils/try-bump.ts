@@ -1,4 +1,4 @@
-import { ExecutorContext, logger } from '@nrwl/devkit';
+import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { combineLatest, defer, forkJoin, iif, of } from 'rxjs';
 import {
@@ -6,20 +6,16 @@ import {
   map,
   shareReplay,
   switchMap,
-  filter,
-  concatAll,
-  tap,
 } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
-import { inc } from 'semver';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 
 import type { Observable } from 'rxjs';
 import type { ReleaseIdentifier } from '../schema';
-import { getProjectNameFromPath } from './workspace';
+import { DependencyRoot } from './get-project-dependencies';
 
 export type Version =
   | {
@@ -47,15 +43,13 @@ export function tryBump({
   dependencyRoots = [],
   releaseType,
   preid,
-  context,
 }: {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
-  dependencyRoots?: string[];
+  dependencyRoots?: DependencyRoot[];
   releaseType?: ReleaseIdentifier;
   preid?: string;
-  context: ExecutorContext;
 }): Observable<TryBumpReturn | null> {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({
@@ -90,7 +84,10 @@ If your project is already versioned, please tag the latest release commit with 
 
   const commits$ = lastVersionGitRef$.pipe(
     switchMap((lastVersionGitRef) => {
-      const listOfGetCommits = [projectRoot, ...dependencyRoots].map((root) =>
+      const listOfGetCommits = [
+        projectRoot,
+        ...dependencyRoots.map((d) => d.path),
+      ].map((root) =>
         getCommits({
           projectRoot: root,
           since: lastVersionGitRef,
@@ -129,14 +126,14 @@ If your project is already versioned, please tag the latest release commit with 
         _semverBump({
           since: '0.0.0',
           preset,
-          projectRoot: root,
+          projectRoot: root.path,
           tagPrefix,
         }).pipe(
           switchMap((version) => {
             return of({
               type: 'dependency',
               version,
-              dependencyName: getProjectNameFromPath(context, root),
+              dependencyName: root.name,
             } as Version);
           })
         )

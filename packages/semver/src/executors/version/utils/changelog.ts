@@ -63,6 +63,7 @@ export async function insertChangelogDepedencyUpdates({
   dryRun: boolean;
   dependencyUpdates: Version[];
 }) {
+  if (!dependencyUpdates.length) return;
   const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
   let changelog = await promisify(readFile)(changelogPath, 'utf-8');
   const match = changelog.match(new RegExp(`## ${version} \\(.*\\)`));

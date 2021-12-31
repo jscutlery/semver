@@ -8,6 +8,11 @@ import type { ProjectGraphDependency } from '@nrwl/workspace/src/core/project-gr
 
 import type { VersionBuilderSchema } from '../schema';
 
+export interface DependencyRoot {
+  name: string;
+  path: string;
+}
+
 export async function getDependencyRoots({
   trackDeps,
   releaseAs,
@@ -17,12 +22,13 @@ export async function getDependencyRoots({
   Pick<VersionBuilderSchema, 'releaseAs'> & {
     projectName: string;
     context: ExecutorContext;
-  }): Promise<string[]> {
+  }): Promise<DependencyRoot[]> {
   if (trackDeps && !releaseAs) {
     // Include any depended-upon libraries in determining the version bump.
-    return (await getProjectDependencies(projectName)).map(
-      (name) => context.workspace.projects[name].root
-    );
+    return (await getProjectDependencies(projectName)).map((name) => ({
+      name,
+      path: context.workspace.projects[name].root,
+    }));
   }
 
   return [];

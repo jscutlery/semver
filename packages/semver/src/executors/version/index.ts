@@ -8,7 +8,7 @@ import {
   defaultHeader,
   getChangelogPath,
 } from './utils/changelog';
-import { getDependencyRoots } from './utils/get-project-dependencies';
+import { DependencyRoot, getDependencyRoots } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
 import { resolveTagPrefix } from './utils/resolve-tag-prefix';
@@ -51,9 +51,9 @@ export default async function version(
     syncVersions,
   });
 
-  let dependencyRoots: string[] = [];
+  let dependencyRoots: DependencyRoot[] = [];
   try {
-    dependencyRoots = await getDependencyRoots({
+    dependencyRoots = await getDependencyRoots({ 
       projectName,
       releaseAs,
       trackDeps,
@@ -72,7 +72,6 @@ export default async function version(
     tagPrefix,
     releaseType: releaseAs,
     preid,
-    context,
   });
 
   const action$ = newVersion$.pipe(
@@ -143,8 +142,8 @@ export default async function version(
                     postTargets,
                     resolvableOptions: {
                       project: context.projectName,
-                      version: newVersion,
-                      tag: `${tagPrefix}${newVersion}`,
+                      version: newVersion.version,
+                      tag: `${tagPrefix}${newVersion.version}`,
                       tagPrefix,
                       noVerify,
                       dryRun,
