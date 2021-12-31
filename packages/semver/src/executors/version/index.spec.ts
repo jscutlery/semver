@@ -75,7 +75,9 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(logger, 'error');
 
     mockChangelog.mockResolvedValue(undefined);
-    mockTryBump.mockReturnValue(of('2.1.0'));
+    mockTryBump.mockReturnValue(
+      of({ version: '2.1.0', dependencyUpdates: [] })
+    );
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(''));
@@ -147,7 +149,10 @@ describe('@jscutlery/semver:version', () => {
 
     it('should run standard-version independently on a project with dependencies', async () => {
       mockGetDependencyRoots.mockReturnValue(
-        Promise.resolve(['/root/libs/lib1', '/root/libs/lib2'])
+        Promise.resolve([
+          { name: 'lib1', path: '/root/libs/lib1' },
+          { name: 'lib2', path: '/root/libs/lib2' },
+        ])
       );
       const { success } = await version(
         { ...options, trackDeps: true },
@@ -157,7 +162,10 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockTryBump).toBeCalledWith(
         expect.objectContaining({
-          dependencyRoots: ['/root/libs/lib1', '/root/libs/lib2'],
+          dependencyRoots: [
+            { name: 'lib1', path: '/root/libs/lib1' },
+            { name: 'lib2', path: '/root/libs/lib2' },
+            ],
         })
       );
       expect(standardVersion).toBeCalledWith(
