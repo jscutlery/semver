@@ -63,10 +63,10 @@ export async function insertChangelogDepedencyUpdates({
   dryRun: boolean;
   dependencyUpdates: Version[];
 }) {
-  if (!dependencyUpdates.length) return;
+  if (!dependencyUpdates.length || dryRun) return;
   const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
   let changelog = await promisify(readFile)(changelogPath, 'utf-8');
-  const match = changelog.match(new RegExp(`## ${version} \\(.*\\)`));
+  const match = changelog.match(new RegExp(`## \\[?${version}\\]? ?\\(.*\\)`));
   if (match && match.index !== undefined) {
     const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
       if (ver.type === 'dependency')
@@ -77,9 +77,9 @@ export async function insertChangelogDepedencyUpdates({
     }, [] as string[]);
     changelog =
       `${changelog.substring(0, match.index + match[0].length)}` +
-      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n\n')}\n\n`;
+      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n\n`;
 
-    if (!dryRun) await promisify(writeFile)(changelogPath, changelog, 'utf-8');
+    await promisify(writeFile)(changelogPath, changelog, 'utf-8');
   }
 }
 
