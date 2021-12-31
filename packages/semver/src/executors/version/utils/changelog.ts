@@ -29,22 +29,27 @@ export function updateChangelog({
   dryRun,
   preset,
   newVersion,
+  changelogHeader,
+  tagPrefix,
 }: {
   projectRoot: string;
   dryRun: boolean;
   preset: string;
   newVersion: string;
+  changelogHeader?: string;
+  tagPrefix?: string;
 }) {
   return defer(async () => {
     const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
     await changelog(
       {
         ...standardVersionDefaults,
-        header: defaultHeader,
+        header: changelogHeader || defaultHeader,
         path: projectRoot,
         preset,
         dryRun,
         infile: changelogPath,
+        tagPrefix,
       },
       newVersion
     );
@@ -52,35 +57,45 @@ export function updateChangelog({
   });
 }
 
-export async function insertChangelogDepedencyUpdates({
-  projectRoot,
+export function insertChangelogDepedencyUpdates({
+  changelogPath,
   version,
   dryRun,
   dependencyUpdates,
 }: {
-  projectRoot: string;
+  changelogPath: string;
   version: string;
   dryRun: boolean;
   dependencyUpdates: Version[];
 }) {
-  if (!dependencyUpdates.length || dryRun) return;
-  const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
-  let changelog = await promisify(readFile)(changelogPath, 'utf-8');
-  const match = changelog.match(new RegExp(`## \\[?${version}\\]? ?\\(.*\\)`));
-  if (match && match.index !== undefined) {
-    const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
-      if (ver.type === 'dependency')
-        acc.push(
-          `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``
-        );
-      return acc;
-    }, [] as string[]);
-    changelog =
-      `${changelog.substring(0, match.index + match[0].length)}` +
-      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n\n`;
+  return defer(async () => {
+    if (!dependencyUpdates.length || dryRun) return changelogPath;
 
-    await promisify(writeFile)(changelogPath, changelog, 'utf-8');
-  }
+    let changelog = await promisify(readFile)(changelogPath, 'utf-8');
+
+    const match = changelog.match(
+      new RegExp(`## \\[?${version}\\]? ?\\(.*\\)`)
+    );
+
+    if (match && match.index !== undefined) {
+      const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
+        if (ver.type === 'dependency') {
+          acc.push(
+            `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``
+          );
+        }
+        return acc;
+      }, [] as string[]);
+
+      changelog =
+        `${changelog.substring(0, match.index + match[0].length)}` +
+        `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n` +
+        `${changelog.substring(match.index + match[0].length + 2)}`;
+
+      await promisify(writeFile)(changelogPath, changelog, 'utf-8');
+    }
+    return changelogPath;
+  });
 }
 
 export function calculateChangelogChanges<T>({

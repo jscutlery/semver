@@ -11,6 +11,7 @@ import { getCommits, getFirstCommitRef } from './git';
 import type { Observable } from 'rxjs';
 import type { ReleaseIdentifier } from '../schema';
 import { DependencyRoot } from './get-project-dependencies';
+import { resolveTagPrefix } from './resolve-tag-prefix';
 
 export type Version =
   | {
@@ -28,24 +29,7 @@ export type TryBumpReturn = {
   dependencyUpdates: Version[];
 };
 
-/**
- * Return new version or null if nothing changed.
- */
-export function tryBump({
-  preset,
-  projectRoot,
-  tagPrefix,
-  dependencyRoots = [],
-  releaseType,
-  preid,
-}: {
-  preset: string;
-  projectRoot: string;
-  tagPrefix: string;
-  dependencyRoots?: DependencyRoot[];
-  releaseType?: ReleaseIdentifier;
-  preid?: string;
-}): Observable<TryBumpReturn | null> {
+export function getVersionMetadata(tagPrefix: string, rootPaths: string[]) {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({
     tagPrefix,
@@ -79,10 +63,7 @@ If your project is already versioned, please tag the latest release commit with 
 
   const commits$ = lastVersionGitRef$.pipe(
     switchMap((lastVersionGitRef) => {
-      const listOfGetCommits = [
-        projectRoot,
-        ...dependencyRoots.map((d) => d.path),
-      ].map((root) =>
+      const listOfGetCommits = rootPaths.map((root) =>
         getCommits({
           projectRoot: root,
           since: lastVersionGitRef,
@@ -94,6 +75,39 @@ If your project is already versioned, please tag the latest release commit with 
       return combineLatest(listOfGetCommits);
     })
   );
+
+  return {
+    lastVersion$,
+    commits$,
+  };
+}
+
+/**
+ * Return new version or null if nothing changed.
+ */
+export function tryBump({
+  preset,
+  projectRoot,
+  tagPrefix,
+  dependencyRoots = [],
+  releaseType,
+  preid,
+  versionTagPrefix,
+  syncVersions,
+}: {
+  preset: string;
+  projectRoot: string;
+  tagPrefix: string;
+  dependencyRoots?: DependencyRoot[];
+  releaseType?: ReleaseIdentifier;
+  preid?: string;
+  versionTagPrefix?: string | null;
+  syncVersions?: boolean;
+}): Observable<TryBumpReturn | null> {
+  const { lastVersion$, commits$ } = getVersionMetadata(tagPrefix, [
+    projectRoot,
+    ...dependencyRoots.map((d) => d.path),
+  ]);
 
   return forkJoin([lastVersion$, commits$]).pipe(
     switchMap(([lastVersion, commits]) => {
@@ -117,22 +131,47 @@ If your project is already versioned, please tag the latest release commit with 
         return of(null);
       }
 
-      const dependencyChecks$ = dependencyRoots.map((root) =>
-        _semverBump({
-          since: '0.0.0',
-          preset,
-          projectRoot: root.path,
+      const dependencyChecks$ = dependencyRoots.map((root) => {
+        const tagPrefix = resolveTagPrefix({
+          versionTagPrefix,
+          projectName: root.name,
+          syncVersions: !!syncVersions,
+        });
+
+        const { lastVersion$, commits$ } = getVersionMetadata(
           tagPrefix,
-        }).pipe(
-          switchMap((version) => {
-            return of({
-              type: 'dependency',
-              version,
-              dependencyName: root.name,
-            } as Version);
+          dependencyRoots.map((d) => d.path)
+        );
+
+        return forkJoin([lastVersion$, commits$]).pipe(
+          switchMap(([lastVersion, commits]) => {
+            const numOfCommits = commits.reduce(
+              (acc, dep) => acc + dep.length,
+              0
+            );
+            /* No commits since last release so don't bump. */
+            if (numOfCommits === 0) {
+              return of(null);
+            }
+            return _semverBump({
+              since: lastVersion,
+              preset,
+              projectRoot: root.path,
+              tagPrefix,
+            }).pipe(
+              switchMap((version) => {
+                const rtn = {
+                  type: 'dependency',
+                  version,
+                  dependencyName: root.name,
+                } as Version;
+
+                return of(rtn);
+              })
+            );
           })
-        )
-      );
+        );
+      });
 
       const projectBump$ = _semverBump({
         since: lastVersion,
@@ -147,6 +186,7 @@ If your project is already versioned, please tag the latest release commit with 
         map((versions) => {
           return versions.reduce(
             (acc, v) => {
+              if (v === null) return acc;
               if (
                 v.type === 'dependency' &&
                 v.version !== null &&

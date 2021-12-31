@@ -73,18 +73,34 @@ export function versionWorkspace({
   );
 }
 
-export async function versionProject(options: CommonVersionOptions) {
-  await _runStandardVersion({
-    bumpFiles: [resolve(options.projectRoot, 'package.json')],
-    skipChangelog: options.skipProjectChangelog,
+export function versionProject(options: CommonVersionOptions) {
+  return _generateProjectChangelogs({
+    workspaceRoot: '',
+    projectRoots: [options.projectRoot],
     ...options,
-  });
-  await insertChangelogDepedencyUpdates({
-    projectRoot: options.projectRoot,
-    version: options.newVersion,
-    dryRun: options.dryRun,
-    dependencyUpdates: options.dependencyUpdates,
-  });
+    skipProjectChangelog: false,
+  }).pipe(
+    concatMap((changelogPaths) => {
+      /* Should return changelogPath as single length array */
+      return insertChangelogDepedencyUpdates({
+        changelogPath: changelogPaths[0],
+        version: options.newVersion,
+        dryRun: options.dryRun,
+        dependencyUpdates: options.dependencyUpdates,
+      });
+    }),
+    concatMap((changelogPath) => {
+      return addToStage({ paths: [changelogPath], dryRun: options.dryRun });
+    }),
+    reduce(noop),
+    concatMap(() => {
+      return _runStandardVersion({
+        bumpFiles: [resolve(options.projectRoot, 'package.json')],
+        skipChangelog: true,
+        ...options,
+      });
+    })
+  );
 }
 
 /**
@@ -117,6 +133,8 @@ export function _generateProjectChangelogs({
           preset: options.preset,
           projectRoot,
           newVersion: options.newVersion,
+          changelogHeader: options.changelogHeader,
+          tagPrefix: options.tagPrefix,
         })
       )
   );

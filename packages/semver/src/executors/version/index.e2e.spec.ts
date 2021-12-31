@@ -669,7 +669,6 @@ This file was generated.*
 ### Dependency Updates
 
 \\* \`e\` updated to version \`0.1.0\`
-
 $`)
         );
       });

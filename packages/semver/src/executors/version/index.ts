@@ -75,6 +75,8 @@ export default async function version(
     tagPrefix,
     releaseType: releaseAs,
     preid,
+    versionTagPrefix,
+    syncVersions,
   });
 
   const action$ = newVersion$.pipe(
