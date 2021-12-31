@@ -165,7 +165,7 @@ describe('@jscutlery/semver:version', () => {
           dependencyRoots: [
             { name: 'lib1', path: '/root/libs/lib1' },
             { name: 'lib2', path: '/root/libs/lib2' },
-            ],
+          ],
         })
       );
       expect(standardVersion).toBeCalledWith(

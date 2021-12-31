@@ -3,7 +3,11 @@ import { forkJoin, noop, Observable, of } from 'rxjs';
 import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import { getChangelogPath, insertChangelogDepedencyUpdates, updateChangelog } from './utils/changelog';
+import {
+  getChangelogPath,
+  insertChangelogDepedencyUpdates,
+  updateChangelog,
+} from './utils/changelog';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -18,7 +22,6 @@ export type Version =
       version: string | null;
       dependencyName: string;
     };
-
 
 export interface CommonVersionOptions {
   dryRun: boolean;
@@ -81,7 +84,7 @@ export async function versionProject(options: CommonVersionOptions) {
     version: options.newVersion,
     dryRun: options.dryRun,
     dependencyUpdates: options.dependencyUpdates,
-  })
+  });
 }
 
 /**

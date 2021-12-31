@@ -1,12 +1,7 @@
 import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { combineLatest, defer, forkJoin, iif, of } from 'rxjs';
-import {
-  catchError,
-  map,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators';
+import { catchError, map, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 
