@@ -1,7 +1,12 @@
 import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { combineLatest, defer, forkJoin, iif, of } from 'rxjs';
-import { catchError, map, shareReplay, switchMap } from 'rxjs/operators';
+import { defer, forkJoin, iif, of } from 'rxjs';
+import {
+  catchError,
+  defaultIfEmpty,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 
@@ -29,7 +34,7 @@ export type TryBumpReturn = {
   dependencyUpdates: Version[];
 };
 
-export function getVersionMetadata(tagPrefix: string, rootPaths: string[]) {
+export function getProjectVersion(tagPrefix: string, projectPath: string) {
   const initialVersion = '0.0.0';
   const lastVersion$ = getLastVersion({
     tagPrefix,
@@ -62,18 +67,12 @@ If your project is already versioned, please tag the latest release commit with 
   );
 
   const commits$ = lastVersionGitRef$.pipe(
-    switchMap((lastVersionGitRef) => {
-      const listOfGetCommits = rootPaths.map((root) =>
-        getCommits({
-          projectRoot: root,
-          since: lastVersionGitRef,
-        })
-      );
-      /* Get the lists of commits and its dependencies (if using --track-deps).
-       * Note: the mechanism for identifying if --track-deps was used is whether
-       * dependencyRoots is a populated array. */
-      return combineLatest(listOfGetCommits);
-    })
+    switchMap((lastVersionGitRef) =>
+      getCommits({
+        projectRoot: projectPath,
+        since: lastVersionGitRef,
+      })
+    )
   );
 
   return {
@@ -104,10 +103,7 @@ export function tryBump({
   versionTagPrefix?: string | null;
   syncVersions?: boolean;
 }): Observable<TryBumpReturn | null> {
-  const { lastVersion$, commits$ } = getVersionMetadata(tagPrefix, [
-    projectRoot,
-    ...dependencyRoots.map((d) => d.path),
-  ]);
+  const { lastVersion$, commits$ } = getProjectVersion(tagPrefix, projectRoot);
 
   return forkJoin([lastVersion$, commits$]).pipe(
     switchMap(([lastVersion, commits]) => {
@@ -126,52 +122,48 @@ export function tryBump({
       }
 
       const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
-      /* No commits since last release so don't bump. */
-      if (numOfCommits === 0) {
-        return of(null);
-      }
 
-      const dependencyChecks$ = dependencyRoots.map((root) => {
-        const tagPrefix = resolveTagPrefix({
-          versionTagPrefix,
-          projectName: root.name,
-          syncVersions: !!syncVersions,
-        });
+      const dependencyChecks$ = forkJoin(
+        dependencyRoots.map((root) => {
+          const tagPrefix = resolveTagPrefix({
+            versionTagPrefix,
+            projectName: root.name,
+            syncVersions: !!syncVersions,
+          });
 
-        const { lastVersion$, commits$ } = getVersionMetadata(
-          tagPrefix,
-          dependencyRoots.map((d) => d.path)
-        );
+          const { lastVersion$, commits$ } = getProjectVersion(
+            tagPrefix,
+            root.path
+          );
 
-        return forkJoin([lastVersion$, commits$]).pipe(
-          switchMap(([lastVersion, commits]) => {
-            const numOfCommits = commits.reduce(
-              (acc, dep) => acc + dep.length,
-              0
-            );
-            /* No commits since last release so don't bump. */
-            if (numOfCommits === 0) {
-              return of(null);
-            }
-            return _semverBump({
-              since: lastVersion,
-              preset,
-              projectRoot: root.path,
-              tagPrefix,
-            }).pipe(
-              switchMap((version) => {
-                const rtn = {
-                  type: 'dependency',
-                  version,
-                  dependencyName: root.name,
-                } as Version;
-
-                return of(rtn);
-              })
-            );
-          })
-        );
-      });
+          return forkJoin([lastVersion$, commits$]).pipe(
+            switchMap(([lastVersion, commits]) => {
+              const numOfCommits = commits.reduce(
+                (acc, dep) => acc + dep.length,
+                0
+              );
+              /* No commits since last release so don't bump. */
+              if (numOfCommits === 0) {
+                return of(null);
+              }
+              return _semverBump({
+                since: lastVersion,
+                preset,
+                projectRoot: root.path,
+                tagPrefix,
+              }).pipe(
+                switchMap((version) =>
+                  of({
+                    type: 'dependency',
+                    version,
+                    dependencyName: root.name,
+                  } as Version)
+                )
+              );
+            })
+          );
+        })
+      ).pipe(defaultIfEmpty([]));
 
       const projectBump$ = _semverBump({
         since: lastVersion,
@@ -182,24 +174,43 @@ export function tryBump({
         switchMap((version) => of({ type: 'project', version } as Version))
       );
 
-      const rtn = forkJoin(dependencyChecks$.concat(projectBump$)).pipe(
-        map((versions) => {
-          return versions.reduce(
-            (acc, v) => {
-              if (v === null) return acc;
-              if (
-                v.type === 'dependency' &&
-                v.version !== null &&
-                v.version !== '0.0.0'
-              ) {
-                acc.dependencyUpdates.push(v);
-              } else if (v.type === 'project' && v.version !== null) {
-                acc.version = v.version;
-              }
-              return acc;
-            },
-            { version: lastVersion, dependencyUpdates: [] } as TryBumpReturn
-          );
+      const rtn = forkJoin([projectBump$, dependencyChecks$]).pipe(
+        switchMap(([projectBump, dependencyChecks]) => {
+          const dependencyUpdates = dependencyChecks.filter(
+            (v) =>
+              v !== null &&
+              v.type === 'dependency' &&
+              v.version !== null &&
+              v.version !== '0.0.0'
+          ) as Version[];
+
+          const rtn: TryBumpReturn = {
+            version: projectBump.version || lastVersion,
+            dependencyUpdates,
+          };
+
+          /* bump patch version if dependency updates are available */
+          if (projectBump.version === null && dependencyUpdates.length) {
+            return _manualBump({
+              since: lastVersion,
+              releaseType: 'patch',
+              preid: preid as string,
+            }).pipe(
+              switchMap((version) =>
+                of({
+                  ...rtn,
+                  version: version || lastVersion,
+                } as TryBumpReturn)
+              )
+            );
+          }
+
+          /* No commits since last release & no dependency updates so don't bump. */
+          if (!dependencyUpdates.length && !numOfCommits) {
+            return of(null);
+          }
+
+          return of(rtn);
         })
       );
 
