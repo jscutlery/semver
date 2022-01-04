@@ -731,6 +731,9 @@ This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
+### Dependency Updates
+
+\\* \`e\` updated to version \`0.1.0\`
 
 ### Features
 

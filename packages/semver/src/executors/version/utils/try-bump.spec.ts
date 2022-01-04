@@ -134,26 +134,10 @@ describe('tryBump', () => {
       since: 'v2.1.0',
     });
 
-    expect(mockConventionalRecommendedBump).toBeCalledTimes(3);
+    expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
     expect(mockConventionalRecommendedBump).toBeCalledWith(
       {
         path: '/libs/demo',
-        preset: 'angular',
-        tagPrefix: 'v',
-      },
-      expect.any(Function)
-    );
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
-      {
-        path: '/libs/dep1',
-        preset: 'angular',
-        tagPrefix: 'v',
-      },
-      expect.any(Function)
-    );
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
-      {
-        path: '/libs/dep2',
         preset: 'angular',
         tagPrefix: 'v',
       },

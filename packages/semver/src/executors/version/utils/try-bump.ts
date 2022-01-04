@@ -4,6 +4,7 @@ import { defer, forkJoin, iif, of } from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
+  retry,
   shareReplay,
   switchMap,
 } from 'rxjs/operators';
@@ -34,8 +35,14 @@ export type TryBumpReturn = {
   dependencyUpdates: Version[];
 };
 
-export function getProjectVersion(tagPrefix: string, projectPath: string) {
-  const initialVersion = '0.0.0';
+const initialVersion = '0.0.0';
+
+export function getProjectVersion(
+  tagPrefix: string,
+  projectPath: string,
+  releaseType?: ReleaseIdentifier,
+  since?: string
+) {
   const lastVersion$ = getLastVersion({
     tagPrefix,
     includePrerelease: releaseType === 'prerelease',
@@ -66,13 +73,18 @@ If your project is already versioned, please tag the latest release commit with 
     )
   );
 
+  let isRetry = false;
+
   const commits$ = lastVersionGitRef$.pipe(
-    switchMap((lastVersionGitRef) =>
-      getCommits({
+    switchMap((lastVersionGitRef) => {
+      const sinceTarget = !isRetry ? since : lastVersionGitRef;
+      isRetry = true;
+      return getCommits({
         projectRoot: projectPath,
-        since: lastVersionGitRef,
-      })
-    )
+        since: sinceTarget || lastVersionGitRef,
+      });
+    }),
+    retry(2)
   );
 
   return {
@@ -103,7 +115,11 @@ export function tryBump({
   versionTagPrefix?: string | null;
   syncVersions?: boolean;
 }): Observable<TryBumpReturn | null> {
-  const { lastVersion$, commits$ } = getProjectVersion(tagPrefix, projectRoot);
+  const { lastVersion$, commits$ } = getProjectVersion(
+    tagPrefix,
+    projectRoot,
+    releaseType
+  );
 
   return forkJoin([lastVersion$, commits$]).pipe(
     switchMap(([lastVersion, commits]) => {
@@ -121,45 +137,52 @@ export function tryBump({
         );
       }
 
-      const numOfCommits = commits.reduce((acc, dep) => acc + dep.length, 0);
-
       const dependencyChecks$ = forkJoin(
         dependencyRoots.map((root) => {
-          const tagPrefix = resolveTagPrefix({
+          const depTagPrefix = resolveTagPrefix({
             versionTagPrefix,
             projectName: root.name,
             syncVersions: !!syncVersions,
           });
 
-          const { lastVersion$, commits$ } = getProjectVersion(
-            tagPrefix,
-            root.path
-          );
+          /* Get dependency version changes since last project version */
+          const { lastVersion$: depLastVersion$, commits$: depCommits$ } =
+            getProjectVersion(
+              depTagPrefix,
+              root.path,
+              releaseType,
+              `${tagPrefix}${lastVersion}`
+            );
 
-          return forkJoin([lastVersion$, commits$]).pipe(
-            switchMap(([lastVersion, commits]) => {
-              const numOfCommits = commits.reduce(
-                (acc, dep) => acc + dep.length,
-                0
-              );
+          return forkJoin([depLastVersion$, depCommits$]).pipe(
+            switchMap(([depLastVersion, depCommits]) => {
               /* No commits since last release so don't bump. */
-              if (numOfCommits === 0) {
-                return of(null);
+              if (depCommits.length === 0) return of(null);
+
+              /* Dependency has changes but has no tagged version */
+              if (depCommits.length && depLastVersion === initialVersion) {
+                return _semverBump({
+                  since: lastVersion,
+                  preset,
+                  projectRoot: root.path,
+                  tagPrefix,
+                }).pipe(
+                  switchMap((version) =>
+                    of({
+                      type: 'dependency',
+                      version,
+                      dependencyName: root.name,
+                    } as Version)
+                  )
+                );
               }
-              return _semverBump({
-                since: lastVersion,
-                preset,
-                projectRoot: root.path,
-                tagPrefix,
-              }).pipe(
-                switchMap((version) =>
-                  of({
-                    type: 'dependency',
-                    version,
-                    dependencyName: root.name,
-                  } as Version)
-                )
-              );
+
+              /* Return the changed version of dependency since last commit within project */
+              return of({
+                type: 'dependency',
+                version: depLastVersion,
+                dependencyName: root.name,
+              } as Version);
             })
           );
         })
@@ -206,7 +229,7 @@ export function tryBump({
           }
 
           /* No commits since last release & no dependency updates so don't bump. */
-          if (!dependencyUpdates.length && !numOfCommits) {
+          if (!dependencyUpdates.length && !commits.length) {
             return of(null);
           }
 

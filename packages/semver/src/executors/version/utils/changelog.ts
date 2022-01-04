@@ -74,7 +74,7 @@ export function insertChangelogDepedencyUpdates({
     let changelog = await promisify(readFile)(changelogPath, 'utf-8');
 
     const match = changelog.match(
-      new RegExp(`## \\[?${version}\\]? ?\\(.*\\)`)
+      new RegExp(`##? \\[?${version}\\]? ?\\(.*\\)`)
     );
 
     if (match && match.index !== undefined) {
