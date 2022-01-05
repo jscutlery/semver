@@ -4,6 +4,7 @@
   "automerge": true,
   "automergeType": "branch",
   "baseBranches": ["main"],
+  "updateInternalDeps": true,
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
