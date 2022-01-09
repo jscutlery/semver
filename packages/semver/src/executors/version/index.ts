@@ -3,7 +3,11 @@ import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 
-import { calculateChangelogChanges, defaultHeader, getChangelogPath } from './utils/changelog';
+import {
+  calculateChangelogChanges,
+  defaultHeader,
+  getChangelogPath,
+} from './utils/changelog';
 import { getDependencyRoots } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { executePostTargets } from './utils/post-target';
@@ -112,6 +116,10 @@ export default async function version(
         })
       );
 
+      const changelogPath = syncVersions
+        ? getChangelogPath(workspaceRoot)
+        : getChangelogPath(projectRoot);
+
       /**
        * 1. Calculate new version
        * 2. Release (create changelog -> add to stage -> commit -> tag)
@@ -122,7 +130,7 @@ export default async function version(
       return runStandardVersion$.pipe(
         calculateChangelogChanges({
           changelogHeader,
-          changelogPath: getChangelogPath(projectRoot),
+          changelogPath,
         }),
         concatMap((notes) =>
           concat(
