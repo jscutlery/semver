@@ -1105,18 +1105,6 @@
     yargs "15.4.1"
     yargs-parser "20.0.0"
 
-"@nrwl/cli@13.3.5":
-  version "13.3.5"
-  resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-13.3.5.tgz#87125797a7abe75274e3ab6059d41d2d06d66a3b"
-  integrity sha512-Cpa/DnsgcE7mLNOPXQbbN4wXBalvEi1TF+sPvTpGaRpy5FxEg6kTQ0C4oKiOGX97YkR1uy0OGVPpw2IKGzG2Ig==
-  dependencies:
-    "@nrwl/tao" "13.3.5"
-    chalk "4.1.0"
-    enquirer "~2.3.6"
-    v8-compile-cache "2.3.0"
-    yargs "15.4.1"
-    yargs-parser "20.0.0"
-
 "@nrwl/cli@13.4.3":
   version "13.4.3"
   resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-13.4.3.tgz#94c018bf75bc352f0db1f71a32b92a02bc2fce98"
@@ -1128,18 +1116,6 @@
     v8-compile-cache "2.3.0"
     yargs "15.4.1"
     yargs-parser "20.0.0"
-
-"@nrwl/devkit@13.3.5":
-  version "13.3.5"
-  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.3.5.tgz#e2a704ed6a23739377c820dbedeccbe6ab5980b2"
-  integrity sha512-QqCP81T1PmAQdVyX5roQwNMMkyp+Pqe79WU4r/Uln0DAEzb9BcTQE61TDgNIcdvMq7Ng6uxGWRnhK8XbdLNVtw==
-  dependencies:
-    "@nrwl/tao" "13.3.5"
-    ejs "^3.1.5"
-    ignore "^5.0.4"
-    rxjs "^6.5.4"
-    semver "7.3.4"
-    tslib "^2.3.0"
 
 "@nrwl/devkit@13.4.3":
   version "13.4.3"
@@ -1261,25 +1237,6 @@
     fs-extra "^9.1.0"
     jsonc-parser "3.0.0"
     nx "13.2.2"
-    rxjs "^6.5.4"
-    rxjs-for-await "0.0.2"
-    semver "7.3.4"
-    tmp "~0.2.1"
-    tslib "^2.3.0"
-    yargs-parser "20.0.0"
-
-"@nrwl/tao@13.3.5":
-  version "13.3.5"
-  resolved "https://registry.yarnpkg.com/@nrwl/tao/-/tao-13.3.5.tgz#03ca2de5ba72c0d7aa1889da61e21cdce72ee160"
-  integrity sha512-OOoNrH9ELt7GwNnu34L4gGTWpX8N2F7v0H23I6tSM5Qj6KhIJ/DPxaedF9a6frUhewX1+iuvZ0rOD5/TWRUd2w==
-  dependencies:
-    chalk "4.1.0"
-    enquirer "~2.3.6"
-    fast-glob "3.2.7"
-    fs-extra "^9.1.0"
-    ignore "^5.0.4"
-    jsonc-parser "3.0.0"
-    nx "13.3.5"
     rxjs "^6.5.4"
     rxjs-for-await "0.0.2"
     semver "7.3.4"
@@ -4127,7 +4084,12 @@ ignore@^4.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
-ignore@^5.0.4, ignore@^5.1.4, ignore@^5.1.8:
+ignore@^5.0.4:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
+  integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
+
+ignore@^5.1.4, ignore@^5.1.8:
   version "5.1.9"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.9.tgz#9ec1a5cbe8e1446ec60d4420060d43aa6e7382fb"
   integrity sha512-2zeMQpbKz5dhZ9IwL0gbxSW5w0NK/MSAMtNuhgIHEPmaU3vPdKPL0UdvUCXs5SS4JAwsBxysK5sFMW8ocFiVjQ==
@@ -5922,11 +5884,11 @@ neo-async@^2.6.0, neo-async@^2.6.2:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 ngx-deploy-npm@^3.0.2:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.0.7.tgz#31d0b5bfd5e54306cb5576a293cfd89b740242f0"
-  integrity sha512-dXjiYB/1cMyapFhWDS8MkSO9ld+mzMEbW2lGytkEx36tLg1mBT0724uOuRxgmQwp7H6gAhlqCJGmBI6bAyXw+A==
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.0.9.tgz#427ceeabd52d4f2a33d344ee43281f0f227b192b"
+  integrity sha512-21WgcfpuksFXpBsrKNZ+vFcQZCgNN4ZtKtdZU7WTNm3H5Y8N0oX0PDwXgJpiIPEdhtSN7zpNQHIn7WAxvxAO6A==
   dependencies:
-    "@nrwl/devkit" "13.3.5"
+    "@nrwl/devkit" "13.4.3"
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -6028,13 +5990,6 @@ nx@13.2.2:
   integrity sha512-d13Xb3pswItWS9sP4+ed4JarkTzo6+gCBNWSgxuO6MMkmKZPXH3yM3an9KlA5jCyFygcsny7CIgwwxJhz1SJCg==
   dependencies:
     "@nrwl/cli" "*"
-
-nx@13.3.5:
-  version "13.3.5"
-  resolved "https://registry.yarnpkg.com/nx/-/nx-13.3.5.tgz#46fb6108e449aea8753d6cef9339db5a658a5093"
-  integrity sha512-wxdvfOgza6KJ6hRDNBfFNatcp45VfCMQpDfbmL2Jdc3KiSN7K/bvtOVZvXaPrcKtbYghfL6SRsXtStIeITxlng==
-  dependencies:
-    "@nrwl/cli" "13.3.5"
 
 nx@13.3.6:
   version "13.3.6"
@@ -6305,10 +6260,15 @@ picocolors@^1.0.0:
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
   integrity sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==
 
-picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.3:
+picomatch@^2.0.4, picomatch@^2.2.1:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"
   integrity sha512-lY1Q/PiJGC2zOv/z391WOTD+Z02bCgsFfvxoXXf6h7kv9o+WmsmzYqrAwY63sNgOxE4xEdq0WyUnXfKeBrSvYw==
+
+picomatch@^2.2.3:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
+  integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
 pidtree@^0.3.0:
   version "0.3.1"
