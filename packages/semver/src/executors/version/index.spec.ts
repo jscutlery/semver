@@ -212,6 +212,20 @@ describe('@jscutlery/semver:version', () => {
       );
       expect(standardVersion).not.toBeCalled();
     });
+
+    it('should skip changelog generation with --skipProjectChangelog', async () => {
+      const { success } = await version(
+        { ...options, skipProjectChangelog: true },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          skip: { changelog: true },
+        })
+      );
+    });
   });
 
   describe('Sync versions', () => {

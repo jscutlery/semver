@@ -19,6 +19,7 @@ export interface CommonVersionOptions {
   changelogHeader?: string;
   commitMessageFormat?: string;
   projectName: string;
+  skipProjectChangelog: boolean;
 }
 
 export function versionWorkspace({
@@ -27,7 +28,6 @@ export function versionWorkspace({
   ...options
 }: {
   skipRootChangelog: boolean;
-  skipProjectChangelog: boolean;
   workspaceRoot: string;
 } & CommonVersionOptions) {
   return getProjectRoots(workspaceRoot).pipe(
@@ -60,7 +60,7 @@ export function versionWorkspace({
 export function versionProject(options: CommonVersionOptions) {
   return _runStandardVersion({
     bumpFiles: [resolve(options.projectRoot, 'package.json')],
-    skipChangelog: false,
+    skipChangelog: options.skipProjectChangelog,
     ...options,
   });
 }
@@ -119,7 +119,6 @@ export function _createCommitMessageFormatConfig({
     : {};
 }
 
-
 /* istanbul ignore next */
 export async function _runStandardVersion({
   bumpFiles,
@@ -132,11 +131,11 @@ export async function _runStandardVersion({
   skipChangelog,
   projectName,
   commitMessageFormat,
-  changelogHeader
+  changelogHeader,
 }: {
   bumpFiles: string[];
   skipChangelog: boolean;
-} & CommonVersionOptions) {
+} & Omit<CommonVersionOptions, 'skipProjectChangelog'>) {
   await standardVersion({
     bumpFiles,
     /* Make sure that we commit the manually generated changelogs that

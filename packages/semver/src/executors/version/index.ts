@@ -92,6 +92,7 @@ export default async function version(
         changelogHeader,
         commitMessageFormat,
         projectName,
+        skipProjectChangelog,
       };
 
       const runStandardVersion$ = defer(() =>
@@ -99,7 +100,6 @@ export default async function version(
           ? versionWorkspace({
               ...options,
               skipRootChangelog,
-              skipProjectChangelog,
               workspaceRoot,
             })
           : versionProject(options)
