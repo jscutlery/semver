@@ -21,7 +21,7 @@
       "type": "string",
       "description": "Release notes."
     },
-    "notesFiles": {
+    "notesFile": {
       "type": "string",
       "description": "Read release notes from file."
     },
