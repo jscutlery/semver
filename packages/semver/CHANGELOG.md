@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.17.6](https://github.com/jscutlery/semver/compare/semver-2.17.5...semver-2.17.6) (2022-01-25)
+
+
+### Bug Fixes
+
+* **semver:** typo on `notesFile` schema option ([dff85db](https://github.com/jscutlery/semver/commit/dff85dba7690d0182f3ff481a076ef20af09e2e0))
+
+
+
 ## [2.17.5](https://github.com/jscutlery/semver/compare/semver-2.17.4...semver-2.17.5) (2022-01-10)
 
 
