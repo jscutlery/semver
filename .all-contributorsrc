@@ -252,6 +252,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "rjlopezdev",
+      "name": "Raúl Julián López Caña",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18118062?v=4",
+      "profile": "https://medium.com/@rjlopezdev",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
