@@ -30,7 +30,10 @@ export function tryBump({
   preid?: string;
 }): Observable<string | null> {
   const initialVersion = '0.0.0';
-  const lastVersion$ = getLastVersion({ tagPrefix }).pipe(
+  const lastVersion$ = getLastVersion({
+    tagPrefix,
+    includePrerelease: releaseType === 'prerelease',
+  }).pipe(
     catchError(() => {
       logger.warn(
         `🟠 No previous version tag found, fallback to version 0.0.0.

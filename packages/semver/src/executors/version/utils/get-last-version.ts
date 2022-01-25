@@ -8,14 +8,20 @@ import type { Observable } from 'rxjs';
 
 export function getLastVersion({
   tagPrefix,
+  includePrerelease = true,
 }: {
   tagPrefix: string;
+  includePrerelease?: boolean;
 }): Observable<string> {
   return from(
     (promisify(gitSemverTags) as any)({ tagPrefix }) as Promise<string[]>
   ).pipe(
     switchMap((tags: string[]) => {
-      const versions = tags.map((tag) => tag.substring(tagPrefix.length));
+      const versions = tags
+        .map((tag) => tag.substring(tagPrefix.length))
+        .filter((v) =>
+          includePrerelease ? true : semver.prerelease(v) === null
+        );
       const [version] = versions.sort(semver.rcompare);
 
       if (version == null) {

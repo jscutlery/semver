@@ -6,10 +6,12 @@ import { callbackify } from 'util';
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 import { tryBump } from './try-bump';
+import * as gitSemverTags from 'git-semver-tags';
 
 jest.mock('conventional-recommended-bump');
 jest.mock('./get-last-version');
 jest.mock('./git');
+jest.mock('git-semver-tags', () => jest.fn());
 
 describe('tryBump', () => {
   const mockConventionalRecommendedBump =
@@ -23,10 +25,15 @@ describe('tryBump', () => {
   const mockGetFirstCommitRef = getFirstCommitRef as jest.MockedFunction<
     typeof getFirstCommitRef
   >;
+  let mockGitSemverTags: jest.Mock;
 
   let loggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    mockGitSemverTags = jest.fn();
+    (gitSemverTags as jest.Mock).mockImplementation(
+      callbackify(mockGitSemverTags)
+    );
     mockGetLastVersion.mockReturnValue(of('2.1.0'));
     loggerSpy = jest.spyOn(logger, 'warn');
   });
@@ -82,27 +89,30 @@ describe('tryBump', () => {
       .mockReturnValueOnce(of(['fix: A', 'feat: B']));
 
     /* Mock bump to return "minor". */
-    mockConventionalRecommendedBump
-      .mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValueOnce({
-              releaseType: undefined,
-            })
-            .mockResolvedValueOnce({
-              releaseType: undefined,
-            })
-            .mockResolvedValueOnce({
-              releaseType: 'minor',
-            })
-        ) as () => void
-      );
+    mockConventionalRecommendedBump.mockImplementation(
+      callbackify(
+        jest
+          .fn()
+          .mockResolvedValueOnce({
+            releaseType: undefined,
+          })
+          .mockResolvedValueOnce({
+            releaseType: undefined,
+          })
+          .mockResolvedValueOnce({
+            releaseType: 'minor',
+          })
+      ) as () => void
+    );
 
-    const newVersion = await lastValueFrom(tryBump({
-      preset: 'angular',
-      projectRoot: '/libs/demo',
-      dependencyRoots: ['/libs/dep1', '/libs/dep2'],
-      tagPrefix: 'v',
-    }));
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        dependencyRoots: ['/libs/dep1', '/libs/dep2'],
+        tagPrefix: 'v',
+      })
+    );
 
     expect(newVersion).toEqual('2.1.1');
 
@@ -150,15 +160,104 @@ describe('tryBump', () => {
   it('should use given type to calculate next version', async () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
 
-    const newVersion = await lastValueFrom(tryBump({
-      preset: 'angular',
-      projectRoot: '/libs/demo',
-      tagPrefix: 'v',
-      releaseType: 'premajor',
-      preid: 'alpha',
-    }));
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: 'premajor',
+        preid: 'alpha',
+      })
+    );
 
     expect(newVersion).toEqual('3.0.0-alpha.0');
+
+    expect(mockConventionalRecommendedBump).not.toBeCalled();
+
+    expect(mockGetCommits).toBeCalledTimes(1);
+    expect(mockGetCommits).toBeCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v2.1.0',
+    });
+  });
+
+  it('should use prerelease to calculate next major release version', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-3.0.0-beta.0',
+      'my-lib-2.1.0',
+      'my-lib-2.0.0',
+      'my-lib-1.0.0',
+    ]);
+    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: 'major',
+      })
+    );
+
+    expect(newVersion).toEqual('3.0.0');
+
+    expect(mockConventionalRecommendedBump).not.toBeCalled();
+
+    expect(mockGetCommits).toBeCalledTimes(1);
+    expect(mockGetCommits).toBeCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v2.1.0',
+    });
+  });
+
+  it('should use prerelease to calculate next patch release version', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.1.1-beta.0',
+      'my-lib-2.1.0',
+      'my-lib-2.0.0',
+      'my-lib-1.0.0',
+    ]);
+    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: 'patch',
+      })
+    );
+
+    expect(newVersion).toEqual('2.1.1');
+
+    expect(mockConventionalRecommendedBump).not.toBeCalled();
+
+    expect(mockGetCommits).toBeCalledTimes(1);
+    expect(mockGetCommits).toBeCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v2.1.0',
+    });
+  });
+
+  it('should use prerelease to calculate next minor release version', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.2.0-beta.0',
+      'my-lib-2.1.0',
+      'my-lib-2.0.0',
+      'my-lib-1.0.0',
+    ]);
+    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: 'minor',
+      })
+    );
+
+    expect(newVersion).toEqual('2.2.0');
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -195,7 +294,7 @@ describe('tryBump', () => {
       tryBump({
         preset: 'angular',
         projectRoot: '/libs/demo',
-        tagPrefix: 'v'
+        tagPrefix: 'v',
       })
     );
 
