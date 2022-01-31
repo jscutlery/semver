@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.18.0](https://github.com/jscutlery/semver/compare/semver-2.17.6...semver-2.18.0) (2022-01-31)
+
+
+### Features
+
+* **semver:** filter out prerelease tags if trying to release ([c508323](https://github.com/jscutlery/semver/commit/c50832318df61769fda76df2b29cedbc7a150791))
+
+
+
 ## [2.17.6](https://github.com/jscutlery/semver/compare/semver-2.17.5...semver-2.17.6) (2022-01-25)
 
 
