@@ -44,7 +44,7 @@
     "@typescript-eslint/eslint-plugin": "5.10.2",
     "@typescript-eslint/parser": "5.10.2",
     "all-contributors-cli": "^6.19.0",
-    "dotenv": "15.0.0",
+    "dotenv": "15.0.1",
     "eslint": "8.8.0",
     "eslint-config-prettier": "8.3.0",
     "husky": "^7.0.0",
