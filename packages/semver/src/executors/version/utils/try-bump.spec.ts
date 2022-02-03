@@ -187,7 +187,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('3.0.0');
+    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "3.0.0"});
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -216,7 +216,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('2.1.1');
+    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "2.1.1"});
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -245,7 +245,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('2.2.0');
+    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "2.2.0"});
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
