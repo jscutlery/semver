@@ -303,6 +303,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://palmtreecoding.com/"><img src="https://avatars.githubusercontent.com/u/7668692?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tycho Bokdam</b></sub></a><br /><a href="#ideas-TriPSs" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/nicolashzmor"><img src="https://avatars.githubusercontent.com/u/66749276?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nicolashzmor</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Anicolashzmor" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://medium.com/@rjlopezdev"><img src="https://avatars.githubusercontent.com/u/18118062?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Raúl Julián López Caña</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Arjlopezdev" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=rjlopezdev" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/kaoz70"><img src="https://avatars.githubusercontent.com/u/79406?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Miguel Suarez</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=kaoz70" title="Code">💻</a></td>
   </tr>
 </table>
 
