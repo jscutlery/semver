@@ -1126,12 +1126,12 @@
     yargs "15.4.1"
     yargs-parser "20.0.0"
 
-"@nrwl/cli@13.7.1":
-  version "13.7.1"
-  resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-13.7.1.tgz#da23bade4c8cf2dec0d122d0979302dd2e5d4330"
-  integrity sha512-UfupcHb0P2/yvNs/TjPM6uQyH9nZYNySPqTL1tV9ItO8vPm4YnO3jd+NrO3WWzrBCZVfwX8LHZ2PTtBGkCA01w==
+"@nrwl/cli@13.7.3":
+  version "13.7.3"
+  resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-13.7.3.tgz#2e5f5ace22db58b3176dd28e2830a59f306be5bb"
+  integrity sha512-iL10s55Levr2mI/qhKoHuYARYHniS9zlu0+yM6W1kRglJkJpX1KkbGwQ8P6TRImEdz1FlZQqJ/X8qMSH13eOhA==
   dependencies:
-    "@nrwl/tao" "13.7.1"
+    "@nrwl/tao" "13.7.3"
     chalk "4.1.0"
     enquirer "~2.3.6"
     v8-compile-cache "2.3.0"
@@ -1149,12 +1149,12 @@
     semver "7.3.4"
     tslib "^2.3.0"
 
-"@nrwl/devkit@13.7.1":
-  version "13.7.1"
-  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.7.1.tgz#11a1cab83bcaf6dcfd5de45d1c658258da070210"
-  integrity sha512-AAwDbBddQEq90UG8trQg74eN6x60Pc7L8wCOLiRQ/shFCdD93boODlqEFy8Ae6bH1E4xb6hUldeqjcm/yFkOMg==
+"@nrwl/devkit@13.7.3":
+  version "13.7.3"
+  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-13.7.3.tgz#6159b205e743e6127df432a5e33c2fab04a01c93"
+  integrity sha512-HUfiQuq1qNaavQgbTjYG2UpjrtKtrlOSIq9OPUGYRpmCVNoT5IOtovn7BT+o1Dg6qYW/6F14ydbnubv/SAKXMw==
   dependencies:
-    "@nrwl/tao" "13.7.1"
+    "@nrwl/tao" "13.7.3"
     ejs "^3.1.5"
     ignore "^5.0.4"
     rxjs "^6.5.4"
@@ -1314,10 +1314,10 @@
     tslib "^2.3.0"
     yargs-parser "20.0.0"
 
-"@nrwl/tao@13.7.1":
-  version "13.7.1"
-  resolved "https://registry.yarnpkg.com/@nrwl/tao/-/tao-13.7.1.tgz#1f257232c38324521cd7c1478896f4c0e948216a"
-  integrity sha512-Ho7OHIu82aT/6hCSAZ1nxgmFAmTVt6TM6oxeg+/J4JTizCbevjrEFxS7RQ7GYsW/a8NxOTTMq6rTMln3W2OPzg==
+"@nrwl/tao@13.7.3":
+  version "13.7.3"
+  resolved "https://registry.yarnpkg.com/@nrwl/tao/-/tao-13.7.3.tgz#af4d3c21e7b4e529813a8b40ea11a0769d0305c3"
+  integrity sha512-D/0lZj/BhY+fkEYfrgtfOFwRCX129rbuFpAKsk52fJkXym5tWdWMrNwMQPtoi+GqSKJSksyvi9wESZuQQ+/jPA==
   dependencies:
     chalk "4.1.0"
     enquirer "~2.3.6"
@@ -1325,7 +1325,7 @@
     fs-extra "^9.1.0"
     ignore "^5.0.4"
     jsonc-parser "3.0.0"
-    nx "13.7.1"
+    nx "13.7.3"
     rxjs "^6.5.4"
     rxjs-for-await "0.0.2"
     semver "7.3.4"
@@ -5687,10 +5687,17 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-minimatch@3.0.4, minimatch@^3.0.4:
+minimatch@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
+  dependencies:
+    brace-expansion "^1.1.7"
+
+minimatch@^3.0.4:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.5.tgz#4da8f1290ee0f0f8e83d60ca69f8f134068604a3"
+  integrity sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==
   dependencies:
     brace-expansion "^1.1.7"
 
@@ -5771,11 +5778,11 @@ neo-async@^2.6.0, neo-async@^2.6.2:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 ngx-deploy-npm@^3.0.2:
-  version "3.0.12"
-  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.0.12.tgz#290c400d821ceb672d5691a701f8f165a91279a2"
-  integrity sha512-f8v8wuQ6UXT2lTTrGs7TqlNctgEQ9AfCjV7Bz1XzYJ7YuxwvN4hKoFN2Sbge1TTcaFg82XKAJ5BmzhxEiaKzkg==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.1.0.tgz#b8aa38ecbfc40316dc6d9a2ed8df745d7ee0b973"
+  integrity sha512-w3GF5vdidrwxYJa1pIt/nneRcSc0+uzK914pEurVrfxzB0yTwCc8+BSuLkKkVS048JHQbrTM8bAuHH/qav3xug==
   dependencies:
-    "@nrwl/devkit" "13.7.1"
+    "@nrwl/devkit" "13.7.3"
 
 node-addon-api@^3.2.1:
   version "3.2.1"
@@ -5872,12 +5879,12 @@ nx@13.4.5:
   dependencies:
     "@nrwl/cli" "13.4.5"
 
-nx@13.7.1:
-  version "13.7.1"
-  resolved "https://registry.yarnpkg.com/nx/-/nx-13.7.1.tgz#5f07ab6e4c0d262c28e833f5970ce385d0dec521"
-  integrity sha512-/jKcS8t88ESwP6gRZ8Mg3sy86D/9YquLEoAcBVxR/bkoAZLQLXcdrJRQbx+yT5Wo8iJXzCC+wEyrDueJLJLaAQ==
+nx@13.7.3:
+  version "13.7.3"
+  resolved "https://registry.yarnpkg.com/nx/-/nx-13.7.3.tgz#8dc2af983e519b75121649dd43217b84c293f55d"
+  integrity sha512-LTj2V0+f1FIHIvPCGMDw3FilWBgNujGcjxJ85A1Pdkoy1Ovr4Onhv1BNfDpjzy9UB0zNgkTfMQzSiEzK6+p2fA==
   dependencies:
-    "@nrwl/cli" "13.7.1"
+    "@nrwl/cli" "13.7.3"
 
 object-copy@^0.1.0:
   version "0.1.0"
