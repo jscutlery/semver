@@ -73,18 +73,14 @@ If your project is already versioned, please tag the latest release commit with 
     )
   );
 
-  let isRetry = false;
-
   const commits$ = lastVersionGitRef$.pipe(
     switchMap((lastVersionGitRef) => {
-      const sinceTarget = !isRetry ? since : lastVersionGitRef;
-      isRetry = true;
+      const sinceTarget = lastVersionGitRef;
       return getCommits({
         projectRoot: projectPath,
         since: sinceTarget || lastVersionGitRef,
       });
-    }),
-    retry(2)
+    })
   );
 
   return {
