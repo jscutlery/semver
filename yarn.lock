@@ -5778,9 +5778,9 @@ neo-async@^2.6.0, neo-async@^2.6.2:
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
 ngx-deploy-npm@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.1.0.tgz#b8aa38ecbfc40316dc6d9a2ed8df745d7ee0b973"
-  integrity sha512-w3GF5vdidrwxYJa1pIt/nneRcSc0+uzK914pEurVrfxzB0yTwCc8+BSuLkKkVS048JHQbrTM8bAuHH/qav3xug==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-3.1.1.tgz#2df98ee527ff6085edc86a8c5c9faa98c0ede8f3"
+  integrity sha512-NFKXpvxVw8O0GRBAyzHm+aXe6OchuWgjIsFCvAflxO2E4JgVrpPgTklIa2IqFNarDo8hEmYj3lOXkZGyleVQuA==
   dependencies:
     "@nrwl/devkit" "13.7.3"
 
