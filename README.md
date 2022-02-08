@@ -164,7 +164,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "generateNotes": true
+        "notes": "${notes}"
       }
     },
     "publish": {
