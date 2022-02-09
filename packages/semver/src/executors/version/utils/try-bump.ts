@@ -4,7 +4,6 @@ import { defer, forkJoin, iif, of } from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
-  retry,
   shareReplay,
   switchMap,
 } from 'rxjs/operators';
@@ -75,10 +74,9 @@ If your project is already versioned, please tag the latest release commit with 
 
   const commits$ = lastVersionGitRef$.pipe(
     switchMap((lastVersionGitRef) => {
-      const sinceTarget = lastVersionGitRef;
       return getCommits({
         projectRoot: projectPath,
-        since: sinceTarget || lastVersionGitRef,
+        since: since || lastVersionGitRef,
       });
     })
   );
@@ -86,6 +84,7 @@ If your project is already versioned, please tag the latest release commit with 
   return {
     lastVersion$,
     commits$,
+    lastVersionGitRef$,
   };
 }
 
@@ -111,14 +110,14 @@ export function tryBump({
   versionTagPrefix?: string | null;
   syncVersions?: boolean;
 }): Observable<TryBumpReturn | null> {
-  const { lastVersion$, commits$ } = getProjectVersion(
+  const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion(
     tagPrefix,
     projectRoot,
     releaseType
   );
 
-  return forkJoin([lastVersion$, commits$]).pipe(
-    switchMap(([lastVersion, commits]) => {
+  return forkJoin([lastVersion$, commits$, lastVersionGitRef$]).pipe(
+    switchMap(([lastVersion, commits, lastVersionGitRef]) => {
       /* If release type is manually specified,
        * we just release even if there are no changes. */
       if (releaseType !== undefined) {
@@ -147,7 +146,10 @@ export function tryBump({
               depTagPrefix,
               root.path,
               releaseType,
-              `${tagPrefix}${lastVersion}`
+              /* If project version is 0.0.0, check dependency changes since first commit */
+              lastVersion === initialVersion
+                ? lastVersionGitRef
+                : `${tagPrefix}${lastVersion}`
             );
 
           return forkJoin([depLastVersion$, depCommits$]).pipe(
@@ -200,7 +202,7 @@ export function tryBump({
               v !== null &&
               v.type === 'dependency' &&
               v.version !== null &&
-              v.version !== '0.0.0'
+              v.version !== initialVersion
           ) as Version[];
 
           const rtn: TryBumpReturn = {
