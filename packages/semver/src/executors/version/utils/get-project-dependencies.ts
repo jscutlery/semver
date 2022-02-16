@@ -38,9 +38,8 @@ export async function getProjectDependencies(
   const dependencyGraph =
     typeof module.createProjectGraphAsync === 'function'
       ? await module.createProjectGraphAsync('5.0')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      : (module as any).createProjectGraph();
-
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (module as any).createProjectGraph();
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);
 }
 
