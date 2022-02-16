@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.18.2](https://github.com/jscutlery/semver/compare/semver-2.18.1...semver-2.18.2) (2022-02-16)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 support `--trackDeps` for Nx < 13 ([bd7ce83](https://github.com/jscutlery/semver/commit/bd7ce8358d4d12078b09e45aa910fc4c66663c19)), closes [#443](https://github.com/jscutlery/semver/issues/443)
+
+
+
 ## [2.18.1](https://github.com/jscutlery/semver/compare/semver-2.18.0...semver-2.18.1) (2022-02-08)
 
 
