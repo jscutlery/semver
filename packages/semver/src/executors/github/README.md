@@ -8,23 +8,6 @@ This executor requires the [GitHub CLI](https://cli.github.com/manual/installati
 
 ### Usage
 
-#### Configuration
-
-In the workspace definition:
-
-```json
-{
-  "targets": {
-    "github": {
-      "executor": "@jscutlery/semver:github",
-      "options": {
-        "generateNotes": true
-      }
-    }
-  }
-}
-```
-
 #### Run manually
 
 Publish the `v1.0.0` release:
@@ -33,7 +16,7 @@ Publish the `v1.0.0` release:
 nx run my-project:github --tag v1.0.0 [...options]
 ```
 
-#### Run using post-targets (recommended)
+#### Configuration using post-targets (recommended)
 
 This executor aims to be used with [post-targets](https://github.com/jscutlery/semver#post-targets):
 
@@ -50,17 +33,16 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "generateNotes": true
+        "notesFile": "./libs/my-project/CHANGELOG.md"
       }
     }
   }
 }
 ```
 
-##### Only new notes
+##### Only include new notes
 
-Rather than using the entire changelog on every release as your notes you can use the `notes`
-context provided by `@jscutlery/semver:version` to only include the new changes
+Rather than using the entire changelog on every release as your notes you can use the `notes` context provided by `@jscutlery/semver:version` to only include the new changes:
 
 ```json
 {
@@ -75,7 +57,7 @@ context provided by `@jscutlery/semver:version` to only include the new changes
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "${tag}",
-        "generateNotes": true
+        "notes": "${notes}"
       }
     }
   }
@@ -84,19 +66,19 @@ context provided by `@jscutlery/semver:version` to only include the new changes
 
 #### Available Options
 
-| name                        | type       | default     | description                                                     |
-| --------------------------- | ---------- | ----------- | --------------------------------------------------------------- |
-| **`--tag`**                 | `string`   | `undefined` | attach the release to the specified tag                         |
-| **`--target`**              | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
-| **`--files`**               | `string[]` | `undefined` | a list of asset files may be given to upload to the new release |
-| **`--notes`**               | `string`   | `undefined` | release notes                                                   |
-| **`--notesFile`**           | `string`   | `undefined` | read release notes from file                                    |
-| **`--draft`**               | `boolean`  | `undefined` | save the release as a draft instead of publishing               |
-| **`--title`**               | `string`   | `undefined` | release title                                                   |
-| **`--prerelease`**          | `boolean`  | `undefined` | mark the release as a prerelease                                |
-| **`--discussion-category`** | `string`   | `undefined` | start a discussion of the specified category                    |
-| **`--repo`**                | `string`   | `undefined` | select another repository using the [HOST/]OWNER/REPO format    |
-| **`--generate-notes`**      | `boolean`  | `undefined` | automatically generate title and notes for the release          |
+| name                       | type       | default     | description                                                     |
+| -------------------------- | ---------- | ----------- | --------------------------------------------------------------- |
+| **`--tag`**                | `string`   | `undefined` | attach the release to the specified tag                         |
+| **`--target`**             | `string`   | `main`      | target branch or full commit SHA (default: main branch)         |
+| **`--files`**              | `string[]` | `undefined` | a list of asset files may be given to upload to the new release |
+| **`--notes`**              | `string`   | `undefined` | release notes                                                   |
+| **`--notesFile`**          | `string`   | `undefined` | read release notes from file                                    |
+| **`--draft`**              | `boolean`  | `undefined` | save the release as a draft instead of publishing               |
+| **`--title`**              | `string`   | `undefined` | release title                                                   |
+| **`--prerelease`**         | `boolean`  | `undefined` | mark the release as a prerelease                                |
+| **`--discussionCategory`** | `string`   | `undefined` | start a discussion of the specified category                    |
+| **`--repo`**               | `string`   | `undefined` | select another repository using the [HOST/]OWNER/REPO format    |
+| **`--generateNotes`**      | `boolean`  | `undefined` | automatically generate title and notes for the release          |
 
 #### CI/CD
 
