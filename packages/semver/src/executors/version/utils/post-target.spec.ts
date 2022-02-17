@@ -1,8 +1,7 @@
-import { TargetConfiguration } from '@nrwl/devkit';
-import { runExecutor, readTargetOptions } from '@nrwl/devkit';
+import { readTargetOptions, runExecutor, TargetConfiguration } from '@nrwl/devkit';
 
 import { createFakeContext } from '../testing';
-import { executePostTargets } from './post-target';
+import { runPostTargets } from './post-target';
 
 jest.mock('@nrwl/devkit', () => ({
   runExecutor: jest.fn(),
@@ -10,7 +9,7 @@ jest.mock('@nrwl/devkit', () => ({
   parseTargetString: jest.requireActual('@nrwl/devkit').parseTargetString,
 }));
 
-describe(executePostTargets.name, () => {
+describe(runPostTargets.name, () => {
   const mockRunExecutor = runExecutor as jest.Mock;
   const mockReadTargetOptions = readTargetOptions as jest.Mock;
 
@@ -74,7 +73,7 @@ describe(executePostTargets.name, () => {
       optionA: 'optionA',
     });
 
-    executePostTargets({
+    runPostTargets({
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test:prod'],
       context,
     }).subscribe({
@@ -119,7 +118,7 @@ describe(executePostTargets.name, () => {
       yield new Error('Nop!');
     });
 
-    executePostTargets({
+    runPostTargets({
       postTargets: ['project-a:test', 'project-b:test'],
       context,
     }).subscribe({
@@ -140,7 +139,7 @@ describe(executePostTargets.name, () => {
   it('should handle empty post target', (done) => {
     const errorSpy = jest.fn();
 
-    executePostTargets({
+    runPostTargets({
       postTargets: [],
       context,
     }).subscribe({
@@ -156,7 +155,7 @@ describe(executePostTargets.name, () => {
   });
 
   it('should handle wrong post target project', (done) => {
-    executePostTargets({
+    runPostTargets({
       /* The second project "project-foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-foo:test'],
       context,
@@ -174,7 +173,7 @@ describe(executePostTargets.name, () => {
   });
 
   it('should handle wrong post target name', (done) => {
-    executePostTargets({
+    runPostTargets({
       /* The second target "foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-b:foo'],
       context,
@@ -204,16 +203,16 @@ describe(executePostTargets.name, () => {
       version: 'project@${version}',
     });
 
-    const resolvableOptions = {
+    const options = {
       version: '2.0.0',
       dryRun: true,
       num: 42,
       falseyValue: false,
     };
 
-    executePostTargets({
+    runPostTargets({
       postTargets: ['project-a:test', 'project-b:test'],
-      resolvableOptions,
+      options: options,
       context,
     }).subscribe({
       complete: () => {

@@ -1,4 +1,4 @@
-import { resolveInterpolation } from '../utils/resolve-interpolation';
+import { resolveInterpolation } from './resolve-interpolation';
 
 export function resolveTagPrefix({
   versionTagPrefix,
@@ -20,4 +20,14 @@ export function resolveTagPrefix({
     return 'v';
   }
   return `${projectName}-`;
+}
+
+export function formatTag({
+  tagPrefix,
+  lastVersion,
+}: {
+  tagPrefix: string;
+  lastVersion: string;
+}): string {
+  return `${tagPrefix}${lastVersion}`;
 }

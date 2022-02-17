@@ -13,8 +13,8 @@ import {
   getDependencyRoots,
 } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
-import { executePostTargets } from './utils/post-target';
-import { resolveTagPrefix } from './utils/resolve-tag-prefix';
+import { runPostTargets } from './utils/post-target';
+import { formatTag, resolveTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import { versionProject, versionWorkspace } from './version';
@@ -83,7 +83,7 @@ export default async function version(
     switchMap((newVersion) => {
       if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
-        return of({ success: true } as const);
+        return of({ success: true });
       }
 
       const options: CommonVersionOptions = {
@@ -105,8 +105,8 @@ export default async function version(
         syncVersions
           ? versionWorkspace({
               ...options,
-              skipRootChangelog,
               workspaceRoot,
+              skipRootChangelog,
             })
           : versionProject(options)
       );
@@ -122,9 +122,9 @@ export default async function version(
         })
       );
 
-      const changelogPath = syncVersions
-        ? getChangelogPath(workspaceRoot)
-        : getChangelogPath(projectRoot);
+      const changelogPath = getChangelogPath(
+        syncVersions ? workspaceRoot : projectRoot
+      );
 
       /**
        * 1. Calculate new version
@@ -143,12 +143,15 @@ export default async function version(
             ...(push && dryRun === false ? [pushToGitRemote$] : []),
             ...(dryRun === false
               ? [
-                  executePostTargets({
+                  runPostTargets({
                     postTargets,
-                    resolvableOptions: {
+                    options: {
                       project: context.projectName,
                       version: newVersion.version,
-                      tag: `${tagPrefix}${newVersion.version}`,
+                      tag: formatTag({
+                        tagPrefix,
+                        lastVersion: newVersion.version,
+                      }),
                       tagPrefix,
                       noVerify,
                       dryRun,
@@ -162,7 +165,7 @@ export default async function version(
               : [])
           )
         ),
-        reduce((result) => result, { success: true } as const)
+        reduce((result) => result, { success: true })
       );
     })
   );
@@ -176,7 +179,7 @@ export default async function version(
           logger.error(error.stack ?? error.toString());
         }
 
-        return of({ success: false } as const);
+        return of({ success: false });
       })
     )
   );

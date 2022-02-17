@@ -10,10 +10,11 @@ import {
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { promisify } from 'util';
-import { Version } from '../version';
 
 import { diff } from './diff';
 import { readFileIfExists } from './filesystem';
+
+import type { Version } from '../version';
 
 export const defaultHeader = `# Changelog
 
@@ -57,7 +58,7 @@ export function updateChangelog({
   });
 }
 
-export function insertChangelogDepedencyUpdates({
+export function insertChangelogDependencyUpdates({
   changelogPath,
   version,
   dryRun,
@@ -69,7 +70,9 @@ export function insertChangelogDepedencyUpdates({
   dependencyUpdates: Version[];
 }) {
   return defer(async () => {
-    if (!dependencyUpdates.length || dryRun) return changelogPath;
+    if (!dependencyUpdates.length || dryRun) {
+      return changelogPath;
+    }
 
     let changelog = await promisify(readFile)(changelogPath, 'utf-8');
 
