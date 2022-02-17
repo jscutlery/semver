@@ -31,6 +31,7 @@ export interface CommonVersionOptions {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
+  workspaceRoot: string;
   changelogHeader?: string;
   commitMessageFormat?: string;
   projectName: string;
@@ -40,16 +41,13 @@ export interface CommonVersionOptions {
 
 export function versionWorkspace({
   skipRootChangelog,
-  workspaceRoot,
   ...options
 }: {
   skipRootChangelog: boolean;
-  workspaceRoot: string;
 } & CommonVersionOptions) {
-  return getProjectRoots(workspaceRoot).pipe(
+  return getProjectRoots(options.workspaceRoot).pipe(
     concatMap((projectRoots) =>
       _generateProjectChangelogs({
-        workspaceRoot,
         projectRoots,
         ...options,
       })
@@ -60,7 +58,7 @@ export function versionWorkspace({
     ),
     reduce(noop),
     concatMap(() =>
-      getPackageFiles(workspaceRoot).pipe(
+      getPackageFiles(options.workspaceRoot).pipe(
         switchMap((packageFiles) =>
           _runStandardVersion({
             bumpFiles: packageFiles,
@@ -73,17 +71,18 @@ export function versionWorkspace({
   );
 }
 
-export function versionProject(options: CommonVersionOptions) {
+export function versionProject({ workspaceRoot, ...options }: CommonVersionOptions) {
   return _generateProjectChangelogs({
-    workspaceRoot: '',
-    projectRoots: [options.projectRoot],
     ...options,
+    workspaceRoot,
+    projectRoots: [options.projectRoot],
     skipProjectChangelog: false,
+
   }).pipe(
-    concatMap((changelogPaths) => {
+    concatMap(([changelogPath]) => {
       /* Should return changelogPath as single length array */
       return insertChangelogDependencyUpdates({
-        changelogPath: changelogPaths[0],
+        changelogPath,
         version: options.newVersion,
         dryRun: options.dryRun,
         dependencyUpdates: options.dependencyUpdates,
@@ -175,7 +174,7 @@ export async function _runStandardVersion({
 }: {
   bumpFiles: string[];
   skipChangelog: boolean;
-} & Omit<CommonVersionOptions, 'skipProjectChangelog'>) {
+} & Omit<CommonVersionOptions, 'skipProjectChangelog' | 'workspaceRoot'>) {
   await standardVersion({
     bumpFiles,
     /* Make sure that we commit the manually generated changelogs that

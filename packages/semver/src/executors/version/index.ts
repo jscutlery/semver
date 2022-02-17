@@ -96,6 +96,7 @@ export default async function version(
         tagPrefix,
         changelogHeader,
         commitMessageFormat,
+        workspaceRoot,
         projectName,
         skipProjectChangelog,
         dependencyUpdates: newVersion.dependencyUpdates,
@@ -105,7 +106,6 @@ export default async function version(
         syncVersions
           ? versionWorkspace({
               ...options,
-              workspaceRoot,
               skipRootChangelog,
             })
           : versionProject(options)

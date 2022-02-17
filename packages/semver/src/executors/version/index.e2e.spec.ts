@@ -1062,6 +1062,7 @@ $`)
       result = await version(
         {
           ...defaultBuilderOptions,
+          syncVersions: true,
           changelogHeader: '# Custom changelog header \n',
         },
         createFakeContext({
@@ -1095,24 +1096,24 @@ $`)
       result = await version(
         {
           ...defaultBuilderOptions,
-          commitMessageFormat: 'chore: 🎸 release ${version} [skip ci]',
+          commitMessageFormat: 'chore(${projectName}): 🎸 release ${version} [skip ci]',
         },
         createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
+          project: 'a',
+          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
         })
       );
 
-      expect(commitMessage()).toBe('chore: 🎸 release 0.1.0 [skip ci]');
+      expect(commitMessage()).toBe('chore(a): 🎸 release 0.1.0 [skip ci]');
     });
 
     it('should have the latest commit following the default format', async () => {
       result = await version(
         defaultBuilderOptions,
         createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
+          project: 'a',
+          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
         })
       );
