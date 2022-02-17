@@ -71,13 +71,14 @@ export function versionWorkspace({
   );
 }
 
-export function versionProject({ workspaceRoot, ...options }: CommonVersionOptions) {
+export function versionProject({
+  workspaceRoot,
+  ...options
+}: CommonVersionOptions) {
   return _generateProjectChangelogs({
     ...options,
     workspaceRoot,
     projectRoots: [options.projectRoot],
-    skipProjectChangelog: false,
-
   }).pipe(
     concatMap(([changelogPath]) => {
       /* Should return changelogPath as single length array */
