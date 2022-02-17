@@ -75,23 +75,23 @@ nx run workspace:version [....options]
 
 #### Available options
 
-| name                         | type            | default     | description                                      |
-| ---------------------------- | --------------- | ----------- | ------------------------------------------------ |
-| **`--dryRun`**               | `boolean`       | `false`     | run with dry mode                                |
-| **`--noVerify`**             | `boolean`       | `false`     | skip git hooks                                   |
-| **`--push`**                 | `boolean`       | `false`     | push the release against git origin              |
-| **`--syncVersions`**         | `boolean`       | `false`     | lock/sync versions between projects              |
-| **`--skipRootChangelog`**    | `boolean`       | `false`     | skip generating root changelog                   |
-| **`--skipProjectChangelog`** | `boolean`       | `false`     | skip generating project changelog                |
-| **`--origin`**               | `string`        | `'origin'`  | push against git remote repository               |
-| **`--baseBranch`**           | `string`        | `'main'`    | push against git base branch                     |
-| **`--changelogHeader`**      | `string`        | `undefined` | custom Markdown header for changelogs            |
-| **`--releaseAs`**            | `string`        | `undefined` | specify the level of change                      |
-| **`--preid`**                | `string`        | `undefined` | prerelease identifier                            |
-| **`--tagPrefix`**            | `string | null` | `undefined` | specify the tag prefix                           |
-| **`--postTargets`**          | `string[]`      | `[]`        | specify a list of target to execute post-release |
-| **`--trackDeps`**            | `boolean`       | `false`     | use dependencies when calculating a version bump |
-| **`--commitMessageFormat`**  | `string`        | `undefined` | format the auto-generated message commit         |
+| name                         | type       | default     | description                                      |
+| ---------------------------- | ---------- | ----------- | ------------------------------------------------ |
+| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                |
+| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                   |
+| **`--push`**                 | `boolean`  | `false`     | push the release against git origin              |
+| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects              |
+| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                   |
+| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                |
+| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository               |
+| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                     |
+| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs            |
+| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change                      |
+| **`--preid`**                | `string`   | `undefined` | prerelease identifier                            |
+| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix                           |
+| **`--postTargets`**          | `string[]` | `[]`        | specify a list of target to execute post-release |
+| **`--trackDeps`**            | `boolean`  | `false`     | use dependencies when calculating a version bump |
+| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit         |
 
 #### Configuration using the file
 

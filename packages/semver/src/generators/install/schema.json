@@ -6,10 +6,9 @@
   "cli": "nx",
   "properties": {
     "syncVersions": {
-      "description": "Lock/sync versions between packages",
+      "description": "(Deprecated) Lock/sync versions between packages",
       "type": "boolean",
-      "default": false,
-      "x-prompt": "Lock/sync versions between packages?"
+      "default": false
     },
     "projects": {
       "description": "Which projects should be versioned independently",

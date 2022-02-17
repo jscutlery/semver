@@ -1,4 +1,11 @@
-export type ReleaseIdentifier = 'patch' | 'minor' | 'major' | 'premajor' | 'preminor' | 'prepatch' | 'prerelease';
+export type ReleaseIdentifier =
+  | 'patch'
+  | 'minor'
+  | 'major'
+  | 'premajor'
+  | 'preminor'
+  | 'prepatch'
+  | 'prerelease';
 
 export interface VersionBuilderSchema {
   dryRun?: boolean;
@@ -10,6 +17,10 @@ export interface VersionBuilderSchema {
   push?: boolean;
   remote?: string;
   baseBranch?: string;
+  /**
+   * @deprecated
+   * @sunset 3.0.0
+   */
   syncVersions?: boolean;
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;
