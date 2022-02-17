@@ -5,7 +5,7 @@ import * as standardVersion from 'standard-version';
 
 import {
   getChangelogPath,
-  insertChangelogDepedencyUpdates,
+  insertChangelogDependencyUpdates,
   updateChangelog,
 } from './utils/changelog';
 import { addToStage } from './utils/git';
@@ -82,7 +82,7 @@ export function versionProject(options: CommonVersionOptions) {
   }).pipe(
     concatMap((changelogPaths) => {
       /* Should return changelogPath as single length array */
-      return insertChangelogDepedencyUpdates({
+      return insertChangelogDependencyUpdates({
         changelogPath: changelogPaths[0],
         version: options.newVersion,
         dryRun: options.dryRun,

@@ -57,7 +57,7 @@ export function updateChangelog({
   });
 }
 
-export function insertChangelogDepedencyUpdates({
+export function insertChangelogDependencyUpdates({
   changelogPath,
   version,
   dryRun,
