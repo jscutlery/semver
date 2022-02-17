@@ -11,13 +11,13 @@ import { resolveInterpolation } from './resolve-interpolation';
 import type { Observable } from 'rxjs';
 import type { ExecutorContext } from '@nrwl/devkit';
 
-export function executePostTargets({
+export function runPostTargets({
   postTargets,
-  resolvableOptions = {},
+  options = {},
   context,
 }: {
   postTargets: string[];
-  resolvableOptions?: Record<string, unknown>;
+  options?: Record<string, unknown>;
   context: ExecutorContext;
 }): Observable<void> {
   return concat(
@@ -28,7 +28,7 @@ export function executePostTargets({
 
         const resolvedOptions = _resolveTargetOptions({
           targetOptions: readTargetOptions(target, context),
-          resolvableOptions,
+          options,
         });
 
         for await (const { success } of await runExecutor(
@@ -50,10 +50,10 @@ export function executePostTargets({
 /* istanbul ignore next */
 export function _resolveTargetOptions({
   targetOptions = {},
-  resolvableOptions,
+  options,
 }: {
   targetOptions?: Record<string, unknown>;
-  resolvableOptions: Record<string, unknown>;
+  options: Record<string, unknown>;
 }): Record<string, unknown> {
   return Object.entries(targetOptions).reduce(
     (resolvedOptions, [option, value]) => {
@@ -62,7 +62,7 @@ export function _resolveTargetOptions({
           ? value
           : resolveInterpolation(
               (value as number | string).toString(),
-              resolvableOptions
+              options
             );
 
       return {

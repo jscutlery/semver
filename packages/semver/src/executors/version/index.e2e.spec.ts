@@ -660,11 +660,15 @@ $`)
 
       it('generates change logs', () => {
         expect(readFileSync('packages/c/CHANGELOG.md', 'utf-8')).toMatch(
-          new RegExp(`^# Changelog.*
+          new RegExp(`^# Changelog
 
 This file was generated.*
 
 ## 0.0.1 \\(.*\\)
+
+### Dependency Updates
+
+\\* \`e\` updated to version \`0.1.0\`
 $`)
         );
       });
@@ -727,6 +731,9 @@ This file was generated.*
 
 # 0.1.0 \\(.*\\)
 
+### Dependency Updates
+
+\\* \`e\` updated to version \`0.1.0\`
 
 ### Features
 

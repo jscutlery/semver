@@ -11,7 +11,7 @@ import version from './';
 import { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as git from './utils/git';
-import { executePostTargets } from './utils/post-target';
+import { runPostTargets } from './utils/post-target';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
 import { getDependencyRoots } from './utils/get-project-dependencies';
@@ -41,8 +41,8 @@ describe('@jscutlery/semver:version', () => {
   const mockGetDependencyRoots = getDependencyRoots as jest.MockedFunction<
     typeof getDependencyRoots
   >;
-  const mockExecutePostTargets = executePostTargets as jest.MockedFunction<
-    typeof executePostTargets
+  const mockRunPostTargets = runPostTargets as jest.MockedFunction<
+    typeof runPostTargets
   >;
 
   let context: ExecutorContext;
@@ -75,13 +75,15 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(logger, 'error');
 
     mockChangelog.mockResolvedValue(undefined);
-    mockTryBump.mockReturnValue(of('2.1.0'));
+    mockTryBump.mockReturnValue(
+      of({ version: '2.1.0', dependencyUpdates: [] })
+    );
 
     /* Mock Git execution */
     jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(''));
     jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
 
-    mockExecutePostTargets.mockReturnValue(of(undefined));
+    mockRunPostTargets.mockReturnValue(of(undefined));
     mockGetDependencyRoots.mockReturnValue(Promise.resolve([]));
 
     /* Mock a dependency, don't ask me which one. */
@@ -147,7 +149,10 @@ describe('@jscutlery/semver:version', () => {
 
     it('should run standard-version independently on a project with dependencies', async () => {
       mockGetDependencyRoots.mockReturnValue(
-        Promise.resolve(['/root/libs/lib1', '/root/libs/lib2'])
+        Promise.resolve([
+          { name: 'lib1', path: '/root/libs/lib1' },
+          { name: 'lib2', path: '/root/libs/lib2' },
+        ])
       );
       const { success } = await version(
         { ...options, trackDeps: true },
@@ -157,7 +162,10 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockTryBump).toBeCalledWith(
         expect.objectContaining({
-          dependencyRoots: ['/root/libs/lib1', '/root/libs/lib2'],
+          dependencyRoots: [
+            { name: 'lib1', path: '/root/libs/lib1' },
+            { name: 'lib2', path: '/root/libs/lib2' },
+          ],
         })
       );
       expect(standardVersion).toBeCalledWith(
@@ -476,9 +484,9 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockExecutePostTargets).toBeCalledWith(
+      expect(mockRunPostTargets).toBeCalledWith(
         expect.objectContaining({
-          resolvableOptions: {
+          options: {
             baseBranch: 'main',
             dryRun: false,
             noVerify: false,
@@ -494,7 +502,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should handle post targets failure', async () => {
-      mockExecutePostTargets.mockReturnValue(
+      mockRunPostTargets.mockReturnValue(
         throwError(() => new Error('Nop!'))
       );
 
@@ -521,7 +529,7 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockExecutePostTargets).not.toBeCalled();
+      expect(mockRunPostTargets).not.toBeCalled();
     });
 
     it('should execute post targets after the bump occurred', async () => {
@@ -535,7 +543,7 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
       expect(mockTryBump).toHaveBeenCalledBefore(
-        mockExecutePostTargets as jest.Mock
+        mockRunPostTargets as jest.Mock
       );
     });
 
@@ -551,7 +559,7 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockExecutePostTargets).not.toBeCalled();
+      expect(mockRunPostTargets).not.toBeCalled();
     });
   });
 });

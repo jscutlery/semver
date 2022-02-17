@@ -3,10 +3,25 @@ import { forkJoin, noop, Observable, of } from 'rxjs';
 import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import { getChangelogPath, updateChangelog } from './utils/changelog';
+import {
+  getChangelogPath,
+  insertChangelogDependencyUpdates,
+  updateChangelog,
+} from './utils/changelog';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
+
+export type Version =
+  | {
+      type: 'project';
+      version: string | null;
+    }
+  | {
+      type: 'dependency';
+      version: string | null;
+      dependencyName: string;
+    };
 
 export interface CommonVersionOptions {
   dryRun: boolean;
@@ -20,6 +35,7 @@ export interface CommonVersionOptions {
   commitMessageFormat?: string;
   projectName: string;
   skipProjectChangelog: boolean;
+  dependencyUpdates: Version[];
 }
 
 export function versionWorkspace({
@@ -58,11 +74,33 @@ export function versionWorkspace({
 }
 
 export function versionProject(options: CommonVersionOptions) {
-  return _runStandardVersion({
-    bumpFiles: [resolve(options.projectRoot, 'package.json')],
-    skipChangelog: options.skipProjectChangelog,
+  return _generateProjectChangelogs({
+    workspaceRoot: '',
+    projectRoots: [options.projectRoot],
     ...options,
-  });
+    skipProjectChangelog: false,
+  }).pipe(
+    concatMap((changelogPaths) => {
+      /* Should return changelogPath as single length array */
+      return insertChangelogDependencyUpdates({
+        changelogPath: changelogPaths[0],
+        version: options.newVersion,
+        dryRun: options.dryRun,
+        dependencyUpdates: options.dependencyUpdates,
+      });
+    }),
+    concatMap((changelogPath) => {
+      return addToStage({ paths: [changelogPath], dryRun: options.dryRun });
+    }),
+    reduce(noop),
+    concatMap(() => {
+      return _runStandardVersion({
+        bumpFiles: [resolve(options.projectRoot, 'package.json')],
+        skipChangelog: true,
+        ...options,
+      });
+    })
+  );
 }
 
 /**
@@ -95,6 +133,8 @@ export function _generateProjectChangelogs({
           preset: options.preset,
           projectRoot,
           newVersion: options.newVersion,
+          changelogHeader: options.changelogHeader,
+          tagPrefix: options.tagPrefix,
         })
       )
   );

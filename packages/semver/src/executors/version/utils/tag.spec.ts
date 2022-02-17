@@ -1,4 +1,4 @@
-import { resolveTagPrefix } from './resolve-tag-prefix';
+import { resolveTagPrefix } from './tag';
 
 describe(resolveTagPrefix.name, () => {
   it('should resolve interpolated string', () => {

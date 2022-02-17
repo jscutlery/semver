@@ -63,7 +63,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('2.2.0');
+    expect(newVersion?.version).toEqual('2.2.0');
 
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
@@ -109,12 +109,16 @@ describe('tryBump', () => {
       tryBump({
         preset: 'angular',
         projectRoot: '/libs/demo',
-        dependencyRoots: ['/libs/dep1', '/libs/dep2'],
+        dependencyRoots: [
+          { name: 'dep1', path: '/libs/dep1' },
+          { name: 'dep2', path: '/libs/dep2' },
+        ],
         tagPrefix: 'v',
+        syncVersions: true,
       })
     );
 
-    expect(newVersion).toEqual('2.1.1');
+    expect(newVersion?.version).toEqual('2.1.1');
 
     expect(mockGetCommits).toBeCalledTimes(3);
     expect(mockGetCommits).toBeCalledWith({
@@ -130,26 +134,10 @@ describe('tryBump', () => {
       since: 'v2.1.0',
     });
 
-    expect(mockConventionalRecommendedBump).toBeCalledTimes(3);
+    expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
     expect(mockConventionalRecommendedBump).toBeCalledWith(
       {
         path: '/libs/demo',
-        preset: 'angular',
-        tagPrefix: 'v',
-      },
-      expect.any(Function)
-    );
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
-      {
-        path: '/libs/dep1',
-        preset: 'angular',
-        tagPrefix: 'v',
-      },
-      expect.any(Function)
-    );
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
-      {
-        path: '/libs/dep2',
         preset: 'angular',
         tagPrefix: 'v',
       },
@@ -170,7 +158,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('3.0.0-alpha.0');
+    expect(newVersion?.version).toEqual('3.0.0-alpha.0');
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -199,7 +187,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('3.0.0');
+    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "3.0.0"});
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -228,7 +216,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('2.1.1');
+    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "2.1.1"});
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -257,7 +245,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('2.2.0');
+    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "2.2.0"});
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -280,7 +268,7 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual('2.1.1');
+    expect(newVersion?.version).toEqual('2.1.1');
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
   });
@@ -289,6 +277,13 @@ describe('tryBump', () => {
     mockGetLastVersion.mockReturnValue(throwError(() => 'No version found'));
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
+    mockConventionalRecommendedBump.mockImplementation(
+      callbackify(
+        jest.fn().mockResolvedValue({
+          releaseType: undefined,
+        })
+      ) as () => void
+    );
 
     await lastValueFrom(
       tryBump({
@@ -310,6 +305,13 @@ describe('tryBump', () => {
 
   it('should return undefined if there are no changes in current path', async () => {
     mockGetCommits.mockReturnValue(of([]));
+    mockConventionalRecommendedBump.mockImplementation(
+      callbackify(
+        jest.fn().mockResolvedValue({
+          releaseType: undefined,
+        })
+      ) as () => void
+    );
 
     const newVersion = await lastValueFrom(
       tryBump({
