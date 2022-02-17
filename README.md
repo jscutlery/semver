@@ -75,23 +75,23 @@ nx run workspace:version [....options]
 
 #### Available options
 
-| name                         | type       | default     | description                                      |
-| ---------------------------- | ---------- | ----------- | ------------------------------------------------ |
-| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                |
-| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                   |
-| **`--push`**                 | `boolean`  | `false`     | push the release against git origin              |
-| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects              |
-| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                   |
-| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                |
-| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository               |
-| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                     |
-| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs            |
-| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change                      |
-| **`--preid`**                | `string`   | `undefined` | prerelease identifier                            |
-| **`--versionTagPrefix`**     | `string`   | `undefined` | specify the tag prefix                           |
-| **`--postTargets`**          | `string[]` | `[]`        | specify a list of target to execute post-release |
-| **`--trackDeps`**            | `boolean`  | `false`     | use dependencies when calculating a version bump |
-| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit         |
+| name                         | type            | default     | description                                      |
+| ---------------------------- | --------------- | ----------- | ------------------------------------------------ |
+| **`--dryRun`**               | `boolean`       | `false`     | run with dry mode                                |
+| **`--noVerify`**             | `boolean`       | `false`     | skip git hooks                                   |
+| **`--push`**                 | `boolean`       | `false`     | push the release against git origin              |
+| **`--syncVersions`**         | `boolean`       | `false`     | lock/sync versions between projects              |
+| **`--skipRootChangelog`**    | `boolean`       | `false`     | skip generating root changelog                   |
+| **`--skipProjectChangelog`** | `boolean`       | `false`     | skip generating project changelog                |
+| **`--origin`**               | `string`        | `'origin'`  | push against git remote repository               |
+| **`--baseBranch`**           | `string`        | `'main'`    | push against git base branch                     |
+| **`--changelogHeader`**      | `string`        | `undefined` | custom Markdown header for changelogs            |
+| **`--releaseAs`**            | `string`        | `undefined` | specify the level of change                      |
+| **`--preid`**                | `string`        | `undefined` | prerelease identifier                            |
+| **`--tagPrefix`**            | `string | null` | `undefined` | specify the tag prefix                           |
+| **`--postTargets`**          | `string[]`      | `[]`        | specify a list of target to execute post-release |
+| **`--trackDeps`**            | `boolean`       | `false`     | use dependencies when calculating a version bump |
+| **`--commitMessageFormat`**  | `string`        | `undefined` | format the auto-generated message commit         |
 
 #### Configuration using the file
 
@@ -102,7 +102,7 @@ Note that you can define the options you want to customize using the `workspace.
   "executor": "@jscutlery/semver:version",
   "options": {
     "baseBranch": "master",
-    "versionTagPrefix": "${target}@"
+    "tagPrefix": "${target}@"
   }
 }
 ```
@@ -123,7 +123,7 @@ nx run workspace:version --releaseAs=prerelease --preid=beta
 
 #### Tag prefix customization
 
-The **`--versionTagPrefix`** option allows you to customize the tag prefix.
+The **`--tagPrefix`** option allows you to customize the tag prefix.
 
 With the sync mode the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for example. Note that only one tag is created for the whole workspace.
 

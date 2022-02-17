@@ -1,19 +1,19 @@
-import { resolveTagPrefix } from './tag';
+import { formatTagPrefix } from './tag';
 
-describe(resolveTagPrefix.name, () => {
+describe(formatTagPrefix.name, () => {
   it('should resolve interpolated string', () => {
     expect(
-      resolveTagPrefix({
-        versionTagPrefix: 'testVersionTagPrefix',
+      formatTagPrefix({
+        versionTagPrefix: 'testtagPrefix',
         projectName: 'testProjectName',
         syncVersions: true,
       })
-    ).toBe('testVersionTagPrefix');
+    ).toBe('testtagPrefix');
   });
 
   it('should resolve syncVersions', () => {
     expect(
-      resolveTagPrefix({
+      formatTagPrefix({
         versionTagPrefix: undefined,
         projectName: 'testProjectName',
         syncVersions: true,
@@ -23,7 +23,7 @@ describe(resolveTagPrefix.name, () => {
 
   it('should resolve default tag', () => {
     expect(
-      resolveTagPrefix({
+      formatTagPrefix({
         versionTagPrefix: undefined,
         projectName: 'testProjectName',
         syncVersions: false,

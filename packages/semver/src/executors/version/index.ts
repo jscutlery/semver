@@ -14,7 +14,7 @@ import {
 } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
 import { runPostTargets } from './utils/post-target';
-import { formatTag, resolveTagPrefix } from './utils/tag';
+import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import { versionProject, versionWorkspace } from './version';
@@ -48,7 +48,7 @@ export default async function version(
   const projectName = context.projectName as string;
   const preset = 'angular';
 
-  const tagPrefix = resolveTagPrefix({
+  const tagPrefix = formatTagPrefix({
     versionTagPrefix,
     projectName,
     syncVersions,
@@ -75,7 +75,6 @@ export default async function version(
     tagPrefix,
     releaseType: releaseAs,
     preid,
-    versionTagPrefix,
     syncVersions,
   });
 
@@ -199,5 +198,6 @@ function normalizeOptions(options: VersionBuilderSchema) {
     skipProjectChangelog: options.skipProjectChangelog as boolean,
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
+    versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
   };
 }

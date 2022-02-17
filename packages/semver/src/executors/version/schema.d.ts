@@ -22,7 +22,12 @@ export interface VersionBuilderSchema {
   releaseAs?: ReleaseIdentifier;
   preid?: string;
   changelogHeader?: string;
-  versionTagPrefix?: string;
+  tagPrefix?: string | null;
+  /**
+   * @deprecated Use the alias tagPrefix (--tagPrefix) instead.
+   * @sunset 3.0.0
+   */
+  versionTagPrefix?: string | null;
   postTargets: string[];
   commitMessageFormat?: string;
 }

@@ -1,6 +1,6 @@
 import { resolveInterpolation } from './resolve-interpolation';
 
-export function resolveTagPrefix({
+export function formatTagPrefix({
   versionTagPrefix,
   projectName,
   syncVersions,
@@ -10,15 +10,16 @@ export function resolveTagPrefix({
   syncVersions: boolean;
 }): string {
   if (versionTagPrefix !== undefined) {
-    const resolvingContest = {
+    return resolveInterpolation(versionTagPrefix as string, {
       target: projectName,
       projectName: projectName,
-    };
-    return resolveInterpolation(versionTagPrefix as string, resolvingContest) as string;
+    }) as string;
   }
+
   if (syncVersions) {
     return 'v';
   }
+
   return `${projectName}-`;
 }
 

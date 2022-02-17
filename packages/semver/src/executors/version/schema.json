@@ -51,7 +51,7 @@
       "default": false
     },
     "version": {
-      "description": "Manually increment the version by that keyword.",
+      "description": "(Deprecated) Manually increment the version by that keyword.",
       "type": "string"
     },
     "releaseAs": {
@@ -62,8 +62,12 @@
       "description": "Use the next semantic prerelease version with a specific prerelease identifier.",
       "type": "string"
     },
-    "versionTagPrefix": {
+    "tagPrefix": {
       "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
+      "oneOf": [{ "type": "string" }, { "type": "null" }]
+    },
+    "versionTagPrefix": {
+      "description": "(Deprecated) Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
       "oneOf": [{ "type": "string" }, { "type": "null" }]
     },
     "postTargets": {

@@ -7,11 +7,12 @@ import { promisify } from 'util';
 
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
-import { formatTag, resolveTagPrefix } from './tag';
+import { formatTag, formatTagPrefix } from './tag';
 
 import type { Observable } from 'rxjs';
 import type { ReleaseIdentifier } from '../schema';
 import type { DependencyRoot } from './get-project-dependencies';
+
 export type Version =
   | {
       type: 'project';
@@ -248,7 +249,7 @@ export function _getDependencyVersions({
   return forkJoin(
     dependencyRoots.map(({ path: projectRoot, name: projectName }) => {
       /* Get dependency version changes since last project version */
-      const tagPrefix = resolveTagPrefix({
+      const tagPrefix = formatTagPrefix({
         versionTagPrefix,
         projectName,
         syncVersions: !!syncVersions,
