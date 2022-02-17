@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.19.0](https://github.com/jscutlery/semver/compare/semver-2.18.2...semver-2.19.0) (2022-02-17)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 forward `--skipProjectChangelog` in independent mode ([85909de](https://github.com/jscutlery/semver/commit/85909dea90a2cf56e8cc4f2cf9e3f4f459cb8853))
+
+
+### Features
+
+* **semver:** log dependency updates with `--trackDeps` ([#445](https://github.com/jscutlery/semver/issues/445)) ([44a2e54](https://github.com/jscutlery/semver/commit/44a2e545ee7fbb8549301dc830fd5df4f09bfb5c))
+
+
+
 ## [2.18.2](https://github.com/jscutlery/semver/compare/semver-2.18.1...semver-2.18.2) (2022-02-16)
 
 
