@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.1](https://github.com/jscutlery/semver/compare/semver-2.19.0...semver-2.19.1) (2022-02-17)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 correctly grab deps git refs ([94d3fe3](https://github.com/jscutlery/semver/commit/94d3fe337e4a2cda53cbb754fb3699bf140c2e38))
+
+
+
 # [2.19.0](https://github.com/jscutlery/semver/compare/semver-2.18.2...semver-2.19.0) (2022-02-17)
 
 
