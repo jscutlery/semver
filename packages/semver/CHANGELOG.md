@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.2](https://github.com/jscutlery/semver/compare/semver-2.19.1...semver-2.19.2) (2022-02-17)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 add `--tagPrefix` + deprecate `--versionTagPrefix` ([6c22e4c](https://github.com/jscutlery/semver/commit/6c22e4cdaf95a212b1ace12b93dd18cbb991340f))
+* **semver:** 🐞 deprecate `--syncVersions` ([65e5910](https://github.com/jscutlery/semver/commit/65e5910222a2256a28dfae8b862f822804919431))
+
+
+
 ## [2.19.1](https://github.com/jscutlery/semver/compare/semver-2.19.0...semver-2.19.1) (2022-02-17)
 
 
