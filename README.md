@@ -306,6 +306,9 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://github.com/kaoz70"><img src="https://avatars.githubusercontent.com/u/79406?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Miguel Suarez</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=kaoz70" title="Code">💻</a></td>
     <td align="center"><a href="https://medium.com/@cakeinpanic/latest"><img src="https://avatars.githubusercontent.com/u/588916?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Katya Pavlenko</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Acakeinpanic" title="Bug reports">🐛</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/hoonoh"><img src="https://avatars.githubusercontent.com/u/2078254?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hoon Oh</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=hoonoh" title="Code">💻</a> <a href="#ideas-hoonoh" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
