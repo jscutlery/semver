@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.3](https://github.com/jscutlery/semver/compare/semver-2.19.2...semver-2.19.3) (2022-02-18)
+
+
+### Bug Fixes
+
+* **semver:** sync versioning when `skipProjectChangelog` ([#446](https://github.com/jscutlery/semver/issues/446)) ([b0cdc58](https://github.com/jscutlery/semver/commit/b0cdc58c2fa9aae4f68afb1fcc965928fa78572d)), closes [#408](https://github.com/jscutlery/semver/issues/408)
+
+
+
 ## [2.19.2](https://github.com/jscutlery/semver/compare/semver-2.19.1...semver-2.19.2) (2022-02-17)
 
 
