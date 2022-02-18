@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { forkJoin, noop, Observable, of } from 'rxjs';
+import { concat, forkJoin, noop, Observable, of } from 'rxjs';
 import { concatMap, reduce, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
@@ -45,27 +45,26 @@ export function versionWorkspace({
 }: {
   skipRootChangelog: boolean;
 } & CommonVersionOptions) {
-  return getProjectRoots(options.workspaceRoot).pipe(
-    concatMap((projectRoots) =>
-      _generateProjectChangelogs({
-        projectRoots,
-        ...options,
-      })
+  return concat(
+    getProjectRoots(options.workspaceRoot).pipe(
+      concatMap((projectRoots) =>
+        _generateProjectChangelogs({
+          projectRoots,
+          ...options,
+        })
+      ),
+      /* Run Git add only once, after changelogs get generated in parallel. */
+      concatMap((changelogPaths) =>
+        addToStage({ paths: changelogPaths, dryRun: options.dryRun })
+      )
     ),
-    /* Run Git add only once, after changelogs get generated in parallel. */
-    concatMap((changelogPaths) =>
-      addToStage({ paths: changelogPaths, dryRun: options.dryRun })
-    ),
-    reduce(noop),
-    concatMap(() =>
-      getPackageFiles(options.workspaceRoot).pipe(
-        switchMap((packageFiles) =>
-          _runStandardVersion({
-            bumpFiles: packageFiles,
-            skipChangelog: skipRootChangelog,
-            ...options,
-          })
-        )
+    getPackageFiles(options.workspaceRoot).pipe(
+      switchMap((packageFiles) =>
+        _runStandardVersion({
+          bumpFiles: packageFiles,
+          skipChangelog: skipRootChangelog,
+          ...options,
+        })
       )
     )
   );
