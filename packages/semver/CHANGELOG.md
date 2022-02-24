@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.19.4](https://github.com/jscutlery/semver/compare/semver-2.19.3...semver-2.19.4) (2022-02-24)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 bump `@commitlint/*` deps ([4cd0d70](https://github.com/jscutlery/semver/commit/4cd0d7008b2acb2b9c8beb56bb9795f7919ff6f0))
+* **semver:** 🐞 fatal pathspec `undefined` ([02634b9](https://github.com/jscutlery/semver/commit/02634b9f055f6b81aa0aef14a8a64f9f031f82ad)), closes [#449](https://github.com/jscutlery/semver/issues/449)
+
+
+
 ## [2.19.3](https://github.com/jscutlery/semver/compare/semver-2.19.2...semver-2.19.3) (2022-02-18)
 
 
