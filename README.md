@@ -308,6 +308,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/hoonoh"><img src="https://avatars.githubusercontent.com/u/2078254?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hoon Oh</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=hoonoh" title="Code">💻</a> <a href="#ideas-hoonoh" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/kurtinatlanta"><img src="https://avatars.githubusercontent.com/u/203931?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kurt Hoyt</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Akurtinatlanta" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
