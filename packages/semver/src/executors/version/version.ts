@@ -1,13 +1,9 @@
 import { resolve } from 'path';
-import { concat, forkJoin, noop, Observable, of } from 'rxjs';
-import { concatMap, reduce, switchMap } from 'rxjs/operators';
+import { concat, forkJoin, iif, Observable, of } from 'rxjs';
+import { concatMap, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import {
-  getChangelogPath,
-  insertChangelogDependencyUpdates,
-  updateChangelog,
-} from './utils/changelog';
+import { getChangelogPath, insertChangelogDependencyUpdates, updateChangelog } from './utils/changelog';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -79,26 +75,29 @@ export function versionProject({
     workspaceRoot,
     projectRoots: [options.projectRoot],
   }).pipe(
-    concatMap(([changelogPath]) => {
-      /* Should return changelogPath as single length array */
-      return insertChangelogDependencyUpdates({
-        changelogPath,
-        version: options.newVersion,
-        dryRun: options.dryRun,
-        dependencyUpdates: options.dependencyUpdates,
-      });
-    }),
-    concatMap((changelogPath) => {
-      return addToStage({ paths: [changelogPath], dryRun: options.dryRun });
-    }),
-    reduce(noop),
-    concatMap(() => {
-      return _runStandardVersion({
+    concatMap((changelogPaths) =>
+      iif(
+        () => changelogPaths.length === 1,
+        insertChangelogDependencyUpdates({
+          changelogPath: changelogPaths[0],
+          version: options.newVersion,
+          dryRun: options.dryRun,
+          dependencyUpdates: options.dependencyUpdates,
+        }).pipe(
+          concatMap((changelogPath) =>
+            addToStage({ paths: [changelogPath], dryRun: options.dryRun })
+          )
+        ),
+        of(null)
+      )
+    ),
+    concatMap(() =>
+      _runStandardVersion({
         bumpFiles: [resolve(options.projectRoot, 'package.json')],
         skipChangelog: true,
         ...options,
-      });
-    })
+      })
+    )
   );
 }
 

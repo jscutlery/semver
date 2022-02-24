@@ -79,7 +79,7 @@ describe('@jscutlery/semver:version', () => {
   });
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
-  describe('package "a" with (--sync-versions=false)', () => {
+  describe('package "a" with (--syncVersions=false)', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -140,7 +140,7 @@ $`)
     });
   });
 
-  describe('package "b" with (--sync-versions=false)', () => {
+  describe('package "b" with (--syncVersions=false)', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -195,7 +195,50 @@ $`)
     });
   });
 
-  describe('workspace with --sync-versions=true (--root-changelog=true)', () => {
+  describe('package "a" with --syncVersions=false & --skipProjectChangelog', () => {
+    beforeAll(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder. */
+      result = await version(
+        { ...defaultBuilderOptions, skipProjectChangelog: true },
+        createFakeContext({
+          project: 'a',
+          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
+    });
+
+    afterAll(() => testingWorkspace.tearDown());
+
+    it('should return success', () => {
+      expect(result).toEqual({ success: true });
+    });
+
+    it('should commit all changes', () => {
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
+    it('should not generate root changelog', () => {
+      expect(fileExists('CHANGELOG.md')).toBe(false);
+    });
+
+    it(`should bump a's package.json`, async () => {
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.1.0');
+    });
+
+    it(`should not generate "a"'s changelog`, async () => {
+      expect(fileExists('packages/a/CHANGELOG.md')).toBe(false);
+    });
+  });
+
+  describe('workspace with --syncVersions', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -290,7 +333,7 @@ $`)
     });
   });
 
-  describe('on workspace with --sync-versions=true (--root-changelog=true), after changing lib "b"', () => {
+  describe('on workspace with --syncVersions, after changing lib "b"', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -400,7 +443,7 @@ $`)
     });
   });
 
-  describe('workspace with --sync-versions=true --root-changelog=false`', () => {
+  describe('workspace with --syncVersions & --skipRootChangelog`', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -479,7 +522,7 @@ $`)
     });
   });
 
-  describe('option --track-deps', () => {
+  describe('option --trackDeps', () => {
     /**
      * Ideally, these would not be mocked in an e2e test, but in order to truly
      * test its use in `getProjectDependencies`, it would require a full NX workspace
@@ -799,7 +842,7 @@ $`)
       });
     });
 
-    describe('used with unchanged package with changed lib (--sync-versions=true)', () => {
+    describe('used with unchanged package with changed lib (--syncVersions)', () => {
       beforeAll(async () => {
         mockCreateProjectGraphAsync.mockReturnValue(projectGraph());
 
@@ -1051,7 +1094,7 @@ $`)
     });
   });
 
-  describe('--changelog-header', () => {
+  describe('--changelogHeader', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -1096,7 +1139,8 @@ $`)
       result = await version(
         {
           ...defaultBuilderOptions,
-          commitMessageFormat: 'chore(${projectName}): 🎸 release ${version} [skip ci]',
+          commitMessageFormat:
+            'chore(${projectName}): 🎸 release ${version} [skip ci]',
         },
         createFakeContext({
           project: 'a',
