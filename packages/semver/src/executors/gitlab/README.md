@@ -13,7 +13,7 @@ This executor requires the [GitLab Release CLI](https://gitlab.com/gitlab-org/re
 Publish the `v1.0.0` release:
 
 ```
-nx run my-project:gitlab --tag_name v1.0.0 [...options]
+nx run my-project:gitlab --tag v1.0.0 [...options]
 ```
 
 #### Configuration using post-targets (recommended)
