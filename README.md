@@ -194,6 +194,7 @@ Note that options using the interpolation notation `${variable}` are resolved wi
 #### Built-in post-targets
 
 - [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) GiHub Release Support
+- [`@jscutlery/semver:gitlab`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/gitlab/README.md) GitLab Release Support
 
 #### Tracking dependencies
 

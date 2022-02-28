@@ -9,6 +9,11 @@
       "implementation": "./src/executors/github/executor",
       "schema": "./src/executors/github/schema.json",
       "description": "github executor"
+    },
+    "gitlab": {
+      "implementation": "./src/executors/gitlab/executor",
+      "schema": "./src/executors/gitlab/schema.json",
+      "description": "gitlab executor"
     }
   },
   "builders": {
@@ -21,6 +26,11 @@
       "implementation": "./src/executors/github/compat",
       "schema": "./src/executors/github/schema.json",
       "description": "github executor"
+    },
+    "gitlab": {
+      "implementation": "./src/executors/gitlab/compat",
+      "schema": "./src/executors/gitlab/schema.json",
+      "description": "gitlab executor"
     }
   }
 }
