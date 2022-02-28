@@ -33,7 +33,7 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
       "executor": "@jscutlery/semver:gitlab",
       "options": {
         "tag": "${tag}",
-        "description": "A description"
+        "description": "${notes}"
       }
     }
   }
