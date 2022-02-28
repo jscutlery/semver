@@ -299,6 +299,17 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "riain0",
+      "name": "Riain Condon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6255097?v=4",
+      "profile": "https://github.com/riain0",
+      "contributions": [
+        "code",
+        "doc",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7
