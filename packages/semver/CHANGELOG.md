@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.20.0](https://github.com/jscutlery/semver/compare/semver-2.19.4...semver-2.20.0) (2022-02-28)
+
+
+### Features
+
+* **semver:** add gitlab releases executor ([0e41f7d](https://github.com/jscutlery/semver/commit/0e41f7da44780c79a65100da23e9411ab6c9e826))
+
+
+
 ## [2.19.4](https://github.com/jscutlery/semver/compare/semver-2.19.3...semver-2.19.4) (2022-02-24)
 
 
