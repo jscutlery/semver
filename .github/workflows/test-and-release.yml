@@ -13,7 +13,7 @@ jobs:
         node_version: [14, 16]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -32,7 +32,7 @@ jobs:
     needs: [test]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup
         uses: ./.github/actions/setup
 
