@@ -193,9 +193,25 @@ describe('@jscutlery/semver:version', () => {
       expect(standardVersion).not.toBeCalled();
     });
 
-    it('should run standard-version with a custom tag', async () => {
+    it('should resolve ${target} tagPrefix interpolation', async () => {
       const { success } = await version(
         { ...options, tagPrefix: 'custom-tag-prefix/${target}-' },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          header: expect.any(String),
+          dryRun: false,
+          tagPrefix: 'custom-tag-prefix/a-',
+        })
+      );
+    });
+
+    it('should resolve ${projectName} tagPrefix interpolation', async () => {
+      const { success } = await version(
+        { ...options, tagPrefix: 'custom-tag-prefix/${projectName}-' },
         context
       );
 
