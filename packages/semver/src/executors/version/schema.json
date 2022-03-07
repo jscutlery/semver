@@ -63,11 +63,11 @@
       "type": "string"
     },
     "tagPrefix": {
-      "description": "Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
+      "description": "Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
       "oneOf": [{ "type": "string" }, { "type": "null" }]
     },
     "versionTagPrefix": {
-      "description": "(Deprecated) Version tag prefix. Defaults are 'v' and '${target}-' for sync and independent modes. ${target} will be replaced with context target value for independent mode.",
+      "description": "(Deprecated) Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
       "oneOf": [{ "type": "string" }, { "type": "null" }]
     },
     "postTargets": {

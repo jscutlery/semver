@@ -102,7 +102,7 @@ Note that you can define the options you want to customize using the `workspace.
   "executor": "@jscutlery/semver:version",
   "options": {
     "baseBranch": "master",
-    "tagPrefix": "${target}@"
+    "tagPrefix": "${projectName}@"
   }
 }
 ```
@@ -125,9 +125,9 @@ nx run workspace:version --releaseAs=prerelease --preid=beta
 
 The **`--tagPrefix`** option allows you to customize the tag prefix.
 
-With the sync mode the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for example. Note that only one tag is created for the whole workspace.
+In sync mode, the tag prefix is set to `"v"` by default, which is resolved to `v0.0.1` for instance. Note that only one tag is created for the whole workspace.
 
-With independent mode the tag prefix uses the context target value, the default value is `"${target}-"` which is resolved to `my-project-0.0.1` for example. Note that each project in the workspace is versioned with its own tag.
+In independent mode, the tag prefix uses the contextual project name, the default value is `"${projectName}-"` which is resolved to `my-project-0.0.1` for instance. Note that each project in the workspace is versioned with its own tag.
 
 #### Commit message customization
 
