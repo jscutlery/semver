@@ -1,19 +1,22 @@
 import * as fs from 'fs';
 import { lastValueFrom } from 'rxjs';
-import { callbackify } from 'util';
+
 import { readFileIfExists, readJsonFile } from './filesystem';
 
-jest.mock('fs');
+jest.mock("fs", () => ({
+  promises: {
+    readFile: jest.fn().mockResolvedValue(() => Promise.resolve()),
+    access: jest.fn().mockResolvedValue(() => Promise.resolve()),
+  },
+}));
+
+const fsPromises = fs.promises;
 
 describe('readJsonFile', () => {
-  let mockReadFile: jest.Mock;
+  const mockReadFile = fsPromises.readFile as jest.Mock;
 
-  beforeEach(() => {
-    mockReadFile = jest.fn();
-    jest
-      .spyOn(fs, 'readFile')
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      .mockImplementation(callbackify(mockReadFile) as any);
+  afterEach(() => {
+    mockReadFile.mockReset();
   });
 
   it('should emit error', async () => {
@@ -37,25 +40,16 @@ describe('readJsonFile', () => {
 
 
 describe('readFileIfExists', () => {
-  let mockExists: jest.Mock;
-  let mockReadFile: jest.Mock;
+  const mockReadFile = fsPromises.readFile as jest.Mock;
+  const mockAccess = fsPromises.access as jest.Mock;
 
-  beforeEach(() => {
-    mockReadFile = jest.fn();
-    jest
-      .spyOn(fs, 'readFile')
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      .mockImplementation(callbackify(mockReadFile) as any);
-
-    mockExists = jest.fn();
-    jest
-      .spyOn(fs, 'exists')
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      .mockImplementation(callbackify(mockExists) as any);
+  afterEach(() => {
+    mockReadFile.mockReset();
+    mockAccess.mockReset();
   });
 
   it('should return an empty string if the file does not exists', async () => {
-    mockExists.mockResolvedValue(false);
+    mockAccess.mockResolvedValue(false);
 
     mockReadFile.mockRejectedValue(
       new Error('ENOENT: no such file or directory')
@@ -72,7 +66,7 @@ describe('readFileIfExists', () => {
   });
 
   it('should return a fallback value if provided', async () => {
-    mockExists.mockResolvedValue(false);
+    mockAccess.mockResolvedValue(false);
 
     mockReadFile.mockRejectedValue(
       new Error('ENOENT: no such file or directory')

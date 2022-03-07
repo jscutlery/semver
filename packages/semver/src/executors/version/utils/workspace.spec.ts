@@ -4,10 +4,10 @@ import { lastValueFrom } from 'rxjs';
 import { getPackageFiles } from './workspace';
 
 describe('getPackageFiles', () => {
-  let fakeReadFileSync: jest.Mock;
+  let fakeReadFile: jest.Mock;
 
   beforeEach(() => {
-    fakeReadFileSync = jest.fn().mockReturnValue(
+    fakeReadFile = jest.fn().mockResolvedValue(
       JSON.stringify({
         version: 1,
         projects: {
@@ -21,24 +21,22 @@ describe('getPackageFiles', () => {
       })
     );
     jest
-      .spyOn(fs, 'readFile')
-      .mockImplementation((...args: Parameters<typeof fs.readFile>) => {
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        const callback = args[args.length - 1] as Function;
-        try {
-          callback(null, fakeReadFileSync(args));
-        } catch (e) {
-          callback(e);
+      .spyOn(fs.promises, 'readFile')
+      .mockImplementation(
+        (...args: Parameters<typeof fs.promises.readFile>) => {
+          return fakeReadFile(args);
         }
-      });
+      );
   });
 
   afterEach(() =>
-    (fs.readFile as jest.MockedFunction<typeof fs.readFile>).mockRestore()
+    (
+      fs.promises.readFile as jest.MockedFunction<typeof fs.promises.readFile>
+    ).mockRestore()
   );
 
   it('should read workspace definition from workspace.json', async () => {
-    fakeReadFileSync.mockReturnValue(
+    fakeReadFile.mockResolvedValue(
       JSON.stringify({
         version: 1,
         projects: {
@@ -57,19 +55,17 @@ describe('getPackageFiles', () => {
       '/root/packages/b/package.json',
     ]);
 
-    expect(fs.readFile).toBeCalledTimes(1);
-    expect(fs.readFile).toBeCalledWith(
-      '/root/workspace.json',
-      'utf-8',
-      expect.any(Function)
-    );
+    expect(fs.promises.readFile).toBeCalledTimes(1);
+    expect(fs.promises.readFile).toBeCalledWith('/root/workspace.json', {
+      encoding: 'utf-8',
+    });
   });
 
   it('should fallback to angular.json if workspace.json is not found', async () => {
-    fakeReadFileSync.mockImplementationOnce(() => {
+    fakeReadFile.mockImplementationOnce(() => {
       throw new Error('ENOENT, no such file or directory');
     });
-    fakeReadFileSync.mockReturnValue(
+    fakeReadFile.mockResolvedValue(
       JSON.stringify({
         version: 1,
         projects: {
@@ -87,23 +83,21 @@ describe('getPackageFiles', () => {
       '/root/packages/a/package.json',
       '/root/packages/b/package.json',
     ]);
-    expect(fs.readFile).toBeCalledTimes(2);
-    expect(fs.readFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.readFile).toBeCalledTimes(2);
+    expect(fs.promises.readFile).toHaveBeenNthCalledWith(
       1,
       '/root/workspace.json',
-      'utf-8',
-      expect.any(Function)
+      { encoding: 'utf-8' }
     );
-    expect(fs.readFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.readFile).toHaveBeenNthCalledWith(
       2,
       '/root/angular.json',
-      'utf-8',
-      expect.any(Function)
+      { encoding: 'utf-8' }
     );
   });
 
   it("should handle extracted project's configuration", async () => {
-    fakeReadFileSync.mockReturnValue(
+    fakeReadFile.mockResolvedValue(
       JSON.stringify({
         version: 1,
         projects: {
