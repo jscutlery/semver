@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/renovate",
-  "extends": ["config:base", ":semanticCommitScopeDisabled"],
+  "extends": ["config:base", ":semanticCommitScopeDisabled", ":semanticCommitTypeAll(ci)"],
   "automerge": true,
   "automergeType": "branch",
   "baseBranches": ["main"],
@@ -17,14 +17,6 @@
       "matchPackagePatterns": ["^@angular/", "^@nrwl/"],
       "groupName": "Nrwl workspace",
       "enabled": false
-    },
-    {
-      "packagePatterns": ["*"],
-      "semanticCommitType": "ci"
-    },
-    {
-      "depTypeList": ["dependencies"],
-      "semanticCommitType": "fix"
     }
   ]
 }
