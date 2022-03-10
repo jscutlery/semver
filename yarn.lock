@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@angular-devkit/core@13.2.5":
-  version "13.2.5"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-13.2.5.tgz#376f3d205a75cd381191ddabfe3c368e0e9a7d82"
-  integrity sha512-WuWp/1R0FtCHPBcJLF13lTLHETtDGFUX0ULfGPRaYB5OVCSQcovVp5UbZTTy/Ss3ub3EOEmJlU8kMJfBrWuq+A==
+"@angular-devkit/core@13.2.6":
+  version "13.2.6"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-13.2.6.tgz#7032a7c474efacc564511cff0c21d1636404e437"
+  integrity sha512-8h2mWdBTN/dYwZuzKMg2IODlOWMdbJcpQG4XVrkk9ejCPP+3aX5Aa3glCe/voN6eBNiRfs8YDM0jxmpN2aWVtg==
   dependencies:
     ajv "8.9.0"
     ajv-formats "2.1.1"
@@ -14,12 +14,12 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-"@angular-devkit/schematics@13.2.5":
-  version "13.2.5"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-13.2.5.tgz#d1425ab7ce38c835e776329bea61925b333f53b8"
-  integrity sha512-kAye6VYiF9JQAoeO+BYhy8eT2QOmhB+WLziRjXoFCBxh5+yXTygTVfs9fD5jmIpHmeu4hd2ErSh69yT5xWcD9g==
+"@angular-devkit/schematics@13.2.6":
+  version "13.2.6"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-13.2.6.tgz#c85778b73ede1fbcb6c3af7dde740cd0dc8bfb29"
+  integrity sha512-mPgSqdnZRuPSMeUA+T+mwVCrq2yhXpcYm1/Rjbhy09CyHs4wSrFv21WHCrE6shlvXpcmwr0n+I0DIeagAPmjUA==
   dependencies:
-    "@angular-devkit/core" "13.2.5"
+    "@angular-devkit/core" "13.2.6"
     jsonc-parser "3.0.0"
     magic-string "0.25.7"
     ora "5.4.1"
@@ -4153,7 +4153,9 @@ inquirer@^7.0.4:
     through "^2.3.6"
 
 inquirer@^8.2.0:
-  version: "8.2.1"
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-8.2.1.tgz#e00022e3e8930a92662f760f020686530a84671d"
+  integrity sha512-pxhBaw9cyTFMjwKtkjePWDhvwzvrNGAw7En4hottzlPvz80GZaMZthdDU35aA6/f5FRZf3uhE057q8w1DE3V2g==
   dependencies:
     ansi-escapes "^4.2.1"
     chalk "^4.1.1"
@@ -4165,7 +4167,7 @@ inquirer@^8.2.0:
     mute-stream "0.0.8"
     ora "^5.4.1"
     run-async "^2.4.0"
-    rxjs "^7.2.0"
+    rxjs "^7.5.5"
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
     through "^2.3.6"
@@ -6505,7 +6507,7 @@ rxjs-for-await@0.0.2:
   resolved "https://registry.yarnpkg.com/rxjs-for-await/-/rxjs-for-await-0.0.2.tgz#26598a1d6167147cc192172970e7eed4e620384b"
   integrity sha512-IJ8R/ZCFMHOcDIqoABs82jal00VrZx8Xkgfe7TOKoaRPAW5nH/VFlG23bXpeGdrmtqI9UobFPgUKgCuFc7Lncw==
 
-rxjs@6.6.7, rxjs@^6.5.4, rxjs@^6.6.0, rxjs@^7.2.0, rxjs@^7.4.0:
+rxjs@6.6.7, rxjs@^6.5.4, rxjs@^6.6.0, rxjs@^7.2.0, rxjs@^7.4.0, rxjs@^7.5.5:
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
   integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
