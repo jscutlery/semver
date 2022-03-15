@@ -29,6 +29,7 @@ describe('@jscutlery/semver:version', () => {
     skipRootChangelog: false,
     syncVersions: false,
     postTargets: [],
+    preset: 'angular',
   };
 
   const commonWorkspaceFiles: [string, string][] = [

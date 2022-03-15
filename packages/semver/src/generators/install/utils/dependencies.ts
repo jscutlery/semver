@@ -1,9 +1,9 @@
-import { readJson, Tree } from '@nrwl/devkit';
+import { readJson, type Tree } from '@nrwl/devkit';
 import { addDependenciesToPackageJson } from '@nrwl/devkit';
 import { updateJson } from '@nrwl/devkit';
 import { constants } from 'fs';
 
-import { SchemaOptions } from '../schema';
+import type { SchemaOptions } from '../schema';
 
 const PACKAGE_JSON = 'package.json';
 
@@ -19,7 +19,7 @@ export interface PackageJsonPart<T> {
 
 export function addDependencies(tree: Tree, options: SchemaOptions) {
   if (options.enforceConventionalCommits) {
-    _addCommitlintConfig(tree);
+    _addCommitlintConfig(tree, options);
     _addHuskyConfig(tree);
     _addHuskyConfigMsg(tree);
     _addDevDependencies(tree, options);
@@ -33,14 +33,14 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       {},
       {
         '@commitlint/cli': '^16.2.1',
-        '@commitlint/config-angular': '^16.2.1',
+        [_getCommitlintConfig(options)]: '^16.2.1',
         husky: '^7.0.4',
       }
     );
   }
 }
 
-function _addCommitlintConfig(tree: Tree) {
+function _addCommitlintConfig(tree: Tree, options: SchemaOptions) {
   const packageJson = readJson(tree, PACKAGE_JSON);
 
   const hasConfig: boolean =
@@ -56,7 +56,7 @@ function _addCommitlintConfig(tree: Tree) {
       '.commitlintrc.json',
       JSON.stringify(
         {
-          extends: ['@commitlint/config-angular'],
+          extends: [_getCommitlintConfig(options)],
           rules: {},
         },
         null,
@@ -94,4 +94,10 @@ function _addHuskyConfigMsg(tree: Tree) {
       mode: constants.S_IRWXU,
     });
   }
+}
+
+function _getCommitlintConfig(options: SchemaOptions) {
+  return options.preset === 'angular'
+    ? '@commitlint/config-angular'
+    : '@commitlint/config-conventional';
 }

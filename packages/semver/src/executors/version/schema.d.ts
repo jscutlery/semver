@@ -41,4 +41,5 @@ export interface VersionBuilderSchema {
   versionTagPrefix?: string | null;
   postTargets: string[];
   commitMessageFormat?: string;
+  preset: 'angular' | 'conventional';
 }

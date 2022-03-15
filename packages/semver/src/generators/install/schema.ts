@@ -5,4 +5,5 @@ export interface SchemaOptions {
   enforceConventionalCommits?: boolean;
   skipInstall?: boolean;
   commitMessageFormat?: string;
+  preset?: 'angular' | 'conventional';
 }

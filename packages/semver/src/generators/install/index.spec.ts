@@ -75,7 +75,7 @@ describe('Install generator', () => {
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
-              options: { syncVersions: true },
+              options: expect.objectContaining({ syncVersions: true }),
             },
           })
         );
@@ -180,7 +180,7 @@ describe('Install generator', () => {
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
-              options: { baseBranch: 'master' },
+              options: expect.objectContaining({ baseBranch: 'master' }),
             },
           })
         );
@@ -188,7 +188,7 @@ describe('Install generator', () => {
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
-              options: { baseBranch: 'master' },
+              options: expect.objectContaining({ baseBranch: 'master' }),
             },
           })
         );
@@ -201,10 +201,91 @@ describe('Install generator', () => {
 
         expect(nxConfig.projects.workspace).toBeUndefined();
       });
+
+      describe('--preset option', () => {
+        it('should install conventional config', async () => {
+          await install(tree, { ...defaultOptions, preset: 'conventional' });
+
+          const packageJson = readJson(tree, 'package.json');
+          const lib1 = readJson(tree, 'libs/lib1/project.json');
+
+          expect(packageJson.devDependencies).toContainKeys([
+            '@commitlint/cli',
+            '@commitlint/config-conventional',
+          ]);
+          expect(lib1.targets).toEqual(
+            expect.objectContaining({
+              version: {
+                executor: '@jscutlery/semver:version',
+                options: expect.objectContaining({ preset: 'conventional' }),
+              },
+            })
+          );
+        });
+
+        it('should install angular config', async () => {
+          await install(tree, { ...defaultOptions, preset: 'angular' });
+
+          const packageJson = readJson(tree, 'package.json');
+          const lib1 = readJson(tree, 'libs/lib1/project.json');
+
+          expect(packageJson.devDependencies).toContainKeys([
+            '@commitlint/cli',
+            '@commitlint/config-angular',
+          ]);
+          expect(lib1.targets).toEqual(
+            expect.objectContaining({
+              version: {
+                executor: '@jscutlery/semver:version',
+                options: expect.objectContaining({ preset: 'angular' }),
+              },
+            })
+          );
+        });
+
+        it('should install angular config', async () => {
+          await install(tree, { ...defaultOptions, preset: 'conventional' });
+
+          const lib1 = readJson(tree, 'libs/lib1/project.json');
+
+          expect(lib1.targets).toEqual(
+            expect.objectContaining({
+              version: {
+                executor: '@jscutlery/semver:version',
+                options: expect.objectContaining({ preset: 'conventional' }),
+              },
+            })
+          );
+        });
+
+        it('extends conventional commitlint config', async () => {
+          await install(tree, { ...options, preset: 'conventional' });
+
+          const commitlintConfig = readJson(tree, '.commitlintrc.json');
+
+          expect(commitlintConfig.extends).toEqual([
+            '@commitlint/config-conventional',
+          ]);
+        });
+
+        it('extends angular commitlint config', async () => {
+          await install(tree, { ...options, preset: 'angular' });
+
+          const commitlintConfig = readJson(tree, '.commitlintrc.json');
+
+          expect(commitlintConfig.extends).toEqual([
+            '@commitlint/config-angular',
+          ]);
+        });
+      });
     });
 
     describe('Enforce Conventional Commits', () => {
-      const options = { ...defaultOptions, enforce: true };
+      const options: SchemaOptions = {
+        ...defaultOptions,
+        enforceConventionalCommits: true,
+        preset: 'angular',
+      };
 
       it('add commitlint to package.json devDepencencies', async () => {
         await install(tree, options);

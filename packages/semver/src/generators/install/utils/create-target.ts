@@ -17,8 +17,7 @@ export function createTarget(options: SchemaOptions): TargetConfiguration {
 export function _createOptions(
   options: SchemaOptions
 ): TargetConfiguration['options'] {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const targetOptions: any = {};
+  const targetOptions: Record<string, unknown> = {};
 
   if (options.syncVersions) {
     targetOptions.syncVersions = options.syncVersions;
@@ -26,6 +25,10 @@ export function _createOptions(
 
   if (options.baseBranch) {
     targetOptions.baseBranch = options.baseBranch;
+  }
+
+  if (options.preset) {
+    targetOptions.preset = options.preset;
   }
 
   /* @notice: to avoid breaking old users, default --commitMessageFormat option is set for new users in the install generator

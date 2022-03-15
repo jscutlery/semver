@@ -58,6 +58,7 @@ describe('@jscutlery/semver:version', () => {
     skipRootChangelog: false,
     skipProjectChangelog: false,
     postTargets: [],
+    preset: 'angular',
   };
 
   beforeEach(() => {

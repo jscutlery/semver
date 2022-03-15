@@ -3,7 +3,11 @@ import { concat, forkJoin, iif, Observable, of } from 'rxjs';
 import { concatMap, switchMap } from 'rxjs/operators';
 import * as standardVersion from 'standard-version';
 
-import { getChangelogPath, insertChangelogDependencyUpdates, updateChangelog } from './utils/changelog';
+import {
+  getChangelogPath,
+  insertChangelogDependencyUpdates,
+  updateChangelog,
+} from './utils/changelog';
 import { addToStage } from './utils/git';
 import { resolveInterpolation } from './utils/resolve-interpolation';
 import { getPackageFiles, getProjectRoots } from './utils/workspace';
@@ -19,12 +23,13 @@ export type Version =
       dependencyName: string;
     };
 
+export type StandardVersionPreset = 'angular' | 'conventionalcommits';
+
 export interface CommonVersionOptions {
   dryRun: boolean;
   trackDeps: boolean;
   newVersion: string;
   noVerify: boolean;
-  preset: string;
   projectRoot: string;
   tagPrefix: string;
   workspaceRoot: string;
@@ -33,6 +38,7 @@ export interface CommonVersionOptions {
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
+  preset: StandardVersionPreset;
 }
 
 export function versionWorkspace({
@@ -189,6 +195,7 @@ export async function _runStandardVersion({
 
     /* @Notice: For an obscure reason standard-version checks for `verify` instead of `no-verify`,
      * Here is the source code: https://github.com/conventional-changelog/standard-version/blob/095e1ebc1ab393c202984b694395224a6888b825/lib/lifecycles/commit.js#L19 */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...({ verify: noVerify === false } as any),
 
     packageFiles: [resolve(projectRoot, 'package.json')],
