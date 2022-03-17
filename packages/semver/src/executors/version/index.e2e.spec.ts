@@ -29,6 +29,7 @@ describe('@jscutlery/semver:version', () => {
     skipRootChangelog: false,
     syncVersions: false,
     postTargets: [],
+    preset: 'angular',
   };
 
   const commonWorkspaceFiles: [string, string][] = [
@@ -135,6 +136,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
     });
@@ -238,7 +244,7 @@ $`)
     });
   });
 
-  describe('workspace with --syncVersions', () => {
+  describe('--syncVersions', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -298,6 +304,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
     });
@@ -314,6 +325,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
 
@@ -503,6 +519,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
 
@@ -522,7 +543,7 @@ $`)
     });
   });
 
-  describe('option --trackDeps', () => {
+  describe('--trackDeps', () => {
     /**
      * Ideally, these would not be mocked in an e2e test, but in order to truly
      * test its use in `getProjectDependencies`, it would require a full NX workspace
@@ -837,6 +858,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
         );
       });
@@ -962,6 +988,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
     });
@@ -978,6 +1009,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
 
@@ -1059,6 +1095,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
     });
@@ -1075,6 +1116,11 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+
+
+### Performance Improvements
+
+\\* \\*\\*a:\\*\\* ⚡ improve quickness .*
 $`)
       );
 
@@ -1170,7 +1216,7 @@ $`)
   // executors, perhaps using the `new FSTree()` from
   // and `new Workspace()` @nrwl/toa would give a
   // more suitable test environment
-  xdescribe('workspace with postTargets', () => {
+  xdescribe('--postTargets', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -1226,12 +1272,18 @@ function commitChanges() {
 
         git add .
         git commit -m "🐣"
+
         echo a > packages/a/a.txt
         git add .
         git commit -m "feat(a): 🚀 new feature"
+
         echo b > packages/b/b.txt
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
+
+        echo c > packages/a/c.txt
+        git add .
+        git commit -m "perf(a): ⚡ improve quickness"
       `
   );
 }

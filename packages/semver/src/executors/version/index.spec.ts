@@ -1,5 +1,5 @@
 import { logger } from '@nrwl/devkit';
-import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import type { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
 import * as standardVersion from 'standard-version';
@@ -8,7 +8,7 @@ import * as changelog from 'standard-version/lib/lifecycles/changelog';
 import { callbackify } from 'util';
 
 import version from './';
-import { VersionBuilderSchema } from './schema';
+import type { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as git from './utils/git';
 import { runPostTargets } from './utils/post-target';
@@ -58,6 +58,7 @@ describe('@jscutlery/semver:version', () => {
     skipRootChangelog: false,
     skipProjectChangelog: false,
     postTargets: [],
+    preset: 'angular',
   };
 
   beforeEach(() => {
@@ -122,7 +123,7 @@ describe('@jscutlery/semver:version', () => {
     jest.resetAllMocks();
   });
 
-  describe('Independent version', () => {
+  describe('--syncVersions=false (independent versions)', () => {
     it('should run standard-version independently on a project', async () => {
       const { success } = await version(options, context);
 
@@ -252,7 +253,7 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('Sync versions', () => {
+  describe('--syncVersions', () => {
     beforeEach(() => {
       /* With the sync versions, the builder runs on the workspace. */
       context = createFakeContext({
@@ -412,7 +413,7 @@ describe('@jscutlery/semver:version', () => {
     );
   });
 
-  describe('with --commitMessageFormat option', () => {
+  describe('--commitMessageFormat', () => {
     it('should handle given format', async () => {
       const { success } = await version(
         {
@@ -445,7 +446,7 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('Git push', () => {
+  describe('--push', () => {
     it('should push to Git', async () => {
       mockTryPushToGitRemote.mockReturnValue(of('success'));
 
@@ -485,7 +486,7 @@ describe('@jscutlery/semver:version', () => {
     });
   });
 
-  describe('Post targets', () => {
+  describe('--postTargets', () => {
     it('should successfully execute post targets', async () => {
       const { success } = await version(
         {
@@ -518,9 +519,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should handle post targets failure', async () => {
-      mockRunPostTargets.mockReturnValue(
-        throwError(() => new Error('Nop!'))
-      );
+      mockRunPostTargets.mockReturnValue(throwError(() => new Error('Nop!')));
 
       const { success } = await version(
         {
@@ -576,6 +575,33 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
       expect(mockRunPostTargets).not.toBeCalled();
+    });
+  });
+
+  describe('--preset', () => {
+    it('should use --preset=angular by default', async () => {
+      const { success } = await version(options, context);
+
+      expect(success).toBe(true);
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          preset: 'angular',
+        })
+      );
+    });
+
+    it('should use --preset=conventional', async () => {
+      const { success } = await version(
+        { ...options, preset: 'conventional' },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(standardVersion).toBeCalledWith(
+        expect.objectContaining({
+          preset: 'conventionalcommits',
+        })
+      );
     });
   });
 });

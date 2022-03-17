@@ -87,6 +87,12 @@
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
       "type": "string"
+    },
+    "preset": {
+      "description": "Customize CHANGELOG generation.",
+      "type": "string",
+      "enum": ["angular", "conventional"],
+      "default": "angular"
     }
   },
 

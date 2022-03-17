@@ -27,7 +27,14 @@
       "description": "Install & configure commitlint and husky.",
       "type": "boolean",
       "default": true,
-      "x-prompt": "Enforce conventional commits?"
+      "x-prompt": "Would you want to enforce conventional commits?"
+    },
+    "preset": {
+      "description": "Customize CHANGELOG generation.",
+      "type": "string",
+      "enum": ["angular", "conventional"],
+      "default": "angular",
+      "x-prompt": "Which preset would you want to use?"
     },
     "skipInstall": {
       "description": "Skip install dependencies",

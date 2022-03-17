@@ -92,6 +92,7 @@ nx run workspace:version [....options]
 | **`--postTargets`**          | `string[]` | `[]`        | specify a list of target to execute post-release |
 | **`--trackDeps`**            | `boolean`  | `false`     | use dependencies when calculating a version bump |
 | **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit         |
+| **`--preset`**               | `string`   | `angular`   | commit message guideline preset                  |
 
 #### Configuration using the file
 

@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { type ExecutorContext, logger } from '@nrwl/devkit';
 import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import {
   getChangelogPath,
 } from './utils/changelog';
 import {
-  DependencyRoot,
+  type DependencyRoot,
   getDependencyRoots,
 } from './utils/get-project-dependencies';
 import { tryPushToGitRemote } from './utils/git';
@@ -17,10 +17,13 @@ import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
-import { versionProject, versionWorkspace } from './version';
+import {
+  type StandardVersionPreset,
+  type CommonVersionOptions,
+  versionProject,
+  versionWorkspace,
+} from './version';
 
-import type { ExecutorContext } from '@nrwl/devkit';
-import type { CommonVersionOptions } from './version';
 import type { VersionBuilderSchema } from './schema';
 
 export default async function version(
@@ -43,10 +46,10 @@ export default async function version(
     versionTagPrefix,
     postTargets,
     commitMessageFormat,
+    preset,
   } = normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
-  const preset = 'angular';
 
   const tagPrefix = formatTagPrefix({
     versionTagPrefix,
@@ -199,5 +202,9 @@ function normalizeOptions(options: VersionBuilderSchema) {
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
+    preset:
+      options.preset === 'angular'
+        ? 'angular'
+        : ('conventionalcommits' as StandardVersionPreset),
   };
 }
