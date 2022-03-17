@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.21.0](https://github.com/jscutlery/semver/compare/semver-2.20.1...semver-2.21.0) (2022-03-17)
+
+
+### Features
+
+* **semver:** ✅ add support for `--preset` option ([1b9635a](https://github.com/jscutlery/semver/commit/1b9635a50a89662c0fd557f4ff6d819529c4d9b8)), closes [#457](https://github.com/jscutlery/semver/issues/457)
+
+
+
 ## [2.20.1](https://github.com/jscutlery/semver/compare/semver-2.20.0...semver-2.20.1) (2022-03-07)
 
 
