@@ -10,6 +10,27 @@
 
 **Nx plugin for versioning** using [SemVer](https://semver.org/) and **CHANGELOG generation** powered by [Conventional Commits](https://conventionalcommits.org).
 
+- [Setup](#setup)
+  - [Install](#install)
+- [Usage](#usage)
+  - [Release modes](#release-modes)
+    - [Independent mode](#independent-mode)
+    - [Synced mode](#synced-mode)
+  - [What happens when semver is executed ?](#what-happens-when-semver-is-executed-)
+  - [Available options](#available-options)
+    - [Configuration using the file](#configuration-using-the-file)
+  - [Specify the level of change](#specify-the-level-of-change)
+  - [Tracking dependencies](#tracking-dependencies)
+  - [Tag prefix customization](#tag-prefix-customization)
+  - [Commit message customization](#commit-message-customization)
+  - [Triggering executors post-release](#triggering-executors-post-release)
+    - [Resolved options](#resolved-options)
+    - [Built-in post-targets](#built-in-post-targets)
+  - [CI/CD usage](#cicd-usage)
+    - [GitHub Actions](#github-actions)
+- [Changelog](#changelog)
+- [Contributors](#contributors)
+
 ## Setup
 
 ### Install
@@ -27,43 +48,41 @@ Using Angular CLI:
 ng add @jscutlery/semver
 ```
 
-This package allows you to manage your monorepo using one of two modes: Synced or Independent.
-
-#### Independent mode (default)
-
-Allow multiple projects to be versioned independently. This way you release only what you want and consumers don't get updates they don't need. This allows small, rapid and incremental adoption of your packages.
-
-#### Synced mode
-
-Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together. This mode is useful when you are working with only one product. One issue with this approach is that a major change in any project will result in all projects having a new major version.
-
 ## Usage
 
-### Release
+This package allows you to manage your monorepo using one of two modes: **Synced** or **Independent**.
+
+### Release modes
 
 #### Independent mode
 
+> Allow multiple projects to be versioned independently. This way you release only what you want and consumers don't get updates they don't need. This allows small, rapid and incremental adoption of your packages.
+
 Release project independently by running:
 
-```
+```sh
 nx run my-project:version [...options]
 ```
 
 You can leverage the built-in affected command to only version changed packages:
 
-```
+```sh
 nx affected --target version [...options]
 ```
 
 #### Synced mode
 
+> Allow multiple projects to be versioned in a synced/locked mode. Use this if you want to automatically tie all package versions together. This mode is useful when you are working with only one product. One issue with this approach is that a major change in any project will result in all projects having a new major version.
+
 Release multiple projects at once:
 
-```
+```sh
 nx run workspace:version [...options]
 ```
 
-#### When run, this executor does the following
+### What happens when semver is executed ?
+
+When ran, this executor does the following
 
 1. Retrieve the current version of affected projects.
 2. Bump versions based on your commits.
@@ -73,26 +92,26 @@ nx run workspace:version [...options]
 6. Push the releases (if enabled).
 7. Run post-targets.
 
-#### Available options
+### Available options
 
 | name                         | type       | default     | description                                      |
 | ---------------------------- | ---------- | ----------- | ------------------------------------------------ |
-| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                |
-| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                   |
-| **`--push`**                 | `boolean`  | `false`     | push the release against git origin              |
-| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects              |
-| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                   |
-| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                |
-| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository               |
 | **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                     |
 | **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs            |
-| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change                      |
-| **`--preid`**                | `string`   | `undefined` | prerelease identifier                            |
-| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix                           |
-| **`--postTargets`**          | `string[]` | `[]`        | specify a list of target to execute post-release |
-| **`--trackDeps`**            | `boolean`  | `false`     | use dependencies when calculating a version bump |
 | **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit         |
-| **`--preset`**               | `string`   | `'angular'` | commit message guideline preset                  |
+| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                |
+| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                   |
+| **`--postTargets`**          | `string[]` | `[]`        | specify a list of target to execute post-release |
+| **`--preid`**                | `string`   | `undefined` | prerelease identifier                            |
+| **`--preset`**               | `string`   | `'angular'`   | commit message guideline preset                  |
+| **`--push`**                 | `boolean`  | `false`     | push the release against git origin              |
+| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change                      |
+| **`--remote`**               | `string`   | `'origin'`  | push against git remote repository               |
+| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                   |
+| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                |
+| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects              |
+| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix                           |
+| **`--trackDeps`**            | `boolean`  | `false`     | use dependencies when calculating a version bump |
 
 #### Configuration using the file
 
@@ -108,13 +127,13 @@ Note that you can define the options you want to customize using the `workspace.
 }
 ```
 
-#### Specify the level of change
+### Specify the level of change
 
 The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level.
 
 Level can be one of `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, or `prerelease`, for instance:
 
-```
+```sh
 nx run workspace:version --releaseAs=major
 nx run workspace:version --releaseAs=minor
 nx run workspace:version --releaseAs=patch
@@ -122,7 +141,37 @@ nx run workspace:version --releaseAs=prerelease --preid=alpha
 nx run workspace:version --releaseAs=prerelease --preid=beta
 ```
 
-#### Tag prefix customization
+### Tracking dependencies
+
+The **`--trackDeps`** option indicates that direct dependencies in the project's dependency graph should be taken into account when incrementing the
+version. If no version-incrementing changes are present in the project, but are present in one or more dependencies, then the project will receive a `patch`
+version increment.
+
+If you wish to track changes at any depth of your dependency graph, then you should do the following:
+
+1. Enable versioning for each project in the dependency graph
+2. Set the `trackDeps` option to `true` on each of the projects
+3. Make sure that `version` is run on projects in the right order by configuring `version`'s target dependencies in `nx.json`:
+
+```json
+{
+  "targetDependencies": {
+    "version": [
+      {
+        "target": "version",
+        "projects": "dependencies"
+      }
+    ]
+  }
+}
+```
+
+This setup will cause a cascade of version increments starting at the deepest changed dependency,
+then continuing up the graph until the indicated project is reached.
+Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`,
+then it will avoid attempting to version dependencies multiple times.
+
+### Tag prefix customization
 
 The **`--tagPrefix`** option allows you to customize the tag prefix.
 
@@ -130,23 +179,23 @@ In sync mode, the tag prefix is set to `"v"` by default, which is resolved to `v
 
 In independent mode, the tag prefix uses the contextual project name, the default value is `"${projectName}-"` which is resolved to `my-project-0.0.1` for instance. Note that each project in the workspace is versioned with its own tag.
 
-#### Commit message customization
+### Commit message customization
 
 The **`--commitMessageFormat`** option allows you to customize the commit message. By default, the commit message is formatted as the following:
 
-```
+```sh
 chore(${projectName}): release version ${version}
 ```
 
 The `version` variable is resolved to the current release version, for instance `1.0.1`. This option also allows you to interpolate the `projectName` variable:
 
-```
+```sh
 release: bump ${projectName} to ${version} [skip ci]
 ```
 
 Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub.
 
-#### Triggering executors post-release
+### Triggering executors post-release
 
 The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task.
 
@@ -196,36 +245,6 @@ Note that options using the interpolation notation `${variable}` are resolved wi
 
 - [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) GiHub Release Support
 - [`@jscutlery/semver:gitlab`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/gitlab/README.md) GitLab Release Support
-
-#### Tracking dependencies
-
-The **`--trackDeps`** option indicates that direct dependencies in the project's dependency graph should be taken into account when incrementing the
-version. If no version-incrementing changes are present in the project, but are present in one or more dependencies, then the project will receive a `patch`
-version increment.
-
-If you wish to track changes at any depth of your dependency graph, then you should do the following:
-
-1. Enable versioning for each project in the dependency graph
-2. Set the `trackDeps` option to `true` on each of the projects
-3. Make sure that `version` is run on projects in the right order by configuring `version`'s target dependencies in `nx.json`:
-
-```json
-{
-  "targetDependencies": {
-    "version": [
-      {
-        "target": "version",
-        "projects": "dependencies"
-      }
-    ]
-  }
-}
-```
-
-This setup will cause a cascade of version increments starting at the deepest changed dependency,
-then continuing up the graph until the indicated project is reached.
-Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`,
-then it will avoid attempting to version dependencies multiple times.
 
 ### CI/CD usage
 
