@@ -9,10 +9,7 @@ import { readPackageJson } from './utils/project';
 
 import type { TestingWorkspace } from './testing';
 import type { VersionBuilderSchema } from './schema';
-import {
-  createProjectGraphAsync,
-  getSortedProjectNodes,
-} from '@nrwl/workspace/src/core/project-graph';
+import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph';
 import { lastValueFrom } from 'rxjs';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 
@@ -553,10 +550,6 @@ $`)
       createProjectGraphAsync as jest.MockedFunction<
         typeof createProjectGraphAsync
       >;
-    const mockGetSortedProjectNodes =
-      getSortedProjectNodes as jest.MockedFunction<
-        typeof getSortedProjectNodes
-      >;
 
     describe('utilizes the project graph', () => {
       beforeEach(() => {
@@ -565,9 +558,6 @@ $`)
         );
         mockCreateProjectGraphAsync.mockImplementation(
           originalModule.createProjectGraphAsync
-        );
-        mockGetSortedProjectNodes.mockImplementation(
-          originalModule.getSortedProjectNodes
         );
       });
       afterEach(() => jest.resetAllMocks());

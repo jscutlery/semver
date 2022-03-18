@@ -1,5 +1,5 @@
 import { logger } from '@nrwl/devkit';
-import type { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import type { ExecutorContext } from '@nrwl/devkit';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
 import * as standardVersion from 'standard-version';

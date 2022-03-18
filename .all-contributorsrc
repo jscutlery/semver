@@ -310,6 +310,15 @@
         "doc",
         "example"
       ]
+    },
+    {
+      "login": "lukelukes",
+      "name": "lukelukes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45536418?v=4",
+      "profile": "https://github.com/lukelukes",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7

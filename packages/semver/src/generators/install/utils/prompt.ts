@@ -8,7 +8,7 @@ export function createPrompt(
   return inquirer.prompt({
     name: 'projects',
     type: 'checkbox',
-    message: 'Which projects would you like to version independently?',
+    message: 'Which projects would you want to version independently?',
     choices: projects.map(({ projectName }) => ({
       name: projectName,
       checked: true,

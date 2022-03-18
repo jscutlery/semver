@@ -1,5 +1,4 @@
 import { type ExecutorContext, logger } from '@nrwl/devkit';
-import { SchemaError } from '@nrwl/tao/src/shared/params';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 
@@ -175,7 +174,7 @@ export default async function version(
   return lastValueFrom(
     action$.pipe(
       catchError((error) => {
-        if (error instanceof SchemaError) {
+        if (error?.name === 'SchemaError') {
           logger.error(`Post-targets Error: ${error.message}`);
         } else {
           logger.error(error.stack ?? error.toString());

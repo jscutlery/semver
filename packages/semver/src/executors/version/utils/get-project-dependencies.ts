@@ -1,5 +1,4 @@
-import type { ExecutorContext } from '@nrwl/devkit';
-import type { ProjectGraphDependency } from '@nrwl/workspace/src/core/project-graph';
+import type { ExecutorContext, ProjectGraphDependency } from '@nrwl/devkit';
 
 import type { VersionBuilderSchema } from '../schema';
 
@@ -37,13 +36,10 @@ export async function getProjectDependencies(
 ): Promise<string[]> {
   const module = await import('@nrwl/workspace/src/core/project-graph');
   /* @notice: before Nx 13 `createProjectGraphAsync` doesn't exist.
-     @todo: remove the compatibility support later on.
-
-     The shape of the project graph can still change.
-     So we're pinning the version of the graph to 5.0. */
+     @todo: remove the compatibility support later on. */
   const dependencyGraph =
     typeof module.createProjectGraphAsync === 'function'
-      ? await module.createProjectGraphAsync('5.0')
+      ? await module.createProjectGraphAsync()
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (module as any).createProjectGraph();
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);

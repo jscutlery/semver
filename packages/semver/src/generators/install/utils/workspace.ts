@@ -1,11 +1,9 @@
-import { getProjects, updateProjectConfiguration } from '@nrwl/devkit';
+import { getProjects, updateProjectConfiguration, type ProjectConfiguration } from '@nrwl/devkit';
 
 import { createTarget } from './create-target';
 import { createPrompt } from './prompt';
 
 import type { Tree } from '@nrwl/devkit';
-import type { ProjectConfiguration } from '@nrwl/tao/src/shared/workspace';
-
 import type { SchemaOptions } from '../schema';
 
 export type ProjectDefinition = ProjectConfiguration & { projectName: string };

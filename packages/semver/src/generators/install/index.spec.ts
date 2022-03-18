@@ -1,11 +1,10 @@
-import { addProjectConfiguration, readJson, writeJson } from '@nrwl/devkit';
+import { addProjectConfiguration, readJson, writeJson, type Tree } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
 import install from '.';
 
-import type { Tree } from '@nrwl/devkit';
 import type { SchemaOptions } from './schema';
 import type { PathLike } from 'fs';
 
