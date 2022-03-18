@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.21.1](https://github.com/jscutlery/semver/compare/semver-2.21.0...semver-2.21.1) (2022-03-18)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 support Nx 13.9.2 ([a757b30](https://github.com/jscutlery/semver/commit/a757b3073ac29cc67b9b69f89ec78e07028a4fc8)), closes [#467](https://github.com/jscutlery/semver/issues/467)
+* **semver:** 🐞 use type list for `x-prompt` preset ([d8b1da2](https://github.com/jscutlery/semver/commit/d8b1da24ea55d3818bcdbfa5ae8ddf9ab040045c))
+
+
+
 # [2.21.0](https://github.com/jscutlery/semver/compare/semver-2.20.1...semver-2.21.0) (2022-03-17)
 
 
