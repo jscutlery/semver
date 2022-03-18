@@ -40,7 +40,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/node:package",
+      "executor": "@nrwl/js:tsc",
       "options": {
         "outputPath": "dist/packages/semver",
         "tsConfig": "packages/semver/tsconfig.lib.json",
