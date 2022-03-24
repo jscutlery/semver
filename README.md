@@ -102,8 +102,8 @@ Note that you can define the options you want to customize using the `workspace.
 {
   "executor": "@jscutlery/semver:version",
   "options": {
-    "baseBranch": "master",
-    "tagPrefix": "${projectName}@"
+    "baseBranch": "otherBaseBranch", // overwrite baseBranch
+    "tagPrefix": "${projectName}@" // overwrite tagPrefix
   }
 }
 ```
