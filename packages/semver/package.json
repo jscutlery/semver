@@ -30,7 +30,7 @@
   "devDependencies": {
     "@nrwl/js": "13.9.2",
     "@types/conventional-recommended-bump": "6.1.0",
-    "@types/inquirer": "8.2.0",
+    "@types/inquirer": "8.2.1",
     "@types/rimraf": "3.0.2",
     "@types/semver": "7.3.9",
     "@types/standard-version": "7.0.1",
