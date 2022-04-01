@@ -66,17 +66,3 @@ jobs:
           branch: ${{ github.ref }}
           force: true
           tags: true
-
-      # Trigger release manually because automated commits
-      # don't trigger "push" workflows.
-      #
-      # Cf. https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
-      #
-      # "When you use the repository's GITHUB_TOKEN to perform tasks on behalf of the GitHub Actions app,
-      # events triggered by the GITHUB_TOKEN will not create a new workflow run.
-      # This prevents you from accidentally creating recursive workflow runs.""
-      - name: Release
-        uses: ./.github/actions/release
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          npm_token: ${{ secrets.NPM_TOKEN }}
