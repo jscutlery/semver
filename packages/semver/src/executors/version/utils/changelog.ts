@@ -1,18 +1,20 @@
-import { readFile, writeFile } from 'fs';
 import { resolve } from 'path';
 import {
   combineLatestWith,
   concatMap,
   defer,
   lastValueFrom,
-  OperatorFunction,
+  map,
+  type Observable,
+  of,
+  type OperatorFunction,
+  switchMap,
 } from 'rxjs';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { promisify } from 'util';
 
 import { diff } from './diff';
-import { readFileIfExists } from './filesystem';
+import { readFile, readFileIfExists, writeFile } from './filesystem';
 
 import type { Version } from '../version';
 
@@ -39,9 +41,9 @@ export function updateChangelog({
   newVersion: string;
   changelogHeader?: string;
   tagPrefix?: string;
-}) {
+}): Observable<string> {
   return defer(async () => {
-    const changelogPath = resolve(projectRoot, 'CHANGELOG.md');
+    const changelogPath = getChangelogPath(projectRoot);
     await changelog(
       {
         ...standardVersionDefaults,
@@ -68,37 +70,26 @@ export function insertChangelogDependencyUpdates({
   version: string;
   dryRun: boolean;
   dependencyUpdates: Version[];
-}) {
-  return defer(async () => {
-    if (!dependencyUpdates.length || dryRun) {
-      return changelogPath;
-    }
+}): Observable<string> {
+  return of(!dependencyUpdates.length || dryRun).pipe(
+    switchMap((skipDependencyUpdates) => {
+      if (skipDependencyUpdates) {
+        return of(changelogPath);
+      }
 
-    let changelog = await promisify(readFile)(changelogPath, 'utf-8');
-
-    const match = changelog.match(
-      new RegExp(`##? \\[?${version}\\]? ?\\(.*\\)`)
-    );
-
-    if (match && match.index !== undefined) {
-      const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
-        if (ver.type === 'dependency') {
-          acc.push(
-            `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``
-          );
-        }
-        return acc;
-      }, [] as string[]);
-
-      changelog =
-        `${changelog.substring(0, match.index + match[0].length)}` +
-        `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n` +
-        `${changelog.substring(match.index + match[0].length + 2)}`;
-
-      await promisify(writeFile)(changelogPath, changelog, 'utf-8');
-    }
-    return changelogPath;
-  });
+      return readFile(changelogPath).pipe(
+        map((changelog) =>
+          _calculateDependencyUpdates({
+            changelog,
+            version,
+            dependencyUpdates,
+          })
+        ),
+        switchMap((changelog) => writeFile(changelogPath, changelog)),
+        map(() => changelogPath)
+      );
+    })
+  );
 }
 
 export function calculateChangelogChanges<T>({
@@ -120,4 +111,35 @@ export function calculateChangelogChanges<T>({
       })
     );
   };
+}
+
+/* istanbul ignore next */
+export function _calculateDependencyUpdates({
+  changelog,
+  version,
+  dependencyUpdates,
+}: {
+  changelog: string;
+  version: string;
+  dependencyUpdates: Version[];
+}): string {
+  const match = changelog.match(new RegExp(`##? \\[?${version}\\]? ?\\(.*\\)`));
+
+  if (match && match.index !== undefined) {
+    const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
+      if (ver.type === 'dependency') {
+        acc.push(
+          `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``
+        );
+      }
+      return acc;
+    }, [] as string[]);
+
+    changelog =
+      `${changelog.substring(0, match.index + match[0].length)}` +
+      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n` +
+      `${changelog.substring(match.index + match[0].length + 2)}`;
+  }
+
+  return changelog;
 }
