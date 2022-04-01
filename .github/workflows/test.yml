@@ -1,4 +1,4 @@
-name: Test & Release
+name: Test
 
 on:
   - push
@@ -23,21 +23,3 @@ jobs:
         uses: ./.github/actions/test
         with:
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
-
-  release:
-    runs-on: ubuntu-latest
-
-    if: github.ref == 'refs/heads/main'
-
-    needs: [test]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Release
-        uses: ./.github/actions/release
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          npm_token: ${{ secrets.NPM_TOKEN }}
