@@ -65,13 +65,13 @@ nx run workspace:version [...options]
 
 #### When run, this executor does the following
 
-1. Retrieve the current version of affected projects.
-2. Bump versions based on your commits.
-3. Generates CHANGELOGs based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
-4. Creates a new commit including your `package.json` files and updated CHANGELOGs.
-5. Creates new tags with the new versions number.
-6. Push the releases (if enabled).
-7. Run post-targets.
+1. Retrieve the current version by looking at the last `git tag`.
+2. Bump `package.json` version based on your commits.
+3. Generates CHANGELOG based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
+4. Creates a new commit including your `package.json` file and updated CHANGELOG.
+5. Creates new tag with the new version number.
+6. Pushes the release (if enabled).
+7. Runs post-targets (if defined).
 
 #### Available options
 
@@ -94,15 +94,16 @@ nx run workspace:version [...options]
 | **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit         |
 | **`--preset`**               | `string`   | `'angular'` | commit message guideline preset                  |
 
-#### Configuration using the file
+#### Overwrite default configuration
 
-Note that you can define the options you want to customize using the `workspace.json` file, eg:
+You can customize the default configuration using with the workspace definition file:
 
 ```json
 {
   "executor": "@jscutlery/semver:version",
   "options": {
     "baseBranch": "master",
+    "preset": "conventional",
     "tagPrefix": "${projectName}@"
   }
 }
@@ -178,19 +179,12 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
 }
 ```
 
-Note that options using the interpolation notation `${variable}` are resolved with their corresponding value.
+Note that options using the interpolation notation `${variable}` are resolved with their corresponding value. Here is the list of the resolved options.
 
-#### Resolved options
-
-- `project`
-- `version`
-- `tag`
-- `tagPrefix`
-- `noVerify`
-- `dryRun`
-- `remote`
-- `baseBranch`
-- `notes`
+- `project` versioned project
+- `version` semver version
+- `tag` formatted git tag
+- `notes` release notes
 
 #### Built-in post-targets
 
