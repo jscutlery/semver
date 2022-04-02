@@ -237,10 +237,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Setup
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Setup Git
         run: |
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
@@ -277,13 +281,11 @@ release:
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
   stage: release
-  image:
-    name: node:16.13.2
-    entrypoint: ['']
+  image: node:16.13.2
   before_script:
     - git config --global user.name "GitLab Bot"
     - git config --global user.email "gituser@example.com"
-    - git remote set-url origin http://gitlab-ci-token:${DEPLOY_KEY}@gitlab.com/organisation/project.git
+    - git remote set-url origin http://gitlab-ci-token:${DEPLOY_KEY}@gitlab.com/org/project.git
   script:
     - yarn install --frozen-lockfile --prefer-offline
     - yarn nx affected --target=version --base=last-release
