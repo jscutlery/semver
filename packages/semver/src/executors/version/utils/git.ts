@@ -96,8 +96,7 @@ export function addToStage({
 
 export function getFirstCommitRef(): Observable<string> {
   return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
-    /**                                Remove line breaks. */
-    map((output) => output.replace(/\r?\n|\r/, ''))
+    map((output) => output.trim())
   );
 }
 
