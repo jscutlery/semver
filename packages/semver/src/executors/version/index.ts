@@ -1,29 +1,24 @@
-import { type ExecutorContext, logger } from '@nrwl/devkit';
+import { logger, type ExecutorContext } from '@nrwl/devkit';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
-
+import type { VersionBuilderSchema } from './schema';
 import {
   calculateChangelogChanges,
   defaultHeader,
-  getChangelogPath,
+  getChangelogPath
 } from './utils/changelog';
 import {
-  type DependencyRoot,
-  getDependencyRoots,
+  getDependencyRoots, type DependencyRoot
 } from './utils/get-project-dependencies';
-import { tryPushToGitRemote } from './utils/git';
+import { tryPush } from './utils/git';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import {
-  type StandardVersionPreset,
-  type CommonVersionOptions,
   versionProject,
-  versionWorkspace,
+  versionWorkspace, type CommonVersionOptions, type StandardVersionPreset
 } from './version';
-
-import type { VersionBuilderSchema } from './schema';
 
 export default async function version(
   options: VersionBuilderSchema,
@@ -114,11 +109,8 @@ export default async function version(
           : versionProject(options)
       );
 
-      /**
-       * @todo 3.0.0: remove this in favor of @jscutlery/semver:push postTarget.
-       */
-      const pushToGitRemote$ = defer(() =>
-        tryPushToGitRemote({
+      const push$ = defer(() =>
+        tryPush({
           branch: baseBranch,
           noVerify,
           remote,
@@ -143,7 +135,7 @@ export default async function version(
         }),
         concatMap((notes) =>
           concat(
-            ...(push && dryRun === false ? [pushToGitRemote$] : []),
+            ...(push && dryRun === false ? [push$] : []),
             ...(dryRun === false
               ? [
                   runPostTargets({

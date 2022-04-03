@@ -1,14 +1,14 @@
 import * as gitRawCommits from 'git-raw-commits';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
-
 import * as cp from '../../common/exec';
 import {
   addToStage,
   getCommits,
   getFirstCommitRef,
-  tryPushToGitRemote,
+  tryPush
 } from './git';
+
 
 jest.mock('git-raw-commits', () => jest.fn());
 jest.mock('../../common/exec');
@@ -42,12 +42,12 @@ describe('git', () => {
       expect(observer.complete).toBeCalledTimes(1);
     });
 
-    describe('tryPushToGitRemote', () => {
+    describe(tryPush.name, () => {
       it('should Git push with right options', async () => {
         jest.spyOn(cp, 'exec').mockReturnValue(of('success'));
 
         await lastValueFrom(
-          tryPushToGitRemote({
+          tryPush({
             remote: 'upstream',
             branch: 'master',
             noVerify: false,
@@ -70,7 +70,7 @@ describe('git', () => {
         jest.spyOn(cp, 'exec').mockReturnValue(of('success'));
 
         await lastValueFrom(
-          tryPushToGitRemote({
+          tryPush({
             remote: 'origin',
             branch: 'main',
             noVerify: true,
@@ -99,7 +99,7 @@ describe('git', () => {
         jest.spyOn(console, 'warn').mockImplementation();
 
         await lastValueFrom(
-          tryPushToGitRemote({
+          tryPush({
             remote: 'origin',
             branch: 'master',
             noVerify: false,
@@ -126,7 +126,7 @@ describe('git', () => {
 
         await expect(
           lastValueFrom(
-            tryPushToGitRemote({
+            tryPush({
               remote: 'origin',
               branch: 'master',
               noVerify: false,
@@ -139,7 +139,7 @@ describe('git', () => {
       it('should fail if options are undefined', async () => {
         await expect(
           lastValueFrom(
-            tryPushToGitRemote({
+            tryPush({
               /* eslint-disable @typescript-eslint/no-explicit-any */
               remote: undefined as any,
               branch: undefined as any,

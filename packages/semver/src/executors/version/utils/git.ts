@@ -2,7 +2,6 @@ import { logger } from '@nrwl/devkit';
 import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
-
 import { exec } from '../../common/exec';
 import { resolveInterpolation } from './resolve-interpolation';
 import { formatTag } from './tag';
@@ -33,7 +32,7 @@ export function getCommits({
   );
 }
 
-export function tryPushToGitRemote({
+export function tryPush({
   remote,
   branch,
   noVerify,
@@ -134,12 +133,9 @@ export function commit({
   projectName: string;
   commitMessageFormat: string;
 }): Observable<void> {
-  if (dryRun) {
-    return EMPTY;
-  }
-
   return exec('git', [
     'commit',
+    ...(dryRun ? ['--dry-run'] : []),
     ...(noVerify ? ['--no-verify'] : []),
     '-m',
     formatCommitMessage({ version, commitMessageFormat, projectName }),

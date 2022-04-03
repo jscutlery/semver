@@ -1,20 +1,20 @@
-import { logger } from '@nrwl/devkit';
 import type { ExecutorContext } from '@nrwl/devkit';
+import { logger } from '@nrwl/devkit';
 import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
 import * as standardVersion from 'standard-version';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-
 import { callbackify } from 'util';
-
 import version from './';
 import type { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
+import { getDependencyRoots } from './utils/get-project-dependencies';
 import * as git from './utils/git';
 import { runPostTargets } from './utils/post-target';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-import { getDependencyRoots } from './utils/get-project-dependencies';
+
+
 
 jest.mock('child_process');
 jest.mock('standard-version', () => jest.fn());
@@ -27,8 +27,8 @@ jest.mock('./utils/post-target');
 
 describe('@jscutlery/semver:version', () => {
   const mockChangelog = changelog as jest.Mock;
-  const mockTryPushToGitRemote = git.tryPushToGitRemote as jest.MockedFunction<
-    typeof git.tryPushToGitRemote
+  const mockTryPushToGitRemote = git.tryPush as jest.MockedFunction<
+    typeof git.tryPush
   >;
   const mockAddToStage = git.addToStage as jest.MockedFunction<
     typeof git.addToStage

@@ -1,4 +1,4 @@
-import { type ChildProcess, execFile } from 'child_process';
+import { execFile, type ChildProcess } from 'child_process';
 import { Observable, type Subscriber } from 'rxjs';
 
 export function exec(cmd: string, args: string[] = []): Observable<string> {
