@@ -4,6 +4,8 @@ import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
 
 import { execAsync } from '../../common/exec-async';
+import { resolveInterpolation } from './resolve-interpolation';
+import { formatTag } from './tag';
 
 /**
  * Return the list of commits since `since` commit.
@@ -113,4 +115,69 @@ export function getFirstCommitRef(): Observable<string> {
     map(({ stdout }) => stdout.replace(/\r?\n|\r/, '')),
     catchError((error) => throwError(() => new Error(error.stderr)))
   );
+}
+
+export function createTag({
+  dryRun,
+  version,
+  tagPrefix,
+  commitMessage,
+}: {
+  dryRun: boolean;
+  version: string;
+  tagPrefix: string;
+  commitMessage: string;
+}): Observable<string> {
+  if (dryRun) {
+    return EMPTY;
+  }
+
+  const tag = formatTag({ tagPrefix, version });
+  return execAsync('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
+    map(() => tag),
+    catchError((error) => throwError(() => new Error(error.stderr)))
+  );
+}
+
+export function commit({
+  dryRun,
+  version,
+  noVerify,
+  projectName,
+  commitMessageFormat,
+}: {
+  dryRun: boolean;
+  version: string;
+  noVerify: boolean;
+  projectName: string;
+  commitMessageFormat: string;
+}): Observable<void> {
+  if (dryRun) {
+    return EMPTY;
+  }
+
+  return execAsync('git', [
+    'commit',
+    ...(noVerify ? ['--no-verify'] : []),
+    '-m',
+    formatCommitMessage({ version, commitMessageFormat, projectName }),
+  ]).pipe(
+    map(() => undefined),
+    catchError((error) => throwError(() => new Error(error.stderr)))
+  );
+}
+
+function formatCommitMessage({
+  version,
+  projectName,
+  commitMessageFormat,
+}: {
+  version: string;
+  projectName: string;
+  commitMessageFormat: string;
+}): string {
+  return resolveInterpolation(commitMessageFormat, {
+    version,
+    projectName,
+  }) as string;
 }

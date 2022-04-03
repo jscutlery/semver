@@ -25,10 +25,10 @@ export function formatTagPrefix({
 
 export function formatTag({
   tagPrefix,
-  lastVersion,
+  version,
 }: {
   tagPrefix: string;
-  lastVersion: string;
+  version: string;
 }): string {
-  return `${tagPrefix}${lastVersion}`;
+  return `${tagPrefix}${version}`;
 }

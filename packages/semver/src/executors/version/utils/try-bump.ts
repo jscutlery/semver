@@ -67,7 +67,7 @@ If your project is already versioned, please tag the latest release commit with 
       iif(
         () => _isInitialVersion({ lastVersion }),
         getFirstCommitRef(),
-        of(formatTag({ tagPrefix, lastVersion }))
+        of(formatTag({ tagPrefix, version: lastVersion }))
       )
     )
   );
