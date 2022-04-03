@@ -2,7 +2,7 @@ import { logger } from '@nrwl/devkit';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
 
-import { ChildProcessResponse, execAsync } from '../common/exec-async';
+import { exec } from '../common/exec';
 
 import type { GithubExecutorSchema } from './schema';
 
@@ -19,7 +19,7 @@ export default async function runExecutor({
   repo,
   generateNotes,
 }: GithubExecutorSchema) {
-  const createRelease$ = execAsync('gh', [
+  const createRelease$ = exec('gh', [
     'release',
     'create',
     tag,
@@ -37,8 +37,8 @@ export default async function runExecutor({
     ...(generateNotes ? [`--generate-notes`] : []),
   ]).pipe(
     mapTo({ success: true }),
-    catchError((response: ChildProcessResponse) => {
-      logger.error(response.stderr);
+    catchError((response) => {
+      logger.error(response);
       return of({ success: false });
     }),
   );

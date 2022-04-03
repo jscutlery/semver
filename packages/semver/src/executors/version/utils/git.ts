@@ -3,7 +3,7 @@ import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
 
-import { execAsync } from '../../common/exec-async';
+import { exec } from '../../common/exec';
 import { resolveInterpolation } from './resolve-interpolation';
 import { formatTag } from './tag';
 
@@ -57,7 +57,7 @@ export function tryPushToGitRemote({
       ...(noVerify ? ['--no-verify'] : []),
     ];
 
-    return execAsync('git', [
+    return exec('git', [
       'push',
       ...gitPushOptions,
       '--atomic',
@@ -66,29 +66,17 @@ export function tryPushToGitRemote({
     ]).pipe(
       catchError((error) => {
         if (
-          /atomic/.test(error.stderr) ||
-          (process.env.GIT_REDIRECT_STDERR === '2>&1' &&
-            /atomic/.test(error.stdout))
+          /atomic/.test(error) ||
+          (process.env.GIT_REDIRECT_STDERR === '2>&1' && /atomic/.test(error))
         ) {
           console.warn('git push --atomic failed, attempting non-atomic push');
-
-          return execAsync('git', [
-            'push',
-            ...gitPushOptions,
-            remote,
-            branch,
-          ]).pipe(
-            catchError((error) => throwError(() => new Error(error.stderr)))
-          );
+          return exec('git', ['push', ...gitPushOptions, remote, branch]);
         }
 
-        return throwError(() => new Error(error.stderr));
+        return throwError(() => error);
       })
     );
-  }).pipe(
-    map((process) => process.stdout),
-    tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`))
-  );
+  }).pipe(tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`)));
 }
 
 export function addToStage({
@@ -103,17 +91,13 @@ export function addToStage({
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
-  return execAsync('git', ['add', ...gitAddOptions]).pipe(
-    map(() => undefined),
-    catchError((error) => throwError(() => new Error(error.stderr)))
-  );
+  return exec('git', ['add', ...gitAddOptions]).pipe(map(() => undefined));
 }
 
 export function getFirstCommitRef(): Observable<string> {
-  return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
+  return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     /**                                Remove line breaks. */
-    map(({ stdout }) => stdout.replace(/\r?\n|\r/, '')),
-    catchError((error) => throwError(() => new Error(error.stderr)))
+    map((output) => output.replace(/\r?\n|\r/, ''))
   );
 }
 
@@ -133,9 +117,8 @@ export function createTag({
   }
 
   const tag = formatTag({ tagPrefix, version });
-  return execAsync('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
-    map(() => tag),
-    catchError((error) => throwError(() => new Error(error.stderr)))
+  return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
+    map(() => tag)
   );
 }
 
@@ -156,15 +139,12 @@ export function commit({
     return EMPTY;
   }
 
-  return execAsync('git', [
+  return exec('git', [
     'commit',
     ...(noVerify ? ['--no-verify'] : []),
     '-m',
     formatCommitMessage({ version, commitMessageFormat, projectName }),
-  ]).pipe(
-    map(() => undefined),
-    catchError((error) => throwError(() => new Error(error.stderr)))
-  );
+  ]).pipe(map(() => undefined));
 }
 
 function formatCommitMessage({

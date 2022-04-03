@@ -1,7 +1,7 @@
 import { logger } from '@nrwl/devkit';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
-import { ChildProcessResponse, execAsync } from '../common/exec-async';
+import { exec } from '../common/exec';
 import type { GitLabReleaseSchema } from './schema';
 
 export default async function runExecutor({
@@ -13,7 +13,7 @@ export default async function runExecutor({
   name,
   releasedAt,
 }: GitLabReleaseSchema) {
-  const createRelease$ = execAsync('release-cli', [
+  const createRelease$ = exec('release-cli', [
     'create',
     ...['--tag-name', tag],
     ...(name ? ['--name', name] : []),
@@ -31,8 +31,8 @@ export default async function runExecutor({
       : []),
   ]).pipe(
     mapTo({ success: true }),
-    catchError((response: ChildProcessResponse) => {
-      logger.error(response.stderr);
+    catchError((response) => {
+      logger.error(response);
       return of({ success: false });
     })
   );
