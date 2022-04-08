@@ -50,7 +50,7 @@ jobs:
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
         run: |
           git add . 
-          git commit -m "ci: 📦 update nrwl workspace"
+          [[ $(git status --porcelain) ]] && git commit -m "ci: 📦 update nrwl workspace" || echo "nothing to commit"
 
       - name: Remove migrations.json & commit
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
