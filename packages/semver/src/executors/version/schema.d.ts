@@ -40,6 +40,7 @@ export interface VersionBuilderSchema {
    */
   versionTagPrefix?: string | null;
   postTargets: string[];
+  allowEmptyRelease?: boolean;
   commitMessageFormat?: string;
   preset: 'angular' | 'conventional';
 }

@@ -100,6 +100,7 @@ export function tryBump({
   preid,
   versionTagPrefix,
   syncVersions,
+  allowEmptyRelease,
 }: {
   preset: string;
   projectRoot: string;
@@ -109,6 +110,7 @@ export function tryBump({
   preid?: string;
   versionTagPrefix?: string | null;
   syncVersions?: boolean;
+  allowEmptyRelease?: boolean;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
     tagPrefix,
@@ -171,8 +173,12 @@ export function tryBump({
             );
           }
 
-          /* No commits since last release & no dependency updates so don't bump. */
-          if (!dependencyUpdates.length && !commits.length) {
+          /* No commits since last release & no dependency updates so don't bump if the `releastAtLeast` flag is not present. */
+          if (
+            !dependencyUpdates.length &&
+            !commits.length &&
+            !allowEmptyRelease
+          ) {
             return of(null);
           }
 

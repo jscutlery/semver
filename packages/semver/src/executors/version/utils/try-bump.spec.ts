@@ -308,7 +308,7 @@ describe('tryBump', () => {
     mockConventionalRecommendedBump.mockImplementation(
       callbackify(
         jest.fn().mockResolvedValue({
-          releaseType: undefined,
+          releaseType: 'patch',
         })
       ) as () => void
     );
@@ -322,6 +322,32 @@ describe('tryBump', () => {
     );
 
     expect(newVersion).toBeNull();
+    expect(mockGetCommits).toBeCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v2.1.0',
+    });
+  });
+
+  it('should try to do a bump even if there are no changes in current path when allowEmptyRelease is true', async () => {
+    mockGetCommits.mockReturnValue(of([]));
+    mockConventionalRecommendedBump.mockImplementation(
+      callbackify(
+        jest.fn().mockResolvedValue({
+          releaseType: 'patch',
+        })
+      ) as () => void
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        allowEmptyRelease: true,
+      })
+    );
+
+    expect(newVersion?.version).toEqual('2.1.1');
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',

@@ -84,6 +84,11 @@
       "type": "boolean",
       "default": false
     },
+    "allowEmptyRelease": {
+      "description": "Allow bumping versions even if there are no changes in the library.",
+      "type": "boolean",
+      "default": false
+    },
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
       "type": "string"
