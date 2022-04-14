@@ -26,9 +26,6 @@
     "rxjs": "7.5.5",
     "standard-version": "9.3.2"
   },
-  "peerDependencies": {
-    "@nrwl/workspace": "^13.0.0"
-  },
   "devDependencies": {
     "@types/conventional-recommended-bump": "6.1.0",
     "@types/inquirer": "8.2.1",
