@@ -46,6 +46,7 @@ export default async function version(
     postTargets,
     commitMessageFormat,
     preset,
+    allowEmptyRelease,
   } = normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
@@ -78,6 +79,7 @@ export default async function version(
     releaseType: releaseAs,
     preid,
     syncVersions,
+    allowEmptyRelease,
   });
 
   const action$ = newVersion$.pipe(
