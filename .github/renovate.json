@@ -8,10 +8,11 @@
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
-    "automergeType": "branch"
+    "automergeType": "branch",
+    "commitMessageAction": "📦 Lock file maintenance"
   },
   "rangeStrategy": "update-lockfile",
-  "commitMessage": "{{{commitMessagePrefix}}} 📦 {{{commitMessageAction}}} {{{commitMessageTopic}}} {{{commitMessageExtra}}} {{{commitMessageSuffix}}}",
+  "commitMessageAction": "📦",
   "packageRules": [
     {
       "matchPackagePatterns": ["^@angular/", "^@nrwl/", "nx"],
