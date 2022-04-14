@@ -1,5 +1,4 @@
 import type { ExecutorContext, ProjectGraphDependency } from '@nrwl/devkit';
-
 import type { VersionBuilderSchema } from '../schema';
 
 export interface DependencyRoot {
@@ -34,14 +33,16 @@ export async function getDependencyRoots({
 export async function getProjectDependencies(
   projectName: string
 ): Promise<string[]> {
-  const module = await import('@nrwl/workspace/src/core/project-graph');
-  /* @notice: before Nx 13 `createProjectGraphAsync` doesn't exist.
-     @todo: remove the compatibility support later on. */
+  const { createProjectGraphAsync } = await import('@nrwl/devkit');
+  /* @todo: remove the compatibility support later on. */
   const dependencyGraph =
-    typeof module.createProjectGraphAsync === 'function'
-      ? await module.createProjectGraphAsync()
+    typeof createProjectGraphAsync === 'function'
+      ? await createProjectGraphAsync()
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (module as any).createProjectGraph();
+        (
+          (await import('@nrwl/workspace/src/core/project-graph')) as any
+        ).createProjectGraph();
+
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);
 }
 

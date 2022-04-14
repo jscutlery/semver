@@ -1,19 +1,16 @@
+import { createProjectGraphAsync } from '@nrwl/devkit';
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
-
+import { lastValueFrom } from 'rxjs';
 import version from './';
-import { createFakeContext, setupTestingWorkspace } from './testing';
+import type { VersionBuilderSchema } from './schema';
+import { createFakeContext, setupTestingWorkspace, type TestingWorkspace } from './testing';
+import { getProjectDependencies } from './utils/get-project-dependencies';
 import { readPackageJson } from './utils/project';
 
-import type { TestingWorkspace } from './testing';
-import type { VersionBuilderSchema } from './schema';
-import { createProjectGraphAsync } from '@nrwl/workspace/src/core/project-graph';
-import { lastValueFrom } from 'rxjs';
-import { getProjectDependencies } from './utils/get-project-dependencies';
-
-jest.mock('@nrwl/workspace/src/core/project-graph');
+jest.mock('@nrwl/devkit');
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
