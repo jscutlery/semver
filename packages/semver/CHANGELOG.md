@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.22.0](https://github.com/jscutlery/semver/compare/semver-2.21.6...semver-2.22.0) (2022-04-14)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 declare `@nrwl/workspace` as peer dep ([76d2d01](https://github.com/jscutlery/semver/commit/76d2d01d15e5184cfa5307b4448ddbbad00b4906))
+* **semver:** 🐞 use project graph fn from devkit ([729fc7f](https://github.com/jscutlery/semver/commit/729fc7fe384700fdb5b2c5dd204defda9d68b076))
+
+
+### Features
+
+* **semver:** allow empty releases ([fe75568](https://github.com/jscutlery/semver/commit/fe755680222d393d558fa57686a181483c235ad8)), closes [#477](https://github.com/jscutlery/semver/issues/477)
+
+
+
 ## [2.21.6](https://github.com/jscutlery/semver/compare/semver-2.21.5...semver-2.21.6) (2022-04-01)
 
 
