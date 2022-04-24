@@ -1,16 +1,12 @@
-import { resolve } from 'path';
 import { concat, forkJoin, iif, Observable, of } from 'rxjs';
-import { concatMap, switchMap } from 'rxjs/operators';
-import * as standardVersion from 'standard-version';
-
+import { concatMap, map } from 'rxjs/operators';
 import {
-  getChangelogPath,
   insertChangelogDependencyUpdates,
-  updateChangelog,
+  updateChangelog
 } from './utils/changelog';
-import { addToStage } from './utils/git';
-import { resolveInterpolation } from './utils/resolve-interpolation';
-import { getPackageFiles, getProjectRoots } from './utils/workspace';
+import { addToStage, commit, createTag } from './utils/git';
+import { updatePackageJson } from './utils/project';
+import { getProjectRoots } from './utils/workspace';
 
 export type Version =
   | {
@@ -55,17 +51,26 @@ export function versionWorkspace({
           ...options,
         })
       ),
-      /* Run Git add only once, after changelogs get generated in parallel. */
       concatMap((changelogPaths) =>
         addToStage({ paths: changelogPaths, dryRun: options.dryRun })
       )
     ),
-    getPackageFiles(options.workspaceRoot).pipe(
-      switchMap((packageFiles) =>
-        _runStandardVersion({
-          bumpFiles: packageFiles,
-          skipChangelog: skipRootChangelog,
-          ...options,
+    getProjectRoots(options.workspaceRoot).pipe(
+      concatMap((projectRoots) =>
+        forkJoin(
+          projectRoots.map((projectRoot) =>
+            updatePackageJson({
+              projectRoot,
+              newVersion: options.newVersion,
+            })
+          )
+        )
+      ),
+      map((packageFiles) => packageFiles.filter(p => p !== null)),
+      concatMap((packageFiles) =>
+        addToStage({
+          paths: packageFiles,
+          dryRun: options.dryRun,
         })
       )
     )
@@ -74,34 +79,64 @@ export function versionWorkspace({
 
 export function versionProject({
   workspaceRoot,
+  projectRoot,
+  newVersion,
+  dryRun,
   ...options
 }: CommonVersionOptions) {
   return _generateProjectChangelogs({
     ...options,
     workspaceRoot,
-    projectRoots: [options.projectRoot],
+    projectRoots: [projectRoot],
+    newVersion,
+    dryRun,
+    projectRoot,
   }).pipe(
     concatMap((changelogPaths) =>
       iif(
+        /* If --skipProjectChangelog is passed, changelogPaths has length 0,
+           otherwise it has 1 single entry. */
         () => changelogPaths.length === 1,
         insertChangelogDependencyUpdates({
           changelogPath: changelogPaths[0],
-          version: options.newVersion,
-          dryRun: options.dryRun,
+          version: newVersion,
+          dryRun,
           dependencyUpdates: options.dependencyUpdates,
         }).pipe(
           concatMap((changelogPath) =>
-            addToStage({ paths: [changelogPath], dryRun: options.dryRun })
+            addToStage({ paths: [changelogPath], dryRun })
           )
         ),
         of(null)
       )
     ),
     concatMap(() =>
-      _runStandardVersion({
-        bumpFiles: [resolve(options.projectRoot, 'package.json')],
-        skipChangelog: true,
-        ...options,
+      updatePackageJson({
+        newVersion,
+        projectRoot,
+      })
+    ),
+    concatMap((packageFile) =>
+      addToStage({
+        paths: [packageFile],
+        dryRun,
+      })
+    ),
+    concatMap(() =>
+      commit({
+        dryRun,
+        version: newVersion,
+        noVerify: options.noVerify,
+        projectName: options.projectName,
+        commitMessageFormat: '',
+      })
+    ),
+    concatMap(() =>
+      createTag({
+        dryRun,
+        version: newVersion,
+        commitMessage: '',
+        tagPrefix: options.tagPrefix,
       })
     )
   );
@@ -142,75 +177,4 @@ export function _generateProjectChangelogs({
         })
       )
   );
-}
-
-/* istanbul ignore next */
-export function _createCommitMessageFormatConfig({
-  projectName,
-  commitMessageFormat,
-}: {
-  projectName: string;
-  commitMessageFormat: string | undefined;
-}) {
-  return typeof commitMessageFormat === 'string'
-    ? {
-        releaseCommitMessageFormat: resolveInterpolation(commitMessageFormat, {
-          projectName,
-          /* Standard Version do the interpolation itself if we pass {{currentTag}} in the commit message format. */
-          version: '{{currentTag}}',
-        }) as string,
-      }
-    : {};
-}
-
-/* istanbul ignore next */
-export async function _runStandardVersion({
-  bumpFiles,
-  dryRun,
-  projectRoot,
-  newVersion,
-  noVerify,
-  preset,
-  tagPrefix,
-  skipChangelog,
-  projectName,
-  commitMessageFormat,
-  changelogHeader,
-}: {
-  bumpFiles: string[];
-  skipChangelog: boolean;
-} & Omit<CommonVersionOptions, 'skipProjectChangelog' | 'workspaceRoot'>) {
-  await standardVersion({
-    bumpFiles,
-    /* Make sure that we commit the manually generated changelogs that
-     * we staged. */
-    commitAll: true,
-    dryRun,
-    header: changelogHeader,
-    infile: getChangelogPath(projectRoot),
-    /* Control version to avoid different results between the value
-     * returned by `tryBump` and the one computed by standard-version. */
-    releaseAs: newVersion,
-    silent: false,
-
-    /* @Notice: For an obscure reason standard-version checks for `verify` instead of `no-verify`,
-     * Here is the source code: https://github.com/conventional-changelog/standard-version/blob/095e1ebc1ab393c202984b694395224a6888b825/lib/lifecycles/commit.js#L19 */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...({ verify: noVerify === false } as any),
-
-    packageFiles: [resolve(projectRoot, 'package.json')],
-    path: projectRoot,
-    preset,
-    tagPrefix,
-
-    /* @Notice: conditionally sets the config to avoid having `undefined` as a commit message. */
-    ..._createCommitMessageFormatConfig({
-      commitMessageFormat,
-      projectName,
-    }),
-
-    skip: {
-      changelog: skipChangelog,
-    },
-  });
 }

@@ -1,18 +1,8 @@
-import { resolve } from 'path';
-import { catchError, map } from 'rxjs/operators';
-
-import { readJsonFile } from './filesystem';
-
-import type { Observable } from 'rxjs';
 import type { ExecutorContext, WorkspaceJsonConfiguration } from '@nrwl/devkit';
-
-export function getPackageFiles(workspaceRoot: string): Observable<string[]> {
-  return getProjectRoots(workspaceRoot).pipe(
-    map((projectRoots) =>
-      projectRoots.map((projectRoot) => resolve(projectRoot, 'package.json'))
-    )
-  );
-}
+import { resolve } from 'path';
+import type { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { readJsonFile } from './filesystem';
 
 export function getProjectRoot(context: ExecutorContext): string {
   return context.workspace.projects[context.projectName as string].root;
