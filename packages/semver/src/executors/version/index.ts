@@ -86,7 +86,7 @@ export default async function version(
    * 3. Push to Git
    * 4. Run post targets
    */
-  const action$ = newVersion$.pipe(
+  const runSemver$ = newVersion$.pipe(
     switchMap((newVersion) => {
       if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
@@ -109,7 +109,7 @@ export default async function version(
         dependencyUpdates: newVersion.dependencyUpdates,
       };
 
-      const runSemver$ = defer(() =>
+      const version$ = defer(() =>
         syncVersions
           ? versionWorkspace({
               ...options,
@@ -130,7 +130,7 @@ export default async function version(
         syncVersions ? workspaceRoot : projectRoot
       );
 
-      return runSemver$.pipe(
+      return version$.pipe(
         calculateChangelogChanges({
           changelogHeader,
           changelogPath,
@@ -168,7 +168,7 @@ export default async function version(
   );
 
   return lastValueFrom(
-    action$.pipe(
+    runSemver$.pipe(
       catchError((error) => {
         if (error?.name === 'SchemaError') {
           logger.error(`Post-targets Error: ${error.message}`);
