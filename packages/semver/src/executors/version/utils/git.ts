@@ -125,7 +125,6 @@ export function commit({
   noVerify: boolean;
   commitMessage: string;
 }): Observable<void> {
-  console.log('commit')
   return exec('git', [
     'commit',
     ...(dryRun ? ['--dry-run'] : []),

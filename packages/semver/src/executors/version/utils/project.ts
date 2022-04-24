@@ -29,9 +29,10 @@ export function updatePackageJson({
         const newPackageJson = JSON.parse(packageJson);
         newPackageJson.version = newVersion;
 
-        return writeFile(packageJsonPath, newPackageJson).pipe(
-          map(() => packageJsonPath)
-        );
+        return writeFile(
+          packageJsonPath,
+          JSON.stringify(newPackageJson, null, 2)
+        ).pipe(map(() => packageJsonPath));
       }
 
       return of(packageJsonPath);

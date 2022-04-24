@@ -14,6 +14,8 @@ jest.mock('git-raw-commits', () => jest.fn());
 jest.mock('../../common/exec');
 
 describe('git', () => {
+  jest.spyOn(console, 'log').mockImplementation();
+
   afterEach(() => (cp.exec as jest.Mock).mockReset());
 
   describe(getCommits.name, () => {
