@@ -29,8 +29,8 @@ export interface CommonVersionOptions {
   projectRoot: string;
   workspaceRoot: string;
   tagPrefix: string;
-  changelogHeader?: string;
-  commitMessageFormat: string;
+  changelogHeader: string;
+  commitMessage: string;
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
@@ -39,6 +39,7 @@ export interface CommonVersionOptions {
 
 export function versionWorkspace({
   skipRootChangelog,
+  commitMessage,
   ...options
 }: {
   skipRootChangelog: boolean;
@@ -49,6 +50,7 @@ export function versionWorkspace({
         _generateChangelogs({
           projectRoots,
           skipRootChangelog,
+          commitMessage,
           ...options,
         })
       ),
@@ -76,17 +78,15 @@ export function versionWorkspace({
       concatMap(() =>
         commit({
           dryRun: options.dryRun,
-          version: options.newVersion,
           noVerify: options.noVerify,
-          projectName: options.projectName,
-          commitMessageFormat: options.commitMessageFormat,
+          commitMessage,
         })
       ),
       concatMap(() =>
         createTag({
           dryRun: options.dryRun,
           version: options.newVersion,
-          commitMessage: '',
+          commitMessage,
           tagPrefix: options.tagPrefix,
         })
       )
@@ -99,15 +99,17 @@ export function versionProject({
   projectRoot,
   newVersion,
   dryRun,
+  commitMessage,
   ...options
 }: CommonVersionOptions) {
   return _generateChangelogs({
-    ...options,
     projectRoots: [projectRoot],
+    skipRootChangelog: true,
     workspaceRoot,
     newVersion,
-    skipRootChangelog: true,
+    commitMessage,
     dryRun,
+    ...options,
   }).pipe(
     concatMap((changelogPaths) =>
       iif(
@@ -142,18 +144,16 @@ export function versionProject({
     concatMap(() =>
       commit({
         dryRun,
-        version: newVersion,
         noVerify: options.noVerify,
-        projectName: options.projectName,
-        commitMessageFormat: options.commitMessageFormat,
+        commitMessage,
       })
     ),
     concatMap(() =>
       createTag({
         dryRun,
         version: newVersion,
-        commitMessage: '',
         tagPrefix: options.tagPrefix,
+        commitMessage,
       })
     )
   );

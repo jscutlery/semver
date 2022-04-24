@@ -13,6 +13,7 @@ import {
 } from './utils/get-project-dependencies';
 import { DEFAULT_COMMIT_MESSAGE_FORMAT, tryPush } from './utils/git';
 import { runPostTargets } from './utils/post-target';
+import { resolveInterpolation } from './utils/resolve-interpolation';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
@@ -93,19 +94,24 @@ export default async function version(
         return of({ success: true });
       }
 
+      const commitMessage = resolveInterpolation(commitMessageFormat, {
+        projectName,
+        version: newVersion.version,
+      }) as string;
+
       const options: CommonVersionOptions = {
         dryRun,
         trackDeps,
-        newVersion: newVersion.version,
         noVerify,
         preset,
         projectRoot,
         tagPrefix,
         changelogHeader,
-        commitMessageFormat,
         workspaceRoot,
         projectName,
         skipProjectChangelog,
+        commitMessage,
+        newVersion: newVersion.version,
         dependencyUpdates: newVersion.dependencyUpdates,
       };
 

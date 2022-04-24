@@ -4,19 +4,13 @@ import {
   concatMap,
   defer,
   lastValueFrom,
-  map,
-  type Observable,
-  of,
-  type OperatorFunction,
-  switchMap,
+  map, of, switchMap, type Observable, type OperatorFunction
 } from 'rxjs';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';
-
+import type { Version } from '../version';
 import { diff } from './diff';
 import { readFile, readFileIfExists, writeFile } from './filesystem';
-
-import type { Version } from '../version';
 
 export const defaultHeader = `# Changelog
 
@@ -39,8 +33,8 @@ export function updateChangelog({
   dryRun: boolean;
   preset: string;
   newVersion: string;
+  tagPrefix: string;
   changelogHeader?: string;
-  tagPrefix?: string;
 }): Observable<string> {
   return defer(async () => {
     const changelogPath = getChangelogPath(projectRoot);

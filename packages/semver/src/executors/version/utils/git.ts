@@ -3,7 +3,6 @@ import * as gitRawCommits from 'git-raw-commits';
 import { defer, EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
 import { exec } from '../../common/exec';
-import { resolveInterpolation } from './resolve-interpolation';
 import { formatTag } from './tag';
 
 export const DEFAULT_COMMIT_MESSAGE_FORMAT = 'chore(${projectName}): release ${version}';
@@ -124,37 +123,18 @@ export function createTag({
 
 export function commit({
   dryRun,
-  version,
   noVerify,
-  projectName,
-  commitMessageFormat,
+  commitMessage,
 }: {
   dryRun: boolean;
-  version: string;
   noVerify: boolean;
-  projectName: string;
-  commitMessageFormat: string;
+  commitMessage: string;
 }): Observable<void> {
   return exec('git', [
     'commit',
     ...(dryRun ? ['--dry-run'] : []),
     ...(noVerify ? ['--no-verify'] : []),
     '-m',
-    formatCommitMessage({ version, commitMessageFormat, projectName }),
+    commitMessage,
   ]).pipe(map(() => undefined));
-}
-
-function formatCommitMessage({
-  version,
-  projectName,
-  commitMessageFormat,
-}: {
-  version: string;
-  projectName: string;
-  commitMessageFormat: string;
-}): string {
-  return resolveInterpolation(commitMessageFormat, {
-    version,
-    projectName,
-  }) as string;
 }
