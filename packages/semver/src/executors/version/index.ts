@@ -8,16 +8,19 @@ import {
   getChangelogPath
 } from './utils/changelog';
 import {
-  getDependencyRoots, type DependencyRoot
+  getDependencyRoots,
+  type DependencyRoot
 } from './utils/get-project-dependencies';
-import { tryPush } from './utils/git';
+import { DEFAULT_COMMIT_MESSAGE_FORMAT, tryPush } from './utils/git';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import {
   versionProject,
-  versionWorkspace, type CommonVersionOptions, type StandardVersionPreset
+  versionWorkspace,
+  type CommonVersionOptions,
+  type StandardVersionPreset
 } from './version';
 
 export default async function version(
@@ -77,6 +80,12 @@ export default async function version(
     allowEmptyRelease,
   });
 
+  /**
+   * 1. Calculate new version
+   * 2. Release [ create changelog -> add to stage -> commit -> tag ]
+   * 3. Push to Git
+   * 4. Run post targets
+   */
   const action$ = newVersion$.pipe(
     switchMap((newVersion) => {
       if (newVersion == null) {
@@ -100,7 +109,7 @@ export default async function version(
         dependencyUpdates: newVersion.dependencyUpdates,
       };
 
-      const runStandardVersion$ = defer(() =>
+      const runSemver$ = defer(() =>
         syncVersions
           ? versionWorkspace({
               ...options,
@@ -121,14 +130,7 @@ export default async function version(
         syncVersions ? workspaceRoot : projectRoot
       );
 
-      /**
-       * 1. Calculate new version
-       * 2. Release (create changelog -> add to stage -> commit -> tag)
-       * 3. Calculate changelog changes
-       * 4. Push to Git
-       * 5. Run post targets
-       */
-      return runStandardVersion$.pipe(
+      return runSemver$.pipe(
         calculateChangelogChanges({
           changelogHeader,
           changelogPath,
@@ -141,7 +143,7 @@ export default async function version(
                   runPostTargets({
                     postTargets,
                     options: {
-                      project: context.projectName,
+                      project: projectName,
                       version: newVersion.version,
                       tag: formatTag({
                         tagPrefix,
@@ -195,6 +197,8 @@ function normalizeOptions(options: VersionBuilderSchema) {
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
+    commitMessageFormat:
+      options.commitMessageFormat ?? DEFAULT_COMMIT_MESSAGE_FORMAT,
     preset:
       options.preset === 'angular'
         ? 'angular'

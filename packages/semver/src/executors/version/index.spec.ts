@@ -81,7 +81,7 @@ describe('@jscutlery/semver:version', () => {
     );
 
     /* Mock Git execution */
-    jest.spyOn(git, 'tryPushToGitRemote').mockReturnValue(of(''));
+    jest.spyOn(git, 'tryPush').mockReturnValue(of(''));
     jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
 
     mockRunPostTargets.mockReturnValue(of(undefined));
@@ -98,13 +98,6 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock console.info. */
     jest.spyOn(console, 'info').mockImplementation();
-
-    /* Mock getPackageFiles. */
-    jest
-      .spyOn(workspace, 'getPackageFiles')
-      .mockReturnValue(
-        of(['/root/packages/a/package.json', '/root/packages/b/package.json'])
-      );
 
     /* Mock getProjectRoots. */
     jest

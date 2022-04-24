@@ -6,6 +6,8 @@ import { exec } from '../../common/exec';
 import { resolveInterpolation } from './resolve-interpolation';
 import { formatTag } from './tag';
 
+export const DEFAULT_COMMIT_MESSAGE_FORMAT = 'chore(${projectName}): release ${version}';
+
 /**
  * Return the list of commits since `since` commit.
  */
