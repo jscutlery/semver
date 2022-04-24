@@ -172,19 +172,24 @@ export function _generateChangelogs({
   skipRootChangelog: boolean;
   projectRoots: string[];
 }): Observable<string[]> {
+  const changelogFiles = projectRoots
+    .filter(
+      (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot)
+    )
+    .filter(
+      (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot)
+    );
+
+  if (changelogFiles.length === 0) {
+    return of([]);
+  }
+
   return forkJoin(
-    projectRoots
-      .filter(
-        (projectRoot) => !skipProjectChangelog && projectRoot !== workspaceRoot
-      )
-      .filter(
-        (projectRoot) => !skipRootChangelog && projectRoot === workspaceRoot
-      )
-      .map((projectRoot) =>
-        updateChangelog({
-          projectRoot,
-          ...options,
-        })
-      )
+    changelogFiles.map((projectRoot) =>
+      updateChangelog({
+        projectRoot,
+        ...options,
+      })
+    )
   );
 }

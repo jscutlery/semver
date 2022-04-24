@@ -1,43 +1,49 @@
 import type { ExecutorContext } from '@nrwl/devkit';
 import { logger } from '@nrwl/devkit';
-import { execFile } from 'child_process';
 import { of, throwError } from 'rxjs';
-import * as standardVersion from 'standard-version';
-import * as changelog from 'standard-version/lib/lifecycles/changelog';
-import { callbackify } from 'util';
 import version from './';
 import type { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
+import * as changelog from './utils/changelog';
 import { getDependencyRoots } from './utils/get-project-dependencies';
 import * as git from './utils/git';
 import { runPostTargets } from './utils/post-target';
+import * as project from './utils/project';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
 
-
-
-jest.mock('child_process');
-jest.mock('standard-version', () => jest.fn());
-jest.mock('standard-version/lib/lifecycles/changelog', () => jest.fn());
-
+jest.mock('./utils/changelog');
+jest.mock('./utils/project');
 jest.mock('./utils/git');
 jest.mock('./utils/get-project-dependencies');
 jest.mock('./utils/try-bump');
 jest.mock('./utils/post-target');
 
 describe('@jscutlery/semver:version', () => {
-  const mockChangelog = changelog as jest.Mock;
-  const mockTryPushToGitRemote = git.tryPush as jest.MockedFunction<
-    typeof git.tryPush
+  const mockUpdatePackageJson =
+    project.updatePackageJson as jest.MockedFunction<
+      typeof project.updatePackageJson
+    >;
+  const mockUpdateChangelog = changelog.updateChangelog as jest.MockedFunction<
+    typeof changelog.updateChangelog
   >;
+  const mockInsertChangelogDependencyUpdates =
+    changelog.insertChangelogDependencyUpdates as jest.MockedFunction<
+      typeof changelog.insertChangelogDependencyUpdates
+    >;
+  const mockCalculateChangelogChanges =
+    changelog.calculateChangelogChanges as jest.MockedFunction<
+      typeof changelog.calculateChangelogChanges
+    >;
+  const mockTryPush = git.tryPush as jest.MockedFunction<typeof git.tryPush>;
   const mockAddToStage = git.addToStage as jest.MockedFunction<
     typeof git.addToStage
   >;
-  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
-  const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
-  const mockStandardVersion = standardVersion as jest.MockedFunction<
-    typeof standardVersion
+  const mockCommit = git.commit as jest.MockedFunction<typeof git.commit>;
+  const mockCreateTag = git.createTag as jest.MockedFunction<
+    typeof git.createTag
   >;
+  const mockTryBump = tryBump as jest.MockedFunction<typeof tryBump>;
   const mockGetDependencyRoots = getDependencyRoots as jest.MockedFunction<
     typeof getDependencyRoots
   >;
@@ -74,32 +80,32 @@ describe('@jscutlery/semver:version', () => {
 
     jest.spyOn(logger, 'info');
     jest.spyOn(logger, 'error');
+    jest.spyOn(console, 'info').mockImplementation();
 
-    mockChangelog.mockResolvedValue(undefined);
     mockTryBump.mockReturnValue(
       of({ version: '2.1.0', dependencyUpdates: [] })
     );
+    mockUpdateChangelog.mockImplementation(({ projectRoot }) =>
+      of(changelog.getChangelogPath(projectRoot))
+    );
+    mockUpdatePackageJson.mockImplementation(({ projectRoot }) =>
+      of(project.getPackageJsonPath(projectRoot))
+    );
+    mockCalculateChangelogChanges.mockReturnValue((source) => {
+      source.subscribe();
+      return of('');
+    });
+    mockInsertChangelogDependencyUpdates.mockReturnValue(of(''));
 
     /* Mock Git execution */
-    jest.spyOn(git, 'tryPush').mockReturnValue(of(''));
-    jest.spyOn(git, 'addToStage').mockReturnValue(of(undefined));
+    mockTryPush.mockReturnValue(of(''));
+    mockAddToStage.mockReturnValue(of(undefined));
+    mockCommit.mockReturnValue(of(undefined));
+    mockCreateTag.mockReturnValue(of(''));
 
     mockRunPostTargets.mockReturnValue(of(undefined));
     mockGetDependencyRoots.mockReturnValue(Promise.resolve([]));
 
-    /* Mock a dependency, don't ask me which one. */
-    mockExecFile.mockImplementation(
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      callbackify(jest.fn().mockResolvedValue('')) as any
-    );
-
-    /* Mock standardVersion. */
-    mockStandardVersion.mockResolvedValue(undefined);
-
-    /* Mock console.info. */
-    jest.spyOn(console, 'info').mockImplementation();
-
-    /* Mock getProjectRoots. */
     jest
       .spyOn(workspace, 'getProjectRoots')
       .mockReturnValue(
@@ -116,8 +122,41 @@ describe('@jscutlery/semver:version', () => {
     jest.resetAllMocks();
   });
 
-  describe('--syncVersions=false (independent versions)', () => {
-    it('should run standard-version independently on a project', async () => {
+  it('should version with --releaseAs', async () => {
+    const { success } = await version(
+      { ...options, releaseAs: 'major' },
+      context
+    );
+    expect(success).toBe(true);
+    expect(mockTryBump).toBeCalledWith(
+      expect.objectContaining({
+        releaseType: 'major',
+      })
+    );
+    expect(mockUpdateChangelog).toBeCalledWith(
+      expect.objectContaining({ newVersion: '2.1.0' })
+    );
+    expect(mockUpdatePackageJson).toBeCalledWith(
+      expect.objectContaining({ newVersion: '2.1.0' })
+    );
+    expect(mockCommit).toBeCalledWith(
+      expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
+    );
+    expect(mockCreateTag).toBeCalledWith(
+      expect.objectContaining({ version: '2.1.0', tagPrefix: 'a-' })
+    );
+  });
+
+  it('should version with --noVerify', async () => {
+    const { success } = await version({ ...options, noVerify: true }, context);
+    expect(success).toBe(true);
+    expect(mockCommit).toBeCalledWith(
+      expect.objectContaining({ noVerify: true })
+    );
+  });
+
+  describe('--syncVersions=false (independent mode)', () => {
+    it('should run semver independently on a project', async () => {
       const { success } = await version(options, context);
 
       expect(success).toBe(true);
@@ -126,22 +165,21 @@ describe('@jscutlery/semver:version', () => {
           dependencyRoots: [],
         })
       );
-      expect(standardVersion).toBeCalledWith(
-        expect.objectContaining({
-          silent: false,
-          preset: 'angular',
-          dryRun: false,
-          verify: true,
-          tagPrefix: 'a-',
-          path: '/root/packages/a',
-          infile: '/root/packages/a/CHANGELOG.md',
-          bumpFiles: ['/root/packages/a/package.json'],
-          packageFiles: ['/root/packages/a/package.json'],
-        })
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({ newVersion: '2.1.0' })
+      );
+      expect(mockUpdatePackageJson).toBeCalledWith(
+        expect.objectContaining({ newVersion: '2.1.0' })
+      );
+      expect(mockCommit).toBeCalledWith(
+        expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
+      );
+      expect(mockCreateTag).toBeCalledWith(
+        expect.objectContaining({ version: '2.1.0', tagPrefix: 'a-' })
       );
     });
 
-    it('should run standard-version independently on a project with dependencies', async () => {
+    it('should run semver independently on a project with dependencies', async () => {
       mockGetDependencyRoots.mockReturnValue(
         Promise.resolve([
           { name: 'lib1', path: '/root/libs/lib1' },
@@ -162,45 +200,30 @@ describe('@jscutlery/semver:version', () => {
           ],
         })
       );
-      expect(standardVersion).toBeCalledWith(
-        expect.objectContaining({
-          silent: false,
-          preset: 'angular',
-          dryRun: false,
-          verify: true,
-          tagPrefix: 'a-',
-          path: '/root/packages/a',
-          infile: '/root/packages/a/CHANGELOG.md',
-          bumpFiles: ['/root/packages/a/package.json'],
-          packageFiles: ['/root/packages/a/package.json'],
-        })
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({ newVersion: '2.1.0' })
+      );
+      expect(mockUpdatePackageJson).toBeCalledWith(
+        expect.objectContaining({ newVersion: '2.1.0' })
+      );
+      expect(mockCommit).toBeCalledWith(
+        expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
+      );
+      expect(mockCreateTag).toBeCalledWith(
+        expect.objectContaining({ version: '2.1.0', tagPrefix: 'a-' })
       );
     });
 
-    it('should run standard-version independently on a project with failure on dependencies', async () => {
+    it('should run semver independently on a project with failure on dependencies', async () => {
       mockGetDependencyRoots.mockReturnValue(Promise.reject('thrown error'));
 
       expect(await version({ ...options, trackDeps: true }, context)).toEqual({
         success: false,
       });
       expect(logger.error).toBeCalledWith('Failed to determine dependencies.');
-      expect(standardVersion).not.toBeCalled();
-    });
-
-    it('should resolve ${target} tagPrefix interpolation', async () => {
-      const { success } = await version(
-        { ...options, tagPrefix: 'custom-tag-prefix/${target}-' },
-        context
-      );
-
-      expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
-        expect.objectContaining({
-          header: expect.any(String),
-          dryRun: false,
-          tagPrefix: 'custom-tag-prefix/a-',
-        })
-      );
+      expect(mockUpdatePackageJson).not.toBeCalled();
+      expect(mockCommit).not.toBeCalled();
+      expect(mockCreateTag).not.toBeCalled();
     });
 
     it('should resolve ${projectName} tagPrefix interpolation', async () => {
@@ -210,10 +233,8 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
+      expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({
-          header: expect.any(String),
-          dryRun: false,
           tagPrefix: 'custom-tag-prefix/a-',
         })
       );
@@ -228,7 +249,9 @@ describe('@jscutlery/semver:version', () => {
       expect(logger.info).toBeCalledWith(
         '⏹ Nothing changed since last release.'
       );
-      expect(standardVersion).not.toBeCalled();
+      expect(mockUpdatePackageJson).not.toBeCalled();
+      expect(mockCommit).not.toBeCalled();
+      expect(mockCreateTag).not.toBeCalled();
     });
 
     it('should skip changelog generation with --skipProjectChangelog', async () => {
@@ -238,11 +261,10 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
-        expect.objectContaining({
-          skip: { changelog: true },
-        })
-      );
+      expect(mockUpdateChangelog).not.toBeCalled();
+      expect(mockUpdatePackageJson).toBeCalled();
+      expect(mockCommit).toBeCalled();
+      expect(mockCreateTag).toBeCalled();
     });
   });
 
@@ -256,7 +278,7 @@ describe('@jscutlery/semver:version', () => {
       });
     });
 
-    it('should run standard-version on multiple projects', async () => {
+    xit('should run semver on multiple projects', async () => {
       const { success } = await version(
         {
           ...options,
@@ -267,7 +289,7 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(changelog).toHaveBeenNthCalledWith(
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
           header: expect.any(String),
@@ -276,7 +298,7 @@ describe('@jscutlery/semver:version', () => {
         }),
         '2.1.0'
       );
-      expect(changelog).toHaveBeenNthCalledWith(
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
           header: expect.any(String),
@@ -286,7 +308,7 @@ describe('@jscutlery/semver:version', () => {
         '2.1.0'
       );
 
-      expect(standardVersion).toBeCalledWith(
+      expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
           silent: false,
           preset: 'angular',
@@ -306,7 +328,7 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should skip root CHANGELOG generation (--skipRootChangelog)', async () => {
+    xit('should skip root CHANGELOG generation with --skipRootChangelog', async () => {
       await version(
         {
           ...options,
@@ -317,16 +339,13 @@ describe('@jscutlery/semver:version', () => {
         context
       );
 
-      expect(standardVersion).toBeCalledWith(
-        expect.objectContaining({
-          skip: {
-            changelog: true,
-          },
-        })
-      );
+      expect(mockUpdateChangelog).toBeCalledTimes(1);
+      expect(mockUpdateChangelog).toBeCalledWith(expect.objectContaining({
+        t: ''
+      }));
     });
 
-    it('should skip project CHANGELOG generation (--skipProjectChangelog)', async () => {
+    xit('should skip project CHANGELOG generation with --skipProjectChangelog', async () => {
       await version(
         {
           ...options,
@@ -337,10 +356,7 @@ describe('@jscutlery/semver:version', () => {
         context
       );
 
-      expect(mockChangelog).not.toBeCalled();
-      expect(mockAddToStage).toBeCalledWith(
-        expect.objectContaining({ paths: [] })
-      );
+      expect(mockUpdateChangelog).toBeCalledTimes(1);
     });
 
     it('should not version if no commits since last release', async () => {
@@ -355,55 +371,15 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-
       expect(logger.info).toBeCalledWith(
         '⏹ Nothing changed since last release.'
       );
-      expect(standardVersion).not.toBeCalled();
+      expect(mockUpdateChangelog).not.toBeCalled();
+      expect(mockUpdatePackageJson).not.toBeCalled();
+      expect(mockAddToStage).not.toBeCalled();
+      expect(mockCreateTag).not.toBeCalled();
+      expect(mockCommit).not.toBeCalled();
     });
-
-    it('should add files to Git stage only once', async () => {
-      await version(
-        {
-          ...options,
-          syncVersions: true,
-        },
-        context
-      );
-
-      expect(mockAddToStage).toBeCalledTimes(1);
-      expect(mockAddToStage).toBeCalledWith({
-        paths: expect.arrayContaining([
-          '/root/packages/a/CHANGELOG.md',
-          '/root/packages/b/CHANGELOG.md',
-        ]),
-        dryRun: false,
-      });
-    });
-  });
-
-  it('should version with --releaseAs', async () => {
-    const { success } = await version(
-      { ...options, releaseAs: 'major' },
-      context
-    );
-    expect(success).toBe(true);
-    expect(mockTryBump).toBeCalledWith(
-      expect.objectContaining({
-        releaseType: 'major',
-      })
-    );
-    expect(mockStandardVersion).toBeCalledWith(
-      expect.objectContaining({ releaseAs: '2.1.0' })
-    );
-  });
-
-  it('should version with --noVerify', async () => {
-    const { success } = await version({ ...options, noVerify: true }, context);
-    expect(success).toBe(true);
-    expect(mockStandardVersion).toBeCalledWith(
-      expect.objectContaining({ verify: false })
-    );
   });
 
   describe('--commitMessageFormat', () => {
@@ -418,11 +394,9 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockStandardVersion).toBeCalledWith(
+      expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
-          releaseCommitMessageFormat:
-            /* {{currentTag}} is resolved by standard-version itself.  */
-            'chore: bump "a" to {{currentTag}} [skip ci]',
+          commitMessage: 'chore: bump "a" to 2.1.0 [skip ci]',
         })
       );
     });
@@ -431,9 +405,9 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await version(options, context);
 
       expect(success).toBe(true);
-      expect(mockStandardVersion).toBeCalledWith(
-        expect.not.objectContaining({
-          releaseCommitMessageFormat: expect.any(String),
+      expect(mockCommit).toBeCalledWith(
+        expect.objectContaining({
+          commitMessage: 'chore(a): release 2.1.0',
         })
       );
     });
@@ -441,12 +415,12 @@ describe('@jscutlery/semver:version', () => {
 
   describe('--push', () => {
     it('should push to Git', async () => {
-      mockTryPushToGitRemote.mockReturnValue(of('success'));
+      mockTryPush.mockReturnValue(of('success'));
 
       const { success } = await version({ ...options, push: true }, context);
 
       expect(success).toBe(true);
-      expect(mockTryPushToGitRemote).toHaveBeenCalledWith(
+      expect(mockTryPush).toHaveBeenCalledWith(
         expect.objectContaining({
           remote: 'origin',
           branch: 'main',
@@ -456,7 +430,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should handle Git failure', async () => {
-      mockTryPushToGitRemote.mockReturnValue(
+      mockTryPush.mockReturnValue(
         throwError(() => new Error('Something went wrong'))
       );
 
@@ -470,12 +444,12 @@ describe('@jscutlery/semver:version', () => {
 
     it('should not push to Git by default', async () => {
       await version(options, context);
-      expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
+      expect(mockTryPush).not.toHaveBeenCalled();
     });
 
-    it('should not push to Git when (--dryRun)', async () => {
+    it('should not push to Git when with --dryRun', async () => {
       await version({ ...options, dryRun: true }, context);
-      expect(mockTryPushToGitRemote).not.toHaveBeenCalled();
+      expect(mockTryPush).not.toHaveBeenCalled();
     });
   });
 
@@ -496,7 +470,7 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockRunPostTargets).toBeCalledWith(
         expect.objectContaining({
-          options: {
+          templateStringContext: {
             baseBranch: 'main',
             dryRun: false,
             noVerify: false,
@@ -526,7 +500,7 @@ describe('@jscutlery/semver:version', () => {
       expect(logger.error).toBeCalledWith(expect.stringMatching('Nop!'));
     });
 
-    it('should skip post targets when (--dryRun)', async () => {
+    it('should skip post targets with --dryRun', async () => {
       const { success } = await version(
         {
           ...options,
@@ -576,7 +550,7 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await version(options, context);
 
       expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
+      expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           preset: 'angular',
         })
@@ -590,7 +564,7 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(standardVersion).toBeCalledWith(
+      expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           preset: 'conventionalcommits',
         })

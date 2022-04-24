@@ -1,11 +1,12 @@
 import { logger } from '@nrwl/devkit';
 import * as gitRawCommits from 'git-raw-commits';
-import { defer, EMPTY, Observable, throwError } from 'rxjs';
+import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
 import { exec } from '../../common/exec';
 import { formatTag } from './tag';
 
-export const DEFAULT_COMMIT_MESSAGE_FORMAT = 'chore(${projectName}): release ${version}';
+export const DEFAULT_COMMIT_MESSAGE_FORMAT =
+  'chore(${projectName}): release ${version}';
 
 /**
  * Return the list of commits since `since` commit.
@@ -42,28 +43,22 @@ export function tryPush({
   branch: string;
   noVerify: boolean;
 }): Observable<string> {
-  return defer(() => {
-    if (remote == null || branch == null) {
-      return throwError(
-        () =>
-          new Error(
-            'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
-          )
-      );
-    }
+  if (remote == null || branch == null) {
+    return throwError(
+      () =>
+        new Error(
+          'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
+        )
+    );
+  }
 
-    const gitPushOptions = [
-      '--follow-tags',
-      ...(noVerify ? ['--no-verify'] : []),
-    ];
+  const gitPushOptions = [
+    '--follow-tags',
+    ...(noVerify ? ['--no-verify'] : []),
+  ];
 
-    return exec('git', [
-      'push',
-      ...gitPushOptions,
-      '--atomic',
-      remote,
-      branch,
-    ]).pipe(
+  return exec('git', ['push', ...gitPushOptions, '--atomic', remote, branch])
+    .pipe(
       catchError((error) => {
         if (
           /atomic/.test(error) ||
@@ -75,8 +70,8 @@ export function tryPush({
 
         return throwError(() => error);
       })
-    );
-  }).pipe(tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`)));
+    )
+    .pipe(tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`)));
 }
 
 export function addToStage({
@@ -130,6 +125,7 @@ export function commit({
   noVerify: boolean;
   commitMessage: string;
 }): Observable<void> {
+  console.log('commit')
   return exec('git', [
     'commit',
     ...(dryRun ? ['--dry-run'] : []),

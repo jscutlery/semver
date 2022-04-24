@@ -200,6 +200,7 @@ function normalizeOptions(options: VersionBuilderSchema) {
     syncVersions: options.syncVersions as boolean,
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
+    allowEmptyRelease: options.allowEmptyRelease as boolean,
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
