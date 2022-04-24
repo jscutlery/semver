@@ -1,4 +1,4 @@
-import { createTemplateString } from './template-string';
+import { coerce, createTemplateString } from './template-string';
 
 describe(createTemplateString.name, () => {
   const testContext = { test1: 'xxx', test2: 'yyy' };
@@ -32,55 +32,38 @@ describe(createTemplateString.name, () => {
 
   it('should resolve boolean and numbers placeholders', () => {
     expect(
-      createTemplateString(
-        'test string with ${num} and ${bool}',
-        { num: 42, bool: true }
-      )
+      createTemplateString('test string with ${num} and ${bool}', {
+        num: 42,
+        bool: true,
+      })
     ).toBe('test string with 42 and true');
   });
+});
 
+describe(coerce.name, () => {
   it('should resolve true boolean', () => {
-    expect(
-      createTemplateString(
-        '${bool}',
-        { bool: true }
-      )
-    ).toBe(true);
+    expect(coerce(createTemplateString('${bool}', { bool: true }))).toBe(true);
   });
 
   it('should resolve false boolean', () => {
-    expect(
-      createTemplateString(
-        '${bool}',
-        { bool: false }
-      )
-    ).toBe(false);
+    expect(coerce(createTemplateString('${bool}', { bool: false }))).toBe(
+      false
+    );
   });
 
   it('should resolve number', () => {
-    expect(
-      createTemplateString(
-        '${num}',
-        { num: 42 }
-      )
-    ).toBe(42);
+    expect(coerce(createTemplateString('${num}', { num: 42 }))).toBe(42);
   });
 
   it('should handle multiple keys', () => {
     expect(
-      createTemplateString(
-        '${num}',
-        { num: 42, bool: true }
-      )
+      coerce(createTemplateString('${num}', { num: 42, bool: true }))
     ).toBe(42);
   });
 
   it('should handle multiple interpolations', () => {
     expect(
-      createTemplateString(
-        '${num} ${bool}',
-        { num: 42, bool: true }
-      )
+      coerce(createTemplateString('${num} ${bool}', { num: 42, bool: true }))
     ).toBe('42 true');
   });
 });
