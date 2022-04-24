@@ -1,4 +1,4 @@
-import { resolveInterpolation } from './resolve-interpolation';
+import { createTemplateString } from './template-string';
 
 export function formatTagPrefix({
   versionTagPrefix,
@@ -9,11 +9,11 @@ export function formatTagPrefix({
   projectName: string;
   syncVersions: boolean;
 }): string {
-  if (versionTagPrefix !== undefined) {
-    return resolveInterpolation(versionTagPrefix as string, {
+  if (versionTagPrefix != null) {
+    return createTemplateString(versionTagPrefix, {
       target: projectName,
       projectName: projectName,
-    }) as string;
+    });
   }
 
   if (syncVersions) {

@@ -1,27 +1,30 @@
-export function resolveInterpolation(
+export function createTemplateString(
   template: string,
-  resolvingContext: Record<string, any>
-): string | number | boolean {
-  const resolvedValue = Object.keys(resolvingContext).reduce(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  context: Record<string, any>
+): string {
+  return Object.keys(context).reduce(
     (accumulator, contextParamKey) => {
       const interpolationRegex = new RegExp(`\\$\\{${contextParamKey}}`, 'g');
       return accumulator.replace(
         interpolationRegex,
-        resolvingContext[contextParamKey].toString()
+        context[contextParamKey].toString()
       );
     },
     template
   );
+}
 
-  if (_isBool(resolvedValue)) {
-    return resolvedValue === "true";
+export function coerce(value: string): string | number | boolean {
+  if (_isBool(value)) {
+    return value === "true";
   }
 
-  if (_isNumeric(resolvedValue)) {
-    return +resolvedValue;
+  if (_isNumeric(value)) {
+    return +value;
   }
 
-  return resolvedValue;
+  return value;
 }
 
 function _isNumeric(value: unknown): boolean {

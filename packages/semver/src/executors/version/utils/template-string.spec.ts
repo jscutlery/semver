@@ -1,11 +1,11 @@
-import { resolveInterpolation } from './resolve-interpolation';
+import { createTemplateString } from './template-string';
 
-describe(resolveInterpolation.name, () => {
+describe(createTemplateString.name, () => {
   const testContext = { test1: 'xxx', test2: 'yyy' };
 
   it('should resolve noting', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string that have test1 and ${nothing} in it',
         testContext
       )
@@ -14,7 +14,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve ${test1} placeholders', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string with ${test1}, when ${test1} repeat itself',
         testContext
       )
@@ -23,7 +23,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve ${test1} and ${test2} placeholders', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string with ${test1} and ${test2}',
         testContext
       )
@@ -32,7 +32,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve boolean and numbers placeholders', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string with ${num} and ${bool}',
         { num: 42, bool: true }
       )
@@ -41,7 +41,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve true boolean', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         '${bool}',
         { bool: true }
       )
@@ -50,7 +50,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve false boolean', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         '${bool}',
         { bool: false }
       )
@@ -59,7 +59,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve number', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         '${num}',
         { num: 42 }
       )
@@ -68,7 +68,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should handle multiple keys', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         '${num}',
         { num: 42, bool: true }
       )
@@ -77,7 +77,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should handle multiple interpolations', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         '${num} ${bool}',
         { num: 42, bool: true }
       )

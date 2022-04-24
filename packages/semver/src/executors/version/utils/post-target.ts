@@ -1,23 +1,21 @@
+import type { ExecutorContext } from '@nrwl/devkit';
 import {
   parseTargetString,
   readTargetOptions,
   runExecutor,
-  Target,
+  Target
 } from '@nrwl/devkit';
-import { concat, defer } from 'rxjs';
-
-import { resolveInterpolation } from './resolve-interpolation';
-
 import type { Observable } from 'rxjs';
-import type { ExecutorContext } from '@nrwl/devkit';
+import { concat, defer } from 'rxjs';
+import { coerce, createTemplateString } from './template-string';
 
 export function runPostTargets({
   postTargets,
-  options = {},
+  templateStringContext,
   context,
 }: {
   postTargets: string[];
-  options?: Record<string, unknown>;
+  templateStringContext: Record<string, unknown>;
   context: ExecutorContext;
 }): Observable<void> {
   return concat(
@@ -28,7 +26,7 @@ export function runPostTargets({
 
         const resolvedOptions = _resolveTargetOptions({
           targetOptions: readTargetOptions(target, context),
-          options,
+          context: templateStringContext,
         });
 
         for await (const { success } of await runExecutor(
@@ -50,24 +48,26 @@ export function runPostTargets({
 /* istanbul ignore next */
 export function _resolveTargetOptions({
   targetOptions = {},
-  options,
+  context,
 }: {
   targetOptions?: Record<string, unknown>;
-  options: Record<string, unknown>;
+  context: Record<string, unknown>;
 }): Record<string, unknown> {
   return Object.entries(targetOptions).reduce(
-    (resolvedOptions, [option, value]) => {
-      const resolvedOption =
+    (optionsAccumulator, [option, value]) => {
+      const resolvedValue =
         typeof value === 'object'
           ? value
-          : resolveInterpolation(
-              (value as number | string).toString(),
-              options
+          : coerce(
+              createTemplateString(
+                (value as number | string | boolean).toString(),
+                context
+              )
             );
 
       return {
-        ...resolvedOptions,
-        [option]: resolvedOption,
+        ...optionsAccumulator,
+        [option]: resolvedValue,
       };
     },
     {}

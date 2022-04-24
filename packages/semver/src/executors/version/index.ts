@@ -13,8 +13,8 @@ import {
 } from './utils/get-project-dependencies';
 import { DEFAULT_COMMIT_MESSAGE_FORMAT, tryPush } from './utils/git';
 import { runPostTargets } from './utils/post-target';
-import { resolveInterpolation } from './utils/resolve-interpolation';
 import { formatTag, formatTagPrefix } from './utils/tag';
+import { createTemplateString } from './utils/template-string';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import {
@@ -94,10 +94,10 @@ export default async function version(
         return of({ success: true });
       }
 
-      const commitMessage = resolveInterpolation(commitMessageFormat, {
+      const commitMessage = createTemplateString(commitMessageFormat, {
         projectName,
         version: newVersion.version,
-      }) as string;
+      });
 
       const options: CommonVersionOptions = {
         dryRun,
@@ -148,7 +148,7 @@ export default async function version(
               ? [
                   runPostTargets({
                     postTargets,
-                    options: {
+                    templateStringContext: {
                       project: projectName,
                       version: newVersion.version,
                       tag: formatTag({
