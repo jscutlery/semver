@@ -14,8 +14,6 @@ export function getPackageJsonPath(projectRoot: string) {
 
 /**
  * Safely update package.json file.
- * Returns null if package.json does not exist.
- * Returns package.json path if successfully updated.
  */
 export function updatePackageJson({
   newVersion,
@@ -23,7 +21,7 @@ export function updatePackageJson({
 }: {
   newVersion: string;
   projectRoot: string;
-}): Observable<string | null> {
+}): Observable<string> {
   const packageJsonPath = getPackageJsonPath(projectRoot);
   return readFileIfExists(packageJsonPath).pipe(
     switchMap((packageJson) => {
@@ -36,7 +34,7 @@ export function updatePackageJson({
         );
       }
 
-      return of(null);
+      return of(packageJsonPath);
     })
   );
 }

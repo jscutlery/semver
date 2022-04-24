@@ -1,5 +1,5 @@
 import { concat, forkJoin, iif, Observable, of } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 import {
   insertChangelogDependencyUpdates,
   updateChangelog
@@ -27,10 +27,10 @@ export interface CommonVersionOptions {
   newVersion: string;
   noVerify: boolean;
   projectRoot: string;
-  tagPrefix: string;
   workspaceRoot: string;
+  tagPrefix: string;
   changelogHeader?: string;
-  commitMessageFormat?: string;
+  commitMessageFormat: string;
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
@@ -46,8 +46,9 @@ export function versionWorkspace({
   return concat(
     getProjectRoots(options.workspaceRoot).pipe(
       concatMap((projectRoots) =>
-        _generateProjectChangelogs({
+        _generateChangelogs({
           projectRoots,
+          skipRootChangelog,
           ...options,
         })
       ),
@@ -66,11 +67,27 @@ export function versionWorkspace({
           )
         )
       ),
-      map((packageFiles) => packageFiles.filter(p => p !== null)),
       concatMap((packageFiles) =>
         addToStage({
           paths: packageFiles,
           dryRun: options.dryRun,
+        })
+      ),
+      concatMap(() =>
+        commit({
+          dryRun: options.dryRun,
+          version: options.newVersion,
+          noVerify: options.noVerify,
+          projectName: options.projectName,
+          commitMessageFormat: options.commitMessageFormat,
+        })
+      ),
+      concatMap(() =>
+        createTag({
+          dryRun: options.dryRun,
+          version: options.newVersion,
+          commitMessage: '',
+          tagPrefix: options.tagPrefix,
         })
       )
     )
@@ -84,13 +101,13 @@ export function versionProject({
   dryRun,
   ...options
 }: CommonVersionOptions) {
-  return _generateProjectChangelogs({
+  return _generateChangelogs({
     ...options,
-    workspaceRoot,
     projectRoots: [projectRoot],
+    workspaceRoot,
     newVersion,
+    skipRootChangelog: true,
     dryRun,
-    projectRoot,
   }).pipe(
     concatMap((changelogPaths) =>
       iif(
@@ -128,7 +145,7 @@ export function versionProject({
         version: newVersion,
         noVerify: options.noVerify,
         projectName: options.projectName,
-        commitMessageFormat: '',
+        commitMessageFormat: options.commitMessageFormat,
       })
     ),
     concatMap(() =>
@@ -143,37 +160,30 @@ export function versionProject({
 }
 
 /**
- * Generate project's changelogs and return an array containing their path.
- * Skip generation if --skip-project-changelog enabled and return an empty array.
- *
  * istanbul ignore next
  */
-export function _generateProjectChangelogs({
+export function _generateChangelogs({
   projectRoots,
   workspaceRoot,
+  skipRootChangelog,
+  skipProjectChangelog,
   ...options
-}: CommonVersionOptions & {
-  skipProjectChangelog: boolean;
+}: Omit<CommonVersionOptions, 'projectRoot'> & {
+  skipRootChangelog: boolean;
   projectRoots: string[];
-  workspaceRoot: string;
 }): Observable<string[]> {
-  if (options.skipProjectChangelog) {
-    return of([]);
-  }
-
   return forkJoin(
     projectRoots
-      /* Don't update the workspace's changelog as it will be
-       * dealt with by `standardVersion`. */
-      .filter((projectRoot) => projectRoot !== workspaceRoot)
+      .filter(
+        (projectRoot) => !skipProjectChangelog && projectRoot !== workspaceRoot
+      )
+      .filter(
+        (projectRoot) => !skipRootChangelog && projectRoot === workspaceRoot
+      )
       .map((projectRoot) =>
         updateChangelog({
-          dryRun: options.dryRun,
-          preset: options.preset,
           projectRoot,
-          newVersion: options.newVersion,
-          changelogHeader: options.changelogHeader,
-          tagPrefix: options.tagPrefix,
+          ...options,
         })
       )
   );
