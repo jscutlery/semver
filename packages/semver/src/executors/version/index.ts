@@ -104,7 +104,6 @@ export default async function version(
         trackDeps,
         noVerify,
         preset,
-        projectRoot,
         tagPrefix,
         changelogHeader,
         workspaceRoot,
@@ -121,7 +120,10 @@ export default async function version(
               ...options,
               skipRootChangelog,
             })
-          : versionProject(options)
+          : versionProject({
+              ...options,
+              projectRoot,
+            })
       );
 
       const push$ = defer(() =>
@@ -176,7 +178,6 @@ export default async function version(
   return lastValueFrom(
     runSemver$.pipe(
       catchError((error) => {
-        console.error(error)
         if (error?.name === 'SchemaError') {
           logger.error(`Post-targets Error: ${error.message}`);
         } else {

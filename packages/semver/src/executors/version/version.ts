@@ -26,7 +26,6 @@ export interface CommonVersionOptions {
   trackDeps: boolean;
   newVersion: string;
   noVerify: boolean;
-  projectRoot: string;
   workspaceRoot: string;
   tagPrefix: string;
   changelogHeader: string;
@@ -101,7 +100,7 @@ export function versionProject({
   dryRun,
   commitMessage,
   ...options
-}: CommonVersionOptions) {
+}: { projectRoot: string } & CommonVersionOptions ) {
   return _generateChangelogs({
     projectRoots: [projectRoot],
     skipRootChangelog: true,
@@ -174,26 +173,22 @@ export function _generateChangelogs({
   skipRootChangelog: boolean;
   projectRoots: string[];
 }): Observable<string[]> {
-  const changelogFiles = projectRoots
-    // .filter(
-    //   (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot)
-    // )
-    // .filter(
-    //   (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot)
-    // );
+  const changelogRoots = projectRoots
+    .filter(
+      (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot)
+    )
+    .filter(
+      (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot)
+    );
 
-  console.log({ changelogFiles })
-
-  if (changelogFiles.length === 0) {
+  if (changelogRoots.length === 0) {
     return of([]);
   }
 
   return forkJoin(
-    changelogFiles.map((projectRoot) =>
-      updateChangelog({
-        projectRoot,
-        ...options,
-      })
-    )
+    changelogRoots.map((projectRoot) => updateChangelog({
+      projectRoot,
+      ...options,
+    }))
   );
 }
