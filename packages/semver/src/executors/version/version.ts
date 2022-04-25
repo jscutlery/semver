@@ -169,7 +169,7 @@ export function _generateChangelogs({
   skipRootChangelog,
   skipProjectChangelog,
   ...options
-}: Omit<CommonVersionOptions, 'projectRoot'> & {
+}: CommonVersionOptions & {
   skipRootChangelog: boolean;
   projectRoots: string[];
 }): Observable<string[]> {
