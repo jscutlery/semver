@@ -1,6 +1,6 @@
 module.exports = {
   displayName: 'semver',
-  preset: '../../jest.preset.js',
+
   setupFilesAfterEnv: ['jest-extended'],
   globals: {
     'ts-jest': {
@@ -14,4 +14,5 @@ module.exports = {
   coverageDirectory: '../../coverage/packages/semver',
   coverageReporters: ['html', 'lcov'],
   testEnvironment: 'node',
+  preset: '../../jest.preset.ts',
 };
