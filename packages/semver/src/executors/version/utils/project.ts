@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { map, of, switchMap, type Observable } from 'rxjs';
 import { readFileIfExists, readJsonFile, writeFile } from './filesystem';
+import { logStep } from './logger';
 
 export function readPackageJson(projectRoot: string): Observable<{
   version?: string;
@@ -32,7 +33,13 @@ export function updatePackageJson({
         return writeFile(
           packageJsonPath,
           JSON.stringify(newPackageJson, null, 2)
-        ).pipe(map(() => packageJsonPath));
+        ).pipe(
+          logStep({
+            step: 'package_json_success',
+            message: `Updated "${packageJsonPath}" version to "${newVersion}"`,
+          }),
+          map(() => packageJsonPath)
+        );
       }
 
       return of(null);

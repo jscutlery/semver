@@ -1,8 +1,8 @@
-import { logger } from '@nrwl/devkit';
 import * as gitRawCommits from 'git-raw-commits';
 import { EMPTY, Observable, throwError } from 'rxjs';
-import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
+import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 import { exec } from '../../common/exec';
+import { logStep } from './logger';
 import { formatTag } from './tag';
 
 export const DEFAULT_COMMIT_MESSAGE_FORMAT =
@@ -71,7 +71,7 @@ export function tryPush({
         return throwError(() => error);
       })
     )
-    .pipe(tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`)));
+    .pipe(logStep({ step: 'push_success', message: `Pushed to "${remote}" "${branch}"` }));
 }
 
 export function addToStage({
@@ -112,7 +112,8 @@ export function createTag({
 
   const tag = formatTag({ tagPrefix, version });
   return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
-    map(() => tag)
+    map(() => tag),
+    logStep({ step: 'tag_success', message: `Created tag "${tag}"` })
   );
 }
 
@@ -131,5 +132,11 @@ export function commit({
     ...(noVerify ? ['--no-verify'] : []),
     '-m',
     commitMessage,
-  ]).pipe(map(() => undefined));
+  ]).pipe(
+    map(() => undefined),
+    logStep({
+      step: 'commit_success',
+      message: `Committed "${commitMessage}"`,
+    })
+  );
 }

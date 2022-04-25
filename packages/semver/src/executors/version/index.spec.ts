@@ -80,7 +80,7 @@ describe('@jscutlery/semver:version', () => {
 
     jest.spyOn(logger, 'info');
     jest.spyOn(logger, 'error');
-    jest.spyOn(console, 'info').mockImplementation();
+    jest.spyOn(logger, 'log').mockImplementation();
 
     mockTryBump.mockReturnValue(
       of({ version: '2.1.0', dependencyUpdates: [] })

@@ -7,6 +7,7 @@ import {
 } from '@nrwl/devkit';
 import type { Observable } from 'rxjs';
 import { concat, defer } from 'rxjs';
+import { logStep } from './logger';
 import { coerce, createTemplateString } from './template-string';
 
 export function runPostTargets({
@@ -19,9 +20,10 @@ export function runPostTargets({
   context: ExecutorContext;
 }): Observable<void> {
   return concat(
-    ...postTargets.map((postTargetSchema) => {
-      return defer(async () => {
+    ...postTargets.map((postTargetSchema) =>
+      defer(async () => {
         const target = parseTargetString(postTargetSchema);
+
         _checkTargetExist(target, context);
 
         const resolvedOptions = _resolveTargetOptions({
@@ -40,8 +42,13 @@ export function runPostTargets({
             );
           }
         }
-      });
-    })
+      }).pipe(
+        logStep({
+          step: 'post_target_success',
+          message: `Ran post-target "${postTargetSchema}"`,
+        })
+      )
+    )
   );
 }
 

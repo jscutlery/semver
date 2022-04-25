@@ -5,6 +5,7 @@ import {
   updateChangelog
 } from './utils/changelog';
 import { addToStage, commit, createTag } from './utils/git';
+import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
 
@@ -196,7 +197,12 @@ export function _generateChangelogs({
       updateChangelog({
         projectRoot,
         ...options,
-      })
+      }).pipe(
+        logStep({
+          step: 'changelog_success',
+          message: `Generated CHANGELOG.md in "${projectRoot}"`,
+        })
+      )
     )
   );
 }
