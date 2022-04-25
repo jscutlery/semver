@@ -1,4 +1,4 @@
-import { concat, forkJoin, iif, Observable, of } from 'rxjs';
+import { concat, forkJoin, Observable, of } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import {
   insertChangelogDependencyUpdates,
@@ -39,6 +39,9 @@ export interface CommonVersionOptions {
 export function versionWorkspace({
   skipRootChangelog,
   commitMessage,
+  newVersion,
+  dryRun,
+  noVerify,
   ...options
 }: {
   skipRootChangelog: boolean;
@@ -50,11 +53,14 @@ export function versionWorkspace({
           projectRoots,
           skipRootChangelog,
           commitMessage,
+          newVersion,
+          dryRun,
+          noVerify,
           ...options,
         })
       ),
       concatMap((changelogPaths) =>
-        addToStage({ paths: changelogPaths, dryRun: options.dryRun })
+        addToStage({ paths: changelogPaths, dryRun })
       )
     ),
     getProjectRoots(options.workspaceRoot).pipe(
@@ -63,31 +69,31 @@ export function versionWorkspace({
           projectRoots.map((projectRoot) =>
             updatePackageJson({
               projectRoot,
-              newVersion: options.newVersion,
+              newVersion,
             })
           )
         )
       ),
       concatMap((packageFiles) =>
-        addToStage({
-          paths: packageFiles.filter(packageFile => packageFile !== null) as string[],
-          dryRun: options.dryRun,
-        })
-      ),
-      concatMap(() =>
-        commit({
-          dryRun: options.dryRun,
-          noVerify: options.noVerify,
-          commitMessage,
-        })
-      ),
-      concatMap(() =>
-        createTag({
-          dryRun: options.dryRun,
-          version: options.newVersion,
-          commitMessage,
-          tagPrefix: options.tagPrefix,
-        })
+        concat(
+          addToStage({
+            paths: packageFiles.filter(
+              (packageFile) => packageFile !== null
+            ) as string[],
+            dryRun,
+          }),
+          commit({
+            dryRun,
+            noVerify,
+            commitMessage,
+          }),
+          createTag({
+            dryRun,
+            version: newVersion,
+            commitMessage,
+            tagPrefix: options.tagPrefix,
+          })
+        )
       )
     )
   );
@@ -99,8 +105,10 @@ export function versionProject({
   newVersion,
   dryRun,
   commitMessage,
+  noVerify,
+  tagPrefix,
   ...options
-}: { projectRoot: string } & CommonVersionOptions ) {
+}: { projectRoot: string } & CommonVersionOptions) {
   return _generateChangelogs({
     projectRoots: [projectRoot],
     skipRootChangelog: true,
@@ -108,54 +116,52 @@ export function versionProject({
     newVersion,
     commitMessage,
     dryRun,
+    noVerify,
+    tagPrefix,
     ...options,
   }).pipe(
     concatMap((changelogPaths) =>
-      iif(
-        /* If --skipProjectChangelog is passed, changelogPaths has length 0,
-           otherwise it has 1 single entry. */
-        () => changelogPaths.length === 1,
-        insertChangelogDependencyUpdates({
-          changelogPath: changelogPaths[0],
-          version: newVersion,
-          dryRun,
-          dependencyUpdates: options.dependencyUpdates,
-        }).pipe(
-          concatMap((changelogPath) =>
-            addToStage({ paths: [changelogPath], dryRun })
-          )
-        ),
-        of(null)
-      )
-    ),
-    concatMap(() =>
-      updatePackageJson({
-        newVersion,
-        projectRoot,
-      })
-    ),
-    concatMap((packageFile) =>
-      packageFile !== null
-        ? addToStage({
-            paths: [packageFile],
+      /* If --skipProjectChangelog is passed `changelogPaths` has length 0, otherwise it has 1 single entry. */
+      changelogPaths.length === 1
+        ? insertChangelogDependencyUpdates({
+            changelogPath: changelogPaths[0],
+            version: newVersion,
             dryRun,
-          })
+            dependencyUpdates: options.dependencyUpdates,
+          }).pipe(
+            concatMap((changelogPath) =>
+              addToStage({ paths: [changelogPath], dryRun })
+            )
+          )
         : of(undefined)
     ),
     concatMap(() =>
-      commit({
-        dryRun,
-        noVerify: options.noVerify,
-        commitMessage,
-      })
-    ),
-    concatMap(() =>
-      createTag({
-        dryRun,
-        version: newVersion,
-        tagPrefix: options.tagPrefix,
-        commitMessage,
-      })
+      concat(
+        updatePackageJson({
+          newVersion,
+          projectRoot,
+        }).pipe(
+          concatMap((packageFile) =>
+            packageFile !== null
+              ? addToStage({
+                  paths: [packageFile],
+                  dryRun,
+                })
+              : of(undefined)
+          )
+        ),
+        commit({
+          dryRun,
+          noVerify,
+          commitMessage,
+        }),
+        createTag({
+          dryRun,
+          version: newVersion,
+          tagPrefix,
+          commitMessage,
+        })
+      )
     )
   );
 }
@@ -186,9 +192,11 @@ export function _generateChangelogs({
   }
 
   return forkJoin(
-    changelogRoots.map((projectRoot) => updateChangelog({
-      projectRoot,
-      ...options,
-    }))
+    changelogRoots.map((projectRoot) =>
+      updateChangelog({
+        projectRoot,
+        ...options,
+      })
+    )
   );
 }
