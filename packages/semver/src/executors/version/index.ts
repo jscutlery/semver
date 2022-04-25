@@ -1,29 +1,28 @@
-import { type ExecutorContext, logger } from '@nrwl/devkit';
+import { logger, type ExecutorContext } from '@nrwl/devkit';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
-
+import type { VersionBuilderSchema } from './schema';
 import {
   calculateChangelogChanges,
   defaultHeader,
-  getChangelogPath,
+  getChangelogPath
 } from './utils/changelog';
 import {
-  type DependencyRoot,
   getDependencyRoots,
+  type DependencyRoot
 } from './utils/get-project-dependencies';
-import { tryPushToGitRemote } from './utils/git';
+import { DEFAULT_COMMIT_MESSAGE_FORMAT, tryPush } from './utils/git';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
+import { createTemplateString } from './utils/template-string';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import {
-  type StandardVersionPreset,
-  type CommonVersionOptions,
   versionProject,
   versionWorkspace,
+  type CommonVersionOptions,
+  type StandardVersionPreset
 } from './version';
-
-import type { VersionBuilderSchema } from './schema';
 
 export default async function version(
   options: VersionBuilderSchema,
@@ -82,43 +81,53 @@ export default async function version(
     allowEmptyRelease,
   });
 
-  const action$ = newVersion$.pipe(
+  /**
+   * 1. Calculate new version
+   * 2. Release [ create changelog -> add to stage -> commit -> tag ]
+   * 3. Push to Git
+   * 4. Run post targets
+   */
+  const runSemver$ = newVersion$.pipe(
     switchMap((newVersion) => {
       if (newVersion == null) {
         logger.info('⏹ Nothing changed since last release.');
         return of({ success: true });
       }
 
+      const commitMessage = createTemplateString(commitMessageFormat, {
+        projectName,
+        version: newVersion.version,
+      });
+
       const options: CommonVersionOptions = {
         dryRun,
         trackDeps,
-        newVersion: newVersion.version,
         noVerify,
         preset,
-        projectRoot,
         tagPrefix,
         changelogHeader,
-        commitMessageFormat,
         workspaceRoot,
         projectName,
         skipProjectChangelog,
+        commitMessage,
+        newVersion: newVersion.version,
         dependencyUpdates: newVersion.dependencyUpdates,
       };
 
-      const runStandardVersion$ = defer(() =>
+      const version$ = defer(() =>
         syncVersions
           ? versionWorkspace({
               ...options,
               skipRootChangelog,
             })
-          : versionProject(options)
+          : versionProject({
+              ...options,
+              projectRoot,
+            })
       );
 
-      /**
-       * @todo 3.0.0: remove this in favor of @jscutlery/semver:push postTarget.
-       */
-      const pushToGitRemote$ = defer(() =>
-        tryPushToGitRemote({
+      const push$ = defer(() =>
+        tryPush({
           branch: baseBranch,
           noVerify,
           remote,
@@ -129,31 +138,24 @@ export default async function version(
         syncVersions ? workspaceRoot : projectRoot
       );
 
-      /**
-       * 1. Calculate new version
-       * 2. Release (create changelog -> add to stage -> commit -> tag)
-       * 3. Calculate changelog changes
-       * 4. Push to Git
-       * 5. Run post targets
-       */
-      return runStandardVersion$.pipe(
+      return version$.pipe(
         calculateChangelogChanges({
           changelogHeader,
           changelogPath,
         }),
         concatMap((notes) =>
           concat(
-            ...(push && dryRun === false ? [pushToGitRemote$] : []),
+            ...(push && dryRun === false ? [push$] : []),
             ...(dryRun === false
               ? [
                   runPostTargets({
                     postTargets,
-                    options: {
-                      project: context.projectName,
+                    templateStringContext: {
+                      project: projectName,
                       version: newVersion.version,
                       tag: formatTag({
                         tagPrefix,
-                        lastVersion: newVersion.version,
+                        version: newVersion.version,
                       }),
                       tagPrefix,
                       noVerify,
@@ -174,7 +176,7 @@ export default async function version(
   );
 
   return lastValueFrom(
-    action$.pipe(
+    runSemver$.pipe(
       catchError((error) => {
         if (error?.name === 'SchemaError') {
           logger.error(`Post-targets Error: ${error.message}`);
@@ -200,9 +202,12 @@ function normalizeOptions(options: VersionBuilderSchema) {
     syncVersions: options.syncVersions as boolean,
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
+    allowEmptyRelease: options.allowEmptyRelease as boolean,
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
+    commitMessageFormat:
+      options.commitMessageFormat ?? DEFAULT_COMMIT_MESSAGE_FORMAT,
     preset:
       options.preset === 'angular'
         ? 'angular'

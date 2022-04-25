@@ -1,11 +1,11 @@
-import { resolveInterpolation } from './resolve-interpolation';
+import { coerce, createTemplateString } from './template-string';
 
-describe(resolveInterpolation.name, () => {
+describe(createTemplateString.name, () => {
   const testContext = { test1: 'xxx', test2: 'yyy' };
 
   it('should resolve noting', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string that have test1 and ${nothing} in it',
         testContext
       )
@@ -14,7 +14,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve ${test1} placeholders', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string with ${test1}, when ${test1} repeat itself',
         testContext
       )
@@ -23,7 +23,7 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve ${test1} and ${test2} placeholders', () => {
     expect(
-      resolveInterpolation(
+      createTemplateString(
         'test string with ${test1} and ${test2}',
         testContext
       )
@@ -32,55 +32,38 @@ describe(resolveInterpolation.name, () => {
 
   it('should resolve boolean and numbers placeholders', () => {
     expect(
-      resolveInterpolation(
-        'test string with ${num} and ${bool}',
-        { num: 42, bool: true }
-      )
+      createTemplateString('test string with ${num} and ${bool}', {
+        num: 42,
+        bool: true,
+      })
     ).toBe('test string with 42 and true');
   });
+});
 
+describe(coerce.name, () => {
   it('should resolve true boolean', () => {
-    expect(
-      resolveInterpolation(
-        '${bool}',
-        { bool: true }
-      )
-    ).toBe(true);
+    expect(coerce(createTemplateString('${bool}', { bool: true }))).toBe(true);
   });
 
   it('should resolve false boolean', () => {
-    expect(
-      resolveInterpolation(
-        '${bool}',
-        { bool: false }
-      )
-    ).toBe(false);
+    expect(coerce(createTemplateString('${bool}', { bool: false }))).toBe(
+      false
+    );
   });
 
   it('should resolve number', () => {
-    expect(
-      resolveInterpolation(
-        '${num}',
-        { num: 42 }
-      )
-    ).toBe(42);
+    expect(coerce(createTemplateString('${num}', { num: 42 }))).toBe(42);
   });
 
   it('should handle multiple keys', () => {
     expect(
-      resolveInterpolation(
-        '${num}',
-        { num: 42, bool: true }
-      )
+      coerce(createTemplateString('${num}', { num: 42, bool: true }))
     ).toBe(42);
   });
 
   it('should handle multiple interpolations', () => {
     expect(
-      resolveInterpolation(
-        '${num} ${bool}',
-        { num: 42, bool: true }
-      )
+      coerce(createTemplateString('${num} ${bool}', { num: 42, bool: true }))
     ).toBe('42 true');
   });
 });

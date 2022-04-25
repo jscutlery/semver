@@ -1,9 +1,12 @@
 import { logger } from '@nrwl/devkit';
 import * as gitRawCommits from 'git-raw-commits';
-import { defer, EMPTY, Observable, throwError } from 'rxjs';
+import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith, tap } from 'rxjs/operators';
+import { exec } from '../../common/exec';
+import { formatTag } from './tag';
 
-import { execAsync } from '../../common/exec-async';
+export const DEFAULT_COMMIT_MESSAGE_FORMAT =
+  'chore(${projectName}): release ${version}';
 
 /**
  * Return the list of commits since `since` commit.
@@ -31,7 +34,7 @@ export function getCommits({
   );
 }
 
-export function tryPushToGitRemote({
+export function tryPush({
   remote,
   branch,
   noVerify,
@@ -40,53 +43,35 @@ export function tryPushToGitRemote({
   branch: string;
   noVerify: boolean;
 }): Observable<string> {
-  return defer(() => {
-    if (remote == null || branch == null) {
-      return throwError(
-        () =>
-          new Error(
-            'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
-          )
-      );
-    }
+  if (remote == null || branch == null) {
+    return throwError(
+      () =>
+        new Error(
+          'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
+        )
+    );
+  }
 
-    const gitPushOptions = [
-      '--follow-tags',
-      ...(noVerify ? ['--no-verify'] : []),
-    ];
+  const gitPushOptions = [
+    '--follow-tags',
+    ...(noVerify ? ['--no-verify'] : []),
+  ];
 
-    return execAsync('git', [
-      'push',
-      ...gitPushOptions,
-      '--atomic',
-      remote,
-      branch,
-    ]).pipe(
+  return exec('git', ['push', ...gitPushOptions, '--atomic', remote, branch])
+    .pipe(
       catchError((error) => {
         if (
-          /atomic/.test(error.stderr) ||
-          (process.env.GIT_REDIRECT_STDERR === '2>&1' &&
-            /atomic/.test(error.stdout))
+          /atomic/.test(error) ||
+          (process.env.GIT_REDIRECT_STDERR === '2>&1' && /atomic/.test(error))
         ) {
           console.warn('git push --atomic failed, attempting non-atomic push');
-
-          return execAsync('git', [
-            'push',
-            ...gitPushOptions,
-            remote,
-            branch,
-          ]).pipe(
-            catchError((error) => throwError(() => new Error(error.stderr)))
-          );
+          return exec('git', ['push', ...gitPushOptions, remote, branch]);
         }
 
-        return throwError(() => new Error(error.stderr));
+        return throwError(() => error);
       })
-    );
-  }).pipe(
-    map((process) => process.stdout),
-    tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`))
-  );
+    )
+    .pipe(tap(() => logger.log(`✅ Pushed to ${remote} ${branch}`)));
 }
 
 export function addToStage({
@@ -101,16 +86,50 @@ export function addToStage({
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
-  return execAsync('git', ['add', ...gitAddOptions]).pipe(
-    map(() => undefined),
-    catchError((error) => throwError(() => new Error(error.stderr)))
-  );
+  return exec('git', ['add', ...gitAddOptions]).pipe(map(() => undefined));
 }
 
 export function getFirstCommitRef(): Observable<string> {
-  return execAsync('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
-    /**                                Remove line breaks. */
-    map(({ stdout }) => stdout.replace(/\r?\n|\r/, '')),
-    catchError((error) => throwError(() => new Error(error.stderr)))
+  return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
+    map((output) => output.trim())
   );
+}
+
+export function createTag({
+  dryRun,
+  version,
+  tagPrefix,
+  commitMessage,
+}: {
+  dryRun: boolean;
+  version: string;
+  tagPrefix: string;
+  commitMessage: string;
+}): Observable<string> {
+  if (dryRun) {
+    return EMPTY;
+  }
+
+  const tag = formatTag({ tagPrefix, version });
+  return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
+    map(() => tag)
+  );
+}
+
+export function commit({
+  dryRun,
+  noVerify,
+  commitMessage,
+}: {
+  dryRun: boolean;
+  noVerify: boolean;
+  commitMessage: string;
+}): Observable<void> {
+  return exec('git', [
+    'commit',
+    ...(dryRun ? ['--dry-run'] : []),
+    ...(noVerify ? ['--no-verify'] : []),
+    '-m',
+    commitMessage,
+  ]).pipe(map(() => undefined));
 }

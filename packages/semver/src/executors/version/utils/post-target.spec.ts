@@ -1,7 +1,7 @@
 import { readTargetOptions, runExecutor, TargetConfiguration } from '@nrwl/devkit';
-
 import { createFakeContext } from '../testing';
 import { runPostTargets } from './post-target';
+
 
 jest.mock('@nrwl/devkit', () => ({
   runExecutor: jest.fn(),
@@ -75,6 +75,7 @@ describe(runPostTargets.name, () => {
 
     runPostTargets({
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test:prod'],
+      templateStringContext: {},
       context,
     }).subscribe({
       next: nextSpy,
@@ -120,6 +121,7 @@ describe(runPostTargets.name, () => {
 
     runPostTargets({
       postTargets: ['project-a:test', 'project-b:test'],
+      templateStringContext: {},
       context,
     }).subscribe({
       next: nextSpy,
@@ -141,6 +143,7 @@ describe(runPostTargets.name, () => {
 
     runPostTargets({
       postTargets: [],
+      templateStringContext: {},
       context,
     }).subscribe({
       next: nextSpy,
@@ -158,6 +161,7 @@ describe(runPostTargets.name, () => {
     runPostTargets({
       /* The second project "project-foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-foo:test'],
+      templateStringContext: {},
       context,
     }).subscribe({
       next: nextSpy,
@@ -176,6 +180,7 @@ describe(runPostTargets.name, () => {
     runPostTargets({
       /* The second target "foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-b:foo'],
+      templateStringContext: {},
       context,
     }).subscribe({
       next: nextSpy,
@@ -203,7 +208,7 @@ describe(runPostTargets.name, () => {
       version: 'project@${version}',
     });
 
-    const options = {
+    const templateStringContext = {
       version: '2.0.0',
       dryRun: true,
       num: 42,
@@ -212,7 +217,7 @@ describe(runPostTargets.name, () => {
 
     runPostTargets({
       postTargets: ['project-a:test', 'project-b:test'],
-      options: options,
+      templateStringContext,
       context,
     }).subscribe({
       complete: () => {

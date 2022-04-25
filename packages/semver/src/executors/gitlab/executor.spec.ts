@@ -1,19 +1,19 @@
 import { logger } from '@nrwl/devkit';
 import { of, throwError } from 'rxjs';
 
-import { execAsync } from '../common/exec-async';
+import { exec } from '../common/exec';
 import executor from './executor';
 
 import type { GitLabReleaseSchema } from './schema';
 
-jest.mock('../common/exec-async');
+jest.mock('../common/exec');
 
 const options: GitLabReleaseSchema = {
   tag: 'v1.0.0',
 };
 
 describe('@jscutlery/semver:gitlab', () => {
-  const mockExec = execAsync as jest.Mock;
+  const mockExec = exec as jest.Mock;
 
   beforeEach(() => {
     mockExec.mockImplementation(() => {

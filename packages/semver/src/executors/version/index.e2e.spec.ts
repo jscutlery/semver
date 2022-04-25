@@ -72,6 +72,7 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(console, 'warn').mockImplementation();
     jest.spyOn(console, 'info').mockImplementation();
   });
+
   afterAll(() => (console.info as jest.Mock).mockRestore());
 
   describe('package "a" with (--syncVersions=false)', () => {
@@ -1195,7 +1196,7 @@ $`)
         })
       );
 
-      expect(commitMessage()).toBe('chore(release): 0.1.0');
+      expect(commitMessage()).toBe('chore(a): release 0.1.0');
     });
   });
 
