@@ -1,12 +1,18 @@
-import { readTargetOptions, runExecutor, TargetConfiguration } from '@nrwl/devkit';
+import {
+  readTargetOptions,
+  runExecutor,
+  TargetConfiguration
+} from '@nrwl/devkit';
 import { createFakeContext } from '../testing';
 import { runPostTargets } from './post-target';
-
 
 jest.mock('@nrwl/devkit', () => ({
   runExecutor: jest.fn(),
   readTargetOptions: jest.fn(),
   parseTargetString: jest.requireActual('@nrwl/devkit').parseTargetString,
+  logger: {
+    log: jest.fn(),
+  },
 }));
 
 describe(runPostTargets.name, () => {
