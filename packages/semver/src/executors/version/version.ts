@@ -71,7 +71,7 @@ export function versionWorkspace({
       ),
       concatMap((packageFiles) =>
         addToStage({
-          paths: packageFiles,
+          paths: packageFiles.filter(packageFile => packageFile !== null) as string[],
           dryRun: options.dryRun,
         })
       ),
@@ -136,10 +136,12 @@ export function versionProject({
       })
     ),
     concatMap((packageFile) =>
-      addToStage({
-        paths: [packageFile],
-        dryRun,
-      })
+      packageFile !== null
+        ? addToStage({
+            paths: [packageFile],
+            dryRun,
+          })
+        : of(undefined)
     ),
     concatMap(() =>
       commit({
@@ -173,12 +175,14 @@ export function _generateChangelogs({
   projectRoots: string[];
 }): Observable<string[]> {
   const changelogFiles = projectRoots
-    .filter(
-      (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot)
-    )
-    .filter(
-      (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot)
-    );
+    // .filter(
+    //   (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot)
+    // )
+    // .filter(
+    //   (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot)
+    // );
+
+  console.log({ changelogFiles })
 
   if (changelogFiles.length === 0) {
     return of([]);

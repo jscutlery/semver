@@ -21,7 +21,7 @@ export function updatePackageJson({
 }: {
   newVersion: string;
   projectRoot: string;
-}): Observable<string> {
+}): Observable<string | null> {
   const packageJsonPath = getPackageJsonPath(projectRoot);
   return readFileIfExists(packageJsonPath).pipe(
     switchMap((packageJson) => {
@@ -35,7 +35,7 @@ export function updatePackageJson({
         ).pipe(map(() => packageJsonPath));
       }
 
-      return of(packageJsonPath);
+      return of(null);
     })
   );
 }

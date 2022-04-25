@@ -176,6 +176,7 @@ export default async function version(
   return lastValueFrom(
     runSemver$.pipe(
       catchError((error) => {
+        console.error(error)
         if (error?.name === 'SchemaError') {
           logger.error(`Post-targets Error: ${error.message}`);
         } else {
