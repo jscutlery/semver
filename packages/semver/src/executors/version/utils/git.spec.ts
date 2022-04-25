@@ -4,6 +4,7 @@ import { PassThrough } from 'stream';
 import * as cp from '../../common/exec';
 import {
   addToStage,
+  commit,
   createTag,
   getCommits,
   getFirstCommitRef,
@@ -242,6 +243,57 @@ describe('git', () => {
           done();
         },
       });
+    });
+  });
+
+  describe(commit.name, () => {
+    beforeEach(() => jest.spyOn(cp, 'exec').mockReturnValue(of('success')));
+
+    it('should commit', async () => {
+      await lastValueFrom(
+        commit({
+          dryRun: false,
+          noVerify: false,
+          commitMessage: 'chore(release): 1.0.0',
+        })
+      );
+
+      expect(cp.exec).toBeCalledWith(
+        'git',
+        expect.arrayContaining(['commit', '-m', 'chore(release): 1.0.0'])
+      );
+    });
+
+    it('should pass --dryRun', async () => {
+      await lastValueFrom(
+        commit({
+          dryRun: true,
+          noVerify: false,
+          commitMessage: 'chore(release): 1.0.0',
+        })
+      );
+
+
+      expect(cp.exec).toBeCalledWith(
+        'git',
+        expect.arrayContaining(['--dry-run'])
+      );
+    });
+
+    it('should pass --noVerify', async () => {
+      await lastValueFrom(
+        commit({
+          dryRun: false,
+          noVerify: true,
+          commitMessage: 'chore(release): 1.0.0',
+        })
+      );
+
+
+      expect(cp.exec).toBeCalledWith(
+        'git',
+        expect.arrayContaining(['--no-verify'])
+      );
     });
   });
 });
