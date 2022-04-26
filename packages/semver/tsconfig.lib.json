@@ -8,7 +8,8 @@
   },
   "exclude": [
     "src/builders/version/testing.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "jest.config.ts"
   ],
   "include": ["**/*.ts"]
 }

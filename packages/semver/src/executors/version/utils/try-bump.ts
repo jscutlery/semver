@@ -1,28 +1,15 @@
 import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
-import { defer, forkJoin, iif, of } from 'rxjs';
+import { defer, forkJoin, iif, of, type Observable } from 'rxjs';
 import { catchError, defaultIfEmpty, map, shareReplay, switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
-
+import { type ReleaseIdentifier } from '../schema';
+import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
+import { type DependencyRoot } from './get-project-dependencies';
 import { getCommits, getFirstCommitRef } from './git';
 import { formatTag, formatTagPrefix } from './tag';
-
-import type { Observable } from 'rxjs';
-import type { ReleaseIdentifier } from '../schema';
-import type { DependencyRoot } from './get-project-dependencies';
-
-export type Version =
-  | {
-      type: 'project';
-      version: string | null;
-    }
-  | {
-      type: 'dependency';
-      version: string | null;
-      dependencyName: string;
-    };
 
 export interface NewVersion {
   version: string;

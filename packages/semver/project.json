@@ -35,7 +35,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "packages/semver/jest.config.js",
+        "jestConfig": "packages/semver/jest.config.ts",
         "passWithNoTests": true
       }
     },
