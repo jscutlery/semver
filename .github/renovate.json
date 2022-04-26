@@ -9,7 +9,8 @@
     "enabled": true,
     "automerge": true,
     "automergeType": "branch",
-    "commitMessageAction": "📦 Lock file maintenance"
+    "commitMessageAction": "📦 Lock file maintenance",
+    "semanticCommitType": "build"
   },
   "rangeStrategy": "update-lockfile",
   "commitMessageAction": "📦",
