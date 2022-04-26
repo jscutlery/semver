@@ -63,10 +63,6 @@
   },
   "workspaces": [
     "./packages/*"
-  ],
-  "dependencies": {},
-  "resolutions": {
-    "rxjs": "^7.4.0"
-  }
+  ]
 }
 

@@ -21,7 +21,7 @@
     "migrations": "./migrations.json"
   },
   "dependencies": {
-    "@nrwl/devkit": "13.10.2",
+    "@nrwl/devkit": "14.0.3",
     "inquirer": "8.2.2",
     "rxjs": "7.5.5",
     "standard-version": "9.3.2"
