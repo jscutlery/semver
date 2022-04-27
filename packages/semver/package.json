@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@nrwl/devkit": "14.0.3",
-    "inquirer": "8.2.2",
+    "inquirer": "8.2.3",
     "rxjs": "7.5.5",
     "standard-version": "9.3.2"
   },
