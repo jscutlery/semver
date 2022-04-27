@@ -1,7 +1,6 @@
-import { updateProjectConfiguration, getProjects } from '@nrwl/devkit';
+import { getProjects, updateProjectConfiguration, type Tree } from '@nrwl/devkit';
 
-import type { Tree } from '@nrwl/devkit';
-
+/* istanbul ignore next */
 export default function migrate(tree: Tree) {
   getProjects(tree).forEach((project, projectName) => {
     if (project.targets?.version) {
