@@ -149,6 +149,23 @@ export default async function version(
         })
       );
 
+      const _runPostTargets = ({ notes }: { notes: string }) =>
+        defer(() =>
+          runPostTargets({
+            context,
+            projectName,
+            postTargets,
+            templateStringContext: {
+              notes,
+              version,
+              projectName,
+              tag: formatTag({
+                tagPrefix,
+                version,
+              }),
+            },
+          })
+        );
       const changelogPath = getChangelogPath(
         syncVersions ? workspaceRoot : projectRoot
       );
@@ -161,24 +178,7 @@ export default async function version(
         concatMap((notes) =>
           concat(
             ...(push && dryRun === false ? [push$] : []),
-            ...(dryRun === false
-              ? [
-                  runPostTargets({
-                    context,
-                    projectName,
-                    postTargets,
-                    templateStringContext: {
-                      notes,
-                      version,
-                      projectName,
-                      tag: formatTag({
-                        tagPrefix,
-                        version,
-                      }),
-                    },
-                  }),
-                ]
-              : [])
+            ...(dryRun === false ? [_runPostTargets({ notes })] : [])
           )
         ),
         reduce((result) => result, { success: true })
