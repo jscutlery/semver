@@ -27,18 +27,10 @@ export function coerce(value: string): string | number | boolean {
   return value;
 }
 
-function _isNumeric(value: unknown): boolean {
-  if (typeof value !== 'string') {
-    return false;
-  }
-
+function _isNumeric(value: string): boolean {
   return !isNaN(+value) && !isNaN(parseFloat(value));
 }
 
-function _isBool(value: unknown): boolean {
-  if (typeof value !== 'string') {
-    return false;
-  }
-
+function _isBool(value: string): boolean {
   return value === 'true' || value === 'false';
 }
