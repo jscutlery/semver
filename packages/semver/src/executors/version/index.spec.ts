@@ -122,6 +122,29 @@ describe('@jscutlery/semver:version', () => {
     jest.resetAllMocks();
   });
 
+  it('should run steps in order', async () => {
+    const { success } = await version(
+      { ...options, push: true, postTargets: ['a:publish'] },
+      context
+    );
+    expect(success).toBe(true);
+    expect(mockTryBump).toHaveBeenCalledBefore(
+      mockUpdateChangelog as jest.Mock
+    );
+    expect(mockUpdateChangelog).toHaveBeenCalledBefore(
+      mockUpdatePackageJson as jest.Mock
+    );
+    expect(mockCommit).toHaveBeenCalledBefore(
+      mockCreateTag as jest.Mock
+    );
+    expect(mockCreateTag).toHaveBeenCalledBefore(
+      mockTryPush as jest.Mock
+    );
+    expect(mockTryPush).toHaveBeenCalledBefore(
+      mockRunPostTargets as jest.Mock
+    );
+  });
+
   it('should version with --releaseAs', async () => {
     const { success } = await version(
       { ...options, releaseAs: 'major' },
@@ -220,7 +243,9 @@ describe('@jscutlery/semver:version', () => {
       expect(await version({ ...options, trackDeps: true }, context)).toEqual({
         success: false,
       });
-      expect(logger.error).toBeCalledWith('Failed to determine dependencies.');
+      expect(logger.error).toBeCalledWith(
+        expect.stringContaining('Failed to determine dependencies.')
+      );
       expect(mockUpdatePackageJson).not.toBeCalled();
       expect(mockCommit).not.toBeCalled();
       expect(mockCreateTag).not.toBeCalled();
@@ -247,7 +272,7 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
       expect(logger.info).toBeCalledWith(
-        '⏹ Nothing changed since last release.'
+        expect.stringContaining('Nothing changed since last release.')
       );
       expect(mockUpdatePackageJson).not.toBeCalled();
       expect(mockCommit).not.toBeCalled();
@@ -275,10 +300,18 @@ describe('@jscutlery/semver:version', () => {
         project: 'workspace',
         projectRoot: '/root',
         workspaceRoot: '/root',
+        additionalProjects: [
+          { project: 'a', projectRoot: 'packages/a' },
+          { project: 'b', projectRoot: 'packages/b' },
+        ],
       });
+
+      jest
+        .spyOn(workspace, 'getProjectRoots')
+        .mockReturnValue(of(['/root/packages/a', '/root/packages/b', '/root']));
     });
 
-    xit('should run semver on multiple projects', async () => {
+    it('should commit and tag', async () => {
       const { success } = await version(
         {
           ...options,
@@ -289,46 +322,90 @@ describe('@jscutlery/semver:version', () => {
       );
 
       expect(success).toBe(true);
-      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
-        1,
+      expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({
-          header: expect.any(String),
+          commitMessage: 'chore(workspace): release 2.1.0',
           dryRun: false,
-          infile: '/root/packages/a/CHANGELOG.md',
-        }),
-        '2.1.0'
+          projectName: 'workspace',
+          tagPrefix: 'v',
+          version: '2.1.0',
+        })
       );
-      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
-          header: expect.any(String),
-          dryRun: false,
-          infile: '/root/packages/b/CHANGELOG.md',
-        }),
-        '2.1.0'
-      );
-
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
-          silent: false,
-          preset: 'angular',
+          commitMessage: 'chore(workspace): release 2.1.0',
           dryRun: false,
-          verify: true,
-          path: '/root',
-          infile: '/root/CHANGELOG.md',
-          bumpFiles: [
-            '/root/packages/a/package.json',
-            '/root/packages/b/package.json',
-          ],
-          packageFiles: ['/root/package.json'],
-          skip: {
-            changelog: false,
-          },
+          noVerify: false,
+          projectName: 'workspace',
         })
       );
     });
 
-    xit('should skip root CHANGELOG generation with --skipRootChangelog', async () => {
+    it('should update package.json files', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          /* Enable sync versions. */
+          syncVersions: true,
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockUpdatePackageJson).toBeCalledTimes(3);
+      expect(mockUpdatePackageJson.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          newVersion: '2.1.0',
+          projectRoot: '/root/packages/a',
+        })
+      );
+      expect(mockUpdatePackageJson.mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          newVersion: '2.1.0',
+          projectRoot: '/root/packages/b',
+        })
+      );
+      expect(mockUpdatePackageJson.mock.calls[2][0]).toEqual(
+        expect.objectContaining({
+          newVersion: '2.1.0',
+          projectRoot: '/root',
+        })
+      );
+    });
+
+    it('should update changelogs', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          /* Enable sync versions. */
+          syncVersions: true,
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockUpdateChangelog).toBeCalledTimes(3);
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          projectRoot: '/root/packages/a',
+        })
+      );
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          projectRoot: '/root/packages/b',
+        })
+      );
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
+        3,
+        expect.objectContaining({
+          projectRoot: '/root',
+        })
+      );
+    });
+
+    it('should skip root CHANGELOG generation with --skipRootChangelog', async () => {
       await version(
         {
           ...options,
@@ -339,13 +416,22 @@ describe('@jscutlery/semver:version', () => {
         context
       );
 
-      expect(mockUpdateChangelog).toBeCalledTimes(1);
-      expect(mockUpdateChangelog).toBeCalledWith(expect.objectContaining({
-        t: ''
-      }));
+      expect(mockUpdateChangelog).toBeCalledTimes(2);
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          projectRoot: '/root/packages/a',
+        })
+      );
+      expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          projectRoot: '/root/packages/b',
+        })
+      );
     });
 
-    xit('should skip project CHANGELOG generation with --skipProjectChangelog', async () => {
+    it('should skip project CHANGELOG generation with --skipProjectChangelog', async () => {
       await version(
         {
           ...options,
@@ -355,8 +441,12 @@ describe('@jscutlery/semver:version', () => {
         },
         context
       );
-
       expect(mockUpdateChangelog).toBeCalledTimes(1);
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({
+          projectRoot: '/root',
+        })
+      );
     });
 
     it('should not version if no commits since last release', async () => {
@@ -372,7 +462,7 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
       expect(logger.info).toBeCalledWith(
-        '⏹ Nothing changed since last release.'
+        expect.stringContaining('Nothing changed since last release.')
       );
       expect(mockUpdateChangelog).not.toBeCalled();
       expect(mockUpdatePackageJson).not.toBeCalled();
@@ -471,14 +561,9 @@ describe('@jscutlery/semver:version', () => {
       expect(mockRunPostTargets).toBeCalledWith(
         expect.objectContaining({
           templateStringContext: {
-            baseBranch: 'main',
-            dryRun: false,
-            noVerify: false,
             notes: '',
-            project: 'a',
-            remote: 'origin',
+            projectName: 'a',
             tag: 'a-2.1.0',
-            tagPrefix: 'a-',
             version: '2.1.0',
           },
         })
