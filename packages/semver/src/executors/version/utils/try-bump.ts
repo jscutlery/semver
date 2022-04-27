@@ -45,7 +45,7 @@ export function getProjectVersion({
       _logStep({
         step: 'warning',
         level: 'warn',
-        message: `🟠 No previous version tag found, fallback to version 0.0.0.
+        message: `No previous version tag found, fallback to version 0.0.0.
         New version will be calculated based on all changes since first commit.
         If your project is already versioned, please tag the latest release commit with ${tagPrefix}x.y.z and run this command again.`,
         projectName,

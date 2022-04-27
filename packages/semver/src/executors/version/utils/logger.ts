@@ -15,9 +15,9 @@ type Step =
   | 'commit_success';
 
 const iconMap = new Map<Step, string>([
-  ['nothing_changed', '⏹'],
   ['failure', '❌'],
   ['warning', '🟠'],
+  ['nothing_changed', '🟢'],
   ['calculate_version_success', '🆕'],
   ['changelog_success', '📜'],
   ['commit_success', '📦'],

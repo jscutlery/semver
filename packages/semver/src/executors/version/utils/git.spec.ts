@@ -55,6 +55,7 @@ describe('git', () => {
           remote: 'upstream',
           branch: 'master',
           noVerify: false,
+          projectName: 'p',
         })
       );
 
@@ -78,6 +79,7 @@ describe('git', () => {
           remote: 'origin',
           branch: 'main',
           noVerify: true,
+          projectName: 'p',
         })
       );
 
@@ -107,6 +109,7 @@ describe('git', () => {
           remote: 'origin',
           branch: 'master',
           noVerify: false,
+          projectName: 'p',
         })
       );
 
@@ -134,6 +137,7 @@ describe('git', () => {
             remote: 'origin',
             branch: 'master',
             noVerify: false,
+            projectName: 'p',
           })
         )
       ).rejects.toEqual(new Error('Something went wrong'));
@@ -149,6 +153,7 @@ describe('git', () => {
             branch: undefined as any,
             /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
+            projectName: 'p',
           })
         )
       ).rejects.toEqual(expect.any(Error));
@@ -215,6 +220,7 @@ describe('git', () => {
           tagPrefix: 'project-a-',
           version: '1.0.0',
           commitMessage: 'chore(release): 1.0.0',
+          projectName: 'p',
         })
       );
 
@@ -237,6 +243,7 @@ describe('git', () => {
         tagPrefix: 'project-a-',
         version: '1.0.0',
         commitMessage: 'chore(release): 1.0.0',
+        projectName: 'p',
       }).subscribe({
         complete: () => {
           expect(cp.exec).not.toBeCalled();
@@ -255,6 +262,7 @@ describe('git', () => {
           dryRun: false,
           noVerify: false,
           commitMessage: 'chore(release): 1.0.0',
+          projectName: 'p',
         })
       );
 
@@ -270,9 +278,9 @@ describe('git', () => {
           dryRun: true,
           noVerify: false,
           commitMessage: 'chore(release): 1.0.0',
+          projectName: 'p',
         })
       );
-
 
       expect(cp.exec).toBeCalledWith(
         'git',
@@ -286,9 +294,9 @@ describe('git', () => {
           dryRun: false,
           noVerify: true,
           commitMessage: 'chore(release): 1.0.0',
+          projectName: 'p',
         })
       );
-
 
       expect(cp.exec).toBeCalledWith(
         'git',

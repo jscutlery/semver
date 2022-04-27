@@ -73,6 +73,7 @@ export function versionWorkspace({
             updatePackageJson({
               projectRoot,
               newVersion,
+              projectName,
             })
           )
         )
@@ -147,6 +148,7 @@ export function versionProject({
         updatePackageJson({
           newVersion,
           projectRoot,
+          projectName,
         }).pipe(
           concatMap((packageFile) =>
             packageFile !== null
@@ -209,7 +211,7 @@ export function _generateChangelogs({
       }).pipe(
         logStep({
           step: 'changelog_success',
-          message: `Generated CHANGELOG.md in "${projectRoot}"`,
+          message: `Generated CHANGELOG.md.`,
           projectName,
         })
       )

@@ -80,6 +80,7 @@ describe(runPostTargets.name, () => {
     });
 
     runPostTargets({
+      projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test:prod'],
       templateStringContext: {},
       context,
@@ -126,6 +127,7 @@ describe(runPostTargets.name, () => {
     });
 
     runPostTargets({
+      projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test'],
       templateStringContext: {},
       context,
@@ -134,9 +136,7 @@ describe(runPostTargets.name, () => {
       error: (error) => {
         expect(nextSpy).toBeCalledTimes(1);
         expect(error.toString()).toEqual(
-          expect.stringMatching(
-            'Something went wrong with post target: "project-b:test"'
-          )
+          'Error: Something went wrong with post-target "project-b:test".'
         );
         expect(mockRunExecutor).toBeCalledTimes(2);
         done();
@@ -148,6 +148,7 @@ describe(runPostTargets.name, () => {
     const errorSpy = jest.fn();
 
     runPostTargets({
+      projectName: 'p',
       postTargets: [],
       templateStringContext: {},
       context,
@@ -165,6 +166,7 @@ describe(runPostTargets.name, () => {
 
   it('should handle wrong post target project', (done) => {
     runPostTargets({
+      projectName: 'p',
       /* The second project "project-foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-foo:test'],
       templateStringContext: {},
@@ -175,7 +177,7 @@ describe(runPostTargets.name, () => {
         expect(nextSpy).toBeCalledTimes(1);
         expect(mockRunExecutor).toBeCalledTimes(1);
         expect(error.toString()).toEqual(
-          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c"'
+          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c".'
         );
         done();
       },
@@ -184,6 +186,7 @@ describe(runPostTargets.name, () => {
 
   it('should handle wrong post target name', (done) => {
     runPostTargets({
+      projectName: 'p',
       /* The second target "foo" is not defined in the workspace. */
       postTargets: ['project-a:test', 'project-b:foo'],
       templateStringContext: {},
@@ -194,7 +197,7 @@ describe(runPostTargets.name, () => {
         expect(nextSpy).toBeCalledTimes(1);
         expect(mockRunExecutor).toBeCalledTimes(1);
         expect(error.toString()).toEqual(
-          'Error: The target name "foo" does not exist. Available targets for "project-b": "test"'
+          'Error: The target name "foo" does not exist. Available targets for "project-b": "test".'
         );
         done();
       },
@@ -222,6 +225,7 @@ describe(runPostTargets.name, () => {
     };
 
     runPostTargets({
+      projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test'],
       templateStringContext,
       context,

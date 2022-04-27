@@ -1,12 +1,11 @@
 import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
+import * as gitSemverTags from 'git-semver-tags';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { callbackify } from 'util';
-
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 import { tryBump } from './try-bump';
-import * as gitSemverTags from 'git-semver-tags';
 
 jest.mock('conventional-recommended-bump');
 jest.mock('./get-last-version');
@@ -55,11 +54,13 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: undefined,
         preid: undefined,
+        projectName: '',
       })
     );
 
@@ -115,6 +116,7 @@ describe('tryBump', () => {
         ],
         tagPrefix: 'v',
         syncVersions: true,
+        projectName: '',
       })
     );
 
@@ -150,11 +152,13 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'premajor',
         preid: 'alpha',
+        projectName: '',
       })
     );
 
@@ -180,14 +184,16 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'major',
+        projectName: '',
       })
     );
 
-    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "3.0.0"});
+    expect(newVersion).toEqual({ dependencyUpdates: [], version: '3.0.0' });
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -209,14 +215,16 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'patch',
+        projectName: '',
       })
     );
 
-    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "2.1.1"});
+    expect(newVersion).toEqual({ dependencyUpdates: [], version: '2.1.1' });
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -238,14 +246,16 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'minor',
+        projectName: '',
       })
     );
 
-    expect(newVersion).toEqual({"dependencyUpdates": [], "version": "2.2.0"});
+    expect(newVersion).toEqual({ dependencyUpdates: [], version: '2.2.0' });
 
     expect(mockConventionalRecommendedBump).not.toBeCalled();
 
@@ -261,10 +271,12 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'patch',
+        projectName: '',
       })
     );
 
@@ -287,9 +299,11 @@ describe('tryBump', () => {
 
     await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
+        projectName: '',
       })
     );
 
@@ -315,9 +329,11 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
+        projectName: '',
       })
     );
 
@@ -340,10 +356,12 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
+        syncVersions: false,
         preset: 'angular',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         allowEmptyRelease: true,
+        projectName: '',
       })
     );
 

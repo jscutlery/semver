@@ -19,9 +19,11 @@ export function getPackageJsonPath(projectRoot: string) {
 export function updatePackageJson({
   newVersion,
   projectRoot,
+  projectName,
 }: {
   newVersion: string;
   projectRoot: string;
+  projectName: string;
 }): Observable<string | null> {
   const packageJsonPath = getPackageJsonPath(projectRoot);
   return readFileIfExists(packageJsonPath).pipe(
@@ -36,7 +38,8 @@ export function updatePackageJson({
         ).pipe(
           logStep({
             step: 'package_json_success',
-            message: `Updated "${packageJsonPath}" version to "${newVersion}"`,
+            message: `Updated package.json version.`,
+            projectName,
           }),
           map(() => packageJsonPath)
         );
