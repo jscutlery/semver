@@ -43,6 +43,7 @@ export function versionWorkspace({
   newVersion,
   dryRun,
   noVerify,
+  projectName,
   ...options
 }: {
   skipRootChangelog: boolean;
@@ -57,6 +58,7 @@ export function versionWorkspace({
           newVersion,
           dryRun,
           noVerify,
+          projectName,
           ...options,
         })
       ),
@@ -87,12 +89,14 @@ export function versionWorkspace({
             dryRun,
             noVerify,
             commitMessage,
+            projectName,
           }),
           createTag({
             dryRun,
             version: newVersion,
             commitMessage,
             tagPrefix: options.tagPrefix,
+            projectName,
           })
         )
       )
@@ -108,9 +112,11 @@ export function versionProject({
   commitMessage,
   noVerify,
   tagPrefix,
+  projectName,
   ...options
 }: { projectRoot: string } & CommonVersionOptions) {
   return _generateChangelogs({
+    projectName,
     projectRoots: [projectRoot],
     skipRootChangelog: true,
     workspaceRoot,
@@ -155,12 +161,14 @@ export function versionProject({
           dryRun,
           noVerify,
           commitMessage,
+          projectName,
         }),
         createTag({
           dryRun,
           version: newVersion,
           tagPrefix,
           commitMessage,
+          projectName,
         })
       )
     )
@@ -175,6 +183,7 @@ export function _generateChangelogs({
   workspaceRoot,
   skipRootChangelog,
   skipProjectChangelog,
+  projectName,
   ...options
 }: CommonVersionOptions & {
   skipRootChangelog: boolean;
@@ -201,6 +210,7 @@ export function _generateChangelogs({
         logStep({
           step: 'changelog_success',
           message: `Generated CHANGELOG.md in "${projectRoot}"`,
+          projectName,
         })
       )
     )

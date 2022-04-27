@@ -182,7 +182,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
 
 Note that options using the interpolation notation `${variable}` are resolved with their corresponding value. Here is the list of the resolved options.
 
-- `project` versioned project
+- `projectName` versioned project
 - `version` semver version
 - `tag` formatted git tag
 - `notes` release notes

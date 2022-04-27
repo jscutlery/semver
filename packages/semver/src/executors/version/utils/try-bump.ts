@@ -1,7 +1,12 @@
-import { logger } from '@nrwl/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, of, type Observable } from 'rxjs';
-import { catchError, defaultIfEmpty, map, shareReplay, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  defaultIfEmpty,
+  map,
+  shareReplay,
+  switchMap
+} from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
 import { type ReleaseIdentifier } from '../schema';
@@ -9,6 +14,7 @@ import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
 import { type DependencyRoot } from './get-project-dependencies';
 import { getCommits, getFirstCommitRef } from './git';
+import { _logStep } from './logger';
 import { formatTag, formatTagPrefix } from './tag';
 
 export interface NewVersion {
@@ -23,22 +29,27 @@ export function getProjectVersion({
   projectRoot,
   releaseType,
   since,
+  projectName,
 }: {
   tagPrefix: string;
   projectRoot: string;
   releaseType?: ReleaseIdentifier;
   since?: string;
+  projectName: string;
 }) {
   const lastVersion$ = getLastVersion({
     tagPrefix,
     includePrerelease: releaseType === 'prerelease',
   }).pipe(
     catchError(() => {
-      logger.warn(
-        `🟠 No previous version tag found, fallback to version 0.0.0.
-New version will be calculated based on all changes since first commit.
-If your project is already versioned, please tag the latest release commit with ${tagPrefix}x.y.z and run this command again.`
-      );
+      _logStep({
+        step: 'warning',
+        level: 'warn',
+        message: `🟠 No previous version tag found, fallback to version 0.0.0.
+        New version will be calculated based on all changes since first commit.
+        If your project is already versioned, please tag the latest release commit with ${tagPrefix}x.y.z and run this command again.`,
+        projectName,
+      });
       return of(initialVersion);
     }),
     shareReplay({
@@ -88,6 +99,7 @@ export function tryBump({
   versionTagPrefix,
   syncVersions,
   allowEmptyRelease,
+  projectName,
 }: {
   preset: string;
   projectRoot: string;
@@ -96,13 +108,15 @@ export function tryBump({
   releaseType?: ReleaseIdentifier;
   preid?: string;
   versionTagPrefix?: string | null;
-  syncVersions?: boolean;
+  syncVersions: boolean;
   allowEmptyRelease?: boolean;
+  projectName: string;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
     tagPrefix,
     projectRoot,
     releaseType,
+    projectName,
   });
 
   return forkJoin([lastVersion$, commits$, lastVersionGitRef$]).pipe(
@@ -126,6 +140,7 @@ export function tryBump({
         releaseType,
         versionTagPrefix,
         syncVersions,
+        projectName,
       });
 
       const projectBump$ = _semverBump({
@@ -231,21 +246,23 @@ export function _getDependencyVersions({
   versionTagPrefix,
   syncVersions,
   lastVersionGitRef,
+  projectName,
 }: {
   preset: string;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
   releaseType?: ReleaseIdentifier;
   versionTagPrefix?: string | null;
-  syncVersions?: boolean;
+  syncVersions: boolean;
+  projectName: string;
 }): Observable<Version[]> {
   return forkJoin(
-    dependencyRoots.map(({ path: projectRoot, name: projectName }) => {
+    dependencyRoots.map(({ path: projectRoot, name: dependencyName }) => {
       /* Get dependency version changes since last project version */
       const tagPrefix = formatTagPrefix({
         versionTagPrefix,
-        projectName,
-        syncVersions: !!syncVersions,
+        projectName: dependencyName,
+        syncVersions,
       });
 
       const { lastVersion$, commits$ } = getProjectVersion({
@@ -253,6 +270,7 @@ export function _getDependencyVersions({
         projectRoot,
         releaseType,
         since: lastVersionGitRef,
+        projectName,
       });
 
       return forkJoin([lastVersion$, commits$]).pipe(
@@ -261,7 +279,7 @@ export function _getDependencyVersions({
             return of({
               type: 'dependency',
               version: null,
-              dependencyName: projectName,
+              dependencyName: dependencyName,
             } as Version);
           }
 
@@ -278,7 +296,7 @@ export function _getDependencyVersions({
                   ({
                     type: 'dependency',
                     version,
-                    dependencyName: projectName,
+                    dependencyName: dependencyName,
                   } as Version)
               )
             );
@@ -288,7 +306,7 @@ export function _getDependencyVersions({
           return of({
             type: 'dependency',
             version: dependencyLastVersion,
-            dependencyName: projectName,
+            dependencyName: dependencyName,
           } as Version);
         })
       );

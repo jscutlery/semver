@@ -1,7 +1,12 @@
 import { logger } from '@nrwl/devkit';
+import * as chalk from 'chalk';
 import { tap, type MonoTypeOperatorFunction } from 'rxjs';
 
 type Step =
+  | 'nothing_changed'
+  | 'failure'
+  | 'warning'
+  | 'calculate_version_success'
   | 'package_json_success'
   | 'changelog_success'
   | 'tag_success'
@@ -9,7 +14,11 @@ type Step =
   | 'push_success'
   | 'commit_success';
 
-const prefixMap = new Map<Step, string>([
+const iconMap = new Map<Step, string>([
+  ['nothing_changed', '⏹'],
+  ['failure', '❌'],
+  ['warning', '🟠'],
+  ['calculate_version_success', '🆕'],
   ['changelog_success', '📜'],
   ['commit_success', '📦'],
   ['package_json_success', '📝'],
@@ -22,21 +31,27 @@ const prefixMap = new Map<Step, string>([
 export function logStep<T>({
   step,
   message,
+  projectName,
 }: {
   step: Step;
   message: string;
+  projectName: string;
 }): MonoTypeOperatorFunction<T> {
-  return (source) => source.pipe(tap(() => _log({ step, message })));
+  return (source) => source.pipe(tap(() => _logStep({ step, message, projectName })));
 }
 
 /* istanbul ignore next */
-function _log({
+export function _logStep({
   step,
   message,
+  projectName,
+  level = 'log'
 }: {
   step: Step;
   message: string;
+  projectName: string;
+  level?: keyof typeof logger;
 }): void {
-  const msg = `${prefixMap.get(step)} ${message}`;
-  logger.log(msg);
+  const msg = `${chalk.bold(`[${projectName}]`)} ${iconMap.get(step)} ${message}`;
+  logger[level](msg);
 }

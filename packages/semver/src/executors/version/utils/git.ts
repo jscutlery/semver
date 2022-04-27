@@ -2,7 +2,7 @@ import * as gitRawCommits from 'git-raw-commits';
 import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 import { exec } from '../../common/exec';
-import { logStep } from './logger';
+import { logStep, _logStep } from './logger';
 import { formatTag } from './tag';
 
 export const DEFAULT_COMMIT_MESSAGE_FORMAT =
@@ -38,16 +38,18 @@ export function tryPush({
   remote,
   branch,
   noVerify,
+  projectName,
 }: {
   remote: string;
   branch: string;
   noVerify: boolean;
+  projectName: string;
 }): Observable<string> {
   if (remote == null || branch == null) {
     return throwError(
       () =>
         new Error(
-          'Missing Git options --remote or --branch, see: https://github.com/jscutlery/semver#configure'
+          'Missing option --remote or --branch, see: https://github.com/jscutlery/semver#configure.'
         )
     );
   }
@@ -60,18 +62,26 @@ export function tryPush({
   return exec('git', ['push', ...gitPushOptions, '--atomic', remote, branch])
     .pipe(
       catchError((error) => {
-        if (
-          /atomic/.test(error) ||
-          (process.env.GIT_REDIRECT_STDERR === '2>&1' && /atomic/.test(error))
-        ) {
-          console.warn('git push --atomic failed, attempting non-atomic push');
+        if (/atomic/.test(error)) {
+          _logStep({
+            step: 'warning',
+            level: 'warn',
+            message: 'Git push --atomic failed, attempting non-atomic push.',
+            projectName,
+          });
           return exec('git', ['push', ...gitPushOptions, remote, branch]);
         }
 
         return throwError(() => error);
       })
     )
-    .pipe(logStep({ step: 'push_success', message: `Pushed to "${remote}" "${branch}"` }));
+    .pipe(
+      logStep({
+        step: 'push_success',
+        message: `Pushed to "${remote}" "${branch}".`,
+        projectName,
+      })
+    );
 }
 
 export function addToStage({
@@ -100,11 +110,13 @@ export function createTag({
   version,
   tagPrefix,
   commitMessage,
+  projectName,
 }: {
   dryRun: boolean;
   version: string;
   tagPrefix: string;
   commitMessage: string;
+  projectName: string;
 }): Observable<string> {
   if (dryRun) {
     return EMPTY;
@@ -113,7 +125,12 @@ export function createTag({
   const tag = formatTag({ tagPrefix, version });
   return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
     map(() => tag),
-    logStep({ step: 'tag_success', message: `Created tag "${tag}"` })
+    logStep({
+      step: 'tag_success',
+      message: `Tagged "${tag}".`,
+      projectName,
+    })
+    // @todo: handle tag already exist error.
   );
 }
 
@@ -121,10 +138,12 @@ export function commit({
   dryRun,
   noVerify,
   commitMessage,
+  projectName,
 }: {
   dryRun: boolean;
   noVerify: boolean;
   commitMessage: string;
+  projectName: string;
 }): Observable<void> {
   return exec('git', [
     'commit',
@@ -136,7 +155,8 @@ export function commit({
     map(() => undefined),
     logStep({
       step: 'commit_success',
-      message: `Committed "${commitMessage}"`,
+      message: `Committed "${commitMessage}".`,
+      projectName,
     })
   );
 }

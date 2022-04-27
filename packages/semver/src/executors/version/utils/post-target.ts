@@ -14,10 +14,12 @@ export function runPostTargets({
   postTargets,
   templateStringContext,
   context,
+  projectName,
 }: {
   postTargets: string[];
   templateStringContext: Record<string, unknown>;
   context: ExecutorContext;
+  projectName: string;
 }): Observable<void> {
   return concat(
     ...postTargets.map((postTargetSchema) =>
@@ -26,26 +28,27 @@ export function runPostTargets({
 
         _checkTargetExist(target, context);
 
-        const resolvedOptions = _resolveTargetOptions({
-          targetOptions: readTargetOptions(target, context),
+        const targetOptions = _getTargetOptions({
+          options: readTargetOptions(target, context),
           context: templateStringContext,
         });
 
         for await (const { success } of await runExecutor(
           target,
-          resolvedOptions,
+          targetOptions,
           context
         )) {
           if (!success) {
             throw new Error(
-              `Something went wrong with post target: "${target.project}:${target.target}"`
+              `Something went wrong with post-target "${target.project}:${target.target}".`
             );
           }
         }
       }).pipe(
         logStep({
           step: 'post_target_success',
-          message: `Ran post-target "${postTargetSchema}"`,
+          message: `Ran post-target "${postTargetSchema}".`,
+          projectName,
         })
       )
     )
@@ -53,14 +56,14 @@ export function runPostTargets({
 }
 
 /* istanbul ignore next */
-export function _resolveTargetOptions({
-  targetOptions = {},
+export function _getTargetOptions({
+  options = {},
   context,
 }: {
-  targetOptions?: Record<string, unknown>;
+  options?: Record<string, unknown>;
   context: Record<string, unknown>;
 }): Record<string, unknown> {
-  return Object.entries(targetOptions).reduce(
+  return Object.entries(options).reduce(
     (optionsAccumulator, [option, value]) => {
       const resolvedValue =
         typeof value === 'object'
@@ -91,7 +94,7 @@ export function _checkTargetExist(target: Target, context: ExecutorContext) {
         target.project
       }" does not exist in your workspace. Available projects: ${Object.keys(
         context.workspace.projects
-      ).map((project) => `"${project}"`)}`
+      ).map((project) => `"${project}"`)}.`
     );
   }
 
@@ -103,7 +106,7 @@ export function _checkTargetExist(target: Target, context: ExecutorContext) {
         target.target
       }" does not exist. Available targets for "${
         target.project
-      }": ${Object.keys(project.targets || {}).map((target) => `"${target}"`)}`
+      }": ${Object.keys(project.targets || {}).map((target) => `"${target}"`)}.`
     );
   }
 }

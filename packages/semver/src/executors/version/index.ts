@@ -1,4 +1,4 @@
-import { logger, type ExecutorContext } from '@nrwl/devkit';
+import { type ExecutorContext } from '@nrwl/devkit';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 import type { VersionBuilderSchema } from './schema';
@@ -12,6 +12,7 @@ import {
   type DependencyRoot
 } from './utils/get-project-dependencies';
 import { DEFAULT_COMMIT_MESSAGE_FORMAT, tryPush } from './utils/git';
+import { _logStep } from './utils/logger';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { createTemplateString } from './utils/template-string';
@@ -46,7 +47,7 @@ export default async function version(
     commitMessageFormat,
     preset,
     allowEmptyRelease,
-  } = normalizeOptions(options);
+  } = _normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
 
@@ -65,7 +66,13 @@ export default async function version(
       context,
     });
   } catch (e) {
-    logger.error('Failed to determine dependencies.');
+    _logStep({
+      step: 'failure',
+      level: 'error',
+      message: `Failed to determine dependencies.
+      Please report an issue: https://github.com/jscutlery/semver/issues/new.`,
+      projectName,
+    });
     return { success: false };
   }
 
@@ -79,27 +86,35 @@ export default async function version(
     preid,
     syncVersions,
     allowEmptyRelease,
+    projectName,
   });
 
-  /**
-   * 1. Calculate new version
-   * 2. Release [ create changelog -> add to stage -> commit -> tag ]
-   * 3. Push to Git
-   * 4. Run post targets
-   */
   const runSemver$ = newVersion$.pipe(
     switchMap((newVersion) => {
       if (newVersion == null) {
-        logger.info('⏹ Nothing changed since last release.');
+        _logStep({
+          step: 'nothing_changed',
+          level: 'info',
+          message: 'Nothing changed since last release.',
+          projectName,
+        });
         return of({ success: true });
       }
 
-      const commitMessage = createTemplateString(commitMessageFormat, {
+      const { version, dependencyUpdates } = newVersion;
+
+      _logStep({
+        step: 'calculate_version_success',
+        message: `Calculated new version "${version}".`,
         projectName,
-        version: newVersion.version,
       });
 
+      const commitMessage = createTemplateString(commitMessageFormat, {
+        projectName,
+        version,
+      });
       const options: CommonVersionOptions = {
+        newVersion: version,
         dryRun,
         trackDeps,
         noVerify,
@@ -110,8 +125,7 @@ export default async function version(
         projectName,
         skipProjectChangelog,
         commitMessage,
-        newVersion: newVersion.version,
-        dependencyUpdates: newVersion.dependencyUpdates,
+        dependencyUpdates,
       };
 
       const version$ = defer(() =>
@@ -131,6 +145,7 @@ export default async function version(
           branch: baseBranch,
           noVerify,
           remote,
+          projectName,
         })
       );
 
@@ -149,22 +164,18 @@ export default async function version(
             ...(dryRun === false
               ? [
                   runPostTargets({
+                    context,
+                    projectName,
                     postTargets,
                     templateStringContext: {
-                      project: projectName,
-                      version: newVersion.version,
+                      notes,
+                      version,
+                      projectName,
                       tag: formatTag({
                         tagPrefix,
-                        version: newVersion.version,
+                        version,
                       }),
-                      tagPrefix,
-                      noVerify,
-                      dryRun,
-                      remote,
-                      baseBranch,
-                      notes,
                     },
-                    context,
                   }),
                 ]
               : [])
@@ -178,19 +189,26 @@ export default async function version(
   return lastValueFrom(
     runSemver$.pipe(
       catchError((error) => {
-        if (error?.name === 'SchemaError') {
-          logger.error(`Post-targets Error: ${error.message}`);
-        } else {
-          logger.error(error.stack ?? error.toString());
-        }
-
+        _logStep({
+          step: 'failure',
+          level: 'error',
+          message: _toErrorMessage(error),
+          projectName,
+        });
         return of({ success: false });
       })
     )
   );
 }
 
-function normalizeOptions(options: VersionBuilderSchema) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function _toErrorMessage(error: any): string {
+  return error?.name === 'SchemaError'
+    ? `Post-target error: ${error.message}`
+    : error.stack ?? error.toString();
+}
+
+function _normalizeOptions(options: VersionBuilderSchema) {
   return {
     ...options,
     push: options.push as boolean,
