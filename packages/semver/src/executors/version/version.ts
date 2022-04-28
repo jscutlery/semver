@@ -1,8 +1,8 @@
-import { concat, forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import {
   insertChangelogDependencyUpdates,
-  updateChangelog
+  updateChangelog,
 } from './utils/changelog';
 import { addToStage, commit, createTag } from './utils/git';
 import { logStep } from './utils/logger';
@@ -50,7 +50,7 @@ export function versionWorkspace({
 }: {
   skipRootChangelog: boolean;
 } & CommonVersionOptions) {
-  return concat(
+  return forkJoin([
     getProjectRoots(options.workspaceRoot).pipe(
       concatMap((projectRoots) =>
         _generateChangelogs({
@@ -88,23 +88,24 @@ export function versionWorkspace({
           ) as string[],
           dryRun,
         })
-      ),
-      concatMap(() =>
-        commit({
-          dryRun,
-          noVerify,
-          commitMessage,
-          projectName,
-        })
-      ),
-      concatMap(() =>
-        createTag({
-          dryRun,
-          tag,
-          commitMessage,
-          projectName,
-        })
       )
+    ),
+  ]).pipe(
+    concatMap(() =>
+      commit({
+        dryRun,
+        noVerify,
+        commitMessage,
+        projectName,
+      })
+    ),
+    concatMap(() =>
+      createTag({
+        dryRun,
+        tag,
+        commitMessage,
+        projectName,
+      })
     )
   );
 }
