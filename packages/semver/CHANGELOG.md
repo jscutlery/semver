@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.2](https://github.com/jscutlery/semver/compare/semver-2.23.1...semver-2.23.2) (2022-04-28)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 ensure tasks are executed sequentially ([367670c](https://github.com/jscutlery/semver/commit/367670c52206ed98e8f5510f2ae4be0ca875c356))
+
+
+
 ## [2.23.1](https://github.com/jscutlery/semver/compare/semver-2.23.0...semver-2.23.1) (2022-04-28)
 
 
