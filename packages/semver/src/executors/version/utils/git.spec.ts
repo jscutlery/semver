@@ -251,6 +251,34 @@ describe('git', () => {
         },
       });
     });
+
+    it('should handle tag already exists error', (done) => {
+      jest
+        .spyOn(cp, 'exec')
+        .mockReturnValue(
+          throwError(
+            () => new Error("fatal: tag 'project-a-1.0.0' already exists")
+          )
+        );
+
+      createTag({
+        dryRun: false,
+        tagPrefix: 'project-a-',
+        version: '1.0.0',
+        commitMessage: 'chore(release): 1.0.0',
+        projectName: 'p',
+      }).subscribe({
+        next: expect.fail,
+        complete: () => expect.fail('should not complete'),
+        error: (error) => {
+          expect(cp.exec).toBeCalled();
+          expect(error.message).toMatch(
+            'Failed to create "project-a-1.0.0", this tag already exists'
+          );
+          done();
+        },
+      });
+    });
   });
 
   describe(commit.name, () => {

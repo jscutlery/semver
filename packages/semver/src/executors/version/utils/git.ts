@@ -124,13 +124,24 @@ export function createTag({
 
   const tag = formatTag({ tagPrefix, version });
   return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
+    catchError((error) => {
+      if (/already exists/.test(error)) {
+        return throwError(
+          () =>
+            new Error(`Failed to create "${tag}", this tag already exists.
+            This occurs because you already versioned the changes, but on a different branch than the base branch.
+            Please delete the tag locally by running "git tag -d ${tag}", delete the tag from the remote repository as well, and run this command again.`)
+        );
+      }
+
+      return throwError(() => error);
+    }),
     map(() => tag),
     logStep({
       step: 'tag_success',
       message: `Tagged "${tag}".`,
       projectName,
     })
-    // @todo: handle tag already exist error.
   );
 }
 
