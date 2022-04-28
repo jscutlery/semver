@@ -1,9 +1,7 @@
-import { readJson, type Tree } from '@nrwl/devkit';
-import { addDependenciesToPackageJson } from '@nrwl/devkit';
-import { updateJson } from '@nrwl/devkit';
+import { addDependenciesToPackageJson, readJson, updateJson, type Tree } from '@nrwl/devkit';
 import { constants } from 'fs';
-
 import type { SchemaOptions } from '../schema';
+
 
 const PACKAGE_JSON = 'package.json';
 
@@ -32,8 +30,8 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       tree,
       {},
       {
-        '@commitlint/cli': '^16.2.1',
-        [_getCommitlintConfig(options)]: '^16.2.1',
+        '@commitlint/cli': '^16.2.4',
+        [_getCommitlintConfig(options)]: '^16.2.4',
         husky: '^7.0.4',
       }
     );
