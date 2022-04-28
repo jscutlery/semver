@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.23.0](https://github.com/jscutlery/semver/compare/semver-2.22.0...semver-2.23.0) (2022-04-28)
+
+
+### Bug Fixes
+
+* 📦 dependency inquirer to v8.2.3 ([ad78db0](https://github.com/jscutlery/semver/commit/ad78db0c6c7f56d0e1a0ae741035b586238c4f52))
+* **semver:** 🐞 bump @nrwl/devkit to 14.0.3 ([123c7ff](https://github.com/jscutlery/semver/commit/123c7ff423821a05a899de9243fb2ccefd93ed79))
+* **semver:** 🐞 bump commitlint monorepo to v16.2.4 ([49cb396](https://github.com/jscutlery/semver/commit/49cb396cd86d6f90c18f01a118a217798cfc677e))
+* **semver:** 🐞 ensure push occurs before post-targets ([681fded](https://github.com/jscutlery/semver/commit/681fdede986a3a464b2478ad7706d6493a745dcf))
+* **semver:** 🐞 use str#trim to remove line breaks ([812601b](https://github.com/jscutlery/semver/commit/812601b5635df7549d379863830f6d7d9190a068))
+
+
+### Features
+
+* **semver:** ✅ gracefully handle tag already exists error ([73071cf](https://github.com/jscutlery/semver/commit/73071cf205c85083894ea51cccb6b2a7b8266f14)), closes [#473](https://github.com/jscutlery/semver/issues/473)
+* **semver:** ✅ improve logging ([7a5fb85](https://github.com/jscutlery/semver/commit/7a5fb8504280abea697a75ade962315a1531454f)), closes [#326](https://github.com/jscutlery/semver/issues/326)
+
+
+
 # [2.22.0](https://github.com/jscutlery/semver/compare/semver-2.21.6...semver-2.22.0) (2022-04-14)
 
 
