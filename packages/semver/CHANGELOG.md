@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.1](https://github.com/jscutlery/semver/compare/semver-2.23.0...semver-2.23.1) (2022-04-28)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 correctly push tag ([b87289b](https://github.com/jscutlery/semver/commit/b87289b522d5303f9aeaa7938cd6a10608af13fc))
+
+
+
 # [2.23.0](https://github.com/jscutlery/semver/compare/semver-2.22.0...semver-2.23.0) (2022-04-28)
 
 
