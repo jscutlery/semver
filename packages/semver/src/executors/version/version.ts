@@ -82,26 +82,28 @@ export function versionWorkspace({
         )
       ),
       concatMap((packageFiles) =>
-        concat(
-          addToStage({
-            paths: packageFiles.filter(
-              (packageFile) => packageFile !== null
-            ) as string[],
-            dryRun,
-          }),
-          commit({
-            dryRun,
-            noVerify,
-            commitMessage,
-            projectName,
-          }),
-          createTag({
-            dryRun,
-            tag,
-            commitMessage,
-            projectName,
-          })
-        )
+        addToStage({
+          paths: packageFiles.filter(
+            (packageFile) => packageFile !== null
+          ) as string[],
+          dryRun,
+        })
+      ),
+      concatMap(() =>
+        commit({
+          dryRun,
+          noVerify,
+          commitMessage,
+          projectName,
+        })
+      ),
+      concatMap(() =>
+        createTag({
+          dryRun,
+          tag,
+          commitMessage,
+          projectName,
+        })
       )
     )
   );
@@ -148,34 +150,36 @@ export function versionProject({
         : of(undefined)
     ),
     concatMap(() =>
-      concat(
-        updatePackageJson({
-          newVersion,
-          projectRoot,
-          projectName,
-        }).pipe(
-          concatMap((packageFile) =>
-            packageFile !== null
-              ? addToStage({
-                  paths: [packageFile],
-                  dryRun,
-                })
-              : of(undefined)
-          )
-        ),
-        commit({
-          dryRun,
-          noVerify,
-          commitMessage,
-          projectName,
-        }),
-        createTag({
-          dryRun,
-          tag,
-          commitMessage,
-          projectName,
-        })
+      updatePackageJson({
+        newVersion,
+        projectRoot,
+        projectName,
+      }).pipe(
+        concatMap((packageFile) =>
+          packageFile !== null
+            ? addToStage({
+                paths: [packageFile],
+                dryRun,
+              })
+            : of(undefined)
+        )
       )
+    ),
+    concatMap(() =>
+      commit({
+        dryRun,
+        noVerify,
+        commitMessage,
+        projectName,
+      })
+    ),
+    concatMap(() =>
+      createTag({
+        dryRun,
+        tag,
+        commitMessage,
+        projectName,
+      })
     )
   );
 }
