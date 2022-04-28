@@ -45,6 +45,7 @@ export function updateChangelog({
         path: projectRoot,
         preset,
         dryRun,
+        silent: true,
         infile: changelogPath,
         tagPrefix,
       },
