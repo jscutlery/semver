@@ -134,15 +134,9 @@ describe('@jscutlery/semver:version', () => {
     expect(mockUpdateChangelog).toHaveBeenCalledBefore(
       mockUpdatePackageJson as jest.Mock
     );
-    expect(mockCommit).toHaveBeenCalledBefore(
-      mockCreateTag as jest.Mock
-    );
-    expect(mockCreateTag).toHaveBeenCalledBefore(
-      mockTryPush as jest.Mock
-    );
-    expect(mockTryPush).toHaveBeenCalledBefore(
-      mockRunPostTargets as jest.Mock
-    );
+    expect(mockCommit).toHaveBeenCalledBefore(mockCreateTag as jest.Mock);
+    expect(mockCreateTag).toHaveBeenCalledBefore(mockTryPush as jest.Mock);
+    expect(mockTryPush).toHaveBeenCalledBefore(mockRunPostTargets as jest.Mock);
   });
 
   it('should version with --releaseAs', async () => {
@@ -166,7 +160,7 @@ describe('@jscutlery/semver:version', () => {
       expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
     );
     expect(mockCreateTag).toBeCalledWith(
-      expect.objectContaining({ version: '2.1.0', tagPrefix: 'a-' })
+      expect.objectContaining({ tag: 'a-2.1.0' })
     );
   });
 
@@ -198,7 +192,7 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
       );
       expect(mockCreateTag).toBeCalledWith(
-        expect.objectContaining({ version: '2.1.0', tagPrefix: 'a-' })
+        expect.objectContaining({ tag: 'a-2.1.0' })
       );
     });
 
@@ -233,7 +227,7 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
       );
       expect(mockCreateTag).toBeCalledWith(
-        expect.objectContaining({ version: '2.1.0', tagPrefix: 'a-' })
+        expect.objectContaining({ tag: 'a-2.1.0' })
       );
     });
 
@@ -260,7 +254,7 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({
-          tagPrefix: 'custom-tag-prefix/a-',
+          tag: 'custom-tag-prefix/a-2.1.0',
         })
       );
     });
@@ -327,8 +321,7 @@ describe('@jscutlery/semver:version', () => {
           commitMessage: 'chore(workspace): release 2.1.0',
           dryRun: false,
           projectName: 'workspace',
-          tagPrefix: 'v',
-          version: '2.1.0',
+          tag: 'v2.1.0',
         })
       );
       expect(mockCommit).toBeCalledWith(

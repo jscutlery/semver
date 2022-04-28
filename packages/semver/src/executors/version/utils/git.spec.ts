@@ -52,6 +52,7 @@ describe('git', () => {
 
       await lastValueFrom(
         tryPush({
+          tag: 'v1.0.0',
           remote: 'upstream',
           branch: 'master',
           noVerify: false,
@@ -63,10 +64,10 @@ describe('git', () => {
         'git',
         expect.arrayContaining([
           'push',
-          '--follow-tags',
           '--atomic',
           'upstream',
           'master',
+          'v1.0.0'
         ])
       );
     });
@@ -76,6 +77,7 @@ describe('git', () => {
 
       await lastValueFrom(
         tryPush({
+          tag: 'v1.0.0',
           remote: 'origin',
           branch: 'main',
           noVerify: true,
@@ -87,11 +89,11 @@ describe('git', () => {
         'git',
         expect.arrayContaining([
           'push',
-          '--follow-tags',
           '--no-verify',
           '--atomic',
           'origin',
           'main',
+          'v1.0.0',
         ])
       );
     });
@@ -106,6 +108,7 @@ describe('git', () => {
 
       await lastValueFrom(
         tryPush({
+          tag: 'v1.0.0',
           remote: 'origin',
           branch: 'master',
           noVerify: false,
@@ -116,7 +119,7 @@ describe('git', () => {
       expect(cp.exec).toHaveBeenNthCalledWith(
         1,
         'git',
-        expect.arrayContaining(['push', '--atomic', '--follow-tags'])
+        expect.arrayContaining(['push', '--atomic', 'v1.0.0'])
       );
       expect(cp.exec).toHaveBeenNthCalledWith(
         2,
@@ -134,6 +137,7 @@ describe('git', () => {
       await expect(
         lastValueFrom(
           tryPush({
+            tag: 'v1.0.0',
             remote: 'origin',
             branch: 'master',
             noVerify: false,
@@ -148,6 +152,7 @@ describe('git', () => {
       await expect(
         lastValueFrom(
           tryPush({
+            tag: 'v1.0.0',
             /* eslint-disable @typescript-eslint/no-explicit-any */
             remote: undefined as any,
             branch: undefined as any,
@@ -217,8 +222,7 @@ describe('git', () => {
       const tag = await lastValueFrom(
         createTag({
           dryRun: false,
-          tagPrefix: 'project-a-',
-          version: '1.0.0',
+          tag: 'project-a-1.0.0',
           commitMessage: 'chore(release): 1.0.0',
           projectName: 'p',
         })
@@ -240,8 +244,7 @@ describe('git', () => {
     it('should skip if --dryRun', (done) => {
       createTag({
         dryRun: true,
-        tagPrefix: 'project-a-',
-        version: '1.0.0',
+        tag: 'project-a-1.0.0',
         commitMessage: 'chore(release): 1.0.0',
         projectName: 'p',
       }).subscribe({
@@ -263,8 +266,7 @@ describe('git', () => {
 
       createTag({
         dryRun: false,
-        tagPrefix: 'project-a-',
-        version: '1.0.0',
+        tag: 'project-a-1.0.0',
         commitMessage: 'chore(release): 1.0.0',
         projectName: 'p',
       }).subscribe({

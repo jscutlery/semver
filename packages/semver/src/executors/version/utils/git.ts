@@ -3,7 +3,6 @@ import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 import { exec } from '../../common/exec';
 import { logStep, _logStep } from './logger';
-import { formatTag } from './tag';
 
 export const DEFAULT_COMMIT_MESSAGE_FORMAT =
   'chore(${projectName}): release ${version}';
@@ -39,7 +38,9 @@ export function tryPush({
   branch,
   noVerify,
   projectName,
+  tag,
 }: {
+  tag: string;
   remote: string;
   branch: string;
   noVerify: boolean;
@@ -55,11 +56,10 @@ export function tryPush({
   }
 
   const gitPushOptions = [
-    '--follow-tags',
     ...(noVerify ? ['--no-verify'] : []),
   ];
 
-  return exec('git', ['push', ...gitPushOptions, '--atomic', remote, branch])
+  return exec('git', ['push', ...gitPushOptions, '--atomic', remote, branch, tag])
     .pipe(
       catchError((error) => {
         if (/atomic/.test(error)) {
@@ -69,7 +69,7 @@ export function tryPush({
             message: 'Git push --atomic failed, attempting non-atomic push.',
             projectName,
           });
-          return exec('git', ['push', ...gitPushOptions, remote, branch]);
+          return exec('git', ['push', ...gitPushOptions, remote, branch, tag]);
         }
 
         return throwError(() => error);
@@ -107,14 +107,12 @@ export function getFirstCommitRef(): Observable<string> {
 
 export function createTag({
   dryRun,
-  version,
-  tagPrefix,
+  tag,
   commitMessage,
   projectName,
 }: {
   dryRun: boolean;
-  version: string;
-  tagPrefix: string;
+  tag: string;
   commitMessage: string;
   projectName: string;
 }): Observable<string> {
@@ -122,7 +120,6 @@ export function createTag({
     return EMPTY;
   }
 
-  const tag = formatTag({ tagPrefix, version });
   return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
     catchError((error) => {
       if (/already exists/.test(error)) {

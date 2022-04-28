@@ -101,20 +101,21 @@ export default async function version(
         return of({ success: true });
       }
 
-      const { version, dependencyUpdates } = newVersion;
-
       _logStep({
         step: 'calculate_version_success',
-        message: `Calculated new version "${version}".`,
+        message: `Calculated new version "${newVersion.version}".`,
         projectName,
       });
 
+      const { version, dependencyUpdates } = newVersion;
+      const tag = formatTag({ tagPrefix, version });
       const commitMessage = createTemplateString(commitMessageFormat, {
         projectName,
         version,
       });
       const options: CommonVersionOptions = {
         newVersion: version,
+        tag,
         dryRun,
         trackDeps,
         noVerify,
@@ -142,6 +143,7 @@ export default async function version(
 
       const push$ = defer(() =>
         tryPush({
+          tag,
           branch: baseBranch,
           noVerify,
           remote,
@@ -159,10 +161,7 @@ export default async function version(
               notes,
               version,
               projectName,
-              tag: formatTag({
-                tagPrefix,
-                version,
-              }),
+              tag,
             },
           })
         );

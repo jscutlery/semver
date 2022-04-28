@@ -23,6 +23,7 @@ export type Version =
 export type StandardVersionPreset = 'angular' | 'conventionalcommits';
 
 export interface CommonVersionOptions {
+  tag: string;
   dryRun: boolean;
   trackDeps: boolean;
   newVersion: string;
@@ -44,6 +45,7 @@ export function versionWorkspace({
   dryRun,
   noVerify,
   projectName,
+  tag,
   ...options
 }: {
   skipRootChangelog: boolean;
@@ -59,6 +61,7 @@ export function versionWorkspace({
           dryRun,
           noVerify,
           projectName,
+          tag,
           ...options,
         })
       ),
@@ -94,9 +97,8 @@ export function versionWorkspace({
           }),
           createTag({
             dryRun,
-            version: newVersion,
+            tag,
             commitMessage,
-            tagPrefix: options.tagPrefix,
             projectName,
           })
         )
@@ -114,6 +116,7 @@ export function versionProject({
   noVerify,
   tagPrefix,
   projectName,
+  tag,
   ...options
 }: { projectRoot: string } & CommonVersionOptions) {
   return _generateChangelogs({
@@ -126,6 +129,7 @@ export function versionProject({
     dryRun,
     noVerify,
     tagPrefix,
+    tag,
     ...options,
   }).pipe(
     concatMap((changelogPaths) =>
@@ -167,8 +171,7 @@ export function versionProject({
         }),
         createTag({
           dryRun,
-          version: newVersion,
-          tagPrefix,
+          tag,
           commitMessage,
           projectName,
         })
