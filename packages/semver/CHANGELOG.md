@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.3](https://github.com/jscutlery/semver/compare/semver-2.23.2...semver-2.23.3) (2022-04-29)
+
+
+### Bug Fixes
+
+* 📦 dependency inquirer to v8.2.4 ([e64ae62](https://github.com/jscutlery/semver/commit/e64ae62063c3ba39f1d0ae0d0f462d797c7af839))
+* **semver:** 🐞 fix dryRun mode ([0dd4366](https://github.com/jscutlery/semver/commit/0dd4366e6e0e65a6f5ee59ba22b2a0bef961ac44)), closes [#497](https://github.com/jscutlery/semver/issues/497)
+
+
+
 ## [2.23.2](https://github.com/jscutlery/semver/compare/semver-2.23.1...semver-2.23.2) (2022-04-28)
 
 
