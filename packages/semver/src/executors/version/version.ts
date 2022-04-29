@@ -77,6 +77,7 @@ export function versionWorkspace({
               projectRoot,
               newVersion,
               projectName,
+              dryRun,
             })
           )
         )
@@ -154,6 +155,7 @@ export function versionProject({
         newVersion,
         projectRoot,
         projectName,
+        dryRun,
       }).pipe(
         concatMap((packageFile) =>
           packageFile !== null

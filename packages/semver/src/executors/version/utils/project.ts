@@ -20,11 +20,17 @@ export function updatePackageJson({
   newVersion,
   projectRoot,
   projectName,
+  dryRun,
 }: {
   newVersion: string;
   projectRoot: string;
   projectName: string;
+  dryRun: boolean;
 }): Observable<string | null> {
+  if (dryRun) {
+    return of(null);
+  }
+
   const packageJsonPath = getPackageJsonPath(projectRoot);
   return readFileIfExists(packageJsonPath).pipe(
     switchMap((packageJson) => {

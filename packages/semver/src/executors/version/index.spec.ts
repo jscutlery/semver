@@ -172,6 +172,24 @@ describe('@jscutlery/semver:version', () => {
     );
   });
 
+  it('should skip changelog and package.json update with --dryRun', async () => {
+    const { success } = await version(
+      {
+        ...options,
+        dryRun: true,
+      },
+      context
+    );
+
+    expect(success).toBe(true);
+    expect(mockUpdatePackageJson).toBeCalledWith(
+      expect.objectContaining({ dryRun: true })
+    );
+    expect(mockUpdateChangelog).toBeCalledWith(
+      expect.objectContaining({ dryRun: true })
+    );
+  });
+
   describe('--syncVersions=false (independent mode)', () => {
     it('should run semver independently on a project', async () => {
       const { success } = await version(options, context);

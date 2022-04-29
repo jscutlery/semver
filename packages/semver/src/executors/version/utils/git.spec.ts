@@ -302,20 +302,18 @@ describe('git', () => {
       );
     });
 
-    it('should pass --dryRun', async () => {
-      await lastValueFrom(
+    it('should pass --dryRun', (done) => {
         commit({
           dryRun: true,
           noVerify: false,
           commitMessage: 'chore(release): 1.0.0',
           projectName: 'p',
-        })
-      );
-
-      expect(cp.exec).toBeCalledWith(
-        'git',
-        expect.arrayContaining(['--dry-run'])
-      );
+        }).subscribe({
+          complete: () => {
+            expect(cp.exec).not.toBeCalled();
+            done();
+          },
+        });
     });
 
     it('should pass --noVerify', async () => {

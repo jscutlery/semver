@@ -153,9 +153,12 @@ export function commit({
   commitMessage: string;
   projectName: string;
 }): Observable<void> {
+  if (dryRun) {
+    return EMPTY;
+  }
+
   return exec('git', [
     'commit',
-    ...(dryRun ? ['--dry-run'] : []),
     ...(noVerify ? ['--no-verify'] : []),
     '-m',
     commitMessage,
