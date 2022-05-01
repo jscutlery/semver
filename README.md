@@ -140,12 +140,12 @@ The **`--commitMessageFormat`** option allows you to customize the commit messag
 chore(${projectName}): release version ${version}
 ```
 
-Resolved contextual variables:
+Contextual variables resolved by this option:
 
 - `version` the current release version (for instance `1.0.0`)
 - `projectName` the project name to be versioned (for instance `my-project`)
 
-Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub.
+Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub, eg:
 
 ```
 release: bump ${projectName} to ${version} [skip ci]
@@ -183,7 +183,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
 }
 ```
 
-Note that options using the interpolation notation `${variable}` are resolved with their corresponding value. Here is the list of the resolved options.
+Contextual variables resolved by this option:
 
 - `projectName` versioned project name
 - `version` semver version
