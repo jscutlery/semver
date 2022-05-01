@@ -75,25 +75,25 @@ nx run workspace:version [...options]
 
 #### Available options
 
-| name                         | type       | default     | description                                                                                                                          |
-| ---------------------------- | ---------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                                                                                                    |
-| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                                                                                                       |
-| **`--push`**                 | `boolean`  | `false`     | push the release to the remote repository                                                                                            |
-| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects                                                                                                  |
-| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                                                                                                       |
-| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                                                                                                    |
-| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository                                                                                                   |
-| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                                                                                                         |
-| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs                                                                                                |
-| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change ([details](https://github.com/jscutlery/semver#specify-the-level-of-change)                              |
-| **`--preid`**                | `string`   | `undefined` | specify the prerelease identifier (eg: alpha, beta) ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))     |
-| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix ([details](https://github.com/jscutlery/semver#tag-prefix-customization))                                     |
-| **`--postTargets`**          | `string[]` | `[]`        | specify the list of target to execute post-release ([details](https://github.com/jscutlery/semver#triggering-executors-post-release) |
-| **`--trackDeps`**            | `boolean`  | `false`     | bump dependent packages (bump A if A depends on B) ([details](https://github.com/jscutlery/semver#tracking-dependencies)             |
-| **`--allowEmptyRelease`**    | `boolean`  | `false`     | force a patch increment even if library source didn't change                                                                         |
-| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))               |
-| **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                          |
+| name                         | type       | default     | description                                                                                                                           |
+| ---------------------------- | ---------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                                                                                                     |
+| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                                                                                                        |
+| **`--push`**                 | `boolean`  | `false`     | push the release to the remote repository                                                                                             |
+| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects                                                                                                   |
+| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                                                                                                        |
+| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                                                                                                     |
+| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository                                                                                                    |
+| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                                                                                                          |
+| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs                                                                                                 |
+| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                              |
+| **`--preid`**                | `string`   | `undefined` | specify the prerelease identifier (eg: alpha, beta) ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))      |
+| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix ([details](https://github.com/jscutlery/semver#tag-prefix-customization))                                      |
+| **`--postTargets`**          | `string[]` | `[]`        | specify the list of target to execute post-release ([details](https://github.com/jscutlery/semver#triggering-executors-post-release)) |
+| **`--trackDeps`**            | `boolean`  | `false`     | bump dependent packages (bump A if A depends on B) ([details](https://github.com/jscutlery/semver#tracking-dependencies))             |
+| **`--allowEmptyRelease`**    | `boolean`  | `false`     | force a patch increment even if library source didn't change                                                                          |
+| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                |
+| **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                           |
 
 #### Overwrite default configuration
 
@@ -128,9 +128,9 @@ nx run workspace:version --releaseAs=prerelease --preid=beta
 
 The **`--tagPrefix`** option allows you to customize the tag prefix.
 
-In sync mode only one tag is created for the whole workspace, the tag prefix is set to `"v"` by default, which is resolved for instance to `v0.0.1`.
+In sync mode only one tag is created for the whole workspace, the tag prefix is set to `v` by default, which is resolved for instance to `v0.0.1`.
 
-In independent mode, the tag prefix uses the contextual project name, the default value is `"${projectName}-"` which is resolved for instance to `my-project-0.0.1`. Note that each project in the workspace is versioned with its own tag.
+In independent mode, the tag prefix uses the contextual project name, the default value is `${projectName}-` which is resolved for instance to `my-project-0.0.1`. Note that each project in the workspace is versioned with its own tag.
 
 #### Commit message customization
 
@@ -140,7 +140,7 @@ The **`--commitMessageFormat`** option allows you to customize the commit messag
 chore(${projectName}): release version ${version}
 ```
 
-Two variables can be resolved:
+Resolved contextual variables:
 
 - `version` the current release version (for instance `1.0.0`)
 - `projectName` the project name to be versioned (for instance `my-project`)
