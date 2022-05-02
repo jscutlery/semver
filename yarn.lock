@@ -918,13 +918,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nrwl/cli@14.0.3":
-  version "14.0.3"
-  resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-14.0.3.tgz#7542f9e20aa1a44e9c8ffdef13054131bedbfcf0"
-  integrity sha512-5zlBNQHLHXUCq6PashOhoI4+QoYjQahMd4hnNiTa/T08dCPnR974b7PHZj22QJnpeaBUKlGCjh5NSmUyPfDW2Q==
-  dependencies:
-    nx "14.0.3"
-
 "@nrwl/cli@14.0.5":
   version "14.0.5"
   resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-14.0.5.tgz#084b77f127ba13d3c32eed3e739720dde5309848"
@@ -932,19 +925,7 @@
   dependencies:
     nx "14.0.5"
 
-"@nrwl/devkit@14.0.3":
-  version "14.0.3"
-  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-14.0.3.tgz#aa263c717ca08dcd7a619bd5f51d558fa5d440dc"
-  integrity sha512-4ussrfGcuymnMvPc7mkqA9CyC2ytMEM6J+XfcmklaTDea+OzlW/T3tv015fz9YNNlhWAWHSXdkI3gmm3ypdiuQ==
-  dependencies:
-    ejs "^3.1.5"
-    ignore "^5.0.4"
-    nx "14.0.3"
-    rxjs "^6.5.4"
-    semver "7.3.4"
-    tslib "^2.3.0"
-
-"@nrwl/devkit@14.0.5":
+"@nrwl/devkit@14.0.5", "@nrwl/devkit@^14.0.5":
   version "14.0.5"
   resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-14.0.5.tgz#708670d28ccca66dbde683de93470fae9a885219"
   integrity sha512-2kGv3tquuf3xko9FVG+Q6gUMt+RsOigdieANZtvsPaNUAxJOD5DabxHA1pwkd8AUg6bewpv64cVLgvhUIBj1MQ==
@@ -1025,13 +1006,6 @@
     fs-extra "^9.1.0"
     rxjs "^6.5.4"
     tslib "^2.3.0"
-
-"@nrwl/tao@14.0.3":
-  version "14.0.3"
-  resolved "https://registry.yarnpkg.com/@nrwl/tao/-/tao-14.0.3.tgz#8bb0887db3fa9a1832b68d354979291fcdaa0b3d"
-  integrity sha512-DCk8ktLSUol/8wZN8TlXnHzId8CpOxQwdeSLrJLfsdealHvTrbF8c8b7mSbaSihZ5nDlsEuHWvJZNLWPxQHBJA==
-  dependencies:
-    nx "14.0.3"
 
 "@nrwl/tao@14.0.5":
   version "14.0.5"
@@ -1269,7 +1243,7 @@
   resolved "https://registry.yarnpkg.com/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.2.174.tgz#8efcb2bce3727a91874b88aa5be003da6445db8b"
   integrity sha512-9aFcbPTFA5jtiTQbOsq+/QN29F/YNpOrhcwsUa2Haqq0+2h71rMiBn7oluUERFQ+/se9J0C00iSC0QXif4pfuQ==
 
-"@swc/core@^1.2.119", "@swc/core@^1.2.152":
+"@swc/core@^1.2.119":
   version "1.2.172"
   resolved "https://registry.yarnpkg.com/@swc/core/-/core-1.2.172.tgz#765a5138fc85a24ca77cd3feea004cf4ff32c8a6"
   integrity sha512-Jd3Czz46LUrBldXO1G9LUOoH/PxkRWxwsf2siUaX5arC2bkQsRt7i7czVHo0cbaCo78Nr84jvDN1gBr6e1aEtQ==
@@ -4812,45 +4786,6 @@ nwsapi@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.0.tgz#204879a9e3d068ff2a55139c2c772780681a38b7"
   integrity sha512-h2AatdwYH+JHiZpv7pt/gSX1XoRGb7L/qSIeuqA6GwYoF9w1vP1cw42TO0aI2pNyshRK5893hNSl+1//vHK7hQ==
-
-nx@14.0.3:
-  version "14.0.3"
-  resolved "https://registry.yarnpkg.com/nx/-/nx-14.0.3.tgz#8b7af51f9a145591b5c315d45ab961dc78f07638"
-  integrity sha512-p5MARLvRv3oxBT3EDq3ihg3Qb0NQEaIOWwthmZeKmEoRqYbZpM3dWbwlbN6yGdXJJPqtEW/IsffgGHl9m+7Vsw==
-  dependencies:
-    "@nrwl/cli" "14.0.3"
-    "@nrwl/tao" "14.0.3"
-    "@parcel/watcher" "2.0.4"
-    "@swc-node/register" "^1.4.2"
-    "@swc/core" "^1.2.152"
-    chalk "4.1.0"
-    chokidar "^3.5.1"
-    cli-cursor "3.1.0"
-    cli-spinners "2.6.1"
-    cliui "^7.0.2"
-    dotenv "~10.0.0"
-    enquirer "~2.3.6"
-    fast-glob "3.2.7"
-    figures "3.2.0"
-    flat "^5.0.2"
-    fs-extra "^9.1.0"
-    glob "7.1.4"
-    ignore "^5.0.4"
-    jsonc-parser "3.0.0"
-    minimatch "3.0.4"
-    npm-run-path "^4.0.1"
-    open "^8.4.0"
-    rxjs "^6.5.4"
-    rxjs-for-await "0.0.2"
-    semver "7.3.4"
-    string-width "^4.2.3"
-    tar-stream "~2.2.0"
-    tmp "~0.2.1"
-    tsconfig-paths "^3.9.0"
-    tslib "^2.3.0"
-    v8-compile-cache "2.3.0"
-    yargs "^17.4.0"
-    yargs-parser "21.0.1"
 
 nx@14.0.5:
   version "14.0.5"
