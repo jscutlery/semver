@@ -355,6 +355,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://github.com/lukelukes"><img src="https://avatars.githubusercontent.com/u/45536418?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lukelukes</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Alukelukes" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/ianldgs"><img src="https://avatars.githubusercontent.com/u/6526498?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ian Luca</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=ianldgs" title="Code">💻</a> <a href="#ideas-ianldgs" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://www.tngtech.com/"><img src="https://avatars.githubusercontent.com/u/30828990?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Matthias Stemmler</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Ams-tng" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/gioragutt"><img src="https://avatars.githubusercontent.com/u/13711224?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Giora Guttsait</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Agioragutt" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
