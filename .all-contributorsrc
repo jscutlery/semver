@@ -329,6 +329,15 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "ms-tng",
+      "name": "Matthias Stemmler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30828990?v=4",
+      "profile": "https://www.tngtech.com/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
