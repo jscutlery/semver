@@ -20,8 +20,7 @@
     },
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
-      "type": "string",
-      "default": "chore(${projectName}): release version ${version}"
+      "type": "string"
     },
     "enforceConventionalCommits": {
       "description": "Install & configure commitlint and husky.",

@@ -24,6 +24,7 @@ describe('@jscutlery/semver:version', () => {
     syncVersions: false,
     postTargets: [],
     preset: 'angular',
+    commitMessageFormat: 'chore(${projectName}): release version ${version}',
   };
 
   const commonWorkspaceFiles: [string, string][] = [
@@ -1196,7 +1197,7 @@ $`)
         })
       );
 
-      expect(commitMessage()).toBe('chore(a): release 0.1.0');
+      expect(commitMessage()).toBe('chore(a): release version 0.1.0');
     });
   });
 

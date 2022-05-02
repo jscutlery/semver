@@ -11,7 +11,7 @@ import {
   getDependencyRoots,
   type DependencyRoot
 } from './utils/get-project-dependencies';
-import { DEFAULT_COMMIT_MESSAGE_FORMAT, tryPush } from './utils/git';
+import { tryPush } from './utils/git';
 import { _logStep } from './utils/logger';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
@@ -223,8 +223,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
-    commitMessageFormat:
-      options.commitMessageFormat ?? DEFAULT_COMMIT_MESSAGE_FORMAT,
+    commitMessageFormat: options.commitMessageFormat as string,
     preset:
       options.preset === 'angular'
         ? 'angular'

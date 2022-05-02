@@ -65,6 +65,7 @@ describe('@jscutlery/semver:version', () => {
     skipProjectChangelog: false,
     postTargets: [],
     preset: 'angular',
+    commitMessageFormat: 'chore(${projectName}): release version ${version}',
   };
 
   beforeEach(() => {
@@ -157,7 +158,7 @@ describe('@jscutlery/semver:version', () => {
       expect.objectContaining({ newVersion: '2.1.0' })
     );
     expect(mockCommit).toBeCalledWith(
-      expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
+      expect.objectContaining({ commitMessage: 'chore(a): release version 2.1.0' })
     );
     expect(mockCreateTag).toBeCalledWith(
       expect.objectContaining({ tag: 'a-2.1.0' })
@@ -207,7 +208,7 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({ newVersion: '2.1.0' })
       );
       expect(mockCommit).toBeCalledWith(
-        expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
+        expect.objectContaining({ commitMessage: 'chore(a): release version 2.1.0' })
       );
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({ tag: 'a-2.1.0' })
@@ -242,7 +243,7 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({ newVersion: '2.1.0' })
       );
       expect(mockCommit).toBeCalledWith(
-        expect.objectContaining({ commitMessage: 'chore(a): release 2.1.0' })
+        expect.objectContaining({ commitMessage: 'chore(a): release version 2.1.0' })
       );
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({ tag: 'a-2.1.0' })
@@ -336,7 +337,7 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({
-          commitMessage: 'chore(workspace): release 2.1.0',
+          commitMessage: 'chore(workspace): release version 2.1.0',
           dryRun: false,
           projectName: 'workspace',
           tag: 'v2.1.0',
@@ -344,7 +345,7 @@ describe('@jscutlery/semver:version', () => {
       );
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
-          commitMessage: 'chore(workspace): release 2.1.0',
+          commitMessage: 'chore(workspace): release version 2.1.0',
           dryRun: false,
           noVerify: false,
           projectName: 'workspace',
@@ -508,7 +509,7 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
-          commitMessage: 'chore(a): release 2.1.0',
+          commitMessage: 'chore(a): release version 2.1.0',
         })
       );
     });

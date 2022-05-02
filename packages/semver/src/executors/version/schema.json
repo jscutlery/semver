@@ -91,7 +91,8 @@
     },
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
-      "type": "string"
+      "type": "string",
+      "default": "chore(${projectName}): release version ${version}"
     },
     "preset": {
       "description": "Customize CHANGELOG generation.",

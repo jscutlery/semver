@@ -4,9 +4,6 @@ import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 import { exec } from '../../common/exec';
 import { logStep, _logStep } from './logger';
 
-export const DEFAULT_COMMIT_MESSAGE_FORMAT =
-  'chore(${projectName}): release ${version}';
-
 /**
  * Return the list of commits since `since` commit.
  */
