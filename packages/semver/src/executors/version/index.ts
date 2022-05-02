@@ -8,6 +8,9 @@ import {
   getChangelogPath
 } from './utils/changelog';
 import {
+  formatCommitMessage
+} from './utils/commit';
+import {
   getDependencyRoots,
   type DependencyRoot
 } from './utils/get-project-dependencies';
@@ -15,7 +18,6 @@ import { tryPush } from './utils/git';
 import { _logStep } from './utils/logger';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
-import { createTemplateString } from './utils/template-string';
 import { tryBump } from './utils/try-bump';
 import { getProjectRoot } from './utils/workspace';
 import {
@@ -51,12 +53,6 @@ export default async function version(
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
 
-  const tagPrefix = formatTagPrefix({
-    versionTagPrefix,
-    projectName,
-    syncVersions,
-  });
-
   let dependencyRoots: DependencyRoot[] = [];
   try {
     dependencyRoots = await getDependencyRoots({
@@ -76,6 +72,11 @@ export default async function version(
     return { success: false };
   }
 
+  const tagPrefix = formatTagPrefix({
+    versionTagPrefix,
+    projectName,
+    syncVersions,
+  });
   const projectRoot = getProjectRoot(context);
   const newVersion$ = tryBump({
     preset,
@@ -109,10 +110,12 @@ export default async function version(
 
       const { version, dependencyUpdates } = newVersion;
       const tag = formatTag({ tagPrefix, version });
-      const commitMessage = createTemplateString(commitMessageFormat, {
+      const commitMessage = formatCommitMessage({
         projectName,
+        commitMessageFormat,
         version,
       });
+
       const options: CommonVersionOptions = {
         newVersion: version,
         tag,
@@ -165,6 +168,7 @@ export default async function version(
             },
           })
         );
+
       const changelogPath = getChangelogPath(
         syncVersions ? workspaceRoot : projectRoot
       );

@@ -5,6 +5,7 @@ import version from './';
 import type { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as changelog from './utils/changelog';
+import * as commit from './utils/commit';
 import { getDependencyRoots } from './utils/get-project-dependencies';
 import * as git from './utils/git';
 import { runPostTargets } from './utils/post-target';
@@ -14,6 +15,10 @@ import * as workspace from './utils/workspace';
 
 jest.mock('./utils/changelog');
 jest.mock('./utils/project');
+jest.mock('./utils/commit', () => ({
+  commit: jest.fn(),
+  formatCommitMessage: jest.requireActual('./utils/commit').formatCommitMessage
+}));
 jest.mock('./utils/git');
 jest.mock('./utils/get-project-dependencies');
 jest.mock('./utils/try-bump');
@@ -39,7 +44,7 @@ describe('@jscutlery/semver:version', () => {
   const mockAddToStage = git.addToStage as jest.MockedFunction<
     typeof git.addToStage
   >;
-  const mockCommit = git.commit as jest.MockedFunction<typeof git.commit>;
+  const mockCommit = commit.commit as jest.MockedFunction<typeof commit.commit>;
   const mockCreateTag = git.createTag as jest.MockedFunction<
     typeof git.createTag
   >;
@@ -123,7 +128,7 @@ describe('@jscutlery/semver:version', () => {
     jest.resetAllMocks();
   });
 
-  it('should run steps in order', async () => {
+  it('should run tasks in order', async () => {
     const { success } = await version(
       { ...options, push: true, postTargets: ['a:publish'] },
       context

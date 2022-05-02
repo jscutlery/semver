@@ -4,7 +4,8 @@ import {
   insertChangelogDependencyUpdates,
   updateChangelog,
 } from './utils/changelog';
-import { addToStage, commit, createTag } from './utils/git';
+import { commit } from './utils/commit';
+import { addToStage, createTag } from './utils/git';
 import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';

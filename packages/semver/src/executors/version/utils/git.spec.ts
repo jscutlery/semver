@@ -3,10 +3,7 @@ import { lastValueFrom, of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
 import * as cp from '../../common/exec';
 import {
-  addToStage,
-  commit,
-  createTag,
-  getCommits,
+  addToStage, createTag, getCommits,
   getFirstCommitRef,
   tryPush
 } from './git';
@@ -67,7 +64,7 @@ describe('git', () => {
           '--atomic',
           'upstream',
           'master',
-          'v1.0.0'
+          'v1.0.0',
         ])
       );
     });
@@ -241,7 +238,7 @@ describe('git', () => {
       );
     });
 
-    it('should skip if --dryRun', (done) => {
+    it('should skip with --dryRun', (done) => {
       createTag({
         dryRun: true,
         tag: 'project-a-1.0.0',
@@ -280,56 +277,6 @@ describe('git', () => {
           done();
         },
       });
-    });
-  });
-
-  describe(commit.name, () => {
-    beforeEach(() => jest.spyOn(cp, 'exec').mockReturnValue(of('success')));
-
-    it('should commit', async () => {
-      await lastValueFrom(
-        commit({
-          dryRun: false,
-          noVerify: false,
-          commitMessage: 'chore(release): 1.0.0',
-          projectName: 'p',
-        })
-      );
-
-      expect(cp.exec).toBeCalledWith(
-        'git',
-        expect.arrayContaining(['commit', '-m', 'chore(release): 1.0.0'])
-      );
-    });
-
-    it('should pass --dryRun', (done) => {
-        commit({
-          dryRun: true,
-          noVerify: false,
-          commitMessage: 'chore(release): 1.0.0',
-          projectName: 'p',
-        }).subscribe({
-          complete: () => {
-            expect(cp.exec).not.toBeCalled();
-            done();
-          },
-        });
-    });
-
-    it('should pass --noVerify', async () => {
-      await lastValueFrom(
-        commit({
-          dryRun: false,
-          noVerify: true,
-          commitMessage: 'chore(release): 1.0.0',
-          projectName: 'p',
-        })
-      );
-
-      expect(cp.exec).toBeCalledWith(
-        'git',
-        expect.arrayContaining(['--no-verify'])
-      );
     });
   });
 });

@@ -52,11 +52,16 @@ export function tryPush({
     );
   }
 
-  const gitPushOptions = [
-    ...(noVerify ? ['--no-verify'] : []),
-  ];
+  const gitPushOptions = [...(noVerify ? ['--no-verify'] : [])];
 
-  return exec('git', ['push', ...gitPushOptions, '--atomic', remote, branch, tag])
+  return exec('git', [
+    'push',
+    ...gitPushOptions,
+    '--atomic',
+    remote,
+    branch,
+    tag,
+  ])
     .pipe(
       catchError((error) => {
         if (/atomic/.test(error)) {
@@ -134,36 +139,6 @@ export function createTag({
     logStep({
       step: 'tag_success',
       message: `Tagged "${tag}".`,
-      projectName,
-    })
-  );
-}
-
-export function commit({
-  dryRun,
-  noVerify,
-  commitMessage,
-  projectName,
-}: {
-  dryRun: boolean;
-  noVerify: boolean;
-  commitMessage: string;
-  projectName: string;
-}): Observable<void> {
-  if (dryRun) {
-    return EMPTY;
-  }
-
-  return exec('git', [
-    'commit',
-    ...(noVerify ? ['--no-verify'] : []),
-    '-m',
-    commitMessage,
-  ]).pipe(
-    map(() => undefined),
-    logStep({
-      step: 'commit_success',
-      message: `Committed "${commitMessage}".`,
       projectName,
     })
   );
