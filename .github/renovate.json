@@ -9,11 +9,11 @@
     "enabled": true,
     "automerge": true,
     "automergeType": "branch",
-    "commitMessageAction": "📦 Lock file maintenance",
+    "commitMessageAction": "📦 lock file maintenance",
     "semanticCommitType": "build"
   },
   "rangeStrategy": "update-lockfile",
-  "commitMessageAction": "📦",
+  "commitMessageAction": "📦 bump",
   "packageRules": [
     {
       "matchPackagePatterns": ["^@angular/", "^@nrwl/", "nx"],
