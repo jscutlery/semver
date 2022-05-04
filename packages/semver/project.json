@@ -1,5 +1,4 @@
 {
-  "root": "packages/semver",
   "sourceRoot": "packages/semver/src",
   "projectType": "library",
   "generators": {},
