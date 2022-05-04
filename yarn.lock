@@ -925,7 +925,7 @@
   dependencies:
     nx "14.1.1"
 
-"@nrwl/devkit@14.0.5", "@nrwl/devkit@^14.0.5":
+"@nrwl/devkit@14.0.5":
   version "14.0.5"
   resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-14.0.5.tgz#708670d28ccca66dbde683de93470fae9a885219"
   integrity sha512-2kGv3tquuf3xko9FVG+Q6gUMt+RsOigdieANZtvsPaNUAxJOD5DabxHA1pwkd8AUg6bewpv64cVLgvhUIBj1MQ==
