@@ -23,7 +23,6 @@ runs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        cache: yarn
         node-version: ${{ inputs.node_version }}
         # This doesn't just set the registry url, but also sets
         # the right configuration in .npmrc that reads NPM token
@@ -34,4 +33,4 @@ runs:
 
     - name: yarn install
       shell: bash
-      run: yarn --frozen-lockfile --no-progress --non-interactive --prefer-offline
+      run: yarn install --immutable --immutable-cache
