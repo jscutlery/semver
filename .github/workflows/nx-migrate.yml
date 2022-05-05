@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
-        run: yarn install --non-interactive
+        run: yarn install
 
       - name: Run @nrwl/workspace migrations
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
