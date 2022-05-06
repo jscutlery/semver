@@ -43,6 +43,7 @@ jobs:
       - name: Test
         id: test
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
+        continue-on-error: true
         uses: ./.github/actions/test
         with:
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
