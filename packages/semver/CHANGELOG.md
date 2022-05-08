@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.23.4](https://github.com/jscutlery/semver/compare/semver-2.23.3...semver-2.23.4) (2022-05-08)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 set `@nrwl/devkit` as peer dep ([9e6447c](https://github.com/jscutlery/semver/commit/9e6447c3de46d64d36ec5305d848febf1d4c82bb))
+* **semver:** 🐞 use caret for `@nrwl/devkit` dep ([dbe9000](https://github.com/jscutlery/semver/commit/dbe9000747021d85ff1b71e640c85eaab632be02))
+* **semver:** commit order in sync workspaces ([462a2a7](https://github.com/jscutlery/semver/commit/462a2a7cec6b0d6afa078da5e326428f61dc3f27))
+
+
+
 ## [2.23.3](https://github.com/jscutlery/semver/compare/semver-2.23.2...semver-2.23.3) (2022-04-29)
 
 
