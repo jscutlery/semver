@@ -5,8 +5,7 @@ import {
   runExecutor,
   Target
 } from '@nrwl/devkit';
-import type { Observable } from 'rxjs';
-import { concat, defer } from 'rxjs';
+import { catchError, concat, defer, Observable, throwError } from 'rxjs';
 import { logStep } from './logger';
 import { coerce, createTemplateString } from './template-string';
 
@@ -49,6 +48,13 @@ export function runPostTargets({
           step: 'post_target_success',
           message: `Ran post-target "${postTargetSchema}".`,
           projectName,
+        }),
+        catchError((error) => {
+          if (error?.name === 'SchemaError') {
+            return throwError(() => new Error(error.message));
+          }
+
+          return throwError(() => error);
         })
       )
     )
