@@ -48,7 +48,7 @@
     "dotenv": "16.0.0",
     "eslint": "8.15.0",
     "eslint-config-prettier": "8.5.0",
-    "husky": "^7.0.0",
+    "husky": "^8.0.0",
     "jest": "28.1.0",
     "jest-extended": "^2.0.0",
     "ngx-deploy-npm": "^3.0.2",
