@@ -32,7 +32,7 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       {
         '@commitlint/cli': '^16.2.4',
         [_getCommitlintConfig(options)]: '^16.2.4',
-        husky: '^7.0.4',
+        husky: '^8.0.0',
       }
     );
   }
