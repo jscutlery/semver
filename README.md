@@ -252,7 +252,7 @@ jobs:
         run: |
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
-      - run: yarn install --frozen-lockfile --prefer-offline
+      - run: yarn install --frozen-lockfile
       - name: Version
         shell: bash
         run: yarn nx affected --base=last-release --target=version
@@ -260,14 +260,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Tag last-release
         shell: bash
-        run: git tag -f last-release
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          force: true
-          tags: true
+        run: |
+          git tag -f last-release
+          git push origin last-release --force
 ```
 
 Note that `secrets.GITHUB_TOKEN` is automatically provided by the GitHub Actions, you don't need to set up anything.
@@ -291,11 +286,10 @@ release:
     - git config --global user.email "gituser@example.com"
     - git remote set-url origin http://gitlab-ci-token:${DEPLOY_KEY}@gitlab.com/org/project.git
   script:
-    - yarn install --frozen-lockfile --prefer-offline
+    - yarn install --frozen-lockfile
     - yarn nx affected --target=version --base=last-release
     - git tag -f last-release
     - git push origin last-release --force -o ci.skip
-    - git push origin HEAD:${CI_COMMIT_BRANCH} --tags -o ci.skip
 ```
 
 Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/user/project/deploy_keys/) in order to push to your remote repository.
