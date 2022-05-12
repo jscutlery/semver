@@ -22,6 +22,7 @@ describe('@jscutlery/semver:version', () => {
     baseBranch: 'main',
     skipRootChangelog: false,
     syncVersions: false,
+    skipCommitTypes: [],
     postTargets: [],
     preset: 'angular',
     commitMessageFormat: 'chore(${projectName}): release version ${version}',
@@ -1252,11 +1253,12 @@ $`)
 function commitChanges() {
   execSync(
     `
-        git init
+        git init --quiet
 
         # These are needed by CI.
         git config user.email "bot@jest.io"
         git config user.name "Test Bot"
+
         git config commit.gpgsign false
 
         git add .

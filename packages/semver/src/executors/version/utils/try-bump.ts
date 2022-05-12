@@ -1,4 +1,5 @@
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
+import * as conventionalCommitsParser from 'conventional-commits-parser';
 import { defer, forkJoin, iif, of, type Observable } from 'rxjs';
 import {
   catchError,
@@ -24,13 +25,13 @@ export interface NewVersion {
 
 const initialVersion = '0.0.0';
 
-export function getProjectVersion({
-  tagPrefix,
-  projectRoot,
-  releaseType,
-  since,
-  projectName,
-}: {
+function getProjectVersion({
+                             tagPrefix,
+                             projectRoot,
+                             releaseType,
+                             since,
+                             projectName,
+                           }: {
   tagPrefix: string;
   projectRoot: string;
   releaseType?: ReleaseIdentifier;
@@ -90,17 +91,18 @@ export function getProjectVersion({
  * Return new version or null if nothing changed.
  */
 export function tryBump({
-  preset,
-  projectRoot,
-  tagPrefix,
-  dependencyRoots = [],
-  releaseType,
-  preid,
-  versionTagPrefix,
-  syncVersions,
-  allowEmptyRelease,
-  projectName,
-}: {
+                          preset,
+                          projectRoot,
+                          tagPrefix,
+                          dependencyRoots = [],
+                          releaseType,
+                          preid,
+                          versionTagPrefix,
+                          syncVersions,
+                          allowEmptyRelease,
+                          skipCommitTypes = [],
+                          projectName,
+                        }: {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
@@ -110,6 +112,7 @@ export function tryBump({
   versionTagPrefix?: string | null;
   syncVersions: boolean;
   allowEmptyRelease?: boolean;
+  skipCommitTypes: string[],
   projectName: string;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
@@ -139,6 +142,7 @@ export function tryBump({
         preset,
         releaseType,
         versionTagPrefix,
+        skipCommitTypes,
         syncVersions,
         projectName,
       });
@@ -175,10 +179,12 @@ export function tryBump({
             );
           }
 
+          const filteredCommits = commits.filter(commit => shouldCommitBeCalculated({ commit, skipCommitTypes }));
+
           /* No commits since last release & no dependency updates so don't bump if the `releastAtLeast` flag is not present. */
           if (
             !dependencyUpdates.length &&
-            !commits.length &&
+            !filteredCommits.length &&
             !allowEmptyRelease
           ) {
             return of(null);
@@ -192,11 +198,11 @@ export function tryBump({
 }
 
 export function _semverBump({
-  since,
-  preset,
-  projectRoot,
-  tagPrefix,
-}: {
+                              since,
+                              preset,
+                              projectRoot,
+                              tagPrefix,
+                            }: {
   since: string;
   preset: string;
   projectRoot: string;
@@ -215,10 +221,10 @@ export function _semverBump({
 }
 
 export function _manualBump({
-  since,
-  releaseType,
-  preid,
-}: {
+                              since,
+                              releaseType,
+                              preid,
+                            }: {
   since: string;
   releaseType: string;
   preid: string;
@@ -239,19 +245,27 @@ export function _manualBump({
   });
 }
 
+function shouldCommitBeCalculated({ commit, skipCommitTypes }: { commit: string, skipCommitTypes: string[] }): boolean {
+  const { type } = conventionalCommitsParser.sync(commit, {});
+  const shouldSkip = skipCommitTypes.some(typeToSkip => typeToSkip === type)
+  return !shouldSkip;
+}
+
 export function _getDependencyVersions({
-  preset,
-  dependencyRoots,
-  releaseType,
-  versionTagPrefix,
-  syncVersions,
-  lastVersionGitRef,
-  projectName,
-}: {
+                                         preset,
+                                         dependencyRoots,
+                                         releaseType,
+                                         versionTagPrefix,
+                                         syncVersions,
+                                         lastVersionGitRef,
+                                         skipCommitTypes,
+                                         projectName,
+                                       }: {
   preset: string;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
   releaseType?: ReleaseIdentifier;
+  skipCommitTypes: string[],
   versionTagPrefix?: string | null;
   syncVersions: boolean;
   projectName: string;
@@ -275,7 +289,8 @@ export function _getDependencyVersions({
 
       return forkJoin([lastVersion$, commits$]).pipe(
         switchMap(([dependencyLastVersion, commits]) => {
-          if (commits.length === 0) {
+          const filteredCommits = commits.filter(commit => shouldCommitBeCalculated({ commit, skipCommitTypes }));
+          if (filteredCommits.length === 0) {
             return of({
               type: 'dependency',
               version: null,
@@ -319,8 +334,8 @@ export function _isNewVersion(version: Version): boolean {
 }
 
 export function _isInitialVersion({
-  lastVersion,
-}: {
+                                    lastVersion,
+                                  }: {
   lastVersion: string;
 }): boolean {
   return lastVersion === initialVersion;

@@ -60,6 +60,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: undefined,
         preid: undefined,
+        skipCommitTypes: [],
         projectName: '',
       })
     );
@@ -116,6 +117,7 @@ describe('tryBump', () => {
         ],
         tagPrefix: 'v',
         syncVersions: true,
+        skipCommitTypes: [],
         projectName: '',
       })
     );
@@ -157,6 +159,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'premajor',
+        skipCommitTypes: [],
         preid: 'alpha',
         projectName: '',
       })
@@ -189,6 +192,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'major',
+        skipCommitTypes: [],
         projectName: '',
       })
     );
@@ -221,6 +225,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
+        skipCommitTypes: [],
       })
     );
 
@@ -252,6 +257,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'minor',
         projectName: '',
+        skipCommitTypes: [],
       })
     );
 
@@ -277,6 +283,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
+        skipCommitTypes: [],
       })
     );
 
@@ -304,6 +311,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
+        skipCommitTypes: [],
       })
     );
 
@@ -334,6 +342,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
+        skipCommitTypes: [],
       })
     );
 
@@ -362,6 +371,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         allowEmptyRelease: true,
         projectName: '',
+        skipCommitTypes: [],
       })
     );
 
@@ -371,4 +381,90 @@ describe('tryBump', () => {
       since: 'v2.1.0',
     });
   });
+
+  describe("skipCommitTypes is set", ()=> {
+
+    it('should return undefined if all commits types match skipCommitTypes', async () => {
+      mockGetCommits.mockReturnValue(of(['docs: A ', 'refactor: B ']));
+      mockConventionalRecommendedBump.mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: 'patch',
+          })
+        ) as () => void
+      );
+
+      const newVersion = await lastValueFrom(
+        tryBump({
+          syncVersions: false,
+          preset: 'angular',
+          skipCommitTypes: ['docs', 'refactor'],
+          projectRoot: '/libs/demo',
+          tagPrefix: 'v',
+          projectName: '',
+        })
+      );
+
+      expect(newVersion).toBeNull();
+    });
+    it('should return correct version if NOT commits types match skipCommitTypes', async () => {
+      mockGetCommits.mockReturnValue(of(['feat: A', 'docs: B']));
+      mockConventionalRecommendedBump.mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: 'patch',
+          })
+        ) as () => void
+      );
+
+      const newVersion = await lastValueFrom(
+        tryBump({
+          syncVersions: false,
+          preset: 'angular',
+          skipCommitTypes: ['docs', 'refactor'],
+          projectRoot: '/libs/demo',
+          tagPrefix: 'v',
+          projectName: '',
+        })
+      );
+
+      expect(newVersion?.version).toEqual('2.1.1');
+    });
+
+    it('should return undefined if all dependency commits types match skipCommitTypes', async () => {
+      mockGetCommits
+        .mockReturnValueOnce(of([]))
+        .mockReturnValueOnce(of(['docs: A', 'refactor(scope): B']));
+
+      mockConventionalRecommendedBump.mockImplementation(
+        callbackify(
+          jest
+            .fn()
+            .mockResolvedValueOnce({
+              releaseType: undefined,
+            })
+            .mockResolvedValueOnce({
+              releaseType: undefined,
+            })
+        ) as () => void
+      );
+
+      const newVersion = await lastValueFrom(
+        tryBump({
+          preset: 'angular',
+          projectRoot: '/libs/demo',
+          dependencyRoots: [
+            { name: 'dep1', path: '/libs/dep1' },
+          ],
+          tagPrefix: 'v',
+          skipCommitTypes: ['docs', 'refactor'],
+          syncVersions: true,
+          projectName: '',
+        })
+      );
+
+      expect(newVersion).toBeNull();
+    });
+  });
+
 });
