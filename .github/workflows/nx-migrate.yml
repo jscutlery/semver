@@ -73,6 +73,8 @@ jobs:
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true' && steps.test.outcome != 'success'
         run: |
           LAST_VERSION=$(npm view @nrwl/workspace version)
+          git checkout -b "update-nrwl-workspace-${LAST_VERSION}"
+          git push
           gh pr create -t "Update @nrwl/workspace" -b "Update @nrwl/workspace dependencies to ${LAST_VERSION}."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
