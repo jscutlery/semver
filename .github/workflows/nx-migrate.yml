@@ -76,6 +76,10 @@ jobs:
           BRANCH="update-nrwl-workspace-${LAST_VERSION}"
           git checkout -b "${BRANCH}"
           git push -f --set-upstream origin "${BRANCH}"
-          gh pr create -t "Update @nrwl/workspace" -b "Update @nrwl/workspace dependencies to ${LAST_VERSION}."
+
+          PR_VIEW=$(gh pr view "${BRANCH}")
+          if [[ $str == *"no pull requests found"* ]]; then
+            gh pr create -t "Update @nrwl/workspace" -b "Update @nrwl/workspace dependencies to ${LAST_VERSION}."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.MIGRATE_TOKEN }}
