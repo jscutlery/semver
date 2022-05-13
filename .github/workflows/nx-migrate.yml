@@ -75,7 +75,7 @@ jobs:
           LAST_VERSION=$(npm view @nrwl/workspace version)
           BRANCH="update-nrwl-workspace-${LAST_VERSION}"
           git checkout -b "${BRANCH}"
-          git push --set-upstream origin "${BRANCH}"
+          git push -f --set-upstream origin "${BRANCH}"
           gh pr create -t "Update @nrwl/workspace" -b "Update @nrwl/workspace dependencies to ${LAST_VERSION}."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
