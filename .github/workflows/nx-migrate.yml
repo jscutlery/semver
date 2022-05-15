@@ -77,8 +77,8 @@ jobs:
           git checkout -b "${BRANCH}"
           git push -f --set-upstream origin "${BRANCH}"
 
-          PR_VIEW=$(gh pr view "${BRANCH}")
-          if [[ $str == *"no pull requests found"* ]]; then
+          PR=$(gh pr view "${BRANCH}")
+          if [[ $PR == *"no pull requests found"* ]]; then
             gh pr create -t "Update @nrwl/workspace" -b "Update @nrwl/workspace dependencies to ${LAST_VERSION}."
           fi
         env:
