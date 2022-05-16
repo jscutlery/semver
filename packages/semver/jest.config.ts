@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'semver',
   setupFilesAfterEnv: ['jest-extended/all'],
   globals: {
@@ -13,5 +13,5 @@ module.exports = {
   coverageDirectory: '../../coverage/packages/semver',
   coverageReporters: ['html', 'lcov'],
   testEnvironment: 'node',
-  preset: '../../jest.preset.ts',
+  preset: '../../jest.preset.js',
 };
