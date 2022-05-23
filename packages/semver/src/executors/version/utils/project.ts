@@ -38,10 +38,11 @@ export function updatePackageJson({
         const newPackageJson = JSON.parse(packageJson);
         newPackageJson.version = newVersion;
 
-        return writeFile(
-          packageJsonPath,
-          JSON.stringify(newPackageJson, null, 2)
-        ).pipe(
+        const newPackageJsonString = JSON.stringify(newPackageJson, null, 2);
+        // We need to add a newline at the end so that Prettier will not complain about the new
+        // file.
+        const data = newPackageJsonString.concat('\n');
+        return writeFile(packageJsonPath, data).pipe(
           logStep({
             step: 'package_json_success',
             message: `Updated package.json version.`,
