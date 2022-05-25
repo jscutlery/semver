@@ -5,21 +5,21 @@ import {
   updateChangelog,
 } from './utils/changelog';
 import { commit } from './utils/commit';
-import { addToStage, createTag } from './utils/git';
+import { addToStage, createTag, mergeAddToStage } from './utils/git';
 import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
 
 export type Version =
   | {
-      type: 'project';
-      version: string | null;
-    }
+    type: 'project';
+    version: string | null;
+  }
   | {
-      type: 'dependency';
-      version: string | null;
-      dependencyName: string;
-    };
+    type: 'dependency';
+    version: string | null;
+    dependencyName: string;
+  };
 
 export type StandardVersionPreset = 'angular' | 'conventionalcommits';
 
@@ -66,10 +66,7 @@ export function versionWorkspace({
           ...options,
         })
       ),
-      concatMap((changelogPaths) =>
-        addToStage({ paths: changelogPaths, dryRun })
-      )
-    ),
+      concatMap((changelogPaths) => of({ paths: changelogPaths, dryRun }))),
     getProjectRoots(options.workspaceRoot).pipe(
       concatMap((projectRoots) =>
         forkJoin(
@@ -83,16 +80,17 @@ export function versionWorkspace({
           )
         )
       ),
-      concatMap((packageFiles) =>
-        addToStage({
-          paths: packageFiles.filter(
-            (packageFile) => packageFile !== null
-          ) as string[],
-          dryRun,
-        })
-      )
+      concatMap((packageFiles) => of({
+        paths: packageFiles.filter(
+          (packageFile) => packageFile !== null
+        ) as string[],
+        dryRun,
+      }))
     ),
   ]).pipe(
+    concatMap((changesToStage) =>
+      addToStage(mergeAddToStage(changesToStage, dryRun))
+    ),
     concatMap(() =>
       commit({
         dryRun,
@@ -141,15 +139,15 @@ export function versionProject({
       /* If --skipProjectChangelog is passed `changelogPaths` has length 0, otherwise it has 1 single entry. */
       changelogPaths.length === 1
         ? insertChangelogDependencyUpdates({
-            changelogPath: changelogPaths[0],
-            version: newVersion,
-            dryRun,
-            dependencyUpdates: options.dependencyUpdates,
-          }).pipe(
-            concatMap((changelogPath) =>
-              addToStage({ paths: [changelogPath], dryRun })
-            )
+          changelogPath: changelogPaths[0],
+          version: newVersion,
+          dryRun,
+          dependencyUpdates: options.dependencyUpdates,
+        }).pipe(
+          concatMap((changelogPath) =>
+            addToStage({ paths: [changelogPath], dryRun })
           )
+        )
         : of(undefined)
     ),
     concatMap(() =>
@@ -162,9 +160,9 @@ export function versionProject({
         concatMap((packageFile) =>
           packageFile !== null
             ? addToStage({
-                paths: [packageFile],
-                dryRun,
-              })
+              paths: [packageFile],
+              dryRun,
+            })
             : of(undefined)
         )
       )

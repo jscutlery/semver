@@ -86,13 +86,23 @@ export function tryPush({
     );
 }
 
-export function addToStage({
-  paths,
-  dryRun,
-}: {
+export type AddToStage = {
   paths: string[];
   dryRun: boolean;
-}): Observable<void> {
+}
+
+export function mergeAddToStage(stages: AddToStage[], dryRun: boolean): AddToStage {
+  const pathsSet = new Set<string>();
+
+  stages.forEach((stage) => stage.paths.forEach((path) => pathsSet.add(path)));
+
+  return {
+    paths: Array.from(pathsSet),
+    dryRun
+  };
+}
+
+export function addToStage({ paths, dryRun }: AddToStage): Observable<void> {
   if (paths.length === 0) {
     return EMPTY;
   }
