@@ -25,13 +25,13 @@ export interface NewVersion {
 
 const initialVersion = '0.0.0';
 
-function getProjectVersion({
-                             tagPrefix,
-                             projectRoot,
-                             releaseType,
-                             since,
-                             projectName,
-                           }: {
+export function getProjectVersion({
+  tagPrefix,
+  projectRoot,
+  releaseType,
+  since,
+  projectName,
+}: {
   tagPrefix: string;
   projectRoot: string;
   releaseType?: ReleaseIdentifier;
@@ -91,18 +91,18 @@ function getProjectVersion({
  * Return new version or null if nothing changed.
  */
 export function tryBump({
-                          preset,
-                          projectRoot,
-                          tagPrefix,
-                          dependencyRoots = [],
-                          releaseType,
-                          preid,
-                          versionTagPrefix,
-                          syncVersions,
-                          allowEmptyRelease,
-                          skipCommitTypes = [],
-                          projectName,
-                        }: {
+  preset,
+  projectRoot,
+  tagPrefix,
+  dependencyRoots = [],
+  releaseType,
+  preid,
+  versionTagPrefix,
+  syncVersions,
+  allowEmptyRelease,
+  skipCommitTypes,
+  projectName,
+}: {
   preset: string;
   projectRoot: string;
   tagPrefix: string;
@@ -198,11 +198,11 @@ export function tryBump({
 }
 
 export function _semverBump({
-                              since,
-                              preset,
-                              projectRoot,
-                              tagPrefix,
-                            }: {
+  since,
+  preset,
+  projectRoot,
+  tagPrefix,
+}: {
   since: string;
   preset: string;
   projectRoot: string;
@@ -221,10 +221,10 @@ export function _semverBump({
 }
 
 export function _manualBump({
-                              since,
-                              releaseType,
-                              preid,
-                            }: {
+  since,
+  releaseType,
+  preid,
+}: {
   since: string;
   releaseType: string;
   preid: string;
@@ -252,15 +252,15 @@ function shouldCommitBeCalculated({ commit, skipCommitTypes }: { commit: string,
 }
 
 export function _getDependencyVersions({
-                                         preset,
-                                         dependencyRoots,
-                                         releaseType,
-                                         versionTagPrefix,
-                                         syncVersions,
-                                         lastVersionGitRef,
-                                         skipCommitTypes,
-                                         projectName,
-                                       }: {
+ preset,
+ dependencyRoots,
+ releaseType,
+ versionTagPrefix,
+ syncVersions,
+ lastVersionGitRef,
+ skipCommitTypes,
+ projectName,
+}: {
   preset: string;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
@@ -334,8 +334,8 @@ export function _isNewVersion(version: Version): boolean {
 }
 
 export function _isInitialVersion({
-                                    lastVersion,
-                                  }: {
+  lastVersion,
+}: {
   lastVersion: string;
 }): boolean {
   return lastVersion === initialVersion;
