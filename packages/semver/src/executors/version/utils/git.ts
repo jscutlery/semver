@@ -24,7 +24,7 @@ export function getCommits({
       .on('close', () => observer.complete())
       .on('finish', () => observer.complete());
   }).pipe(
-    scan((commits, commit) => [...commits, commit], [] as string[]),
+    scan((commits, commit) => [...commits, commit.toString()], [] as string[]),
     startWith([]),
     last()
   );

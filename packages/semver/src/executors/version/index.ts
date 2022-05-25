@@ -49,6 +49,7 @@ export default async function version(
     commitMessageFormat,
     preset,
     allowEmptyRelease,
+    skipCommitTypes
   } = _normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
@@ -87,6 +88,7 @@ export default async function version(
     preid,
     syncVersions,
     allowEmptyRelease,
+    skipCommitTypes,
     projectName,
   });
 
@@ -222,6 +224,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
     allowEmptyRelease: options.allowEmptyRelease as boolean,
+    skipCommitTypes: options.skipCommitTypes || [],
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,

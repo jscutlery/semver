@@ -89,6 +89,15 @@
       "type": "boolean",
       "default": false
     },
+    "skipCommitTypes": {
+      "description": " Specify array of commit types to be ignored when calculating next version bump",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "description": "Type to ignore"
+      }
+    },
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
       "type": "string",
