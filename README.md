@@ -75,26 +75,26 @@ nx run workspace:version [...options]
 
 #### Available options
 
-| name                         | type       | default     | description                                                                                                                           |
-| ---------------------------- | ---------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                                                                                                     |
-| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                                                                                                        |
-| **`--push`**                 | `boolean`  | `false`     | push the release to the remote repository                                                                                             |
-| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects                                                                                                   |
-| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                                                                                                        |
-| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                                                                                                     |
-| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository                                                                                                    |
-| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                                                                                                          |
-| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs                                                                                                 |
-| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                              |
-| **`--preid`**                | `string`   | `undefined` | specify the prerelease identifier (eg: alpha, beta) ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))      |
-| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix ([details](https://github.com/jscutlery/semver#tag-prefix-customization))                                      |
-| **`--postTargets`**          | `string[]` | `[]`        | specify the list of target to execute post-release ([details](https://github.com/jscutlery/semver#triggering-executors-post-release)) |
-| **`--trackDeps`**            | `boolean`  | `false`     | bump dependent packages (bump A if A depends on B) ([details](https://github.com/jscutlery/semver#tracking-dependencies))             |
-| **`--allowEmptyRelease`**    | `boolean`  | `false`     | force a patch increment even if library source didn't change                                                                          |
-| **`--skipCommitTypes`**      | `string[]` | `[]`        | treat commits with specified types as non invoking version bump ([details](https://github.com/jscutlery/semver#skipping-release-for-specific-commits))  |
-| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                |
-| **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                           |
+| name                         | type       | default     | description                                                                                                                                                     |
+| ---------------------------- | ---------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                                                                                                                               |
+| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                                                                                                                                  |
+| **`--push`**                 | `boolean`  | `false`     | push the release to the remote repository                                                                                                                       |
+| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects                                                                                                                             |
+| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                                                                                                                                  |
+| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                                                                                                                               |
+| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository                                                                                                                              |
+| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                                                                                                                                    |
+| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs                                                                                                                           |
+| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                                                        |
+| **`--preid`**                | `string`   | `undefined` | specify the prerelease identifier (eg: alpha, beta) ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                                |
+| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix ([details](https://github.com/jscutlery/semver#tag-prefix-customization))                                                                |
+| **`--postTargets`**          | `string[]` | `[]`        | specify the list of target to execute post-release ([details](https://github.com/jscutlery/semver#triggering-executors-post-release))                           |
+| **`--trackDeps`**            | `boolean`  | `false`     | bump dependent packages (bump A if A depends on B) ([details](https://github.com/jscutlery/semver#tracking-dependencies))                                       |
+| **`--allowEmptyRelease`**    | `boolean`  | `false`     | force a patch increment even if library source didn't change                                                                                                    |
+| **`--skipCommitTypes`**      | `string[]` | `[]`        | treat commits with specified types as non invoking version bump ([details](https://github.com/jscutlery/semver#skipping-release-for-specific-types-of-commits)) |
+| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
+| **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                                                     |
 
 #### Overwrite default configuration
 
@@ -153,27 +153,33 @@ release: bump ${projectName} to ${version} [skip ci]
 ```
 
 #### Skipping release for specific types of commits
+
 To avoid releasing new version if something non-influencing on release was changed(for example, documentation), you can provide `skipCommitTypes` option
+
 ```
-nx run workspace:version --skipCommitTypes=docs,ci 
+nx run workspace:version --skipCommitTypes=docs,ci
 ```
 
 In this case any commit with specified type would be ignored when calculating if there is a need to bump version.
 
 For example if you had only one commit from the last version:
+
 ```
 docs(project): update documentation about new feature
 ```
-would not cause a new release(because `--skipCommitTypes=docs,ci` was specified)
+
+would not cause a new release (because `--skipCommitTypes=docs,ci` was specified).
 
 And two commits
+
 ```
 docs(project): update documentation about new feature
 fix(project): get rig of annoying bug
 ```
+
 would produce a patch bump.
 
-Please keep in mind that changelog would be generated by [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular#type) which ignores some types by design(i.e. `docs`, `test` and others)
+Please keep in mind that changelog would be generated by [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular#type) which ignores some types by design (i.e. `docs`, `test` and others).
 
 #### Triggering executors post-release
 
