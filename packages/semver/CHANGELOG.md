@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.24.0](https://github.com/jscutlery/semver/compare/semver-2.23.4...semver-2.24.0) (2022-05-26)
+
+
+### Bug Fixes
+
+* 📦 bump dependency standard-version to v9.5.0 ([4e4f3f6](https://github.com/jscutlery/semver/commit/4e4f3f6a2c4408a342985f465cc1522e085f84e1))
+* **semver:** 🐞 bump @commitlint/* to v17.0.0 ([2d72467](https://github.com/jscutlery/semver/commit/2d72467f542dc026241114bf3a36e54b234010d5))
+* **semver:** 🐞 bump husky to v8.0.0 ([4dd3867](https://github.com/jscutlery/semver/commit/4dd386703c197252b0bc40b7b7ff4e22525c605f))
+
+
+### Features
+
+* add supportSkipReleaseLabel option ([b38d8a9](https://github.com/jscutlery/semver/commit/b38d8a91259ce43f978627b322616ed62f74aa99))
+
+
+
 ## [2.23.4](https://github.com/jscutlery/semver/compare/semver-2.23.3...semver-2.23.4) (2022-05-08)
 
 
