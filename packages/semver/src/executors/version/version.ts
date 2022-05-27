@@ -1,5 +1,5 @@
 import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, map } from 'rxjs/operators';
 import {
   insertChangelogDependencyUpdates,
   updateChangelog,
@@ -65,9 +65,6 @@ export function versionWorkspace({
           tag,
           ...options,
         })
-      ),
-      concatMap((changelogPaths) =>
-        addToStage({ paths: changelogPaths, dryRun })
       )
     ),
     getProjectRoots(options.workspaceRoot).pipe(
@@ -83,16 +80,18 @@ export function versionWorkspace({
           )
         )
       ),
-      concatMap((packageFiles) =>
-        addToStage({
-          paths: packageFiles.filter(
-            (packageFile) => packageFile !== null
-          ) as string[],
-          dryRun,
-        })
+      map(
+        (packageFiles) =>
+          packageFiles.filter((packageFile) => packageFile !== null) as string[]
       )
     ),
   ]).pipe(
+    concatMap((pathsToStage) => {
+      return addToStage({
+        paths: pathsToStage.flat(),
+        dryRun,
+      });
+    }),
     concatMap(() =>
       commit({
         dryRun,
