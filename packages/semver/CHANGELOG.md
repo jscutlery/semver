@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.24.1](https://github.com/jscutlery/semver/compare/semver-2.24.0...semver-2.24.1) (2022-05-27)
+
+
+### Bug Fixes
+
+* version workspace now stages all changes together ([588b028](https://github.com/jscutlery/semver/commit/588b028863e046cf8fe157352d9858b6b5d22ae9))
+* version workspace now stages all changes together ([ece3c07](https://github.com/jscutlery/semver/commit/ece3c07ce074b72060c25e419c76a8e495890206))
+
+
+
 # [2.24.0](https://github.com/jscutlery/semver/compare/semver-2.23.4...semver-2.24.0) (2022-05-26)
 
 
