@@ -381,6 +381,9 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <td align="center"><a href="https://www.tngtech.com/"><img src="https://avatars.githubusercontent.com/u/30828990?v=4?s=60" width="60px;" alt=""/><br /><sub><b>Matthias Stemmler</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Ams-tng" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/gioragutt"><img src="https://avatars.githubusercontent.com/u/13711224?v=4?s=60" width="60px;" alt=""/><br /><sub><b>Giora Guttsait</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Agioragutt" title="Bug reports">🐛</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/dereekb"><img src="https://avatars.githubusercontent.com/u/3586580?v=4?s=60" width="60px;" alt=""/><br /><sub><b>Derek Burgman</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Adereekb" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=dereekb" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->

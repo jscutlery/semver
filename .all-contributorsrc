@@ -349,6 +349,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "dereekb",
+      "name": "Derek Burgman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3586580?v=4",
+      "profile": "https://github.com/dereekb",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
