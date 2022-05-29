@@ -111,6 +111,10 @@ You can customize the default configuration using the definition file (`angular.
 }
 ```
 
+#### Version calculation
+
+This plugin is **tag-based** so it never reads the `package.json` version property to retrieve the current version, instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it will fallback to `0.0.0`, parses the commit history, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the previous one by ordering them and calculates the new version from it.
+
 #### Specify the level of change
 
 The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level.
