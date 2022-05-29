@@ -31,28 +31,35 @@ export function updatePackageJson({
     return of(null);
   }
 
-  const packageJsonPath = getPackageJsonPath(projectRoot);
-  return readFileIfExists(packageJsonPath).pipe(
-    switchMap((packageJson) => {
-      if (packageJson.length) {
-        const newPackageJson = JSON.parse(packageJson);
-        newPackageJson.version = newVersion;
+  const path = getPackageJsonPath(projectRoot);
 
-        const newPackageJsonString = JSON.stringify(newPackageJson, null, 2);
-        // We need to add a newline at the end so that Prettier will not complain about the new
-        // file.
-        const data = newPackageJsonString.concat('\n');
-        return writeFile(packageJsonPath, data).pipe(
-          logStep({
-            step: 'package_json_success',
-            message: `Updated package.json version.`,
-            projectName,
-          }),
-          map(() => packageJsonPath)
-        );
+  return readFileIfExists(path).pipe(
+    switchMap((packageJson) => {
+      if (!packageJson.length) {
+        return of(null);
       }
 
-      return of(null);
+      const newPackageJson = _updatePackageVersion(packageJson, newVersion);
+
+      return writeFile(path, newPackageJson).pipe(
+        logStep({
+          step: 'package_json_success',
+          message: `Updated package.json version.`,
+          projectName,
+        }),
+        map(() => path)
+      );
     })
   );
+}
+
+function _updatePackageVersion(packageJson: string, version: string): string {
+  const data = JSON.parse(packageJson);
+  return _stringifyJson({ ...data, version });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function _stringifyJson(data: any): string {
+  // We need to add a newline at the end so that Prettier will not complain about the new file.
+  return JSON.stringify(data, null, 2).concat('\n');
 }
