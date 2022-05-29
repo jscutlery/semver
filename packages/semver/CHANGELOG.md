@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.24.2](https://github.com/jscutlery/semver/compare/semver-2.24.1...semver-2.24.2) (2022-05-29)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 format `package.json` with trailing newline ([4c175fd](https://github.com/jscutlery/semver/commit/4c175fd8d5d7c400ee17ab77f3a59a370343ff6e)), closes [#510](https://github.com/jscutlery/semver/issues/510)
+
+
+
 ## [2.24.1](https://github.com/jscutlery/semver/compare/semver-2.24.0...semver-2.24.1) (2022-05-27)
 
 
