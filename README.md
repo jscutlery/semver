@@ -115,6 +115,8 @@ You can customize the default configuration using the definition file (`angular.
 
 This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, parses the commit history, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the previous and finally calculates the new version from it.
 
+> Note that major zero version `0.x.y` is for initial development. Anything may change at any time so your consumers won't get any new minor version if they use the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if your consumer wants `^0.2.0`.
+
 #### Specify the level of change
 
 The **`--releaseAs`** option allows you to release a project with a version that is incremented by a specified level.
@@ -135,7 +137,7 @@ The **`--tagPrefix`** option allows you to customize the tag prefix.
 
 In sync mode only one tag is created for the whole workspace, the tag prefix is set to `v` by default, which is resolved for instance to `v0.0.1`.
 
-In independent mode, the tag prefix uses the contextual project name, the default value is `${projectName}-` which is resolved for instance to `my-project-0.0.1`. Note that each project in the workspace is versioned with its own tag.
+In independent mode, the tag prefix uses the contextual project name, the default value is `${projectName}-` which is resolved for instance to `my-project-0.0.1`. Note that each project in the workspace is versioned with its tag.
 
 #### Commit message customization
 
