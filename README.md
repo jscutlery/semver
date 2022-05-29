@@ -113,7 +113,7 @@ You can customize the default configuration using the definition file (`angular.
 
 #### Version calculation
 
-This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, parses the commit history, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the previous and finally calculates the new version from it.
+This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the previous one and calculates the new version from it.
 
 > Note that major zero version `0.x.y` is for initial development. Anything may change at any time so your consumers won't get any new minor version if they use the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if your consumer wants `^0.2.0`.
 
