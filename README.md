@@ -387,6 +387,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/dereekb"><img src="https://avatars.githubusercontent.com/u/3586580?v=4?s=60" width="60px;" alt=""/><br /><sub><b>Derek Burgman</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Adereekb" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=dereekb" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Zamiell"><img src="https://avatars.githubusercontent.com/u/5511220?v=4?s=60" width="60px;" alt=""/><br /><sub><b>James</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3AZamiell" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=Zamiell" title="Code">💻</a></td>
   </tr>
 </table>
 
