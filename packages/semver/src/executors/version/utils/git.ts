@@ -127,9 +127,9 @@ export function createTag({
       if (/already exists/.test(error)) {
         return throwError(
           () =>
-            new Error(`Failed to create "${tag}", this tag already exists.
-            This occurs because you already versioned the changes, but on a different branch than the base branch.
-            Please delete the tag locally by running "git tag -d ${tag}", delete the tag from the remote repository as well, and run this command again.`)
+            new Error(`Failed to tag "${tag}", this tag already exists.
+            This error occurs because the same version was previously created but the tag does not point to a commit referenced in your base branch.
+            Please delete the tag by running "git tag -d ${tag}", make sure the tag has been removed from the remote repository as well and run this command again.`)
         );
       }
 

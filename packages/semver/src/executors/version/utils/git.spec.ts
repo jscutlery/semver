@@ -3,9 +3,11 @@ import { lastValueFrom, of, throwError } from 'rxjs';
 import { PassThrough } from 'stream';
 import * as cp from '../../common/exec';
 import {
-  addToStage, createTag, getCommits,
+  addToStage,
+  createTag,
+  getCommits,
   getFirstCommitRef,
-  tryPush
+  tryPush,
 } from './git';
 
 jest.mock('git-raw-commits', () => jest.fn());
@@ -272,7 +274,7 @@ describe('git', () => {
         error: (error) => {
           expect(cp.exec).toBeCalled();
           expect(error.message).toMatch(
-            'Failed to create "project-a-1.0.0", this tag already exists'
+            'Failed to tag "project-a-1.0.0", this tag already exists.'
           );
           done();
         },
