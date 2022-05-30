@@ -66,12 +66,12 @@ nx run workspace:version [...options]
 #### When run, this executor does the following
 
 1. Retrieve the current version by looking at the last `git tag`.
-2. Bump `package.json` version based on your commits.
-3. Generates CHANGELOG based on your commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
-4. Creates a new commit including your `package.json` file and updated CHANGELOG.
-5. Creates new tag with the new version number.
-6. Pushes the release (if enabled).
-7. Runs post-targets (if defined).
+2. Bump `package.json` version based on the commits.
+3. Generates CHANGELOG based on the commits (uses [conventional-changelog-angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) under the hood).
+4. Creates a new commit including the `package.json` file and updated CHANGELOG.
+5. Creates a new tag with the new version number.
+6. Pushes the version to the remote repository.
+7. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
 
 #### Available options
 
@@ -113,9 +113,11 @@ You can customize the default configuration using the definition file (`angular.
 
 #### Version calculation
 
-This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the previous one and calculates the new version from it.
+This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the last one and calculates the new version from it.
 
-> Note that major zero version `0.x.y` is for initial development. Anything may change at any time so your consumers won't get any new minor version if they use the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if your consumer wants `^0.2.0`.
+To detect a new version this package looks into the commit history and checks if any source files changed since the last version.
+
+> Note that major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
 
 #### Specify the level of change
 
@@ -160,15 +162,9 @@ release: bump ${projectName} to ${version} [skip ci]
 
 #### Skipping release for specific types of commits
 
-To avoid releasing new version if something non-influencing on release was changed(for example, documentation), you can provide `skipCommitTypes` option
-
-```
-nx run workspace:version --skipCommitTypes=docs,ci
-```
-
-In this case any commit with specified type would be ignored when calculating if there is a need to bump version.
-
-For example if you had only one commit from the last version:
+To avoid releasing a new version if something non-influencing on release was changed(for example, documentation), you can provide `skipCommitTypes` option.
+In this case, any commit with a specified type would be ignored when calculating if there is a need to bump version.
+For example, if you had only one commit from the last version:
 
 ```
 docs(project): update documentation about new feature
@@ -176,7 +172,7 @@ docs(project): update documentation about new feature
 
 would not cause a new release (because `--skipCommitTypes=docs,ci` was specified).
 
-And two commits
+And two commits:
 
 ```
 docs(project): update documentation about new feature
@@ -234,7 +230,7 @@ Contextual variables resolved by this option:
 #### Tracking dependencies
 
 The **`--trackDeps`** option indicates that direct dependencies in the project's dependency graph should be taken into account when incrementing the
-version. If no version-incrementing changes are present in the project, but are present in one or more dependencies, then the project will receive a `patch`
+version. If no version-incrementing changes are present in the project but are present in one or more dependencies, then the project will receive a `patch`
 version increment.
 
 If you wish to track changes at any depth of your dependency graph, then you should do the following:
