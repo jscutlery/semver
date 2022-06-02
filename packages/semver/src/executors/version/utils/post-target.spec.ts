@@ -216,6 +216,30 @@ describe(runPostTargets.name, () => {
       optionB: 'optionB',
       version: 'project@${version}',
     });
+    mockReadTargetOptions.mockReturnValueOnce({
+      notNested: '${num}',
+      nestedObject: {
+        version: '${version}',
+      },
+      deepNestedObject: {
+        versions: {
+          versionA: '${version}-a',
+          versionB: '${version}-b',
+        }
+      },
+      arrayWithObjects: {
+        assetsArray: [
+          {
+            name: "first-asset-${version}.end",
+            path: "path/to/first-asset-${version}.end"
+          },
+          {
+            name: "second-asset-${version}.end",
+            path: "path/to/second-asset-${version}.end"
+          },
+        ]
+      },
+    });
 
     const templateStringContext = {
       version: '2.0.0',
@@ -226,7 +250,7 @@ describe(runPostTargets.name, () => {
 
     runPostTargets({
       projectName: 'p',
-      postTargets: ['project-a:test', 'project-b:test'],
+      postTargets: ['project-a:test', 'project-b:test', 'project-c:test'],
       templateStringContext,
       context,
     }).subscribe({
@@ -241,6 +265,30 @@ describe(runPostTargets.name, () => {
         expect(mockRunExecutor.mock.calls[1][1]).toEqual({
           optionB: 'optionB',
           version: 'project@2.0.0',
+        });
+        expect(mockRunExecutor.mock.calls[2][1]).toEqual({
+          notNested: 42,
+          nestedObject: {
+            version: '2.0.0',
+          },
+          deepNestedObject: {
+            versions: {
+              versionA: '2.0.0-a',
+              versionB: '2.0.0-b',
+            }
+          },
+          arrayWithObjects: {
+            assetsArray: [
+              {
+                name: "first-asset-2.0.0.end",
+                path: "path/to/first-asset-2.0.0.end"
+              },
+              {
+                name: "second-asset-2.0.0.end",
+                path: "path/to/second-asset-2.0.0.end"
+              },
+            ]
+          },
         });
         done();
       },
