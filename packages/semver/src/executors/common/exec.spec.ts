@@ -19,8 +19,6 @@ describe(exec.name, () => {
   });
 
   it('should handle failure and return stderr', async () => {
-    await expect(
-      lastValueFrom(exec('exit', ['1']))
-    ).rejects.toThrowError();
+    await expect(lastValueFrom(exec('exit', ['1']))).rejects.toThrowError();
   });
 });

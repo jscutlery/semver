@@ -42,12 +42,12 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
 
 #### Available Options
 
-| name                  | type       | default          | description                                                  |
-| --------------------- | ---------- | ---------------- | ------------------------------------------------------------ |
-| **`--tag`**           | `string`   | `$CI_COMMIT_TAG` | attach the release to the specified tag                      |
-| **`--name`**          | `string`   | `undefined`      | name of the release                                          |
-| **`--assets`**        | `string[]` | `undefined`      | a list of assets to attach new release                       |
-| **`--description`**   | `string`   | `undefined`      | release notes                                                |
-| **`--releasedAt`**    | `string`   | `undefined`      | timestamp which the release will happen/has happened         |
-| **`--ref`**           | `boolean`  | `$CI_COMMIT_SHA` | commit SHA, another tag name, or a branch name               |
-| **`--milestones`**    | `string[]` | `undefined`      | list of milestones to associate the release with             |
+| name                | type       | default          | description                                          |
+| ------------------- | ---------- | ---------------- | ---------------------------------------------------- |
+| **`--tag`**         | `string`   | `$CI_COMMIT_TAG` | attach the release to the specified tag              |
+| **`--name`**        | `string`   | `undefined`      | name of the release                                  |
+| **`--assets`**      | `string[]` | `undefined`      | a list of assets to attach new release               |
+| **`--description`** | `string`   | `undefined`      | release notes                                        |
+| **`--releasedAt`**  | `string`   | `undefined`      | timestamp which the release will happen/has happened |
+| **`--ref`**         | `boolean`  | `$CI_COMMIT_SHA` | commit SHA, another tag name, or a branch name       |
+| **`--milestones`**  | `string[]` | `undefined`      | list of milestones to associate the release with     |

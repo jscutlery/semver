@@ -17,7 +17,7 @@ jest.mock('./utils/changelog');
 jest.mock('./utils/project');
 jest.mock('./utils/commit', () => ({
   commit: jest.fn(),
-  formatCommitMessage: jest.requireActual('./utils/commit').formatCommitMessage
+  formatCommitMessage: jest.requireActual('./utils/commit').formatCommitMessage,
 }));
 jest.mock('./utils/git');
 jest.mock('./utils/get-project-dependencies');
@@ -163,7 +163,9 @@ describe('@jscutlery/semver:version', () => {
       expect.objectContaining({ newVersion: '2.1.0' })
     );
     expect(mockCommit).toBeCalledWith(
-      expect.objectContaining({ commitMessage: 'chore(a): release version 2.1.0' })
+      expect.objectContaining({
+        commitMessage: 'chore(a): release version 2.1.0',
+      })
     );
     expect(mockCreateTag).toBeCalledWith(
       expect.objectContaining({ tag: 'a-2.1.0' })
@@ -213,7 +215,9 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({ newVersion: '2.1.0' })
       );
       expect(mockCommit).toBeCalledWith(
-        expect.objectContaining({ commitMessage: 'chore(a): release version 2.1.0' })
+        expect.objectContaining({
+          commitMessage: 'chore(a): release version 2.1.0',
+        })
       );
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({ tag: 'a-2.1.0' })
@@ -248,7 +252,9 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({ newVersion: '2.1.0' })
       );
       expect(mockCommit).toBeCalledWith(
-        expect.objectContaining({ commitMessage: 'chore(a): release version 2.1.0' })
+        expect.objectContaining({
+          commitMessage: 'chore(a): release version 2.1.0',
+        })
       );
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({ tag: 'a-2.1.0' })

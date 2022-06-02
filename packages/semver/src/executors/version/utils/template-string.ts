@@ -3,21 +3,18 @@ export function createTemplateString(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: Record<string, any>
 ): string {
-  return Object.keys(context).reduce(
-    (accumulator, contextParamKey) => {
-      const interpolationRegex = new RegExp(`\\$\\{${contextParamKey}}`, 'g');
-      return accumulator.replace(
-        interpolationRegex,
-        context[contextParamKey].toString()
-      );
-    },
-    template
-  );
+  return Object.keys(context).reduce((accumulator, contextParamKey) => {
+    const interpolationRegex = new RegExp(`\\$\\{${contextParamKey}}`, 'g');
+    return accumulator.replace(
+      interpolationRegex,
+      context[contextParamKey].toString()
+    );
+  }, template);
 }
 
 export function coerce(value: string): string | number | boolean {
   if (_isBool(value)) {
-    return value === "true";
+    return value === 'true';
   }
 
   if (_isNumeric(value)) {

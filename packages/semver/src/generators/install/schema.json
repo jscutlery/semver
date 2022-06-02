@@ -37,7 +37,8 @@
         "message": "Which preset would you want to use?",
         "type": "list",
         "items": [
-          { "value": "angular",
+          {
+            "value": "angular",
             "label": "Angular      [ https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format ]"
           },
           {

@@ -1,7 +1,11 @@
-import { addDependenciesToPackageJson, readJson, updateJson, type Tree } from '@nrwl/devkit';
+import {
+  addDependenciesToPackageJson,
+  readJson,
+  updateJson,
+  type Tree,
+} from '@nrwl/devkit';
 import { constants } from 'fs';
 import type { SchemaOptions } from '../schema';
-
 
 const PACKAGE_JSON = 'package.json';
 

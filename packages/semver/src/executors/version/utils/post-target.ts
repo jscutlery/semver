@@ -3,7 +3,7 @@ import {
   parseTargetString,
   readTargetOptions,
   runExecutor,
-  Target
+  Target,
 } from '@nrwl/devkit';
 import { catchError, concat, defer, Observable, throwError } from 'rxjs';
 import { logStep } from './logger';
@@ -71,22 +71,21 @@ export function _getTargetOptions({
 }): Record<string, unknown> {
   return Object.entries(options).reduce(
     (optionsAccumulator, [option, value]) => {
-      const resolvedValue =  
-          Array.isArray(value) ? 
-            value.map(_element => _getTargetOptions({ options: _element, context}))
-            :
-          typeof value === 'object' ? 
-            _getTargetOptions({
-              options: value as Record<string, unknown>,
+      const resolvedValue = Array.isArray(value)
+        ? value.map((_element) =>
+            _getTargetOptions({ options: _element, context })
+          )
+        : typeof value === 'object'
+        ? _getTargetOptions({
+            options: value as Record<string, unknown>,
+            context,
+          })
+        : coerce(
+            createTemplateString(
+              (value as number | string | boolean).toString(),
               context
-            })
-            :
-          coerce(
-              createTemplateString(
-                (value as number | string | boolean).toString(),
-                context
-              )
-            );
+            )
+          );
 
       return {
         ...optionsAccumulator,

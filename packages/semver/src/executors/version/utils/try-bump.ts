@@ -6,7 +6,7 @@ import {
   defaultIfEmpty,
   map,
   shareReplay,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
@@ -112,7 +112,7 @@ export function tryBump({
   versionTagPrefix?: string | null;
   syncVersions: boolean;
   allowEmptyRelease?: boolean;
-  skipCommitTypes: string[],
+  skipCommitTypes: string[];
   projectName: string;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
@@ -179,7 +179,9 @@ export function tryBump({
             );
           }
 
-          const filteredCommits = commits.filter(commit => shouldCommitBeCalculated({ commit, skipCommitTypes }));
+          const filteredCommits = commits.filter((commit) =>
+            shouldCommitBeCalculated({ commit, skipCommitTypes })
+          );
 
           /* No commits since last release & no dependency updates so don't bump if the `releastAtLeast` flag is not present. */
           if (
@@ -245,27 +247,33 @@ export function _manualBump({
   });
 }
 
-function shouldCommitBeCalculated({ commit, skipCommitTypes }: { commit: string, skipCommitTypes: string[] }): boolean {
+function shouldCommitBeCalculated({
+  commit,
+  skipCommitTypes,
+}: {
+  commit: string;
+  skipCommitTypes: string[];
+}): boolean {
   const { type } = conventionalCommitsParser.sync(commit, {});
-  const shouldSkip = skipCommitTypes.some(typeToSkip => typeToSkip === type)
+  const shouldSkip = skipCommitTypes.some((typeToSkip) => typeToSkip === type);
   return !shouldSkip;
 }
 
 export function _getDependencyVersions({
- preset,
- dependencyRoots,
- releaseType,
- versionTagPrefix,
- syncVersions,
- lastVersionGitRef,
- skipCommitTypes,
- projectName,
+  preset,
+  dependencyRoots,
+  releaseType,
+  versionTagPrefix,
+  syncVersions,
+  lastVersionGitRef,
+  skipCommitTypes,
+  projectName,
 }: {
   preset: string;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
   releaseType?: ReleaseIdentifier;
-  skipCommitTypes: string[],
+  skipCommitTypes: string[];
   versionTagPrefix?: string | null;
   syncVersions: boolean;
   projectName: string;
@@ -289,7 +297,9 @@ export function _getDependencyVersions({
 
       return forkJoin([lastVersion$, commits$]).pipe(
         switchMap(([dependencyLastVersion, commits]) => {
-          const filteredCommits = commits.filter(commit => shouldCommitBeCalculated({ commit, skipCommitTypes }));
+          const filteredCommits = commits.filter((commit) =>
+            shouldCommitBeCalculated({ commit, skipCommitTypes })
+          );
           if (filteredCommits.length === 0) {
             return of({
               type: 'dependency',

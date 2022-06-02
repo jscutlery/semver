@@ -3,7 +3,7 @@ import { lastValueFrom } from 'rxjs';
 
 import { readFileIfExists, readJsonFile } from './filesystem';
 
-jest.mock("fs", () => ({
+jest.mock('fs', () => ({
   promises: {
     readFile: jest.fn().mockResolvedValue(() => Promise.resolve()),
     access: jest.fn().mockResolvedValue(() => Promise.resolve()),
@@ -37,7 +37,6 @@ describe('readJsonFile', () => {
     expect(mockReadFile).toBeCalledTimes(1);
   });
 });
-
 
 describe('readFileIfExists', () => {
   const mockReadFile = fsPromises.readFile as jest.Mock;

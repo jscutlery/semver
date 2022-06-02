@@ -34,11 +34,16 @@ describe('@jscutlery/semver:gitlab', () => {
   });
 
   it('create release with specified --assets', async () => {
-    const output = await executor({ ...options, assets: [{name: "asset1", url: "./dist/package"}] });
+    const output = await executor({
+      ...options,
+      assets: [{ name: 'asset1', url: './dist/package' }],
+    });
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(["--assets-link='{\"name\": \"asset1\", \"url\": \"./dist/package\"}'"])
+      expect.arrayContaining([
+        '--assets-link=\'{"name": "asset1", "url": "./dist/package"}\'',
+      ])
     );
     expect(output.success).toBe(true);
   });
@@ -73,11 +78,10 @@ describe('@jscutlery/semver:gitlab', () => {
     expect(output.success).toBe(true);
   });
 
-
   it('create release with specified --milestones', async () => {
     const output = await executor({
       ...options,
-      milestones: ["v1.0.0"],
+      milestones: ['v1.0.0'],
     });
 
     expect(mockExec).toBeCalledWith(
@@ -100,7 +104,7 @@ describe('@jscutlery/semver:gitlab', () => {
   it('handle release CLI errors', async () => {
     mockExec.mockImplementation(() => {
       return throwError(() => ({
-        stderr: 'something went wrong'
+        stderr: 'something went wrong',
       }));
     });
     jest.spyOn(logger, 'error').mockImplementation();

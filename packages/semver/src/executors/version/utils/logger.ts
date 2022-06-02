@@ -37,7 +37,8 @@ export function logStep<T>({
   message: string;
   projectName: string;
 }): MonoTypeOperatorFunction<T> {
-  return (source) => source.pipe(tap(() => _logStep({ step, message, projectName })));
+  return (source) =>
+    source.pipe(tap(() => _logStep({ step, message, projectName })));
 }
 
 /* istanbul ignore next */
@@ -45,13 +46,15 @@ export function _logStep({
   step,
   message,
   projectName,
-  level = 'log'
+  level = 'log',
 }: {
   step: Step;
   message: string;
   projectName: string;
   level?: keyof typeof logger;
 }): void {
-  const msg = `${chalk.bold(`[${projectName}]`)} ${iconMap.get(step)} ${message}`;
+  const msg = `${chalk.bold(`[${projectName}]`)} ${iconMap.get(
+    step
+  )} ${message}`;
   logger[level](msg);
 }

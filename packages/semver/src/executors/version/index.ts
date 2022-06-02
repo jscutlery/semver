@@ -5,14 +5,12 @@ import type { VersionBuilderSchema } from './schema';
 import {
   calculateChangelogChanges,
   defaultHeader,
-  getChangelogPath
+  getChangelogPath,
 } from './utils/changelog';
-import {
-  formatCommitMessage
-} from './utils/commit';
+import { formatCommitMessage } from './utils/commit';
 import {
   getDependencyRoots,
-  type DependencyRoot
+  type DependencyRoot,
 } from './utils/get-project-dependencies';
 import { tryPush } from './utils/git';
 import { _logStep } from './utils/logger';
@@ -24,7 +22,7 @@ import {
   versionProject,
   versionWorkspace,
   type CommonVersionOptions,
-  type StandardVersionPreset
+  type StandardVersionPreset,
 } from './version';
 
 export default async function version(
@@ -49,7 +47,7 @@ export default async function version(
     commitMessageFormat,
     preset,
     allowEmptyRelease,
-    skipCommitTypes
+    skipCommitTypes,
   } = _normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;

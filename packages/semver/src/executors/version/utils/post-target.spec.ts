@@ -1,7 +1,7 @@
 import {
   readTargetOptions,
   runExecutor,
-  TargetConfiguration
+  TargetConfiguration,
 } from '@nrwl/devkit';
 import { createFakeContext } from '../testing';
 import { runPostTargets } from './post-target';
@@ -225,19 +225,19 @@ describe(runPostTargets.name, () => {
         versions: {
           versionA: '${version}-a',
           versionB: '${version}-b',
-        }
+        },
       },
       arrayWithObjects: {
         assetsArray: [
           {
-            name: "first-asset-${version}.end",
-            path: "path/to/first-asset-${version}.end"
+            name: 'first-asset-${version}.end',
+            path: 'path/to/first-asset-${version}.end',
           },
           {
-            name: "second-asset-${version}.end",
-            path: "path/to/second-asset-${version}.end"
+            name: 'second-asset-${version}.end',
+            path: 'path/to/second-asset-${version}.end',
           },
-        ]
+        ],
       },
     });
 
@@ -275,19 +275,19 @@ describe(runPostTargets.name, () => {
             versions: {
               versionA: '2.0.0-a',
               versionB: '2.0.0-b',
-            }
+            },
           },
           arrayWithObjects: {
             assetsArray: [
               {
-                name: "first-asset-2.0.0.end",
-                path: "path/to/first-asset-2.0.0.end"
+                name: 'first-asset-2.0.0.end',
+                path: 'path/to/first-asset-2.0.0.end',
               },
               {
-                name: "second-asset-2.0.0.end",
-                path: "path/to/second-asset-2.0.0.end"
+                name: 'second-asset-2.0.0.end',
+                path: 'path/to/second-asset-2.0.0.end',
               },
-            ]
+            ],
           },
         });
         done();

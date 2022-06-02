@@ -129,7 +129,7 @@ describe('@jscutlery/semver:github', () => {
   it('handle gh CLI errors', async () => {
     mockExec.mockImplementation(() => {
       return throwError(() => ({
-        stderr: 'something went wrong'
+        stderr: 'something went wrong',
       }));
     });
     jest.spyOn(logger, 'error').mockImplementation();

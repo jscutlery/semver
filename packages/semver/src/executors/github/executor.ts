@@ -4,8 +4,6 @@ import { catchError, mapTo } from 'rxjs/operators';
 import { exec } from '../common/exec';
 import type { GithubExecutorSchema } from './schema';
 
-
-
 export default async function runExecutor({
   tag,
   files,
@@ -40,7 +38,7 @@ export default async function runExecutor({
     catchError((response) => {
       logger.error(response);
       return of({ success: false });
-    }),
+    })
   );
 
   return lastValueFrom(createRelease$);

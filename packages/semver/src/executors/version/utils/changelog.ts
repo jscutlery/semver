@@ -4,7 +4,11 @@ import {
   concatMap,
   defer,
   lastValueFrom,
-  map, of, switchMap, type Observable, type OperatorFunction
+  map,
+  of,
+  switchMap,
+  type Observable,
+  type OperatorFunction,
 } from 'rxjs';
 import * as standardVersionDefaults from 'standard-version/defaults';
 import * as changelog from 'standard-version/lib/lifecycles/changelog';

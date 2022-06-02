@@ -39,8 +39,8 @@ export async function getProjectDependencies(
     typeof createProjectGraphAsync === 'function'
       ? await createProjectGraphAsync()
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (await import('@nrwl/workspace/src/core/project-graph')) as any
         ).createProjectGraph();
 

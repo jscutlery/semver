@@ -1,4 +1,8 @@
-import { getProjects, updateProjectConfiguration, type Tree } from '@nrwl/devkit';
+import {
+  getProjects,
+  updateProjectConfiguration,
+  type Tree,
+} from '@nrwl/devkit';
 
 /* istanbul ignore next */
 export default function migrate(tree: Tree) {

@@ -1,8 +1,16 @@
-import { addProjectConfiguration, formatFiles, installPackagesTask, type Tree } from '@nrwl/devkit';
+import {
+  addProjectConfiguration,
+  formatFiles,
+  installPackagesTask,
+  type Tree,
+} from '@nrwl/devkit';
 
 import { createTarget } from './utils/create-target';
 import { addDependencies } from './utils/dependencies';
-import { updateWorkspaceFromPrompt, updateWorkspaceFromSchema } from './utils/workspace';
+import {
+  updateWorkspaceFromPrompt,
+  updateWorkspaceFromSchema,
+} from './utils/workspace';
 
 import type { SchemaOptions } from './schema';
 

@@ -382,8 +382,7 @@ describe('tryBump', () => {
     });
   });
 
-  describe("skipCommitTypes is set", ()=> {
-
+  describe('skipCommitTypes is set', () => {
     it('should return undefined if all commits types match skipCommitTypes', async () => {
       mockGetCommits.mockReturnValue(of(['docs: A ', 'refactor: B ']));
       mockConventionalRecommendedBump.mockImplementation(
@@ -453,9 +452,7 @@ describe('tryBump', () => {
         tryBump({
           preset: 'angular',
           projectRoot: '/libs/demo',
-          dependencyRoots: [
-            { name: 'dep1', path: '/libs/dep1' },
-          ],
+          dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
           tagPrefix: 'v',
           skipCommitTypes: ['docs', 'refactor'],
           syncVersions: true,
@@ -466,5 +463,4 @@ describe('tryBump', () => {
       expect(newVersion).toBeNull();
     });
   });
-
 });

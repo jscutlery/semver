@@ -1,4 +1,8 @@
-import { getProjects, updateProjectConfiguration, type ProjectConfiguration } from '@nrwl/devkit';
+import {
+  getProjects,
+  updateProjectConfiguration,
+  type ProjectConfiguration,
+} from '@nrwl/devkit';
 
 import { createTarget } from './create-target';
 import { createPrompt } from './prompt';
@@ -24,7 +28,6 @@ export function updateProjects(
 ) {
   getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
-
       const targets = project.targets ?? {};
       targets.version = createTarget(options);
 

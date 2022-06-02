@@ -6,7 +6,11 @@ import { resolve } from 'path';
 import { lastValueFrom } from 'rxjs';
 import version from './';
 import type { VersionBuilderSchema } from './schema';
-import { createFakeContext, setupTestingWorkspace, type TestingWorkspace } from './testing';
+import {
+  createFakeContext,
+  setupTestingWorkspace,
+  type TestingWorkspace,
+} from './testing';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 import { readPackageJson } from './utils/project';
 
