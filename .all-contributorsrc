@@ -369,6 +369,16 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "ndrsg",
+      "name": "ndrsg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26137827?v=4",
+      "profile": "https://github.com/ndrsg",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
