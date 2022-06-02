@@ -71,10 +71,17 @@ export function _getTargetOptions({
 }): Record<string, unknown> {
   return Object.entries(options).reduce(
     (optionsAccumulator, [option, value]) => {
-      const resolvedValue =
-        typeof value === 'object'
-          ? value
-          : coerce(
+      const resolvedValue =  
+          Array.isArray(value) ? 
+            value.map(_element => _getTargetOptions({ options: _element, context}))
+            :
+          typeof value === 'object' ? 
+            _getTargetOptions({
+              options: value as Record<string, unknown>,
+              context
+            })
+            :
+          coerce(
               createTemplateString(
                 (value as number | string | boolean).toString(),
                 context
