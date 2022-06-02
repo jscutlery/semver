@@ -6,7 +6,7 @@
   "cli": "nx",
   "properties": {
     "syncVersions": {
-      "description": "(Deprecated) Lock/sync versions between packages",
+      "description": "Lock/sync versions between packages",
       "type": "boolean",
       "default": false
     },

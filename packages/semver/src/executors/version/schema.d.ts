@@ -10,17 +10,9 @@ export type ReleaseIdentifier =
 export interface VersionBuilderSchema {
   dryRun?: boolean;
   noVerify?: boolean;
-  /**
-   * @deprecated Use postTargets instead.
-   * @sunset 3.0.0
-   */
   push?: boolean;
   remote?: string;
   baseBranch?: string;
-  /**
-   * @deprecated
-   * @sunset 3.0.0
-   */
   syncVersions?: boolean;
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;

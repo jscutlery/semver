@@ -36,7 +36,7 @@
       "default": "main"
     },
     "syncVersions": {
-      "description": "(Deprecated) Sync all package versions.",
+      "description": "Sync all package versions.",
       "type": "boolean",
       "default": false
     },
