@@ -26,7 +26,7 @@
     "help": "nx help",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "prepare": "husky install"
+    "prepack": "husky install"
   },
   "private": true,
   "devDependencies": {
