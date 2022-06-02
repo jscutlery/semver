@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.25.0](https://github.com/jscutlery/semver/compare/semver-2.24.2...semver-2.25.0) (2022-06-02)
+
+
+### Features
+
+* **semver:** nested options template strings ([08221df](https://github.com/jscutlery/semver/commit/08221dfa846f9b33b327ba8872a15eda76cca688))
+
+
+
 ## [2.24.2](https://github.com/jscutlery/semver/compare/semver-2.24.1...semver-2.24.2) (2022-05-29)
 
 
