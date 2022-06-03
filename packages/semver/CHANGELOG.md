@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.25.1](https://github.com/jscutlery/semver/compare/semver-2.25.0...semver-2.25.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* **semver:** invalid delimiter for asset ([4f43113](https://github.com/jscutlery/semver/commit/4f43113d778f543827e424bf66d1d446a3266e77))
+
+
+
 # [2.25.0](https://github.com/jscutlery/semver/compare/semver-2.24.2...semver-2.25.0) (2022-06-02)
 
 
