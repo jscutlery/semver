@@ -26,8 +26,8 @@ export default async function runExecutor({
     ...(assets
       ? assets.map(
           (asset) =>
-            `--assets-link='{"name": "${asset.name}", "url": "${asset.url}"}'`
-        )
+          ['--assets-link', `{"name": "${asset.name}", "url": "${asset.url}"}`]
+        ).flat()
       : []),
   ]).pipe(
     mapTo({ success: true }),
