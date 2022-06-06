@@ -73,7 +73,14 @@ export function _getTargetOptions({
     (optionsAccumulator, [option, value]) => {
       const resolvedValue = Array.isArray(value)
         ? value.map((_element) =>
-            _getTargetOptions({ options: _element, context })
+            typeof _element !== "object"
+            ? coerce(
+                createTemplateString(
+                  (_element as number | string | boolean).toString(),
+                  context
+                )
+              )
+            : _getTargetOptions({ options: _element, context })
           )
         : typeof value === 'object'
         ? _getTargetOptions({
