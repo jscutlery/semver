@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.25.2](https://github.com/jscutlery/semver/compare/semver-2.25.1...semver-2.25.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* **semver:** fix handling of non-object arrays in options ([dbd7758](https://github.com/jscutlery/semver/commit/dbd7758c51a4affdda84d06e9e1983b758d59163))
+
+
+
 ## [2.25.1](https://github.com/jscutlery/semver/compare/semver-2.25.0...semver-2.25.1) (2022-06-03)
 
 
