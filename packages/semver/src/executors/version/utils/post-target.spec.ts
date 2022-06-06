@@ -239,6 +239,10 @@ describe(runPostTargets.name, () => {
           },
         ],
       },
+      arrayWithStrings: [
+        "first-${version}",
+        "seconnd-${version}"
+      ]
     });
 
     const templateStringContext = {
@@ -289,6 +293,10 @@ describe(runPostTargets.name, () => {
               },
             ],
           },
+          arrayWithStrings: [
+            "first-2.0.0",
+            "seconnd-2.0.0"
+          ]
         });
         done();
       },
