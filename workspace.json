@@ -2,5 +2,6 @@
   "version": 2,
   "projects": {
     "semver": "packages/semver"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

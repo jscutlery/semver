@@ -47,8 +47,6 @@
       }
     ]
   },
-  "cli": {
-    "defaultCollection": "@nrwl/workspace"
-  },
-  "defaultProject": "semver"
+  "defaultProject": "semver",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }
