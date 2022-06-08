@@ -96,6 +96,7 @@ describe('Install generator', () => {
         addProjectConfiguration(tree, 'lib1', {
           root: 'libs/lib1',
           sourceRoot: 'libs/lib1/src',
+          projectType: 'library',
           targets: {},
         });
 
@@ -108,10 +109,24 @@ describe('Install generator', () => {
         addProjectConfiguration(tree, 'lib2', {
           root: 'libs/lib2',
           sourceRoot: 'libs/lib1/src',
+          projectType: 'library',
           targets: {},
         });
 
         writeJson(tree, 'libs/lib2/tsconfig.json', {
+          files: [],
+          include: [],
+          references: [],
+        });
+
+        addProjectConfiguration(tree, 'app1', {
+          root: 'apps/app1',
+          sourceRoot: 'apps/app1/src',
+          projectType: 'application',
+          targets: {},
+        });
+
+        writeJson(tree, 'apps/app1/tsconfig.json', {
           files: [],
           include: [],
           references: [],
@@ -168,6 +183,31 @@ describe('Install generator', () => {
             },
           })
         );
+      });
+
+      it('should use --projects=all-libs option', async () => {
+        await install(tree, { ...options, projects: ['all-libs'] });
+
+        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib2 = readJson(tree, 'libs/lib2/project.json');
+        const app1 = readJson(tree, 'apps/app1/project.json');
+
+        expect(inquirer.prompt).not.toBeCalled();
+        expect(lib1.targets).toEqual(
+          expect.objectContaining({
+            version: {
+              executor: '@jscutlery/semver:version',
+            },
+          })
+        );
+        expect(lib2.targets).toEqual(
+          expect.objectContaining({
+            version: {
+              executor: '@jscutlery/semver:version',
+            },
+          })
+        );
+        expect(app1.targets.version).toBeUndefined();
       });
 
       it('should forward --baseBranch option to all projects', async () => {
