@@ -56,10 +56,8 @@ export function updateWorkspaceFromSchema(
   tree: Tree,
   options: SchemaOptions
 ): void {
-  return updateProjects(
-    tree,
-    options,
-    (projectName) => options.projects?.includes(projectName) as boolean,
+  return updateProjects(tree, options, (projectName) => 
+    options.projects?.includes(projectName) as boolean,
     () => options.projects !== undefined && options.projects.includes('all-libs') as boolean,
   );
 }
