@@ -1180,7 +1180,7 @@ __metadata:
     "@types/semver": 7.3.9
     "@types/standard-version": 7.0.1
     "@types/tmp": 0.2.3
-    detect-indent: ^6.1.0
+    detect-indent: 6.1.0
     inquirer: 8.2.4
     rxjs: 7.5.5
     standard-version: 9.5.0
@@ -3288,7 +3288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-indent@npm:^6.0.0, detect-indent@npm:^6.1.0":
+"detect-indent@npm:6.1.0, detect-indent@npm:^6.0.0":
   version: 6.1.0
   resolution: "detect-indent@npm:6.1.0"
   checksum: ab953a73c72dbd4e8fc68e4ed4bfd92c97eb6c43734af3900add963fd3a9316f3bc0578b018b24198d4c31a358571eff5f0656e81a1f3b9ad5c547d58b2d093d
