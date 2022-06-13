@@ -380,6 +380,16 @@
         "ideas",
         "bug"
       ]
+    },
+    {
+      "login": "fabsrc",
+      "name": "Fabian Schneider",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8853782?v=4",
+      "profile": "https://github.com/fabsrc",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
