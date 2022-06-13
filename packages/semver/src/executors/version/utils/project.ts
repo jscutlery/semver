@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { map, of, switchMap, type Observable } from 'rxjs';
 import { readFileIfExists, readJsonFile, writeFile } from './filesystem';
 import { logStep } from './logger';
+import * as detectIndent from 'detect-indent';
 
 export function readPackageJson(projectRoot: string): Observable<{
   version?: string;
@@ -55,11 +56,12 @@ export function updatePackageJson({
 
 function _updatePackageVersion(packageJson: string, version: string): string {
   const data = JSON.parse(packageJson);
-  return _stringifyJson({ ...data, version });
+  const { indent } = detectIndent(packageJson);
+  return _stringifyJson({ ...data, version }, indent);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function _stringifyJson(data: any): string {
+function _stringifyJson(data: any, indent: string | number): string {
   // We need to add a newline at the end so that Prettier will not complain about the new file.
-  return JSON.stringify(data, null, 2).concat('\n');
+  return JSON.stringify(data, null, indent).concat('\n');
 }
