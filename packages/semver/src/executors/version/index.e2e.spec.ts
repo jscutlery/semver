@@ -11,6 +11,7 @@ import {
   setupTestingWorkspace,
   type TestingWorkspace,
 } from './testing';
+import { readFile } from './utils/filesystem';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 import { readPackageJson } from './utils/project';
 
@@ -33,7 +34,7 @@ describe('@jscutlery/semver:version', () => {
   };
 
   const commonWorkspaceFiles: [string, string][] = [
-    ['package.json', JSON.stringify({ version: '0.0.0' })],
+    ['package.json', JSON.stringify({ version: '0.0.0' }, null, 2)],
     [
       'workspace.json',
       JSON.stringify({
@@ -61,11 +62,11 @@ describe('@jscutlery/semver:version', () => {
     ],
     ['packages/a/.gitkeep', ''],
     /* "a" has a package.json */
-    ['packages/a/package.json', JSON.stringify({ version: '0.0.0' })],
+    ['packages/a/package.json', JSON.stringify({ version: '0.0.0' }, null, 4)],
     /* but "b" doesn't. */
     ['packages/b/.gitkeep', ''],
     ['packages/c/.gitkeep', ''],
-    /* "a" has a package.json */
+    /* "c" has a package.json */
     ['packages/c/package.json', JSON.stringify({ version: '0.0.0' })],
     ['libs/d/.gitkeep', ''],
     ['libs/e/.gitkeep', ''],
@@ -282,10 +283,22 @@ $`)
       );
     });
 
+    it(`should preserve indentation in root package.json`, async () => {
+      expect(await lastValueFrom(readFile('package.json'))).toEqual(
+        '{\n  "version": "0.1.0"\n}\n'
+      );
+    });
+
     it(`should bump "a"'s package.json`, async () => {
       expect(
         (await lastValueFrom(readPackageJson('packages/a'))).version
       ).toEqual('0.1.0');
+    });
+
+    it(`should preserve indentation in a's package.json`, async () => {
+      expect(await lastValueFrom(readFile('packages/a/package.json'))).toEqual(
+        '{\n    "version": "0.1.0"\n}\n'
+      );
     });
 
     it('should generate root changelog', async () => {

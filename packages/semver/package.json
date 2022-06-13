@@ -23,6 +23,7 @@
     "@nrwl/devkit": "^14.0.0"
   },
   "dependencies": {
+    "detect-indent": "6.1.0",
     "inquirer": "8.2.4",
     "rxjs": "7.5.5",
     "standard-version": "9.5.0"
