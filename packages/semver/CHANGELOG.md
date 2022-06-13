@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.25.3](https://github.com/jscutlery/semver/compare/semver-2.25.2...semver-2.25.3) (2022-06-13)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 preserve indentation in `package.json` files ([e8b830a](https://github.com/jscutlery/semver/commit/e8b830a65ccbe146a38b68d7501cbcf743cf5b6a)), closes [#531](https://github.com/jscutlery/semver/issues/531)
+* **semver:** 📌 pin detect-indent version to 6.1.0 ([90ff483](https://github.com/jscutlery/semver/commit/90ff483271859c2f14383ecf5f2f932f71ccb904))
+
+
+
 ## [2.25.2](https://github.com/jscutlery/semver/compare/semver-2.25.1...semver-2.25.2) (2022-06-06)
 
 
