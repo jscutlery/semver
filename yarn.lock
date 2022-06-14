@@ -1245,21 +1245,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/devkit@npm:14.0.5":
-  version: 14.0.5
-  resolution: "@nrwl/devkit@npm:14.0.5"
-  dependencies:
-    ejs: ^3.1.5
-    ignore: ^5.0.4
-    rxjs: ^6.5.4
-    semver: 7.3.4
-    tslib: ^2.3.0
-  peerDependencies:
-    nx: ">= 13.10 <= 15"
-  checksum: a7ca63d5b558bbe9f5d907b737fd8d631b350687d6f481713ca3e21a54bf07468f9b1fa63319ed299d37445ccfa94736823b84c67901b91495438726fbaa8ce2
-  languageName: node
-  linkType: hard
-
 "@nrwl/devkit@npm:14.3.1":
   version: 14.3.1
   resolution: "@nrwl/devkit@npm:14.3.1"
@@ -3390,7 +3375,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.5, ejs@npm:^3.1.7":
+"ejs@npm:^3.1.7":
   version: 3.1.8
   resolution: "ejs@npm:3.1.8"
   dependencies:
@@ -5656,7 +5641,7 @@ __metadata:
     husky: ^8.0.0
     jest: 28.1.1
     jest-extended: ^2.0.0
-    ngx-deploy-npm: ^3.0.2
+    ngx-deploy-npm: ^4.0.0
     nx: 14.3.1
     prettier: 2.7.0
     tmp: ^0.2.1
@@ -6298,12 +6283,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-deploy-npm@npm:^3.0.2":
-  version: 3.1.9
-  resolution: "ngx-deploy-npm@npm:3.1.9"
+"ngx-deploy-npm@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "ngx-deploy-npm@npm:4.0.1"
   dependencies:
-    "@nrwl/devkit": 14.0.5
-  checksum: b60a468e4c6a4bfa121177e2c8b0c6ae18251590eb320a9923bbcfa23fc581a484cb09de2be39c33f43557a7a79c14b43d4b200fe2ae436513e63d6ab12e6eab
+    "@nrwl/devkit": 14.3.1
+  checksum: c3486bd55c2b5077fd8b4955d4bff12f77f40fdba3418d1a7ee4945e36ab327638e9a5a093df047c42b62656bd2e61998190e0a9b6fcb6414272b1d00f8b0cda
   languageName: node
   linkType: hard
 
