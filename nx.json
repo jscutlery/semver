@@ -27,26 +27,17 @@
     "appsDir": "e2e",
     "libsDir": "packages"
   },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ],
-    "github": [
-      {
-        "target": "build",
-        "projects": "self"
-      }
-    ],
-    "version": [
-      {
-        "target": "build",
-        "projects": "self"
-      }
-    ]
-  },
   "defaultProject": "semver",
-  "$schema": "./node_modules/nx/schemas/nx-schema.json"
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "github": {
+      "dependsOn": ["build"]
+    },
+    "version": {
+      "dependsOn": ["build"]
+    }
+  }
 }
