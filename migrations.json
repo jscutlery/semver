@@ -1,0 +1,12 @@
+{
+  "migrations": [
+    {
+      "cli": "nx",
+      "version": "14.3.4-beta.1",
+      "description": "Replace targetDependencies with targetDefaults",
+      "implementation": "./src/migrations/update-14-3-4/create-target-defaults",
+      "package": "nx",
+      "name": "14.3.4-create-target-defaults"
+    }
+  ]
+}
