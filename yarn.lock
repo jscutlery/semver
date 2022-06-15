@@ -1177,7 +1177,7 @@ __metadata:
     "@types/conventional-recommended-bump": 6.1.0
     "@types/inquirer": 8.2.1
     "@types/rimraf": 3.0.2
-    "@types/semver": 7.3.9
+    "@types/semver": 7.3.10
     "@types/standard-version": 7.0.1
     "@types/tmp": 0.2.3
     detect-indent: 6.1.0
@@ -1758,10 +1758,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.3.9":
-  version: 7.3.9
-  resolution: "@types/semver@npm:7.3.9"
-  checksum: 60bfcfdfa7f937be2c6f4b37ddb6714fb0f27b05fe4cbdfdd596a97d35ed95d13ee410efdd88e72a66449d0384220bf20055ab7d6b5df10de4990fbd20e5cbe0
+"@types/semver@npm:7.3.10":
+  version: 7.3.10
+  resolution: "@types/semver@npm:7.3.10"
+  checksum: 7047c2822b1759b2b950f39cfcf261f2b9dca47b4b55bdebba0905a8553631f1531eb0f59264ffe4834d1198c8331c8e0010a4cd742f4e0b60abbf399d134364
   languageName: node
   linkType: hard
 
