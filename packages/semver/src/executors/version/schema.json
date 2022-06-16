@@ -89,6 +89,11 @@
       "type": "boolean",
       "default": false
     },
+    "skipCommit": {
+      "description": "Allows to skip making a commit when bumping a version(but put the tag on last existent commit)",
+      "type": "boolean",
+      "default": false
+    },
     "skipCommitTypes": {
       "description": " Specify array of commit types to be ignored when calculating next version bump",
       "type": "array",

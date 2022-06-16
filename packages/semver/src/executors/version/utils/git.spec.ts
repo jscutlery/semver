@@ -221,6 +221,7 @@ describe('git', () => {
       const tag = await lastValueFrom(
         createTag({
           dryRun: false,
+          commitHash: '123',
           tag: 'project-a-1.0.0',
           commitMessage: 'chore(release): 1.0.0',
           projectName: 'p',
@@ -234,6 +235,7 @@ describe('git', () => {
           'tag',
           '-a',
           'project-a-1.0.0',
+          '123',
           '-m',
           'chore(release): 1.0.0',
         ])
@@ -244,6 +246,7 @@ describe('git', () => {
       createTag({
         dryRun: true,
         tag: 'project-a-1.0.0',
+        commitHash: '123',
         commitMessage: 'chore(release): 1.0.0',
         projectName: 'p',
       }).subscribe({
@@ -266,6 +269,7 @@ describe('git', () => {
       createTag({
         dryRun: false,
         tag: 'project-a-1.0.0',
+        commitHash: '123',
         commitMessage: 'chore(release): 1.0.0',
         projectName: 'p',
       }).subscribe({

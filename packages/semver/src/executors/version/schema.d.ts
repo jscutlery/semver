@@ -17,6 +17,7 @@ export interface VersionBuilderSchema {
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;
   trackDeps?: boolean;
+  skipCommit?: boolean;
   /**
    * @deprecated Use the alias releaseAs (--releaseAs) instead.
    * @sunset 3.0.0

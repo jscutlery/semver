@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { EMPTY, map, type Observable } from 'rxjs';
 import { exec } from '../../common/exec';
 import { logStep } from './logger';
@@ -6,16 +7,22 @@ import { createTemplateString } from './template-string';
 export function commit({
   dryRun,
   noVerify,
+  skipCommit,
   commitMessage,
   projectName,
 }: {
   dryRun: boolean;
+  skipCommit: boolean;
   noVerify: boolean;
   commitMessage: string;
   projectName: string;
-}): Observable<void> {
+}): Observable<void | null> {
   if (dryRun) {
     return EMPTY;
+  }
+
+  if (skipCommit) {
+    return of(null);
   }
 
   return exec('git', [
