@@ -5,7 +5,7 @@ import { exec } from '../../common/exec';
 import { logStep, _logStep } from './logger';
 
 /**
- * Return the list of commits since `since` commit.
+ * Return the list of commit bodies since `since` commit.
  */
 export function getCommits({
   projectRoot,
@@ -14,9 +14,33 @@ export function getCommits({
   projectRoot: string;
   since: string;
 }): Observable<string[]> {
+  return getFormattedCommits({since, projectRoot, format:'%B'})
+}
+/**
+ * Return hash of last commit of a project
+ */
+export function getLastProjectCommitHash({
+  projectRoot,
+}: {
+  projectRoot: string
+}): Observable<string> {
+  return getFormattedCommits({since: '', projectRoot, format:'%H'})
+    .pipe(map(commits => commits[0].trim()))
+}
+
+function getFormattedCommits({
+  projectRoot,
+  format,
+  since,
+}: {
+  projectRoot: string;
+  format: string,
+  since: string;
+}): Observable<string[]> {
   return new Observable<string>((observer) => {
     gitRawCommits({
       from: since,
+      format,
       path: projectRoot,
     })
       .on('data', (data: string) => observer.next(data))
@@ -24,7 +48,9 @@ export function getCommits({
       .on('close', () => observer.complete())
       .on('finish', () => observer.complete());
   }).pipe(
-    scan((commits, commit) => [...commits, commit.toString()], [] as string[]),
+    scan((commits, commit) => {
+      return [...commits, commit.toString()]
+    }, [] as string[]),
     startWith([]),
     last()
   );
@@ -103,26 +129,29 @@ export function addToStage({
 
 export function getFirstCommitRef(): Observable<string> {
   return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
-    map((output) => output.trim())
+    map((output) => {
+      return output.trim()
+    })
   );
 }
 
 export function createTag({
   dryRun,
   tag,
+  commitHash,
   commitMessage,
   projectName,
 }: {
   dryRun: boolean;
   tag: string;
+  commitHash: string;
   commitMessage: string;
   projectName: string;
 }): Observable<string> {
   if (dryRun) {
     return EMPTY;
   }
-
-  return exec('git', ['tag', '-a', tag, '-m', commitMessage]).pipe(
+  return exec('git', ['tag', '-a', tag, commitHash,  '-m', commitMessage]).pipe(
     catchError((error) => {
       if (/already exists/.test(error)) {
         return throwError(

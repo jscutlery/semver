@@ -5,7 +5,7 @@ import {
   updateChangelog,
 } from './utils/changelog';
 import { commit } from './utils/commit';
-import { addToStage, createTag } from './utils/git';
+import { addToStage, createTag, getLastProjectCommitHash } from './utils/git';
 import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
@@ -32,6 +32,7 @@ export interface CommonVersionOptions {
   workspaceRoot: string;
   tagPrefix: string;
   changelogHeader: string;
+  skipCommit: boolean;
   commitMessage: string;
   projectName: string;
   skipProjectChangelog: boolean;
@@ -47,9 +48,12 @@ export function versionWorkspace({
   noVerify,
   projectName,
   tag,
+  skipCommit,
+  projectRoot,
   ...options
 }: {
   skipRootChangelog: boolean;
+  projectRoot: string;
 } & CommonVersionOptions) {
   return forkJoin([
     getProjectRoots(options.workspaceRoot).pipe(
@@ -62,6 +66,7 @@ export function versionWorkspace({
           dryRun,
           noVerify,
           projectName,
+          skipCommit,
           tag,
           ...options,
         })
@@ -94,16 +99,19 @@ export function versionWorkspace({
     }),
     concatMap(() =>
       commit({
+        skipCommit,
         dryRun,
         noVerify,
         commitMessage,
         projectName,
       })
     ),
-    concatMap(() =>
+    concatMap(() => getLastProjectCommitHash({projectRoot})),
+    concatMap((commitHash) =>
       createTag({
         dryRun,
         tag,
+        commitHash,
         commitMessage,
         projectName,
       })
@@ -120,6 +128,7 @@ export function versionProject({
   noVerify,
   tagPrefix,
   projectName,
+  skipCommit,
   tag,
   ...options
 }: { projectRoot: string } & CommonVersionOptions) {
@@ -131,6 +140,7 @@ export function versionProject({
     newVersion,
     commitMessage,
     dryRun,
+    skipCommit,
     noVerify,
     tagPrefix,
     tag,
@@ -170,16 +180,19 @@ export function versionProject({
     ),
     concatMap(() =>
       commit({
+        skipCommit,
         dryRun,
         noVerify,
         commitMessage,
         projectName,
       })
     ),
-    concatMap(() =>
+    concatMap(() => getLastProjectCommitHash({projectRoot})),
+    concatMap((commitHash: string) =>
       createTag({
         dryRun,
         tag,
+        commitHash,
         commitMessage,
         projectName,
       })

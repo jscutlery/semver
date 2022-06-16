@@ -172,6 +172,7 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
+
     it('should commit all changes', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
@@ -1219,6 +1220,49 @@ $`)
     });
   });
 
+  describe('--skipCommit', () => {
+    beforeEach(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+    });
+
+    afterEach(() => testingWorkspace.tearDown());
+
+    it('should make changes but not create a commit', async () => {
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          skipCommit: true
+        },
+        createFakeContext({
+          project: 'b',
+          projectRoot: resolve(testingWorkspace.root, 'packages/b'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
+
+      expect(commitMessage()).toBe('perf(a): ⚡ improve quickness');
+      expect(uncommitedChanges()).toHaveLength(1)
+      expect(commitMessageOfATag('b-0.0.1')).toBe('fix(b): 🐞 fix emptiness');
+
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^# Changelog
+
+This file was generated.*
+
+## 0.0.1 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
+$`)
+      );
+    });
+  });
+
   // The testing workspace isn't really configured for
   // executors, perhaps using the `new FSTree()` from
   // and `new Workspace()` @nrwl/toa would give a
@@ -1307,6 +1351,10 @@ function uncommitedChanges() {
 
 function commitMessage() {
   return execSync('git show -s --format=%s', { encoding: 'utf-8' }).trim();
+}
+
+function commitMessageOfATag(tagName: string) {
+  return execSync(`git log -1 --format=format:"%B" ${tagName}`, { encoding: 'utf-8' }).trim();
 }
 
 function projectGraph() {

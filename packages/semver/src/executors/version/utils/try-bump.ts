@@ -1,5 +1,6 @@
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as conventionalCommitsParser from 'conventional-commits-parser';
+import { tap } from 'rxjs';
 import { defer, forkJoin, iif, of, type Observable } from 'rxjs';
 import {
   catchError,
@@ -77,6 +78,9 @@ export function getProjectVersion({
         projectRoot,
         since: since ?? lastVersionGitRef,
       });
+    }),
+    tap(e=>{
+      console.log(e);
     })
   );
 
