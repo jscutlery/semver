@@ -80,18 +80,16 @@ export function versionWorkspace({
           )
         )
       ),
-      map(
-        (packageFiles) =>
-          packageFiles.filter((packageFile) => packageFile !== null) as string[]
-      )
+      map((paths) => paths.filter(isNotNull))
     ),
   ]).pipe(
-    concatMap((pathsToStage) => {
-      return addToStage({
-        paths: pathsToStage.flat(),
+    map((paths) => paths.flat()),
+    concatMap((paths) =>
+      addToStage({
+        paths,
         dryRun,
-      });
-    }),
+      })
+    ),
     concatMap(() =>
       commit({
         dryRun,
@@ -227,4 +225,8 @@ export function _generateChangelogs({
       )
     )
   );
+}
+
+function isNotNull(path: string | null): path is string {
+  return path !== null;
 }
