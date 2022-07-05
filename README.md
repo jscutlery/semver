@@ -117,7 +117,7 @@ This package is **tag-based**, which means it never reads the `package.json` to 
 
 To detect a new version this package looks into the commit history and checks if any source files changed since the last version.
 
-> Note that major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
+> **Note**: Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
 
 #### Specify the level of change
 
