@@ -15,9 +15,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:14.0.5":
-  version: 14.0.5
-  resolution: "@angular-devkit/core@npm:14.0.5"
+"@angular-devkit/core@npm:14.0.6":
+  version: 14.0.6
+  resolution: "@angular-devkit/core@npm:14.0.6"
   dependencies:
     ajv: 8.11.0
     ajv-formats: 2.1.1
@@ -29,20 +29,20 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 2a32e66a637a342dae0426547ef6680f6e2f58a0a6c36922b3d143cefe86ebaac6ec820b95e36685920aafe782457b7859fb8550e680a17433afd745a48529be
+  checksum: 678d50d6f2034d396c96eb05e8340a7d7c21d4d71ac07b181932f77623502c8d8ce0e5f2b97daf3cae89a4ae1b84ffe67da4a1d7564b919f2f25df40efda546b
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:14.0.5":
-  version: 14.0.5
-  resolution: "@angular-devkit/schematics@npm:14.0.5"
+"@angular-devkit/schematics@npm:14.0.6":
+  version: 14.0.6
+  resolution: "@angular-devkit/schematics@npm:14.0.6"
   dependencies:
-    "@angular-devkit/core": 14.0.5
+    "@angular-devkit/core": 14.0.6
     jsonc-parser: 3.0.0
     magic-string: 0.26.1
     ora: 5.4.1
     rxjs: 6.6.7
-  checksum: d0a731bb277960642749e2487ff714a26a36c27fa95f10fe3a8f0d065a239b00a6cb213e9b091c6e30c7ab06f50ce35fe77e5daedf5d9d9f73de6151273cc654
+  checksum: 62ba4ce24fcc22c0cffaeeee89e8d8d2704a4ff0723214c2758d4a000f4b795281a2ddbfd9d21316c22ea2585dd4dce244e094b848c87731de38ebaf46c08ff3
   languageName: node
   linkType: hard
 
@@ -5659,7 +5659,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": 14.0.5
+    "@angular-devkit/schematics": 14.0.6
     "@commitlint/cli": ^17.0.0
     "@commitlint/config-angular": ^17.0.0
     "@nrwl/cli": 14.4.2
