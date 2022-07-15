@@ -29,7 +29,7 @@ This executor aims to be used with [post-targets](https://github.com/jscutlery/s
         "postTargets": ["my-project:gitlab"]
       }
     },
-    "github": {
+    "gitlab": {
       "executor": "@jscutlery/semver:gitlab",
       "options": {
         "tag": "${tag}",
