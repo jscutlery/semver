@@ -15,34 +15,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:14.0.6":
-  version: 14.0.6
-  resolution: "@angular-devkit/core@npm:14.0.6"
+"@angular-devkit/core@npm:14.1.0":
+  version: 14.1.0
+  resolution: "@angular-devkit/core@npm:14.1.0"
   dependencies:
     ajv: 8.11.0
     ajv-formats: 2.1.1
-    jsonc-parser: 3.0.0
+    jsonc-parser: 3.1.0
     rxjs: 6.6.7
-    source-map: 0.7.3
+    source-map: 0.7.4
   peerDependencies:
     chokidar: ^3.5.2
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 678d50d6f2034d396c96eb05e8340a7d7c21d4d71ac07b181932f77623502c8d8ce0e5f2b97daf3cae89a4ae1b84ffe67da4a1d7564b919f2f25df40efda546b
+  checksum: 859eedecad6f3e8781a54b716a31e83a9f84fa3a55ef24849e8723f25b90b2b6b350f62db29f6afa2e0c00e8425d91d4a792c34010f88aa8977ebc1bc09026d2
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:14.0.6":
-  version: 14.0.6
-  resolution: "@angular-devkit/schematics@npm:14.0.6"
+"@angular-devkit/schematics@npm:14.1.0":
+  version: 14.1.0
+  resolution: "@angular-devkit/schematics@npm:14.1.0"
   dependencies:
-    "@angular-devkit/core": 14.0.6
-    jsonc-parser: 3.0.0
-    magic-string: 0.26.1
+    "@angular-devkit/core": 14.1.0
+    jsonc-parser: 3.1.0
+    magic-string: 0.26.2
     ora: 5.4.1
     rxjs: 6.6.7
-  checksum: 62ba4ce24fcc22c0cffaeeee89e8d8d2704a4ff0723214c2758d4a000f4b795281a2ddbfd9d21316c22ea2585dd4dce244e094b848c87731de38ebaf46c08ff3
+  checksum: 5fe5e71ffea8ccc00be44f196ae218c9533275ea7fe2fd45bf1aec414d3ff66a51aa289314b22b5b5ea0f138a1138cb1cd51968a842cdd6f8849fbef048a6586
   languageName: node
   linkType: hard
 
@@ -5593,7 +5593,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": 14.0.6
+    "@angular-devkit/schematics": 14.1.0
     "@commitlint/cli": ^17.0.0
     "@commitlint/config-angular": ^17.0.0
     "@nrwl/cli": 14.4.3
@@ -5752,6 +5752,13 @@ __metadata:
   version: 3.0.0
   resolution: "jsonc-parser@npm:3.0.0"
   checksum: 1df2326f1f9688de30c70ff19c5b2a83ba3b89a1036160da79821d1361090775e9db502dc57a67c11b56e1186fc1ed70b887f25c5febf9a3ec4f91435836c99d
+  languageName: node
+  linkType: hard
+
+"jsonc-parser@npm:3.1.0":
+  version: 3.1.0
+  resolution: "jsonc-parser@npm:3.1.0"
+  checksum: 81b00c565c60cb1b400523a918d42ad9c7bb3d9cf34c708bf78d37c8c496ecd670c3ff8828f2f60aa6e6627ef4287982794ddf92261ea71e320973c54b29fb22
   languageName: node
   linkType: hard
 
@@ -5927,12 +5934,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:0.26.1":
-  version: 0.26.1
-  resolution: "magic-string@npm:0.26.1"
+"magic-string@npm:0.26.2":
+  version: 0.26.2
+  resolution: "magic-string@npm:0.26.2"
   dependencies:
     sourcemap-codec: ^1.4.8
-  checksum: 23f21f5734346ddfbabd7b9834e3ecda3521e3e1db81166c1513b45b729489bbed1eafa8cd052c7db7fdc7c68ebc5c03bc00dd5a23697edda15dbecaf8c98397
+  checksum: b4db4e2b370ac8d9ffc6443a2b591b75364bf1fc9121b5a4068d5b89804abff6709d1fa4a0e0c2d54f2e61e0e44db83efdfe219a5ab0ba6d25ee1f2b51fbed55
   languageName: node
   linkType: hard
 
@@ -7317,10 +7324,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:0.7.3":
-  version: 0.7.3
-  resolution: "source-map@npm:0.7.3"
-  checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
+"source-map@npm:0.7.4, source-map@npm:^0.7.3":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 
@@ -7328,13 +7335,6 @@ __metadata:
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: 59ce8640cf3f3124f64ac289012c2b8bd377c238e316fb323ea22fbfe83da07d81e000071d7242cad7a23cd91c7de98e4df8830ec3f133cb6133a5f6e9f67bc2
-  languageName: node
-  linkType: hard
-
-"source-map@npm:^0.7.3":
-  version: 0.7.4
-  resolution: "source-map@npm:0.7.4"
-  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 
