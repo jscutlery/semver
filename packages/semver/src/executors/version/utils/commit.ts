@@ -16,13 +16,9 @@ export function commit({
   noVerify: boolean;
   commitMessage: string;
   projectName: string;
-}): Observable<void | null> {
-  if (dryRun) {
-    return EMPTY;
-  }
-
-  if (skipCommit) {
-    return of(null);
+}): Observable<void > {
+  if (dryRun || skipCommit) {
+    return of(undefined);
   }
 
   return exec('git', [
