@@ -1231,21 +1231,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/devkit@npm:14.4.3":
-  version: 14.4.3
-  resolution: "@nrwl/devkit@npm:14.4.3"
-  dependencies:
-    ejs: ^3.1.7
-    ignore: ^5.0.4
-    rxjs: ^6.5.4
-    semver: 7.3.4
-    tslib: ^2.3.0
-  peerDependencies:
-    nx: ">= 13.10 <= 15"
-  checksum: 2ae27a7830c7baef8be5fb366e3d36d933b13ea2f89aebcca48be32e16401af9df0a2ff93f14a6b50187d23e0debf21ab3d86b24c1dcb30b32462084ab916f76
-  languageName: node
-  linkType: hard
-
 "@nrwl/devkit@npm:14.5.1":
   version: 14.5.1
   resolution: "@nrwl/devkit@npm:14.5.1"
@@ -6213,11 +6198,11 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^4.0.0":
-  version: 4.1.2
-  resolution: "ngx-deploy-npm@npm:4.1.2"
+  version: 4.1.3
+  resolution: "ngx-deploy-npm@npm:4.1.3"
   dependencies:
-    "@nrwl/devkit": 14.4.3
-  checksum: ee620a6a0047b01f89e3ae25810097bf1468ce40f682dfb2dcc9864f779c7268a4ee6474abdc305eb92a917b25ce39191b0105e201272e25136e545c5c4769b2
+    "@nrwl/devkit": 14.5.1
+  checksum: ec6f94511a5670b2046f60d05500ee3b7a09630662d8265fcbe8b9924aa654f3c97073fa95c6e3f7ddb22499c4f888949a30185697215f1b31e68061501c9354
   languageName: node
   linkType: hard
 
