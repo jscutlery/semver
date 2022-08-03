@@ -2,10 +2,10 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import {
   insertChangelogDependencyUpdates,
-  updateChangelog,
+  updateChangelog
 } from './utils/changelog';
 import { commit } from './utils/commit';
-import { addToStage, createTag, getLastProjectCommitHash } from './utils/git';
+import { addToStage, createTag, getLastCommitHash } from './utils/git';
 import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
@@ -104,7 +104,7 @@ export function versionWorkspace({
         projectName,
       })
     ),
-    concatMap(() => getLastProjectCommitHash({projectRoot})),
+    concatMap(() => getLastCommitHash({ projectRoot })),
     concatMap((commitHash) =>
       createTag({
         dryRun,
@@ -185,8 +185,8 @@ export function versionProject({
         projectName,
       })
     ),
-    concatMap(() => getLastProjectCommitHash({projectRoot})),
-    concatMap((commitHash: string) =>
+    concatMap(() => getLastCommitHash({ projectRoot })),
+    concatMap((commitHash) =>
       createTag({
         dryRun,
         tag,

@@ -12,30 +12,31 @@ export function getCommits({
   since,
 }: {
   projectRoot: string;
-  since: string;
+  since?: string;
 }): Observable<string[]> {
-  return getFormattedCommits({since, projectRoot, format:'%B'})
+  return getFormattedCommits({ since, projectRoot, format: '%B' });
 }
 /**
  * Return hash of last commit of a project
  */
-export function getLastProjectCommitHash({
+export function getLastCommitHash({
   projectRoot,
 }: {
-  projectRoot: string
+  projectRoot: string;
 }): Observable<string> {
-  return getFormattedCommits({since: '', projectRoot, format:'%H'})
-    .pipe(map(commits => commits[0].trim()))
+  return getFormattedCommits({ projectRoot, format: '%H' }).pipe(
+    map(([commit]) => commit.trim())
+  );
 }
 
 function getFormattedCommits({
   projectRoot,
   format,
-  since,
+  since = '',
 }: {
   projectRoot: string;
-  format: string,
-  since: string;
+  format: string;
+  since?: string;
 }): Observable<string[]> {
   return new Observable<string>((observer) => {
     gitRawCommits({
@@ -48,9 +49,7 @@ function getFormattedCommits({
       .on('close', () => observer.complete())
       .on('finish', () => observer.complete());
   }).pipe(
-    scan((commits, commit) => {
-      return [...commits, commit.toString()]
-    }, [] as string[]),
+    scan((commits, commit) => [...commits, commit.toString()], [] as string[]),
     startWith([]),
     last()
   );
@@ -130,7 +129,7 @@ export function addToStage({
 export function getFirstCommitRef(): Observable<string> {
   return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     map((output) => {
-      return output.trim()
+      return output.trim();
     })
   );
 }
@@ -151,7 +150,7 @@ export function createTag({
   if (dryRun) {
     return EMPTY;
   }
-  return exec('git', ['tag', '-a', tag, commitHash,  '-m', commitMessage]).pipe(
+  return exec('git', ['tag', '-a', tag, commitHash, '-m', commitMessage]).pipe(
     catchError((error) => {
       if (/already exists/.test(error)) {
         return throwError(

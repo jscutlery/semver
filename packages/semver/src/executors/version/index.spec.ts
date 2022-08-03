@@ -12,7 +12,7 @@ import { runPostTargets } from './utils/post-target';
 import * as project from './utils/project';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-const LAST_COMMIT_HASH ='lastCommitHash'
+const LAST_COMMIT_HASH = 'lastCommitHash';
 jest.mock('./utils/changelog');
 jest.mock('./utils/project');
 jest.mock('./utils/commit', () => ({
@@ -41,7 +41,9 @@ describe('@jscutlery/semver:version', () => {
       typeof changelog.calculateChangelogChanges
     >;
   const mockTryPush = git.tryPush as jest.MockedFunction<typeof git.tryPush>;
-  const mockGetLastProjectCommitHash = git.getLastProjectCommitHash as jest.MockedFunction<typeof git.getLastProjectCommitHash>;
+  const mockGetLastCommitHash = git.getLastCommitHash as jest.MockedFunction<
+    typeof git.getLastCommitHash
+  >;
   const mockAddToStage = git.addToStage as jest.MockedFunction<
     typeof git.addToStage
   >;
@@ -107,8 +109,7 @@ describe('@jscutlery/semver:version', () => {
     /* Mock Git execution */
     mockTryPush.mockReturnValue(of(''));
 
-
-    mockGetLastProjectCommitHash.mockReturnValue(of(LAST_COMMIT_HASH))
+    mockGetLastCommitHash.mockReturnValue(of(LAST_COMMIT_HASH));
     mockAddToStage.mockReturnValue(of(undefined));
     mockCommit.mockReturnValue(of(undefined));
     mockCreateTag.mockReturnValue(of(''));
@@ -207,26 +208,30 @@ describe('@jscutlery/semver:version', () => {
       const { success } = await version(
         {
           ...options,
-          skipCommit: true
+          skipCommit: true,
         },
         context
       );
 
       expect(success).toBe(true);
-      expect(mockCommit).toBeCalledWith( expect.objectContaining({skipCommit: true}))
+      expect(mockCommit).toBeCalledWith(
+        expect.objectContaining({ skipCommit: true })
+      );
     });
 
     it('should put tag on last commit in a library', async () => {
       const { success } = await version(
         {
           ...options,
-          skipCommit: true
+          skipCommit: true,
         },
         context
       );
 
       expect(success).toBe(true);
-      expect(mockCreateTag).toBeCalledWith(expect.objectContaining({ commitHash: LAST_COMMIT_HASH }));
+      expect(mockCreateTag).toBeCalledWith(
+        expect.objectContaining({ commitHash: LAST_COMMIT_HASH })
+      );
     });
   });
 
