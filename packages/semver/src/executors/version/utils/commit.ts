@@ -16,7 +16,7 @@ export function commit({
   noVerify: boolean;
   commitMessage: string;
   projectName: string;
-}): Observable<void > {
+}): Observable<void> {
   if (dryRun || skipCommit) {
     return of(undefined);
   }

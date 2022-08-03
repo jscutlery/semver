@@ -172,7 +172,6 @@ $`)
       expect(result).toEqual({ success: true });
     });
 
-
     it('should commit all changes', () => {
       expect(uncommitedChanges()).toHaveLength(0);
     });
@@ -1234,7 +1233,7 @@ $`)
       result = await version(
         {
           ...defaultBuilderOptions,
-          skipCommit: true
+          skipCommit: true,
         },
         createFakeContext({
           project: 'b',
@@ -1244,7 +1243,7 @@ $`)
       );
 
       expect(commitMessage()).toBe('perf(a): ⚡ improve quickness');
-      expect(uncommitedChanges()).toHaveLength(1)
+      expect(uncommitedChanges()).toHaveLength(1);
       expect(commitMessageOfATag('b-0.0.1')).toBe('fix(b): 🐞 fix emptiness');
 
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
@@ -1354,7 +1353,9 @@ function commitMessage() {
 }
 
 function commitMessageOfATag(tagName: string) {
-  return execSync(`git log -1 --format=format:"%B" ${tagName}`, { encoding: 'utf-8' }).trim();
+  return execSync(`git log -1 --format=format:"%B" ${tagName}`, {
+    encoding: 'utf-8',
+  }).trim();
 }
 
 function projectGraph() {
