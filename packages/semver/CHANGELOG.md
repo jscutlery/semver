@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.26.0](https://github.com/jscutlery/semver/compare/semver-2.25.3...semver-2.26.0) (2022-08-03)
+
+
+### Bug Fixes
+
+* 📦 bump dependency rxjs to v7.5.6 ([3147a7a](https://github.com/jscutlery/semver/commit/3147a7a302baa24c9f649acb98394744cd758430))
+
+
+### Features
+
+* **semver:** ✅ add option to skip committing changes on version bump ([0533977](https://github.com/jscutlery/semver/commit/053397771a838938dc9b203573ec53b397d232b4))
+
+
+
 ## [2.25.3](https://github.com/jscutlery/semver/compare/semver-2.25.2...semver-2.25.3) (2022-06-13)
 
 
