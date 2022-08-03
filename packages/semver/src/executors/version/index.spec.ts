@@ -12,7 +12,7 @@ import { runPostTargets } from './utils/post-target';
 import * as project from './utils/project';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-
+const LAST_COMMIT_HASH = 'lastCommitHash';
 jest.mock('./utils/changelog');
 jest.mock('./utils/project');
 jest.mock('./utils/commit', () => ({
@@ -41,6 +41,9 @@ describe('@jscutlery/semver:version', () => {
       typeof changelog.calculateChangelogChanges
     >;
   const mockTryPush = git.tryPush as jest.MockedFunction<typeof git.tryPush>;
+  const mockGetLastCommitHash = git.getLastCommitHash as jest.MockedFunction<
+    typeof git.getLastCommitHash
+  >;
   const mockAddToStage = git.addToStage as jest.MockedFunction<
     typeof git.addToStage
   >;
@@ -105,6 +108,8 @@ describe('@jscutlery/semver:version', () => {
 
     /* Mock Git execution */
     mockTryPush.mockReturnValue(of(''));
+
+    mockGetLastCommitHash.mockReturnValue(of(LAST_COMMIT_HASH));
     mockAddToStage.mockReturnValue(of(undefined));
     mockCommit.mockReturnValue(of(undefined));
     mockCreateTag.mockReturnValue(of(''));
@@ -196,6 +201,38 @@ describe('@jscutlery/semver:version', () => {
     expect(mockUpdateChangelog).toBeCalledWith(
       expect.objectContaining({ dryRun: true })
     );
+  });
+
+  describe('--skipCommit', () => {
+    it('should not make a commit', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          skipCommit: true,
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockCommit).toBeCalledWith(
+        expect.objectContaining({ skipCommit: true })
+      );
+    });
+
+    it('should put tag on last commit in a library', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          skipCommit: true,
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockCreateTag).toBeCalledWith(
+        expect.objectContaining({ commitHash: LAST_COMMIT_HASH })
+      );
+    });
   });
 
   describe('--syncVersions=false (independent mode)', () => {

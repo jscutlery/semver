@@ -1,5 +1,5 @@
-import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as conventionalCommitsParser from 'conventional-commits-parser';
+import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, of, type Observable } from 'rxjs';
 import {
   catchError,

@@ -48,6 +48,7 @@ export default async function version(
     preset,
     allowEmptyRelease,
     skipCommitTypes,
+    skipCommit,
   } = _normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
@@ -130,12 +131,14 @@ export default async function version(
         skipProjectChangelog,
         commitMessage,
         dependencyUpdates,
+        skipCommit,
       };
 
       const version$ = defer(() =>
         syncVersions
           ? versionWorkspace({
               ...options,
+              projectRoot,
               skipRootChangelog,
             })
           : versionProject({
@@ -222,11 +225,12 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     skipRootChangelog: options.skipRootChangelog as boolean,
     skipProjectChangelog: options.skipProjectChangelog as boolean,
     allowEmptyRelease: options.allowEmptyRelease as boolean,
-    skipCommitTypes: options.skipCommitTypes || [],
+    skipCommitTypes: options.skipCommitTypes as string[],
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
     commitMessageFormat: options.commitMessageFormat as string,
+    skipCommit: options.skipCommit as boolean,
     preset:
       options.preset === 'angular'
         ? 'angular'
