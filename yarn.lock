@@ -5029,14 +5029,14 @@ __metadata:
   linkType: hard
 
 "jest-extended@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "jest-extended@npm:3.0.1"
+  version: 3.0.2
+  resolution: "jest-extended@npm:3.0.2"
   dependencies:
     jest-diff: ^28.0.0
     jest-get-type: ^28.0.0
   peerDependencies:
     jest: ">=27.2.5"
-  checksum: 42b64a3e7aba1040b8847012d059644782ee7dd86b5cc280ec0e1b9e0f679396d5136191e9d1abf3bc52ae41507ce94aa3ea29d12f000c34b16e986596942652
+  checksum: da726bf2983e0343c70ae4450c1115d1c7cdb6041b3bd9434553fc2e2c625a705401ece0a58df5055d0578bec34d7b1d532e85e5a98773e240beed8f0f712216
   languageName: node
   linkType: hard
 
