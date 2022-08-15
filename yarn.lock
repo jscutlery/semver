@@ -1176,7 +1176,7 @@ __metadata:
   resolution: "@jscutlery/semver@workspace:packages/semver"
   dependencies:
     "@types/conventional-recommended-bump": 6.1.0
-    "@types/inquirer": 8.2.2
+    "@types/inquirer": 8.2.3
     "@types/rimraf": 3.0.2
     "@types/semver": 7.3.12
     "@types/standard-version": 7.0.1
@@ -1627,12 +1627,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/inquirer@npm:8.2.2":
-  version: 8.2.2
-  resolution: "@types/inquirer@npm:8.2.2"
+"@types/inquirer@npm:8.2.3":
+  version: 8.2.3
+  resolution: "@types/inquirer@npm:8.2.3"
   dependencies:
     "@types/through": "*"
-  checksum: 3c8fc34906b55d1b5f2f865aabc664e84ca8fd31537a09ebcb0ae063aaf88cf47f57566b9a412c76faee0996033f624e2d43e8ec6f3b123b88cafd771877f71f
+  checksum: 2978e749fbda061b85a56331a267f6c7f40380c17bce1b0f8b0bd1d86c88820e3bd7df4985c633647652b571f7ffd6b97b929cabe8b7d61259d354229e4c6c5b
   languageName: node
   linkType: hard
 
