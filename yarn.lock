@@ -1260,6 +1260,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nrwl/devkit@npm:14.5.6":
+  version: 14.5.6
+  resolution: "@nrwl/devkit@npm:14.5.6"
+  dependencies:
+    "@phenomnomnominal/tsquery": 4.1.1
+    ejs: ^3.1.7
+    ignore: ^5.0.4
+    semver: 7.3.4
+    tslib: ^2.3.0
+  peerDependencies:
+    nx: ">= 13.10 <= 15"
+  checksum: 58dbd0561a52922efc4a1a8ce843a44c5935392c1da53fe3d709060ca3727075e228ec07a3193fef7e5baf8ce3813920223f0968673da3660894871bc7a74bd2
+  languageName: node
+  linkType: hard
+
 "@nrwl/eslint-plugin-nx@npm:14.5.4":
   version: 14.5.4
   resolution: "@nrwl/eslint-plugin-nx@npm:14.5.4"
@@ -6284,11 +6299,11 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "ngx-deploy-npm@npm:4.2.0"
+  version: 4.2.1
+  resolution: "ngx-deploy-npm@npm:4.2.1"
   dependencies:
-    "@nrwl/devkit": 14.5.4
-  checksum: b9c35265b5039570ca38da0a0bd86ce53d9cdc8e7a2075da173f0a534d11c333f1c952e32178ba6d8542af99d5f977679dc01d9272310556f707bf9a393717f4
+    "@nrwl/devkit": 14.5.6
+  checksum: 9d250fab0c6f58ebe95734821e221a371949cefeda2af87374609f6e103ee6f9d20ee6bfdd7cd6d360e70c37df4701efa1d9697281b3ea7f7dbc39dad919cde3
   languageName: node
   linkType: hard
 
