@@ -48,6 +48,7 @@ export default async function version(
     preset,
     allowEmptyRelease,
     skipCommitTypes,
+    ignoreMergeCommits,
     skipCommit,
   } = _normalizeOptions(options);
   const workspaceRoot = context.root;
@@ -88,6 +89,7 @@ export default async function version(
     syncVersions,
     allowEmptyRelease,
     skipCommitTypes,
+    ignoreMergeCommits,
     projectName,
   });
 
@@ -140,10 +142,12 @@ export default async function version(
               ...options,
               projectRoot,
               skipRootChangelog,
+              ignoreMergeCommits
             })
           : versionProject({
               ...options,
               projectRoot,
+              ignoreMergeCommits
             })
       );
 
@@ -226,6 +230,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     skipProjectChangelog: options.skipProjectChangelog as boolean,
     allowEmptyRelease: options.allowEmptyRelease as boolean,
     skipCommitTypes: options.skipCommitTypes as string[],
+    ignoreMergeCommits: options.ignoreMergeCommits ?? true,
     releaseAs: options.releaseAs ?? options.version,
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,

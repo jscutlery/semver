@@ -9,22 +9,24 @@ import { logStep, _logStep } from './logger';
  */
 export function getCommits({
   projectRoot,
+  ignoreMergeCommits,
   since,
 }: {
   projectRoot: string;
+  ignoreMergeCommits: boolean;
   since?: string;
 }): Observable<string[]> {
-  return getFormattedCommits({ since, projectRoot, format: '%B' });
+  return getFormattedCommits({ since, projectRoot,ignoreMergeCommits, format: '%B' });
 }
 /**
  * Return hash of last commit of a project
  */
 export function getLastCommitHash({
-  projectRoot,
+  projectRoot
 }: {
-  projectRoot: string;
+  projectRoot: string
 }): Observable<string> {
-  return getFormattedCommits({ projectRoot, format: '%H' }).pipe(
+  return getFormattedCommits({ projectRoot, ignoreMergeCommits: false, format: '%H' }).pipe(
     map(([commit]) => commit.trim())
   );
 }
@@ -32,18 +34,25 @@ export function getLastCommitHash({
 function getFormattedCommits({
   projectRoot,
   format,
+  ignoreMergeCommits,
   since = '',
 }: {
   projectRoot: string;
   format: string;
+  ignoreMergeCommits: boolean;
   since?: string;
 }): Observable<string[]> {
   return new Observable<string>((observer) => {
-    gitRawCommits({
+    const params: any = {
       from: since,
       format,
       path: projectRoot,
-    })
+      'full-history': true,
+    };
+    if (ignoreMergeCommits) {
+      params['no-merges'] = ignoreMergeCommits;
+    }
+    gitRawCommits(params)
       .on('data', (data: string) => observer.next(data))
       .on('error', (error: Error) => observer.error(error))
       .on('close', () => observer.complete())

@@ -30,10 +30,12 @@ export function getProjectVersion({
   projectRoot,
   releaseType,
   since,
+  ignoreMergeCommits,
   projectName,
 }: {
   tagPrefix: string;
   projectRoot: string;
+  ignoreMergeCommits: boolean;
   releaseType?: ReleaseIdentifier;
   since?: string;
   projectName: string;
@@ -75,6 +77,7 @@ export function getProjectVersion({
     switchMap((lastVersionGitRef) => {
       return getCommits({
         projectRoot,
+        ignoreMergeCommits,
         since: since ?? lastVersionGitRef,
       });
     })
@@ -101,6 +104,7 @@ export function tryBump({
   syncVersions,
   allowEmptyRelease,
   skipCommitTypes,
+  ignoreMergeCommits,
   projectName,
 }: {
   preset: string;
@@ -113,10 +117,12 @@ export function tryBump({
   syncVersions: boolean;
   allowEmptyRelease?: boolean;
   skipCommitTypes: string[];
+  ignoreMergeCommits: boolean;
   projectName: string;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
     tagPrefix,
+    ignoreMergeCommits,
     projectRoot,
     releaseType,
     projectName,
@@ -143,6 +149,7 @@ export function tryBump({
         releaseType,
         versionTagPrefix,
         skipCommitTypes,
+        ignoreMergeCommits,
         syncVersions,
         projectName,
       });
@@ -179,7 +186,7 @@ export function tryBump({
             );
           }
 
-          const filteredCommits = commits.filter((commit) =>
+          const filteredCommits = commits.filter((commit: string) =>
             shouldCommitBeCalculated({ commit, skipCommitTypes })
           );
 
@@ -249,12 +256,12 @@ export function _manualBump({
 
 function shouldCommitBeCalculated({
   commit,
-  skipCommitTypes,
+  skipCommitTypes
 }: {
   commit: string;
-  skipCommitTypes: string[];
+  skipCommitTypes: string[]
 }): boolean {
-  const { type } = conventionalCommitsParser.sync(commit, {});
+  const { type }= conventionalCommitsParser.sync(commit, {});
   const shouldSkip = skipCommitTypes.some((typeToSkip) => typeToSkip === type);
   return !shouldSkip;
 }
@@ -267,6 +274,7 @@ export function _getDependencyVersions({
   syncVersions,
   lastVersionGitRef,
   skipCommitTypes,
+  ignoreMergeCommits,
   projectName,
 }: {
   preset: string;
@@ -276,6 +284,7 @@ export function _getDependencyVersions({
   skipCommitTypes: string[];
   versionTagPrefix?: string | null;
   syncVersions: boolean;
+  ignoreMergeCommits: boolean;
   projectName: string;
 }): Observable<Version[]> {
   return forkJoin(
@@ -290,6 +299,7 @@ export function _getDependencyVersions({
       const { lastVersion$, commits$ } = getProjectVersion({
         tagPrefix,
         projectRoot,
+        ignoreMergeCommits,
         releaseType,
         since: lastVersionGitRef,
         projectName,

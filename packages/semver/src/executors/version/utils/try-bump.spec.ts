@@ -61,6 +61,7 @@ describe('tryBump', () => {
         releaseType: undefined,
         preid: undefined,
         skipCommitTypes: [],
+        ignoreMergeCommits: true,
         projectName: '',
       })
     );
@@ -69,6 +70,7 @@ describe('tryBump', () => {
 
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -118,6 +120,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         syncVersions: true,
         skipCommitTypes: [],
+        ignoreMergeCommits: true,
         projectName: '',
       })
     );
@@ -127,13 +130,16 @@ describe('tryBump', () => {
     expect(mockGetCommits).toBeCalledTimes(3);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
+      ignoreMergeCommits: true,
       since: 'v2.1.0',
     });
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/dep1',
       since: 'v2.1.0',
     });
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/dep2',
       since: 'v2.1.0',
     });
@@ -161,6 +167,7 @@ describe('tryBump', () => {
         releaseType: 'premajor',
         skipCommitTypes: [],
         preid: 'alpha',
+        ignoreMergeCommits: true,
         projectName: '',
       })
     );
@@ -171,6 +178,7 @@ describe('tryBump', () => {
 
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -193,6 +201,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'major',
         skipCommitTypes: [],
+        ignoreMergeCommits: true,
         projectName: '',
       })
     );
@@ -203,6 +212,7 @@ describe('tryBump', () => {
 
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -225,6 +235,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
+        ignoreMergeCommits: true,
         skipCommitTypes: [],
       })
     );
@@ -235,6 +246,7 @@ describe('tryBump', () => {
 
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -257,6 +269,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'minor',
         projectName: '',
+        ignoreMergeCommits: true,
         skipCommitTypes: [],
       })
     );
@@ -267,6 +280,7 @@ describe('tryBump', () => {
 
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -283,6 +297,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
+        ignoreMergeCommits: true,
         skipCommitTypes: [],
       })
     );
@@ -311,6 +326,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
+        ignoreMergeCommits: true,
         skipCommitTypes: [],
       })
     );
@@ -320,6 +336,7 @@ describe('tryBump', () => {
     );
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'sha1',
     });
@@ -342,12 +359,14 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
+        ignoreMergeCommits: true,
         skipCommitTypes: [],
       })
     );
 
     expect(newVersion).toBeNull();
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -371,12 +390,14 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         allowEmptyRelease: true,
         projectName: '',
+        ignoreMergeCommits: true,
         skipCommitTypes: [],
       })
     );
 
     expect(newVersion?.version).toEqual('2.1.1');
     expect(mockGetCommits).toBeCalledWith({
+      ignoreMergeCommits: true,
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -400,6 +421,7 @@ describe('tryBump', () => {
           skipCommitTypes: ['docs', 'refactor'],
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
+          ignoreMergeCommits: true,
           projectName: '',
         })
       );
@@ -423,6 +445,7 @@ describe('tryBump', () => {
           skipCommitTypes: ['docs', 'refactor'],
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
+          ignoreMergeCommits: true,
           projectName: '',
         })
       );
@@ -455,6 +478,7 @@ describe('tryBump', () => {
           dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
           tagPrefix: 'v',
           skipCommitTypes: ['docs', 'refactor'],
+          ignoreMergeCommits: true,
           syncVersions: true,
           projectName: '',
         })

@@ -33,6 +33,7 @@ describe('git', () => {
       getCommits({
         projectRoot: 'libs/demo',
         since: 'x1.0.0',
+        ignoreMergeCommits: false
       }).subscribe(observer);
 
       stream.emit('data', 'feat A');
