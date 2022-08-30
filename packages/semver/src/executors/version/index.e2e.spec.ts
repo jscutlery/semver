@@ -1,4 +1,4 @@
-import { createProjectGraphAsync } from '@nrwl/devkit';
+import { createProjectGraphAsync, ExecutorContext } from '@nrwl/devkit';
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
@@ -1041,9 +1041,14 @@ $`)
   });
 
   describe('workspace with --version=prerelease --preid=beta', () => {
-    beforeAll(async () => {
+    let fakeContext:ExecutorContext
+    beforeEach(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
-
+      fakeContext= createFakeContext({
+        project: 'workspace',
+        projectRoot: testingWorkspace.root,
+        workspaceRoot: testingWorkspace.root,
+      })
       /* Commit changes. */
       commitChanges();
 
@@ -1055,15 +1060,11 @@ $`)
           version: 'prerelease',
           preid: 'beta',
         },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
+        fakeContext
       );
     });
 
-    afterAll(() => testingWorkspace.tearDown());
+    afterEach(() => testingWorkspace.tearDown());
 
     it('should return success', () => {
       expect(result).toEqual({ success: true });
@@ -1084,6 +1085,40 @@ $`)
         (await lastValueFrom(readPackageJson('packages/a'))).version
       ).toEqual('0.0.1-beta.0');
     });
+
+
+    it(`should bump "a"'s package.json`, async () => {
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.0.1-beta.0');
+    });
+
+
+    it(`should bump "a"'s package.json with different preids`, async () => {
+      await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          syncVersions: true,
+          preid: 'alpha',
+        },
+       fakeContext
+      );
+      await version(
+        {
+          ...defaultBuilderOptions,
+          syncVersions: true,
+          version: 'prerelease',
+          preid: 'alpha',
+        },
+       fakeContext
+      );
+
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.0.1-alpha.1');
+    });
+
 
     it('should generate root changelog', async () => {
       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
@@ -1145,6 +1180,7 @@ This file was generated.*
 $`)
       );
     });
+
   });
 
   describe('--changelogHeader', () => {

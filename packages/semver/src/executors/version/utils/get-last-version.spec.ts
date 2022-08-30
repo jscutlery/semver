@@ -31,16 +31,20 @@ describe(getLastVersion.name, () => {
     expect(tag).toEqual('2.1.0');
   });
 
-  it('should compute current version from previous semver prerelease tag', async () => {
+  it('should compute current version from previous semver prerelease tag with corresponding preid', async () => {
     mockGitSemverTags.mockResolvedValue([
-      'my-lib-2.1.0-beta.0',
+      'my-lib-2.1.0-beta.5',
+      'my-lib-2.1.0-alpha.0',
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
 
     const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
+    const tagWithPreid = await lastValueFrom(getLastVersion({ tagPrefix, preid:'alpha' }));
 
-    expect(tag).toEqual('2.1.0-beta.0');
+    expect(tag).toEqual('2.1.0-beta.5');
+
+    expect(tagWithPreid).toEqual('2.1.0-alpha.0');
   });
 
   it('should compute current version from previous semver release tag', async () => {
