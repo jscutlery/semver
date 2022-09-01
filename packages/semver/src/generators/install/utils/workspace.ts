@@ -24,15 +24,18 @@ export function listProjects(tree: Tree): ProjectDefinition[] {
 export function updateProjects(
   tree: Tree,
   options: SchemaOptions,
-  predicate: (projectName: string) => boolean
+  predicate: (projectName: string) => boolean,
+  predicateAllLibs: () => boolean,
 ) {
   getProjects(tree).forEach((project, projectName) => {
-    if (predicate(projectName)) {
-      const targets = project.targets ?? {};
+    const targets = project.targets
+    if (predicate(projectName) && targets !== undefined) {
       targets.version = createTarget(options);
-
-      updateProjectConfiguration(tree, projectName, project);
     }
+    if (predicateAllLibs() && project.projectType === 'library' && targets !== undefined){
+      targets.version = createTarget(options);
+    }
+    updateProjectConfiguration(tree, projectName, project);
   });
 }
 
@@ -44,7 +47,8 @@ export async function updateWorkspaceFromPrompt(
   const answers = await createPrompt(projects);
 
   return updateProjects(tree, options, (projectName) =>
-    answers.projects.includes(projectName)
+    answers.projects.includes(projectName),
+    () => options.projects !== undefined && options.projects.includes('all-libs') as boolean,
   );
 }
 
@@ -52,9 +56,8 @@ export function updateWorkspaceFromSchema(
   tree: Tree,
   options: SchemaOptions
 ): void {
-  return updateProjects(
-    tree,
-    options,
-    (projectName) => options.projects?.includes(projectName) as boolean
+  return updateProjects(tree, options, (projectName) => 
+    options.projects?.includes(projectName) as boolean,
+    () => options.projects !== undefined && options.projects.includes('all-libs') as boolean,
   );
 }
