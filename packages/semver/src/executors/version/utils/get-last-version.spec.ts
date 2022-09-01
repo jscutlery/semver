@@ -40,7 +40,9 @@ describe(getLastVersion.name, () => {
     ]);
 
     const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
-    const tagWithPreid = await lastValueFrom(getLastVersion({ tagPrefix, preid:'alpha' }));
+    const tagWithPreid = await lastValueFrom(
+      getLastVersion({ tagPrefix, preid: 'alpha' })
+    );
 
     expect(tag).toEqual('2.1.0-beta.5');
 

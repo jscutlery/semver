@@ -1041,14 +1041,14 @@ $`)
   });
 
   describe('workspace with --version=prerelease --preid=beta', () => {
-    let fakeContext:ExecutorContext
+    let fakeContext: ExecutorContext;
     beforeEach(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
-      fakeContext= createFakeContext({
+      fakeContext = createFakeContext({
         project: 'workspace',
         projectRoot: testingWorkspace.root,
         workspaceRoot: testingWorkspace.root,
-      })
+      });
       /* Commit changes. */
       commitChanges();
 
@@ -1086,13 +1086,11 @@ $`)
       ).toEqual('0.0.1-beta.0');
     });
 
-
     it(`should bump "a"'s package.json`, async () => {
       expect(
         (await lastValueFrom(readPackageJson('packages/a'))).version
       ).toEqual('0.0.1-beta.0');
     });
-
 
     it(`should bump "a"'s package.json with different preids`, async () => {
       await version(
@@ -1102,7 +1100,7 @@ $`)
           syncVersions: true,
           preid: 'alpha',
         },
-       fakeContext
+        fakeContext
       );
       await version(
         {
@@ -1111,14 +1109,13 @@ $`)
           version: 'prerelease',
           preid: 'alpha',
         },
-       fakeContext
+        fakeContext
       );
 
       expect(
         (await lastValueFrom(readPackageJson('packages/a'))).version
       ).toEqual('0.0.1-alpha.1');
     });
-
 
     it('should generate root changelog', async () => {
       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
@@ -1180,7 +1177,6 @@ This file was generated.*
 $`)
       );
     });
-
   });
 
   describe('--changelogHeader', () => {
