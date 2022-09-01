@@ -16,7 +16,7 @@ import { getProjectDependencies } from './utils/get-project-dependencies';
 import { readPackageJson } from './utils/project';
 
 jest.mock('@nrwl/devkit');
-jest.setTimeout(1000000)
+
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
     dryRun: false,
@@ -1284,7 +1284,7 @@ $`)
         git commit -m "fix(b): 🐞 fix emptiness"
 
         `)
-      createMargeCommit();
+      createMergeCommit();
     });
 
     afterEach(() => testingWorkspace.tearDown());
@@ -1437,7 +1437,7 @@ function commitChanges() {
   createAndCommitFiles()
 }
 
-function createMargeCommit() {
+function createMergeCommit() {
   execSync(
     `
         git checkout HEAD~2
