@@ -34,10 +34,10 @@
       "dependsOn": ["^build"]
     },
     "github": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
     },
     "version": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
     }
   }
 }
