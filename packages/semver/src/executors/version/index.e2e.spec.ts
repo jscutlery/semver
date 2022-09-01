@@ -1092,31 +1092,6 @@ $`)
       ).toEqual('0.0.1-beta.0');
     });
 
-    it(`should bump "a"'s package.json with different preids`, async () => {
-      await version(
-        {
-          ...defaultBuilderOptions,
-          version: 'prerelease',
-          syncVersions: true,
-          preid: 'alpha',
-        },
-        fakeContext
-      );
-      await version(
-        {
-          ...defaultBuilderOptions,
-          syncVersions: true,
-          version: 'prerelease',
-          preid: 'alpha',
-        },
-        fakeContext
-      );
-
-      expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
-      ).toEqual('0.0.1-alpha.1');
-    });
-
     it('should generate root changelog', async () => {
       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
         new RegExp(`^# Changelog
@@ -1176,6 +1151,54 @@ This file was generated.*
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
 $`)
       );
+    });
+  });
+
+  describe('workspace with --version=prerelease and dufferent preids', () => {
+    let fakeContext: ExecutorContext;
+    beforeEach(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+      fakeContext = createFakeContext({
+        project: 'a',
+        projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+        workspaceRoot: testingWorkspace.root,
+      });
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder few times. */
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          preid: 'fix-bug',
+        },
+        fakeContext
+      );
+      await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          preid: 'add-feature',
+        },
+        fakeContext
+      );
+      await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          preid: 'add-feature',
+        },
+        fakeContext
+      );
+    });
+
+    afterEach(() => testingWorkspace.tearDown());
+
+    it(`should bump "a"'s package.json with different preids`, async () => {
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.0.1-add-feature.1');
     });
   });
 
