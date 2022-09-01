@@ -32,6 +32,7 @@ export function getProjectVersion({
   since,
   ignoreMergeCommits,
   projectName,
+  preid,
 }: {
   tagPrefix: string;
   projectRoot: string;
@@ -39,9 +40,11 @@ export function getProjectVersion({
   releaseType?: ReleaseIdentifier;
   since?: string;
   projectName: string;
+  preid?: string;
 }) {
   const lastVersion$ = getLastVersion({
     tagPrefix,
+    preid,
     includePrerelease: releaseType === 'prerelease',
   }).pipe(
     catchError(() => {
@@ -126,6 +129,7 @@ export function tryBump({
     projectRoot,
     releaseType,
     projectName,
+    preid,
   });
 
   return forkJoin([lastVersion$, commits$, lastVersionGitRef$]).pipe(
@@ -152,6 +156,7 @@ export function tryBump({
         ignoreMergeCommits,
         syncVersions,
         projectName,
+        preid,
       });
 
       const projectBump$ = _semverBump({
@@ -276,6 +281,7 @@ export function _getDependencyVersions({
   skipCommitTypes,
   ignoreMergeCommits,
   projectName,
+  preid,
 }: {
   preset: string;
   lastVersionGitRef: string;
@@ -286,6 +292,7 @@ export function _getDependencyVersions({
   syncVersions: boolean;
   ignoreMergeCommits: boolean;
   projectName: string;
+  preid?: string;
 }): Observable<Version[]> {
   return forkJoin(
     dependencyRoots.map(({ path: projectRoot, name: dependencyName }) => {
@@ -303,6 +310,7 @@ export function _getDependencyVersions({
         releaseType,
         since: lastVersionGitRef,
         projectName,
+        preid,
       });
 
       return forkJoin([lastVersion$, commits$]).pipe(

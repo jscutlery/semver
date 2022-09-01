@@ -1,4 +1,4 @@
-import { createProjectGraphAsync } from '@nrwl/devkit';
+import { createProjectGraphAsync, ExecutorContext } from '@nrwl/devkit';
 import { fileExists } from '@nrwl/nx-plugin/testing';
 import { execSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
@@ -1042,9 +1042,14 @@ $`)
   });
 
   describe('workspace with --version=prerelease --preid=beta', () => {
-    beforeAll(async () => {
+    let fakeContext: ExecutorContext;
+    beforeEach(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
-
+      fakeContext = createFakeContext({
+        project: 'workspace',
+        projectRoot: testingWorkspace.root,
+        workspaceRoot: testingWorkspace.root,
+      });
       /* Commit changes. */
       commitChanges();
 
@@ -1056,15 +1061,11 @@ $`)
           version: 'prerelease',
           preid: 'beta',
         },
-        createFakeContext({
-          project: 'workspace',
-          projectRoot: testingWorkspace.root,
-          workspaceRoot: testingWorkspace.root,
-        })
+        fakeContext
       );
     });
 
-    afterAll(() => testingWorkspace.tearDown());
+    afterEach(() => testingWorkspace.tearDown());
 
     it('should return success', () => {
       expect(result).toEqual({ success: true });
@@ -1078,6 +1079,12 @@ $`)
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
         '0.0.1-beta.0'
       );
+    });
+
+    it(`should bump "a"'s package.json`, async () => {
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.0.1-beta.0');
     });
 
     it(`should bump "a"'s package.json`, async () => {
@@ -1145,6 +1152,54 @@ This file was generated.*
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
 $`)
       );
+    });
+  });
+
+  describe('workspace with --version=prerelease and dufferent preids', () => {
+    let fakeContext: ExecutorContext;
+    beforeEach(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+      fakeContext = createFakeContext({
+        project: 'a',
+        projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+        workspaceRoot: testingWorkspace.root,
+      });
+      /* Commit changes. */
+      commitChanges();
+
+      /* Run builder few times. */
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          preid: 'fix-bug',
+        },
+        fakeContext
+      );
+      await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          preid: 'add-feature',
+        },
+        fakeContext
+      );
+      await version(
+        {
+          ...defaultBuilderOptions,
+          version: 'prerelease',
+          preid: 'add-feature',
+        },
+        fakeContext
+      );
+    });
+
+    afterEach(() => testingWorkspace.tearDown());
+
+    it(`should bump "a"'s package.json with different preids`, async () => {
+      expect(
+        (await lastValueFrom(readPackageJson('packages/a'))).version
+      ).toEqual('0.0.1-add-feature.1');
     });
   });
 
