@@ -1268,7 +1268,7 @@ $`)
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
       /* Commit changes. */
-      initGit()
+      initGit();
 
       execSync(
         `
@@ -1283,7 +1283,8 @@ $`)
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
 
-        `)
+        `
+      );
       createMergeCommit();
     });
 
@@ -1303,9 +1304,8 @@ $`)
         })
       );
 
-      expect(commitMessage()).toBe('Merge branch \'another-branch\'');
+      expect(commitMessage()).toBe("Merge branch 'another-branch'");
       expect(uncommitedChanges()).toHaveLength(0);
-
     });
 
     it('should  create a version  if all commits are of skipCommitTypes and ignoreMergeCommits===false', async () => {
@@ -1324,7 +1324,6 @@ $`)
 
       expect(commitMessage()).toBe('chore(a): release version 0.0.1');
       expect(uncommitedChanges()).toHaveLength(0);
-
     });
 
     it('should create correct version ignoreMergeCommits===true but last tag was put on merge commit', async () => {
@@ -1333,7 +1332,7 @@ $`)
         echo b > packages/b/b-1.txt
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
-      `)
+      `);
       result = await version(
         {
           ...defaultBuilderOptions,
@@ -1349,7 +1348,6 @@ $`)
 
       expect(commitMessage()).toBe('chore(b): release version 5.0.1');
       expect(uncommitedChanges()).toHaveLength(0);
-
     });
   });
 
@@ -1400,7 +1398,7 @@ $`)
     it.todo('should pass in only the new lines from the changelog as ${notes}');
   });
 });
-function initGit(){
+function initGit() {
   execSync(
     `
         git init --quiet
@@ -1410,9 +1408,10 @@ function initGit(){
         git config user.name "Test Bot"
 
         git config commit.gpgsign false
-`)
+`
+  );
 }
-function createAndCommitFiles(){
+function createAndCommitFiles() {
   execSync(
     `
         git add .
@@ -1433,8 +1432,8 @@ function createAndCommitFiles(){
   );
 }
 function commitChanges() {
-  initGit()
-  createAndCommitFiles()
+  initGit();
+  createAndCommitFiles();
 }
 
 function createMergeCommit() {
@@ -1449,7 +1448,7 @@ function createMergeCommit() {
         git checkout master
         git merge another-branch
      `
-  )
+  );
 }
 
 function uncommitedChanges() {

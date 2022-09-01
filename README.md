@@ -96,7 +96,7 @@ nx run workspace:version [...options]
 | **`--skipCommit`**           | `boolean`  | `false`     | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
 | **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
 | **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                                                     |
-| **`--ignoreMergeCommits`**   | `boolean`   | `'false'`  | ignore merge commits on version calculation  ([details](https://github.com/jscutlery/semver#ignore-merge-commits))                                          |
+| **`--ignoreMergeCommits`**   | `boolean`  | `'false'`   | ignore merge commits on version calculation ([details](https://github.com/jscutlery/semver#ignore-merge-commits))                                               |
 
 #### Overwrite default configuration
 
@@ -236,6 +236,7 @@ Contextual variables resolved by this option:
 - [`@jscutlery/semver:gitlab`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/gitlab/README.md) GitLab Release Support
 
 #### Ignore merge commits
+
 The **--ignoreMergeCommits** option indicates if it's needed to count merge commits when calculating next version or not.
 
 This option is default to _true_

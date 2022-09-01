@@ -2,7 +2,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import {
   insertChangelogDependencyUpdates,
-  updateChangelog
+  updateChangelog,
 } from './utils/changelog';
 import { commit } from './utils/commit';
 import { addToStage, createTag, getLastCommitHash } from './utils/git';
@@ -132,7 +132,10 @@ export function versionProject({
   tag,
   ignoreMergeCommits,
   ...options
-}: { projectRoot: string, ignoreMergeCommits: boolean } & CommonVersionOptions) {
+}: {
+  projectRoot: string;
+  ignoreMergeCommits: boolean;
+} & CommonVersionOptions) {
   return _generateChangelogs({
     projectName,
     projectRoots: [projectRoot],
@@ -188,7 +191,7 @@ export function versionProject({
         projectName,
       })
     ),
-    concatMap(() => getLastCommitHash({ projectRoot})),
+    concatMap(() => getLastCommitHash({ projectRoot })),
     concatMap((commitHash) =>
       createTag({
         dryRun,

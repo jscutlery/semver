@@ -16,19 +16,26 @@ export function getCommits({
   ignoreMergeCommits: boolean;
   since?: string;
 }): Observable<string[]> {
-  return getFormattedCommits({ since, projectRoot,ignoreMergeCommits, format: '%B' });
+  return getFormattedCommits({
+    since,
+    projectRoot,
+    ignoreMergeCommits,
+    format: '%B',
+  });
 }
 /**
  * Return hash of last commit of a project
  */
 export function getLastCommitHash({
-  projectRoot
+  projectRoot,
 }: {
-  projectRoot: string
+  projectRoot: string;
 }): Observable<string> {
-  return getFormattedCommits({ projectRoot, ignoreMergeCommits: false, format: '%H' }).pipe(
-    map(([commit]) => commit.trim())
-  );
+  return getFormattedCommits({
+    projectRoot,
+    ignoreMergeCommits: false,
+    format: '%H',
+  }).pipe(map(([commit]) => commit.trim()));
 }
 
 function getFormattedCommits({

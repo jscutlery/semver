@@ -142,12 +142,12 @@ export default async function version(
               ...options,
               projectRoot,
               skipRootChangelog,
-              ignoreMergeCommits
+              ignoreMergeCommits,
             })
           : versionProject({
               ...options,
               projectRoot,
-              ignoreMergeCommits
+              ignoreMergeCommits,
             })
       );
 

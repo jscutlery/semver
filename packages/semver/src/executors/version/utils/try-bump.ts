@@ -256,12 +256,12 @@ export function _manualBump({
 
 function shouldCommitBeCalculated({
   commit,
-  skipCommitTypes
+  skipCommitTypes,
 }: {
   commit: string;
-  skipCommitTypes: string[]
+  skipCommitTypes: string[];
 }): boolean {
-  const { type }= conventionalCommitsParser.sync(commit, {});
+  const { type } = conventionalCommitsParser.sync(commit, {});
   const shouldSkip = skipCommitTypes.some((typeToSkip) => typeToSkip === type);
   return !shouldSkip;
 }
