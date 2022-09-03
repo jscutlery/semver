@@ -202,7 +202,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "postTargets": ["my-project:publish", "my-project:github"]
+        "postTargets": ["my-project:npm", "my-project:github"]
       }
     },
     "github": {
@@ -212,7 +212,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
         "notes": "${notes}"
       }
     },
-    "publish": {
+    "npm": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
