@@ -30,13 +30,11 @@ export function getProjectVersion({
   projectRoot,
   releaseType,
   since,
-  ignoreMergeCommits,
   projectName,
   preid,
 }: {
   tagPrefix: string;
   projectRoot: string;
-  ignoreMergeCommits: boolean;
   releaseType?: ReleaseIdentifier;
   since?: string;
   projectName: string;
@@ -80,7 +78,6 @@ export function getProjectVersion({
     switchMap((lastVersionGitRef) => {
       return getCommits({
         projectRoot,
-        ignoreMergeCommits,
         since: since ?? lastVersionGitRef,
       });
     })
@@ -107,7 +104,6 @@ export function tryBump({
   syncVersions,
   allowEmptyRelease,
   skipCommitTypes,
-  ignoreMergeCommits,
   projectName,
 }: {
   preset: string;
@@ -120,12 +116,10 @@ export function tryBump({
   syncVersions: boolean;
   allowEmptyRelease?: boolean;
   skipCommitTypes: string[];
-  ignoreMergeCommits: boolean;
   projectName: string;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
     tagPrefix,
-    ignoreMergeCommits,
     projectRoot,
     releaseType,
     projectName,
@@ -153,7 +147,6 @@ export function tryBump({
         releaseType,
         versionTagPrefix,
         skipCommitTypes,
-        ignoreMergeCommits,
         syncVersions,
         projectName,
         preid,
@@ -279,7 +272,6 @@ export function _getDependencyVersions({
   syncVersions,
   lastVersionGitRef,
   skipCommitTypes,
-  ignoreMergeCommits,
   projectName,
   preid,
 }: {
@@ -290,7 +282,6 @@ export function _getDependencyVersions({
   skipCommitTypes: string[];
   versionTagPrefix?: string | null;
   syncVersions: boolean;
-  ignoreMergeCommits: boolean;
   projectName: string;
   preid?: string;
 }): Observable<Version[]> {
@@ -306,7 +297,6 @@ export function _getDependencyVersions({
       const { lastVersion$, commits$ } = getProjectVersion({
         tagPrefix,
         projectRoot,
-        ignoreMergeCommits,
         releaseType,
         since: lastVersionGitRef,
         projectName,

@@ -9,17 +9,15 @@ import { logStep, _logStep } from './logger';
  */
 export function getCommits({
   projectRoot,
-  ignoreMergeCommits,
   since,
 }: {
   projectRoot: string;
-  ignoreMergeCommits: boolean;
   since?: string;
 }): Observable<string[]> {
   return getFormattedCommits({
     since,
     projectRoot,
-    ignoreMergeCommits,
+    ignoreMergeCommits: true,
     format: '%B',
   });
 }

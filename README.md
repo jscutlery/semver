@@ -73,6 +73,8 @@ nx run workspace:version [...options]
 6. Pushes the version to the remote repository.
 7. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
 
+Important: merge commits messages are ignored by the tool when calculating next version to bump.
+
 #### Available options
 
 | name                         | type       | default     | description                                                                                                                                                     |
@@ -96,7 +98,6 @@ nx run workspace:version [...options]
 | **`--skipCommit`**           | `boolean`  | `false`     | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
 | **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
 | **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                                                     |
-| **`--ignoreMergeCommits`**   | `boolean`  | `'false'`   | ignore merge commits on version calculation ([details](https://github.com/jscutlery/semver#ignore-merge-commits))                                               |
 
 #### Overwrite default configuration
 
@@ -234,15 +235,6 @@ Contextual variables resolved by this option:
 
 - [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) GiHub Release Support
 - [`@jscutlery/semver:gitlab`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/gitlab/README.md) GitLab Release Support
-
-#### Ignore merge commits
-
-The **--ignoreMergeCommits** option indicates if it's needed to count merge commits when calculating next version or not.
-
-This option is default to _true_
-
-If you are doing merges with standard commit message `Merge branch 'a'` or `Merge pull request...` it may be not relevant for you to include those commits into version calculation – because they'd be counted as `fix` commits and you may get unexpected `patch` bump.
-**Important**: if used in combination with `--skip-commit`, freshly created tag would be still put on last commit, disregarding if it's merge or not
 
 #### Tracking dependencies
 

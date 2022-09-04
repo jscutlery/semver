@@ -28,7 +28,7 @@ describe('@jscutlery/semver:version', () => {
     skipRootChangelog: false,
     syncVersions: false,
     skipCommitTypes: [],
-    ignoreMergeCommits: true,
+
     postTargets: [],
     preset: 'angular',
     commitMessageFormat: 'chore(${projectName}): release version ${version}',
@@ -1318,7 +1318,7 @@ $`)
     });
   });
 
-  describe('--ignoreMergeCommits', () => {
+  describe('ignoring merge commits', () => {
     beforeEach(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
 
@@ -1337,7 +1337,6 @@ $`)
         echo b > packages/b/b.txt
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
-
         `
       );
       createMergeCommit();
@@ -1345,12 +1344,11 @@ $`)
 
     afterEach(() => testingWorkspace.tearDown());
 
-    it('should not create a version if all commits are of skipCommitTypes and ignoreMergeCommits===true', async () => {
+    it('should not create a version if all commits are of skipCommitTypes or merge commits', async () => {
       result = await version(
         {
           ...defaultBuilderOptions,
           skipCommitTypes: ['docs'],
-          ignoreMergeCommits: true,
         },
         createFakeContext({
           project: 'a',
@@ -1363,25 +1361,7 @@ $`)
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
-    it('should  create a version  if all commits are of skipCommitTypes and ignoreMergeCommits===false', async () => {
-      result = await version(
-        {
-          ...defaultBuilderOptions,
-          skipCommitTypes: ['docs'],
-          ignoreMergeCommits: false,
-        },
-        createFakeContext({
-          project: 'a',
-          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
-          workspaceRoot: testingWorkspace.root,
-        })
-      );
-
-      expect(commitMessage()).toBe('chore(a): release version 0.0.1');
-      expect(uncommitedChanges()).toHaveLength(0);
-    });
-
-    it('should create correct version ignoreMergeCommits===true but last tag was put on merge commit', async () => {
+    it('should create correct version if last tag was put on merge commit', async () => {
       execSync(`
         git tag b-5.0.0
         echo b > packages/b/b-1.txt
@@ -1392,7 +1372,6 @@ $`)
         {
           ...defaultBuilderOptions,
           skipCommitTypes: ['docs'],
-          ignoreMergeCommits: true,
         },
         createFakeContext({
           project: 'b',

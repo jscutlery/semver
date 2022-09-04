@@ -50,11 +50,9 @@ export function versionWorkspace({
   tag,
   skipCommit,
   projectRoot,
-  ignoreMergeCommits,
   ...options
 }: {
   skipRootChangelog: boolean;
-  ignoreMergeCommits: boolean;
   projectRoot: string;
 } & CommonVersionOptions) {
   return forkJoin([
@@ -130,11 +128,9 @@ export function versionProject({
   projectName,
   skipCommit,
   tag,
-  ignoreMergeCommits,
   ...options
 }: {
   projectRoot: string;
-  ignoreMergeCommits: boolean;
 } & CommonVersionOptions) {
   return _generateChangelogs({
     projectName,

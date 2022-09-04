@@ -103,11 +103,6 @@
         "description": "Type to ignore"
       }
     },
-    "ignoreMergeCommits": {
-      "description": "If to ignore merge commits on version bump calculation",
-      "type": "boolean",
-      "default": true
-    },
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
       "type": "string",

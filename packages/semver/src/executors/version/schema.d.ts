@@ -34,7 +34,6 @@ export interface VersionBuilderSchema {
   versionTagPrefix?: string | null;
   postTargets: string[];
   allowEmptyRelease?: boolean;
-  ignoreMergeCommits?: boolean;
   skipCommitTypes?: string[];
   commitMessageFormat?: string;
   preset: 'angular' | 'conventional';
