@@ -184,7 +184,7 @@ export function tryBump({
             );
           }
 
-          const filteredCommits = commits.filter((commit) =>
+          const filteredCommits = commits.filter((commit: string) =>
             shouldCommitBeCalculated({ commit, skipCommitTypes })
           );
 

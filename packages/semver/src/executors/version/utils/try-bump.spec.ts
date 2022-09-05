@@ -61,6 +61,7 @@ describe('tryBump', () => {
         releaseType: undefined,
         preid: undefined,
         skipCommitTypes: [],
+
         projectName: '',
       })
     );
@@ -118,6 +119,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         syncVersions: true,
         skipCommitTypes: [],
+
         projectName: '',
       })
     );
@@ -127,6 +129,7 @@ describe('tryBump', () => {
     expect(mockGetCommits).toBeCalledTimes(3);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
+
       since: 'v2.1.0',
     });
     expect(mockGetCommits).toBeCalledWith({
@@ -161,6 +164,7 @@ describe('tryBump', () => {
         releaseType: 'premajor',
         skipCommitTypes: [],
         preid: 'alpha',
+
         projectName: '',
       })
     );
@@ -193,6 +197,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'major',
         skipCommitTypes: [],
+
         projectName: '',
       })
     );
@@ -225,6 +230,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
+
         skipCommitTypes: [],
       })
     );
@@ -257,6 +263,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'minor',
         projectName: '',
+
         skipCommitTypes: [],
       })
     );
@@ -283,6 +290,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
+
         skipCommitTypes: [],
       })
     );
@@ -311,6 +319,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
+
         skipCommitTypes: [],
       })
     );
@@ -342,6 +351,7 @@ describe('tryBump', () => {
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
+
         skipCommitTypes: [],
       })
     );
@@ -371,6 +381,7 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         allowEmptyRelease: true,
         projectName: '',
+
         skipCommitTypes: [],
       })
     );
@@ -400,6 +411,7 @@ describe('tryBump', () => {
           skipCommitTypes: ['docs', 'refactor'],
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
+
           projectName: '',
         })
       );
@@ -423,6 +435,7 @@ describe('tryBump', () => {
           skipCommitTypes: ['docs', 'refactor'],
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
+
           projectName: '',
         })
       );
@@ -455,6 +468,7 @@ describe('tryBump', () => {
           dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
           tagPrefix: 'v',
           skipCommitTypes: ['docs', 'refactor'],
+
           syncVersions: true,
           projectName: '',
         })

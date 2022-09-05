@@ -28,6 +28,7 @@ describe('@jscutlery/semver:version', () => {
     skipRootChangelog: false,
     syncVersions: false,
     skipCommitTypes: [],
+
     postTargets: [],
     preset: 'angular',
     commitMessageFormat: 'chore(${projectName}): release version ${version}',
@@ -1317,6 +1318,73 @@ $`)
     });
   });
 
+  describe('ignoring merge commits', () => {
+    beforeEach(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      initGit();
+
+      execSync(
+        `
+        git add .
+        git commit -m "🐣"
+
+        echo a > packages/a/a.txt
+        git add .
+        git commit -m "docs(a): 🚀 new feature"
+
+        echo b > packages/b/b.txt
+        git add .
+        git commit -m "fix(b): 🐞 fix emptiness"
+        `
+      );
+      createMergeCommit();
+    });
+
+    afterEach(() => testingWorkspace.tearDown());
+
+    it('should not create a version if all commits are of skipCommitTypes or merge commits', async () => {
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          skipCommitTypes: ['docs'],
+        },
+        createFakeContext({
+          project: 'a',
+          projectRoot: resolve(testingWorkspace.root, 'packages/a'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
+
+      expect(commitMessage()).toBe("Merge branch 'another-branch'");
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+
+    it('should create correct version if last tag was put on merge commit', async () => {
+      execSync(`
+        git tag b-5.0.0
+        echo b > packages/b/b-1.txt
+        git add .
+        git commit -m "fix(b): 🐞 fix emptiness"
+      `);
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          skipCommitTypes: ['docs'],
+        },
+        createFakeContext({
+          project: 'b',
+          projectRoot: resolve(testingWorkspace.root, 'packages/b'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
+
+      expect(commitMessage()).toBe('chore(b): release version 5.0.1');
+      expect(uncommitedChanges()).toHaveLength(0);
+    });
+  });
+
   // The testing workspace isn't really configured for
   // executors, perhaps using the `new FSTree()` from
   // and `new Workspace()` @nrwl/toa would give a
@@ -1364,8 +1432,7 @@ $`)
     it.todo('should pass in only the new lines from the changelog as ${notes}');
   });
 });
-
-function commitChanges() {
+function initGit() {
   execSync(
     `
         git init --quiet
@@ -1375,7 +1442,12 @@ function commitChanges() {
         git config user.name "Test Bot"
 
         git config commit.gpgsign false
-
+`
+  );
+}
+function createAndCommitFiles() {
+  execSync(
+    `
         git add .
         git commit -m "🐣"
 
@@ -1391,6 +1463,25 @@ function commitChanges() {
         git add .
         git commit -m "perf(a): ⚡ improve quickness"
       `
+  );
+}
+function commitChanges() {
+  initGit();
+  createAndCommitFiles();
+}
+
+function createMergeCommit() {
+  execSync(
+    `
+        git checkout HEAD~2
+        git checkout -b "another-branch"
+        echo a > packages/a/a-merge.txt
+        git add .
+        git commit -m "docs(a): merge 🐣"
+
+        git checkout master
+        git merge another-branch
+     `
   );
 }
 

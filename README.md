@@ -73,6 +73,8 @@ nx run workspace:version [...options]
 6. Pushes the version to the remote repository.
 7. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
 
+Important: merge commits messages are ignored by the tool when calculating next version to bump.
+
 #### Available options
 
 | name                         | type       | default     | description                                                                                                                                                     |
