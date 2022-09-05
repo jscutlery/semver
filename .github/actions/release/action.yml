@@ -21,6 +21,10 @@ runs:
       # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
       # which is set up by `setup-node` action.
       shell: bash
+
+      # Temporary workaround for "dependsOn" not taken into account, build manually before versioning.
+      run: npx nx affected:build --base=last-release
+
       run: npx nx affected --base=last-release --target=version
 
     - name: Tag last-release
