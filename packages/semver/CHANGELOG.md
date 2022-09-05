@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.27.0](https://github.com/jscutlery/semver/compare/semver-2.26.0...semver-2.27.0) (2022-09-05)
+
+
+### Bug Fixes
+
+* **semver:** allow usage of different preids with prerelease ([67fec01](https://github.com/jscutlery/semver/commit/67fec0157327ff32bb3a5436a8b2657b2c11f198))
+
+
+### Features
+
+* **semver:** ignore merge commits by default ([#583](https://github.com/jscutlery/semver/issues/583)) ([b86f5de](https://github.com/jscutlery/semver/commit/b86f5de9a28834f1bec394d175896b842435be46))
+
+
+
 # [2.26.0](https://github.com/jscutlery/semver/compare/semver-2.25.3...semver-2.26.0) (2022-08-03)
 
 
