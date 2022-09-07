@@ -13,11 +13,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build
-      shell: bash
-      # Temporary workaround for "dependsOn" not taken into account, build manually before versioning.
-      run: npx nx affected:build --base=last-release
-
     - name: Version
       env:
         NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
