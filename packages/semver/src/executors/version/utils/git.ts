@@ -143,7 +143,11 @@ export function addToStage({
 export function getFirstCommitRef(): Observable<string> {
   return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     map((output) => {
-      return output.trim();
+      return output
+        .split('\n')
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .pop()!;
     })
   );
 }

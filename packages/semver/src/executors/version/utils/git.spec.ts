@@ -212,6 +212,18 @@ describe('git', () => {
         expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD'])
       );
     });
+
+    it(`should get last listed git commit when multiple unrelated histories' origins exist`, async () => {
+      jest.spyOn(cp, 'exec').mockReturnValue(of('sha1\nsha2\nsha3\n\r\n'));
+
+      const tag = await lastValueFrom(getFirstCommitRef());
+
+      expect(tag).toBe('sha3');
+      expect(cp.exec).toBeCalledWith(
+        'git',
+        expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD'])
+      );
+    });
   });
 
   describe(createTag.name, () => {
