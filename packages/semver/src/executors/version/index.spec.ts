@@ -83,8 +83,16 @@ describe('@jscutlery/semver:version', () => {
       projectRoot: '/root/packages/a',
       workspaceRoot: '/root',
       additionalProjects: [
-        { project: 'lib1', projectRoot: '/root/libs/lib1' },
-        { project: 'lib2', projectRoot: '/root/libs/lib2' },
+        {
+          project: 'lib1',
+          projectRoot: '/root/libs/lib1',
+          projectSourceRoot: '/root/libs/lib1/src',
+        },
+        {
+          project: 'lib2',
+          projectRoot: '/root/libs/lib2',
+          projectSourceRoot: '/root/libs/lib2/src',
+        },
       ],
     });
 
@@ -363,8 +371,16 @@ describe('@jscutlery/semver:version', () => {
         projectRoot: '/root',
         workspaceRoot: '/root',
         additionalProjects: [
-          { project: 'a', projectRoot: 'packages/a' },
-          { project: 'b', projectRoot: 'packages/b' },
+          {
+            project: 'a',
+            projectRoot: 'packages/a',
+            projectSourceRoot: 'packages/a/src',
+          },
+          {
+            project: 'b',
+            projectRoot: 'packages/b',
+            projectSourceRoot: 'packages/b/src',
+          },
         ],
       });
 

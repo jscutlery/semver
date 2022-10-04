@@ -4,7 +4,11 @@ import * as rimraf from 'rimraf';
 import * as tmp from 'tmp';
 import { promisify } from 'util';
 
-import type { ExecutorContext, ProjectConfiguration, TargetConfiguration } from '@nrwl/devkit';
+import type {
+  ExecutorContext,
+  ProjectConfiguration,
+  TargetConfiguration,
+} from '@nrwl/devkit';
 
 export interface TestingWorkspace {
   tearDown(): Promise<void>;
@@ -60,6 +64,7 @@ export function createFakeContext({
   additionalProjects?: {
     project: string;
     projectRoot: string;
+    projectSourceRoot: string;
     targets?: Record<string, TargetConfiguration>;
   }[];
 }): ExecutorContext {
@@ -70,7 +75,10 @@ export function createFakeContext({
     workspace: {
       version: 2,
       projects: {
-        [project]: { root: projectRoot, targets: {} },
+        [project]: {
+          root: projectRoot,
+          targets: {},
+        },
         ...assembleAdditionalProjects(additionalProjects),
       },
     },
@@ -81,11 +89,16 @@ function assembleAdditionalProjects(
   additionalProjects: {
     project: string;
     projectRoot: string;
+    projectSourceRoot: string;
     targets?: Record<string, TargetConfiguration>;
   }[]
 ) {
   return additionalProjects.reduce((acc, p) => {
-    acc[p.project] = { root: p.projectRoot, targets: p.targets || {} };
+    acc[p.project] = {
+      root: p.projectRoot,
+      sourceRoot: p.projectSourceRoot,
+      targets: p.targets || {},
+    };
     return acc;
   }, {} as { [project: string]: ProjectConfiguration });
 }
