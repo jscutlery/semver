@@ -1,3 +1,4 @@
+import { NxJsonConfiguration, ProjectsConfigurations } from '@nrwl/devkit';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import {
@@ -36,7 +37,8 @@ export interface CommonVersionOptions {
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
-  preset: Preset;
+  preset: StandardVersionPreset;
+  workspace: ProjectsConfigurations & NxJsonConfiguration<string[] | '*'>;
 }
 
 export function versionWorkspace({
@@ -55,7 +57,7 @@ export function versionWorkspace({
   projectRoot: string;
 } & CommonVersionOptions) {
   return forkJoin([
-    getProjectRoots(options.workspaceRoot).pipe(
+    getProjectRoots(options.workspace, options.workspaceRoot).pipe(
       concatMap((projectRoots) =>
         _generateChangelogs({
           projectRoots,
@@ -71,7 +73,7 @@ export function versionWorkspace({
         })
       )
     ),
-    getProjectRoots(options.workspaceRoot).pipe(
+    getProjectRoots(options.workspace, options.workspaceRoot).pipe(
       concatMap((projectRoots) =>
         forkJoin(
           projectRoots.map((projectRoot) =>

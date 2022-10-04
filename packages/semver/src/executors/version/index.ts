@@ -131,6 +131,7 @@ export default async function version(
         commitMessage,
         dependencyUpdates,
         skipCommit,
+        workspace: context.workspace,
       };
 
       const version$ = defer(() =>
