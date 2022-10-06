@@ -126,14 +126,12 @@ describe('@jscutlery/semver:version', () => {
 
     jest
       .spyOn(workspace, 'getProjectRoots')
-      .mockReturnValue(
-        of([
-          '/root/packages/a',
-          '/root/packages/b',
-          '/root/libs/lib1',
-          '/root/libs/lib2',
-        ])
-      );
+      .mockReturnValue([
+        '/root/packages/a',
+        '/root/packages/b',
+        '/root/libs/lib1',
+        '/root/libs/lib2',
+      ]);
   });
 
   afterEach(() => {
@@ -382,7 +380,7 @@ describe('@jscutlery/semver:version', () => {
 
       jest
         .spyOn(workspace, 'getProjectRoots')
-        .mockReturnValue(of(['/root/packages/a', '/root/packages/b', '/root']));
+        .mockReturnValue(['/root/packages/a', '/root/packages/b', '/root']);
     });
 
     it('should commit and tag', async () => {
