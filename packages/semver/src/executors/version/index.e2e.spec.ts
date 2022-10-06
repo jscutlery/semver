@@ -1324,7 +1324,7 @@ $`)
         })
       );
 
-      expect(commitMessage()).toBe('docs(a): merge 🐣');
+      expect(commitMessage()).toBe("Merge branch 'another-branch'");
       expect(uncommitedChanges()).toHaveLength(0);
     });
 
