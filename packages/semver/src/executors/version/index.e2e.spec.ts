@@ -1310,7 +1310,7 @@ $`)
 
     afterEach(() => testingWorkspace.tearDown());
 
-    xit('should not create a version if all commits are of skipCommitTypes or merge commits', async () => {
+    it('should not create a version if all commits are of skipCommitTypes or merge commits', async () => {
       result = await version(
         {
           ...defaultBuilderOptions,
