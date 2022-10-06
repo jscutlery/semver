@@ -81,7 +81,10 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(console, 'info').mockImplementation();
   });
 
-  afterAll(() => (console.info as jest.Mock).mockRestore());
+  afterAll(() => {
+    (console.info as jest.Mock).mockRestore();
+    (console.warn as jest.Mock).mockRestore();
+  });
 
   describe('package "a" with (--syncVersions=false)', () => {
     beforeAll(async () => {
@@ -613,6 +616,7 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
+                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -1833,6 +1837,33 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
+          additionalProjects: [
+            {
+              project: 'a',
+              projectRoot: 'packages/a',
+              projectSourceRoot: 'packages/a/src',
+            },
+            {
+              project: 'b',
+              projectRoot: 'packages/b',
+              projectSourceRoot: 'packages/b/src',
+            },
+            {
+              project: 'c',
+              projectRoot: 'packages/c',
+              projectSourceRoot: 'packages/c/src',
+            },
+            {
+              project: 'd',
+              projectRoot: 'libs/d',
+              projectSourceRoot: 'libs/d/src',
+            },
+            {
+              project: 'e',
+              projectRoot: 'libs/e',
+              projectSourceRoot: 'libs/e/src',
+            },
+          ],
         })
       );
 
