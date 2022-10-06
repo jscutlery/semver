@@ -42,13 +42,13 @@ describe('Install generator', () => {
   describe('Sync versioning', () => {
     const options = { ...defaultOptions, syncVersions: true };
 
-    it('should add workspace project to workspace.json', async () => {
+    it('should add a workspace project.json to the root of the workspace', async () => {
       await install(tree, options);
 
-      const workspace = readJson(tree, 'project.json');
+      const projectJSON = readJson(tree, 'project.json');
 
-      expect(workspace).toBeDefined();
-      expect(workspace.targets).toEqual(
+      expect(projectJSON).toBeDefined();
+      expect(projectJSON.targets).toEqual(
         expect.objectContaining({
           version: {
             executor: '@jscutlery/semver:version',
@@ -167,6 +167,21 @@ describe('Install generator', () => {
           },
         })
       );
+    });
+
+    it('should not create a root project.json', async () => {
+      await install(tree, options);
+
+      let projectJSON;
+
+      try {
+        projectJSON = readJson(tree, 'project.json');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        expect(error?.message).toEqual('Cannot find project.json');
+      }
+
+      expect(projectJSON).toBeUndefined();
     });
 
     describe('--preset option', () => {

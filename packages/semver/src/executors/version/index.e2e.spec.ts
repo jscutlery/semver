@@ -616,7 +616,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -668,7 +667,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -720,7 +718,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -786,7 +783,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -846,7 +842,6 @@ $`)
               {
                 project: 'd',
                 projectRoot: resolve(testingWorkspace.root, 'libs/d'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/d/src'),
               },
             ],
           })
@@ -915,7 +910,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -1422,7 +1416,6 @@ $`)
             {
               project: 'e',
               projectRoot: './libs/e',
-              projectSourceRoot: './libs/e/src',
               targets: {
                 github: {
                   executor: '@nrwl/workspace:run-script',
@@ -1503,27 +1496,22 @@ describe('@jscutlery/semver:version without root config file', () => {
             {
               project: 'a',
               projectRoot: 'packages/a',
-              projectSourceRoot: 'packages/a/src',
             },
             {
               project: 'b',
               projectRoot: 'packages/b',
-              projectSourceRoot: 'packages/b/src',
             },
             {
               project: 'c',
               projectRoot: 'packages/c',
-              projectSourceRoot: 'packages/c/src',
             },
             {
               project: 'd',
               projectRoot: 'libs/d',
-              projectSourceRoot: 'libs/d/src',
             },
             {
               project: 'e',
               projectRoot: 'libs/e',
-              projectSourceRoot: 'libs/e/src',
             },
           ],
         })
@@ -1697,27 +1685,22 @@ $`)
             {
               project: 'a',
               projectRoot: 'packages/a',
-              projectSourceRoot: 'packages/a/src',
             },
             {
               project: 'b',
               projectRoot: 'packages/b',
-              projectSourceRoot: 'packages/b/src',
             },
             {
               project: 'c',
               projectRoot: 'packages/c',
-              projectSourceRoot: 'packages/c/src',
             },
             {
               project: 'd',
               projectRoot: 'libs/d',
-              projectSourceRoot: 'libs/d/src',
             },
             {
               project: 'e',
               projectRoot: 'libs/e',
-              projectSourceRoot: 'libs/e/src',
             },
           ],
         })
@@ -1841,27 +1824,22 @@ $`)
             {
               project: 'a',
               projectRoot: 'packages/a',
-              projectSourceRoot: 'packages/a/src',
             },
             {
               project: 'b',
               projectRoot: 'packages/b',
-              projectSourceRoot: 'packages/b/src',
             },
             {
               project: 'c',
               projectRoot: 'packages/c',
-              projectSourceRoot: 'packages/c/src',
             },
             {
               project: 'd',
               projectRoot: 'libs/d',
-              projectSourceRoot: 'libs/d/src',
             },
             {
               project: 'e',
               projectRoot: 'libs/e',
-              projectSourceRoot: 'libs/e/src',
             },
           ],
         })
@@ -1887,27 +1865,22 @@ $`)
             {
               project: 'a',
               projectRoot: 'packages/a',
-              projectSourceRoot: 'packages/a/src',
             },
             {
               project: 'b',
               projectRoot: 'packages/b',
-              projectSourceRoot: 'packages/b/src',
             },
             {
               project: 'c',
               projectRoot: 'packages/c',
-              projectSourceRoot: 'packages/c/src',
             },
             {
               project: 'd',
               projectRoot: 'libs/d',
-              projectSourceRoot: 'libs/d/src',
             },
             {
               project: 'e',
               projectRoot: 'libs/e',
-              projectSourceRoot: 'libs/e/src',
             },
           ],
         })
@@ -1989,27 +1962,22 @@ $`)
             {
               project: 'a',
               projectRoot: 'packages/a',
-              projectSourceRoot: 'packages/a/src',
             },
             {
               project: 'b',
               projectRoot: 'packages/b',
-              projectSourceRoot: 'packages/b/src',
             },
             {
               project: 'c',
               projectRoot: 'packages/c',
-              projectSourceRoot: 'packages/c/src',
             },
             {
               project: 'd',
               projectRoot: 'libs/d',
-              projectSourceRoot: 'libs/d/src',
             },
             {
               project: 'e',
               projectRoot: 'libs/e',
-              projectSourceRoot: 'libs/e/src',
             },
           ],
         })
@@ -2133,7 +2101,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -2185,7 +2152,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -2237,7 +2203,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -2303,7 +2268,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -2363,7 +2327,6 @@ $`)
               {
                 project: 'd',
                 projectRoot: resolve(testingWorkspace.root, 'libs/d'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/d/src'),
               },
             ],
           })
@@ -2432,7 +2395,6 @@ $`)
               {
                 project: 'e',
                 projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-                projectSourceRoot: resolve(testingWorkspace.root, 'libs/e/src'),
               },
             ],
           })
@@ -2483,27 +2445,22 @@ This file was generated.*
             {
               project: 'a',
               projectRoot: 'packages/a',
-              projectSourceRoot: 'packages/a/src',
             },
             {
               project: 'b',
               projectRoot: 'packages/b',
-              projectSourceRoot: 'packages/b/src',
             },
             {
               project: 'c',
               projectRoot: 'packages/c',
-              projectSourceRoot: 'packages/c/src',
             },
             {
               project: 'd',
               projectRoot: 'libs/d',
-              projectSourceRoot: 'libs/d/src',
             },
             {
               project: 'e',
               projectRoot: 'libs/e',
-              projectSourceRoot: 'libs/e/src',
             },
           ],
         })
@@ -2606,27 +2563,22 @@ $`)
           {
             project: 'a',
             projectRoot: 'packages/a',
-            projectSourceRoot: 'packages/a/src',
           },
           {
             project: 'b',
             projectRoot: 'packages/b',
-            projectSourceRoot: 'packages/b/src',
           },
           {
             project: 'c',
             projectRoot: 'packages/c',
-            projectSourceRoot: 'packages/c/src',
           },
           {
             project: 'd',
             projectRoot: 'libs/d',
-            projectSourceRoot: 'libs/d/src',
           },
           {
             project: 'e',
             projectRoot: 'libs/e',
-            projectSourceRoot: 'libs/e/src',
           },
         ],
       });
@@ -2993,7 +2945,7 @@ $`)
             {
               project: 'e',
               projectRoot: './libs/e',
-              projectSourceRoot: './libs/e/src',
+
               targets: {
                 github: {
                   executor: '@nrwl/workspace:run-script',

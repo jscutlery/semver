@@ -64,7 +64,6 @@ export function createFakeContext({
   additionalProjects?: {
     project: string;
     projectRoot: string;
-    projectSourceRoot: string;
     targets?: Record<string, TargetConfiguration>;
   }[];
 }): ExecutorContext {
@@ -89,14 +88,12 @@ function assembleAdditionalProjects(
   additionalProjects: {
     project: string;
     projectRoot: string;
-    projectSourceRoot: string;
     targets?: Record<string, TargetConfiguration>;
   }[]
 ) {
   return additionalProjects.reduce((acc, p) => {
     acc[p.project] = {
       root: p.projectRoot,
-      sourceRoot: p.projectSourceRoot,
       targets: p.targets || {},
     };
     return acc;

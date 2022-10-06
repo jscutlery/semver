@@ -86,12 +86,10 @@ describe('@jscutlery/semver:version', () => {
         {
           project: 'lib1',
           projectRoot: '/root/libs/lib1',
-          projectSourceRoot: '/root/libs/lib1/src',
         },
         {
           project: 'lib2',
           projectRoot: '/root/libs/lib2',
-          projectSourceRoot: '/root/libs/lib2/src',
         },
       ],
     });
@@ -374,12 +372,10 @@ describe('@jscutlery/semver:version', () => {
           {
             project: 'a',
             projectRoot: 'packages/a',
-            projectSourceRoot: 'packages/a/src',
           },
           {
             project: 'b',
             projectRoot: 'packages/b',
-            projectSourceRoot: 'packages/b/src',
           },
         ],
       });
