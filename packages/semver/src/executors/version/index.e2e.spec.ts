@@ -34,6 +34,29 @@ describe('@jscutlery/semver:version', () => {
     commitMessageFormat: 'chore(${projectName}): release version ${version}',
   };
 
+  const additionalProjects = [
+    {
+      project: 'a',
+      projectRoot: 'packages/a',
+    },
+    {
+      project: 'b',
+      projectRoot: 'packages/b',
+    },
+    {
+      project: 'c',
+      projectRoot: 'packages/c',
+    },
+    {
+      project: 'd',
+      projectRoot: 'libs/d',
+    },
+    {
+      project: 'e',
+      projectRoot: 'libs/e',
+    },
+  ];
+
   const commonWorkspaceFiles: [string, string][] = [
     ['package.json', JSON.stringify({ version: '0.0.0' }, null, 2)],
 
@@ -73,28 +96,7 @@ describe('@jscutlery/semver:version', () => {
           project: 'a',
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'a',
-              projectRoot: 'packages/a',
-            },
-            {
-              project: 'b',
-              projectRoot: 'packages/b',
-            },
-            {
-              project: 'c',
-              projectRoot: 'packages/c',
-            },
-            {
-              project: 'd',
-              projectRoot: 'libs/d',
-            },
-            {
-              project: 'e',
-              projectRoot: 'libs/e',
-            },
-          ],
+          additionalProjects,
         })
       );
     });
@@ -161,6 +163,7 @@ $`)
           project: 'b',
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
     });
@@ -216,6 +219,7 @@ $`)
           project: 'a',
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
     });
@@ -262,28 +266,7 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'a',
-              projectRoot: 'packages/a',
-            },
-            {
-              project: 'b',
-              projectRoot: 'packages/b',
-            },
-            {
-              project: 'c',
-              projectRoot: 'packages/c',
-            },
-            {
-              project: 'd',
-              projectRoot: 'libs/d',
-            },
-            {
-              project: 'e',
-              projectRoot: 'libs/e',
-            },
-          ],
+          additionalProjects,
         })
       );
     });
@@ -401,28 +384,7 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'a',
-              projectRoot: 'packages/a',
-            },
-            {
-              project: 'b',
-              projectRoot: 'packages/b',
-            },
-            {
-              project: 'c',
-              projectRoot: 'packages/c',
-            },
-            {
-              project: 'd',
-              projectRoot: 'libs/d',
-            },
-            {
-              project: 'e',
-              projectRoot: 'libs/e',
-            },
-          ],
+          additionalProjects,
         })
       );
 
@@ -442,28 +404,7 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'a',
-              projectRoot: 'packages/a',
-            },
-            {
-              project: 'b',
-              projectRoot: 'packages/b',
-            },
-            {
-              project: 'c',
-              projectRoot: 'packages/c',
-            },
-            {
-              project: 'd',
-              projectRoot: 'libs/d',
-            },
-            {
-              project: 'e',
-              projectRoot: 'libs/e',
-            },
-          ],
+          additionalProjects,
         })
       );
     });
@@ -539,28 +480,7 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'a',
-              projectRoot: 'packages/a',
-            },
-            {
-              project: 'b',
-              projectRoot: 'packages/b',
-            },
-            {
-              project: 'c',
-              projectRoot: 'packages/c',
-            },
-            {
-              project: 'd',
-              projectRoot: 'libs/d',
-            },
-            {
-              project: 'e',
-              projectRoot: 'libs/e',
-            },
-          ],
+          additionalProjects,
         })
       );
     });
@@ -678,12 +598,7 @@ $`)
             project: 'c',
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
-            additionalProjects: [
-              {
-                project: 'e',
-                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-              },
-            ],
+            additionalProjects,
           })
         );
       });
@@ -729,12 +644,7 @@ $`)
             project: 'c',
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
-            additionalProjects: [
-              {
-                project: 'e',
-                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-              },
-            ],
+            additionalProjects,
           })
         );
       });
@@ -780,12 +690,7 @@ $`)
             project: 'c',
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
-            additionalProjects: [
-              {
-                project: 'e',
-                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-              },
-            ],
+            additionalProjects,
           })
         );
       });
@@ -845,12 +750,7 @@ $`)
             project: 'c',
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
-            additionalProjects: [
-              {
-                project: 'e',
-                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-              },
-            ],
+            additionalProjects,
           })
         );
       });
@@ -904,12 +804,7 @@ $`)
             project: 'a',
             projectRoot: resolve(testingWorkspace.root, 'packages/a'),
             workspaceRoot: testingWorkspace.root,
-            additionalProjects: [
-              {
-                project: 'd',
-                projectRoot: resolve(testingWorkspace.root, 'libs/d'),
-              },
-            ],
+            additionalProjects,
           })
         );
       });
@@ -972,12 +867,7 @@ $`)
             project: 'c',
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
-            additionalProjects: [
-              {
-                project: 'e',
-                projectRoot: resolve(testingWorkspace.root, 'libs/e'),
-              },
-            ],
+            additionalProjects,
           })
         );
       });
@@ -1022,28 +912,7 @@ This file was generated.*
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'a',
-              projectRoot: 'packages/a',
-            },
-            {
-              project: 'b',
-              projectRoot: 'packages/b',
-            },
-            {
-              project: 'c',
-              projectRoot: 'packages/c',
-            },
-            {
-              project: 'd',
-              projectRoot: 'libs/d',
-            },
-            {
-              project: 'e',
-              projectRoot: 'libs/e',
-            },
-          ],
+          additionalProjects,
         })
       );
     });
@@ -1140,28 +1009,7 @@ $`)
         project: 'workspace',
         projectRoot: testingWorkspace.root,
         workspaceRoot: testingWorkspace.root,
-        additionalProjects: [
-          {
-            project: 'a',
-            projectRoot: 'packages/a',
-          },
-          {
-            project: 'b',
-            projectRoot: 'packages/b',
-          },
-          {
-            project: 'c',
-            projectRoot: 'packages/c',
-          },
-          {
-            project: 'd',
-            projectRoot: 'libs/d',
-          },
-          {
-            project: 'e',
-            projectRoot: 'libs/e',
-          },
-        ],
+        additionalProjects,
       });
       /* Commit changes. */
       commitChanges();
@@ -1276,6 +1124,7 @@ $`)
         project: 'a',
         projectRoot: resolve(testingWorkspace.root, 'packages/a'),
         workspaceRoot: testingWorkspace.root,
+        additionalProjects,
       });
       /* Commit changes. */
       commitChanges();
@@ -1334,6 +1183,7 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
     });
@@ -1368,6 +1218,7 @@ $`)
           project: 'a',
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
 
@@ -1381,6 +1232,7 @@ $`)
           project: 'a',
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
 
@@ -1408,6 +1260,7 @@ $`)
           project: 'b',
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
 
@@ -1467,6 +1320,7 @@ $`)
           project: 'a',
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
 
@@ -1490,6 +1344,7 @@ $`)
           project: 'b',
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
+          additionalProjects,
         })
       );
 
@@ -1522,21 +1377,7 @@ $`)
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
-          additionalProjects: [
-            {
-              project: 'e',
-              projectRoot: './libs/e',
-
-              targets: {
-                github: {
-                  executor: '@nrwl/workspace:run-script',
-                  options: {
-                    script: 'echo ${notes}',
-                  },
-                },
-              },
-            },
-          ],
+          additionalProjects,
         })
       );
     });
