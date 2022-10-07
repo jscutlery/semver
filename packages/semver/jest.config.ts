@@ -2,13 +2,13 @@
 export default {
   displayName: 'semver',
   setupFilesAfterEnv: ['jest-extended/all'],
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
-    },
-  },
   transform: {
-    '^.+\\.[tj]sx?$': 'ts-jest/legacy',
+    '^.+\\.[tj]sx?$': [
+      'ts-jest/legacy',
+      {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   coverageDirectory: '../../coverage/packages/semver',
