@@ -35,8 +35,7 @@ export function getLastVersion({
         return throwError(() => new Error('No semver tag found'));
       }
 
-      const tag = `${tagPrefix}${version}`;
-      return of(tag.substring(tagPrefix.length));
+      return of(version);
     })
   );
 }
