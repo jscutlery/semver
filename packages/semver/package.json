@@ -20,7 +20,7 @@
     "migrations": "./migrations.json"
   },
   "peerDependencies": {
-    "@nrwl/devkit": "^14.0.0"
+    "@nrwl/devkit": "^14.0.0 || ^15.0.0"
   },
   "dependencies": {
     "detect-indent": "6.1.0",

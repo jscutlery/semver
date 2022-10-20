@@ -1262,7 +1262,7 @@ __metadata:
     rxjs: 7.5.7
     standard-version: 9.5.0
   peerDependencies:
-    "@nrwl/devkit": ^14.0.0
+    "@nrwl/devkit": ^14.0.0 || ^15.0.0
   languageName: unknown
   linkType: soft
 
