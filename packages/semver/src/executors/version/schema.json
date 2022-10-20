@@ -1,4 +1,6 @@
 {
+  "version": 2,
+  "outputCapture": "direct-nodejs",
   "$schema": "http://json-schema.org/schema",
   "$id": "jscutlery-semver-version",
   "title": "JSCutlery Version builder",
@@ -64,11 +66,25 @@
     },
     "tagPrefix": {
       "description": "Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
-      "oneOf": [{ "type": "string" }, { "type": "null" }]
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "versionTagPrefix": {
       "description": "(Deprecated) Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
-      "oneOf": [{ "type": "string" }, { "type": "null" }]
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "postTargets": {
       "description": "Specify the targets to run after a new version was successfully created.",
@@ -115,6 +131,5 @@
       "default": "angular"
     }
   },
-
   "required": []
 }
