@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "detect-indent": "6.1.0",
-    "inquirer": "8.2.4",
+    "inquirer": "8.2.5",
     "rxjs": "7.5.7",
     "standard-version": "9.5.0"
   },
