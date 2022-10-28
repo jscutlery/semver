@@ -232,8 +232,8 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     commitMessageFormat: options.commitMessageFormat as string,
     skipCommit: options.skipCommit as boolean,
     preset:
-      options.preset === 'angular'
-        ? 'angular'
-        : ('conventionalcommits' as StandardVersionPreset),
+      options.preset === 'conventional'
+        ? ('conventionalcommits' as StandardVersionPreset)
+        : options.preset,
   };
 }

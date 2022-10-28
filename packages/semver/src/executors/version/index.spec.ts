@@ -715,5 +715,30 @@ describe('@jscutlery/semver:version', () => {
         })
       );
     });
+
+    it('should use --preset=conventional-changelog-config-spec', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          preset: {
+            name: 'conventionalcommits',
+            compareUrlFormat:
+              '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
+          },
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({
+          preset: {
+            compareUrlFormat:
+              '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
+            name: 'conventionalcommits',
+          },
+        })
+      );
+    });
   });
 });
