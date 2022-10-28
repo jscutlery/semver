@@ -1,3 +1,4 @@
+import ConventionalChangelogConfigSpec from '@types/conventional-changelog-config-spec';
 export type ReleaseIdentifier =
   | 'patch'
   | 'minor'
@@ -6,6 +7,11 @@ export type ReleaseIdentifier =
   | 'preminor'
   | 'prepatch'
   | 'prerelease';
+
+export type Preset =
+  | 'angular'
+  | 'conventional'
+  | ({ name: string } & ConventionalChangelogConfigSpec.Config);
 
 export interface VersionBuilderSchema {
   dryRun?: boolean;
@@ -36,5 +42,15 @@ export interface VersionBuilderSchema {
   allowEmptyRelease?: boolean;
   skipCommitTypes?: string[];
   commitMessageFormat?: string;
-  preset: 'angular' | 'conventional';
+  preset: Preset;
+}
+
+export interface WriteChangelogConfig {
+  header: string;
+  path?: string;
+  preset?: Preset;
+  dryRun?: boolean;
+  silent?: boolean;
+  infile: string;
+  tagPrefix?: string;
 }

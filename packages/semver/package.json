@@ -23,12 +23,14 @@
     "@nrwl/devkit": "^14.0.0"
   },
   "dependencies": {
+    "conventional-changelog": "^3.1.25",
+    "conventional-recommended-bump": "^6.1.0",
     "detect-indent": "6.1.0",
     "inquirer": "8.2.5",
-    "rxjs": "7.5.7",
-    "standard-version": "9.5.0"
+    "rxjs": "7.5.7"
   },
   "devDependencies": {
+    "@types/conventional-changelog": "^3.1.1",
     "@types/conventional-recommended-bump": "6.1.0",
     "@types/inquirer": "8.2.4",
     "@types/rimraf": "3.0.2",
