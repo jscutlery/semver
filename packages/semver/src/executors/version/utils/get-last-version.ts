@@ -1,7 +1,6 @@
 import * as gitSemverTags from 'git-semver-tags';
 import { from, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { SemVer } from 'semver';
 import * as semver from 'semver';
 import { promisify } from 'util';
 
@@ -10,29 +9,41 @@ import type { Observable } from 'rxjs';
 export function getLastVersion({
   tagPrefix,
   includePrerelease = true,
-  preid = '',
+  preid,
 }: {
   tagPrefix: string;
   includePrerelease?: boolean;
   preid?: string;
 }): Observable<string> {
   return from(
-    (promisify(gitSemverTags) as any)({ tagPrefix }) as Promise<string[]>
+    promisify(gitSemverTags)({ tagPrefix }) as Promise<string[]>
   ).pipe(
     switchMap((tags: string[]) => {
       const versions = tags
         .map((tag) => tag.substring(tagPrefix.length))
         .filter((v) => {
+          const prerelease = semver.prerelease(v);
+
+          /* Filter-in everything except prereleases. */
+          if (prerelease == null) {
+            return true;
+          }
+
           if (includePrerelease) {
-            const { prerelease } = semver.parse(v) as SemVer;
-            if (!prerelease[0]) {
+            /* Filter-in everything if preid is not set. */
+            if (preid == null) {
               return true;
             }
 
-            return preid ? prerelease[0] === preid : true;
+            /* Filter-in if preids match. */
+            const [versionPreid] = prerelease;
+            if (versionPreid === preid) {
+              return true;
+            }
           }
 
-          return semver.prerelease(v) === null;
+          /* Filter-out everything else.*/
+          return false;
         });
 
       const [version] = versions.sort(semver.rcompare);
