@@ -25,18 +25,23 @@ export function getLastVersion({
         .filter((v) => {
           if (includePrerelease) {
             const { prerelease } = semver.parse(v) as SemVer;
+            if (!prerelease[0]) {
+              return true;
+            }
+
             return preid ? prerelease[0] === preid : true;
           }
+
           return semver.prerelease(v) === null;
         });
+
       const [version] = versions.sort(semver.rcompare);
 
       if (version == null) {
         return throwError(() => new Error('No semver tag found'));
       }
 
-      const tag = `${tagPrefix}${version}`;
-      return of(tag.substring(tagPrefix.length));
+      return of(version);
     })
   );
 }
