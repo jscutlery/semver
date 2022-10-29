@@ -15,7 +15,6 @@ import type { Version } from '../version';
 import { diff } from './diff';
 import { readFile, readFileIfExists, writeFile } from './filesystem';
 import { Preset } from '../schema';
-
 export const defaultHeader = `# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -38,13 +37,13 @@ export function updateChangelog({
   preset: Preset;
   newVersion: string;
   tagPrefix: string;
-  changelogHeader?: string;
+  changelogHeader: string;
 }): Observable<string> {
   return defer(async () => {
     const changelogPath = getChangelogPath(projectRoot);
     await writeChangelog(
       {
-        header: changelogHeader || defaultHeader,
+        header: changelogHeader,
         path: projectRoot,
         preset,
         dryRun,

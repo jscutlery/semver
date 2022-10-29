@@ -1318,6 +1318,39 @@ $`)
     });
   });
 
+  describe('--dryRun', () => {
+    beforeEach(async () => {
+      testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
+
+      /* Commit changes. */
+      commitChanges();
+    });
+
+    afterEach(() => testingWorkspace.tearDown());
+
+    it('should console.info without history instead of writing to a file', async () => {
+      result = await version(
+        {
+          ...defaultBuilderOptions,
+          dryRun: true,
+        },
+        createFakeContext({
+          project: 'b',
+          projectRoot: resolve(testingWorkspace.root, 'packages/b'),
+          workspaceRoot: testingWorkspace.root,
+        })
+      );
+
+      expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
+        new RegExp(`^
+`)
+      );
+      expect(console.info).toHaveBeenCalledWith(
+        expect.stringContaining(`fix emptiness`)
+      );
+    });
+  });
+
   describe('ignoring merge commits', () => {
     beforeEach(async () => {
       testingWorkspace = setupTestingWorkspace(new Map(commonWorkspaceFiles));
