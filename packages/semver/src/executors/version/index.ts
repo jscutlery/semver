@@ -22,7 +22,6 @@ import {
   versionProject,
   versionWorkspace,
   type CommonVersionOptions,
-  type StandardVersionPreset,
 } from './version';
 
 export default async function version(
@@ -233,7 +232,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     skipCommit: options.skipCommit as boolean,
     preset:
       options.preset === 'conventional'
-        ? ('conventionalcommits' as StandardVersionPreset)
-        : options.preset,
+        ? 'conventionalcommits'
+        : options.preset || 'angular',
   };
 }

@@ -11,6 +11,7 @@ export type ReleaseIdentifier =
 export type Preset =
   | 'angular'
   | 'conventional'
+  | 'conventionalcommits'
   | ({ name: string } & ConventionalChangelogConfigSpec.Config);
 
 export interface VersionBuilderSchema {
@@ -46,11 +47,10 @@ export interface VersionBuilderSchema {
 }
 
 export interface WriteChangelogConfig {
-  header: string;
-  path?: string;
-  preset?: Preset;
+  changelogHeader: string;
+  projectRoot: string;
+  preset: Preset;
   dryRun?: boolean;
-  silent?: boolean;
-  infile: string;
-  tagPrefix?: string;
+  changelogPath: string;
+  tagPrefix: string;
 }

@@ -43,12 +43,11 @@ export function updateChangelog({
     const changelogPath = getChangelogPath(projectRoot);
     await writeChangelog(
       {
-        header: changelogHeader,
-        path: projectRoot,
-        preset,
+        changelogHeader,
+        changelogPath,
         dryRun,
-        silent: true,
-        infile: changelogPath,
+        projectRoot,
+        preset,
         tagPrefix,
       },
       newVersion

@@ -24,7 +24,6 @@ jest.mock('./utils/git');
 jest.mock('./utils/get-project-dependencies');
 jest.mock('./utils/try-bump');
 jest.mock('./utils/post-target');
-jest.mock('./utils/write-changelog');
 
 describe('@jscutlery/semver:version', () => {
   const mockUpdatePackageJson =
@@ -694,7 +693,10 @@ describe('@jscutlery/semver:version', () => {
 
   describe('--preset', () => {
     it('should use --preset=angular by default', async () => {
-      const { success } = await version(options, context);
+      const { success } = await version(
+        { ...options, preset: undefined },
+        context
+      );
 
       expect(success).toBe(true);
       expect(mockUpdateChangelog).toBeCalledWith(
