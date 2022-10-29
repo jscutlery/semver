@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.27.2](https://github.com/jscutlery/semver/compare/semver-2.27.1...semver-2.27.2) (2022-10-29)
+
+
+### Bug Fixes
+
+* 📦 bump dependency inquirer to v8.2.5 ([1b6410f](https://github.com/jscutlery/semver/commit/1b6410f45fa163aec9e7e5d40293b0777124b689))
+* 📦 bump dependency rxjs to v7.5.7 ([a7d7791](https://github.com/jscutlery/semver/commit/a7d7791324ad442d4034505409c2252f4e403cf6))
+* **semver:** get release version if no matching prerelease tag exists ([084de3b](https://github.com/jscutlery/semver/commit/084de3b1a5ce7b74ff01f57ff2b74e785847848c))
+
+
+
 ## [2.27.1](https://github.com/jscutlery/semver/compare/semver-2.27.0...semver-2.27.1) (2022-09-24)
 
 
