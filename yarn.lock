@@ -6175,11 +6175,11 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^4.0.0":
-  version: 4.3.1
-  resolution: "ngx-deploy-npm@npm:4.3.1"
+  version: 4.3.2
+  resolution: "ngx-deploy-npm@npm:4.3.2"
   dependencies:
     "@nrwl/devkit": 14.7.17
-  checksum: 4ee9310666ce08467dfed6d6033efde25390480da1357ff54bd21d0064ee5c5550de4e27c91dd077bf5478a0ffdd534fba0c4e17ba0c233feca7ab1bab26cb86
+  checksum: 49cf36b2148234b533d8185dea5dd449c2ed2ca08cfea0e790dcfe8bd7d6744998430810fa8b40236abb4df6778994b265975b4d9f52d1ece45b211cf84e8807
   languageName: node
   linkType: hard
 
