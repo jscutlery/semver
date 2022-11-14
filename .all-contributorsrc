@@ -399,6 +399,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "nowseemee",
+      "name": "Daniel Beck",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4532334?v=4",
+      "profile": "https://github.com/nowseemee",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
