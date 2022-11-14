@@ -45,11 +45,10 @@ describe('Install generator', () => {
     it('should add workspace project to workspace.json', async () => {
       await install(tree, options);
 
-      const workspace = readJson(tree, 'workspace.json');
+      const workspace = readJson(tree, 'project.json');
 
-      expect(workspace.projects.workspace).toBeDefined();
-      expect(workspace.projects.workspace.root).toBe('.');
-      expect(workspace.projects.workspace.targets).toEqual(
+      expect(workspace).toBeDefined();
+      expect(workspace.targets).toEqual(
         expect.objectContaining({
           version: {
             executor: '@jscutlery/semver:version',
@@ -168,14 +167,6 @@ describe('Install generator', () => {
           },
         })
       );
-    });
-
-    it('should not touch nx.json', async () => {
-      await install(tree, options);
-
-      const nxConfig = readJson(tree, 'workspace.json');
-
-      expect(nxConfig.projects.workspace).toBeUndefined();
     });
 
     describe('--preset option', () => {

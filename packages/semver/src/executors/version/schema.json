@@ -1,4 +1,6 @@
 {
+  "version": 2,
+  "outputCapture": "direct-nodejs",
   "$schema": "http://json-schema.org/schema",
   "$id": "jscutlery-semver-version",
   "title": "JSCutlery Version builder",
@@ -64,11 +66,25 @@
     },
     "tagPrefix": {
       "description": "Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
-      "oneOf": [{ "type": "string" }, { "type": "null" }]
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "versionTagPrefix": {
       "description": "(Deprecated) Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
-      "oneOf": [{ "type": "string" }, { "type": "null" }]
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "postTargets": {
       "description": "Specify the targets to run after a new version was successfully created.",
@@ -146,14 +162,38 @@
             "$ref": "#/definitions/type"
           },
           "default": [
-            { "type": "feat", "section": "Features" },
-            { "type": "fix", "section": "Bug Fixes" },
-            { "type": "chore", "hidden": true },
-            { "type": "docs", "hidden": true },
-            { "type": "style", "hidden": true },
-            { "type": "refactor", "hidden": true },
-            { "type": "perf", "hidden": true },
-            { "type": "test", "hidden": true }
+            {
+              "type": "feat",
+              "section": "Features"
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type": "chore",
+              "hidden": true
+            },
+            {
+              "type": "docs",
+              "hidden": true
+            },
+            {
+              "type": "style",
+              "hidden": true
+            },
+            {
+              "type": "refactor",
+              "hidden": true
+            },
+            {
+              "type": "perf",
+              "hidden": true
+            },
+            {
+              "type": "test",
+              "hidden": true
+            }
           ]
         },
         "preMajor": {
