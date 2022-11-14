@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.28.0](https://github.com/jscutlery/semver/compare/semver-2.27.2...semver-2.28.0) (2022-11-14)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 upgrade devkit to v15 ([cbe3cf7](https://github.com/jscutlery/semver/commit/cbe3cf74d89a1c271d87c9669d04160f24f7a2c3)), closes [#616](https://github.com/jscutlery/semver/issues/616)
+
+
+### Features
+
+* **semver:** drop standard-version + all conventional-changelog config ([bf84d5f](https://github.com/jscutlery/semver/commit/bf84d5fe804db638719b6dcfb75f1fc47b9319ac))
+
+
+
 ## [2.27.2](https://github.com/jscutlery/semver/compare/semver-2.27.1...semver-2.27.2) (2022-10-29)
 
 
