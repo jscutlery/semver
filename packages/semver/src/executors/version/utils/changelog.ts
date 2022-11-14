@@ -10,12 +10,11 @@ import {
   type Observable,
   type OperatorFunction,
 } from 'rxjs';
-import * as standardVersionDefaults from 'standard-version/defaults';
-import * as changelog from 'standard-version/lib/lifecycles/changelog';
+import writeChangelog from './write-changelog';
 import type { Version } from '../version';
 import { diff } from './diff';
 import { readFile, readFileIfExists, writeFile } from './filesystem';
-
+import { Preset } from '../schema';
 export const defaultHeader = `# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -35,22 +34,20 @@ export function updateChangelog({
 }: {
   projectRoot: string;
   dryRun: boolean;
-  preset: string;
+  preset: Preset;
   newVersion: string;
   tagPrefix: string;
-  changelogHeader?: string;
+  changelogHeader: string;
 }): Observable<string> {
   return defer(async () => {
     const changelogPath = getChangelogPath(projectRoot);
-    await changelog(
+    await writeChangelog(
       {
-        ...standardVersionDefaults,
-        header: changelogHeader || defaultHeader,
-        path: projectRoot,
-        preset,
+        changelogHeader,
+        changelogPath,
         dryRun,
-        silent: true,
-        infile: changelogPath,
+        projectRoot,
+        preset,
         tagPrefix,
       },
       newVersion

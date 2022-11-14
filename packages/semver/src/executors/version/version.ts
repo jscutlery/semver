@@ -9,6 +9,7 @@ import { addToStage, createTag, getLastCommitHash } from './utils/git';
 import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
+import { Preset } from './schema';
 
 export type Version =
   | {
@@ -20,8 +21,6 @@ export type Version =
       version: string | null;
       dependencyName: string;
     };
-
-export type StandardVersionPreset = 'angular' | 'conventionalcommits';
 
 export interface CommonVersionOptions {
   tag: string;
@@ -37,7 +36,7 @@ export interface CommonVersionOptions {
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
-  preset: StandardVersionPreset;
+  preset: Preset;
 }
 
 export function versionWorkspace({

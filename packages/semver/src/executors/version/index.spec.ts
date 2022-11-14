@@ -12,6 +12,7 @@ import { runPostTargets } from './utils/post-target';
 import * as project from './utils/project';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
+import { defaultHeader } from './utils/changelog';
 const LAST_COMMIT_HASH = 'lastCommitHash';
 jest.mock('./utils/changelog');
 jest.mock('./utils/project');
@@ -692,7 +693,10 @@ describe('@jscutlery/semver:version', () => {
 
   describe('--preset', () => {
     it('should use --preset=angular by default', async () => {
-      const { success } = await version(options, context);
+      const { success } = await version(
+        { ...options, preset: undefined },
+        context
+      );
 
       expect(success).toBe(true);
       expect(mockUpdateChangelog).toBeCalledWith(
@@ -712,6 +716,60 @@ describe('@jscutlery/semver:version', () => {
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           preset: 'conventionalcommits',
+        })
+      );
+    });
+
+    it('should use --preset=conventional-changelog-config-spec', async () => {
+      const { success } = await version(
+        {
+          ...options,
+          preset: {
+            name: 'conventionalcommits',
+            compareUrlFormat:
+              '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
+          },
+        },
+        context
+      );
+
+      expect(success).toBe(true);
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({
+          preset: {
+            compareUrlFormat:
+              '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
+            name: 'conventionalcommits',
+          },
+        })
+      );
+    });
+  });
+
+  describe('---changelogHeader', () => {
+    const customChangelogHeader = `# Custom Changelog Header`;
+    it('should use --changelogHeader=defaultHeader by default', async () => {
+      const { success } = await version(options, context);
+
+      expect(success).toBe(true);
+
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({
+          changelogHeader: defaultHeader,
+        })
+      );
+    });
+    it(`should use --changelogHeader=${customChangelogHeader} by default`, async () => {
+      const { success } = await version(
+        { ...options, changelogHeader: customChangelogHeader },
+        context
+      );
+
+      expect(success).toBe(true);
+
+      expect(mockUpdateChangelog).toBeCalledWith(
+        expect.objectContaining({
+          changelogHeader: customChangelogHeader,
         })
       );
     });

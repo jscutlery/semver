@@ -77,27 +77,27 @@ Important: merge commits messages are ignored by the tool when calculating next 
 
 #### Available options
 
-| name                         | type       | default     | description                                                                                                                                                     |
-| ---------------------------- | ---------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`--dryRun`**               | `boolean`  | `false`     | run with dry mode                                                                                                                                               |
-| **`--noVerify`**             | `boolean`  | `false`     | skip git hooks                                                                                                                                                  |
-| **`--push`**                 | `boolean`  | `false`     | push the release to the remote repository                                                                                                                       |
-| **`--syncVersions`**         | `boolean`  | `false`     | lock/sync versions between projects                                                                                                                             |
-| **`--skipRootChangelog`**    | `boolean`  | `false`     | skip generating root changelog                                                                                                                                  |
-| **`--skipProjectChangelog`** | `boolean`  | `false`     | skip generating project changelog                                                                                                                               |
-| **`--origin`**               | `string`   | `'origin'`  | push against git remote repository                                                                                                                              |
-| **`--baseBranch`**           | `string`   | `'main'`    | push against git base branch                                                                                                                                    |
-| **`--changelogHeader`**      | `string`   | `undefined` | custom Markdown header for changelogs                                                                                                                           |
-| **`--releaseAs`**            | `string`   | `undefined` | specify the level of change ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                                                        |
-| **`--preid`**                | `string`   | `undefined` | specify the prerelease identifier (eg: alpha, beta) ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                                |
-| **`--tagPrefix`**            | `string`   | `undefined` | specify the tag prefix ([details](https://github.com/jscutlery/semver#tag-prefix-customization))                                                                |
-| **`--postTargets`**          | `string[]` | `[]`        | specify the list of target to execute post-release ([details](https://github.com/jscutlery/semver#triggering-executors-post-release))                           |
-| **`--trackDeps`**            | `boolean`  | `false`     | bump dependent packages (bump A if A depends on B) ([details](https://github.com/jscutlery/semver#tracking-dependencies))                                       |
-| **`--allowEmptyRelease`**    | `boolean`  | `false`     | force a patch increment even if library source didn't change                                                                                                    |
-| **`--skipCommitTypes`**      | `string[]` | `[]`        | treat commits with specified types as non invoking version bump ([details](https://github.com/jscutlery/semver#skipping-release-for-specific-types-of-commits)) |
-| **`--skipCommit`**           | `boolean`  | `false`     | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
-| **`--commitMessageFormat`**  | `string`   | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
-| **`--preset`**               | `string`   | `'angular'` | specify the commit message guideline preset                                                                                                                     |
+| name                         | type               | default                                                                                                                              | description                                                                                                                                                     |
+| ---------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`--dryRun`**               | `boolean`          | `false`                                                                                                                              | run with dry mode                                                                                                                                               |
+| **`--noVerify`**             | `boolean`          | `false`                                                                                                                              | skip git hooks                                                                                                                                                  |
+| **`--push`**                 | `boolean`          | `false`                                                                                                                              | push the release to the remote repository                                                                                                                       |
+| **`--syncVersions`**         | `boolean`          | `false`                                                                                                                              | lock/sync versions between projects                                                                                                                             |
+| **`--skipRootChangelog`**    | `boolean`          | `false`                                                                                                                              | skip generating root changelog                                                                                                                                  |
+| **`--skipProjectChangelog`** | `boolean`          | `false`                                                                                                                              | skip generating project changelog                                                                                                                               |
+| **`--origin`**               | `string`           | `'origin'`                                                                                                                           | push against git remote repository                                                                                                                              |
+| **`--baseBranch`**           | `string`           | `'main'`                                                                                                                             | push against git base branch                                                                                                                                    |
+| **`--changelogHeader`**      | `string`           | `undefined`                                                                                                                          | custom Markdown header for changelogs                                                                                                                           |
+| **`--releaseAs`**            | `string`           | `undefined`                                                                                                                          | specify the level of change ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                                                        |
+| **`--preid`**                | `string`           | `undefined`                                                                                                                          | specify the prerelease identifier (eg: alpha, beta) ([details](https://github.com/jscutlery/semver#specify-the-level-of-change))                                |
+| **`--tagPrefix`**            | `string`           | `undefined`                                                                                                                          | specify the tag prefix ([details](https://github.com/jscutlery/semver#tag-prefix-customization))                                                                |
+| **`--postTargets`**          | `string[]`         | `[]`                                                                                                                                 | specify the list of target to execute post-release ([details](https://github.com/jscutlery/semver#triggering-executors-post-release))                           |
+| **`--trackDeps`**            | `boolean`          | `false`                                                                                                                              | bump dependent packages (bump A if A depends on B) ([details](https://github.com/jscutlery/semver#tracking-dependencies))                                       |
+| **`--allowEmptyRelease`**    | `boolean`          | `false`                                                                                                                              | force a patch increment even if library source didn't change                                                                                                    |
+| **`--skipCommitTypes`**      | `string[]`         | `[]`                                                                                                                                 | treat commits with specified types as non invoking version bump ([details](https://github.com/jscutlery/semver#skipping-release-for-specific-types-of-commits)) |
+| **`--skipCommit`**           | `boolean`          | `false`                                                                                                                              | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
+| **`--commitMessageFormat`**  | `string`           | `undefined`                                                                                                                          | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
+| **`--preset`**               | `string \| object` | customize Conventional Changelog options ([details](https://github.com/jscutlery/semver#customizing-conventional-changelog-options)) |                                                                                                                                                                 |
 
 #### Overwrite default configuration
 
@@ -110,6 +110,27 @@ You can customize the default configuration using the definition file (`angular.
     "baseBranch": "master",
     "preset": "conventional",
     "tagPrefix": "${projectName}@"
+  }
+}
+```
+
+#### Customizing Conventional Changelog options
+
+Any of the command line parameters accepted by [Conventional Changelog](https://github.com/conventional-changelog/conventional-changelog) can be provided via the `prefix` option. Please refer to the [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec/) for details on available configuration options.
+
+##### Customizing CHANGELOG Generation
+
+As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
+
+```json
+{
+  "executor": "@jscutlery/semver:version",
+  "options": {
+    "preset": {
+      "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
+      "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}"
+      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
+    }
   }
 }
 ```
