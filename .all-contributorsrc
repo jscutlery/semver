@@ -409,6 +409,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "fguitton",
+      "name": "Florian Guitton",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2495155?v=4",
+      "profile": "http://www.linkedin.com/in/florianguitton/en",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
