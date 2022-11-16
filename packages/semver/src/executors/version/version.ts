@@ -37,7 +37,7 @@ export interface CommonVersionOptions {
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
-  preset: StandardVersionPreset;
+  preset: Preset;
   workspace: ProjectsConfigurations & NxJsonConfiguration<string[] | '*'>;
 }
 
