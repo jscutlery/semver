@@ -67,5 +67,5 @@
   "resolutions": {
     "rxjs": "7.5.7"
   },
-  "packageManager": "yarn@3.2.4"
+  "packageManager": "yarn@3.3.0"
 }
