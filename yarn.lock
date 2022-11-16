@@ -15,13 +15,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:14.2.9":
-  version: 14.2.9
-  resolution: "@angular-devkit/core@npm:14.2.9"
+"@angular-devkit/core@npm:15.0.0":
+  version: 15.0.0
+  resolution: "@angular-devkit/core@npm:15.0.0"
   dependencies:
     ajv: 8.11.0
     ajv-formats: 2.1.1
-    jsonc-parser: 3.1.0
+    jsonc-parser: 3.2.0
     rxjs: 6.6.7
     source-map: 0.7.4
   peerDependencies:
@@ -29,20 +29,20 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: c2ee157388c354c873bcd49568936f8e69e80c33a616f8f937343fa580b05057e79e4d9786a246892e8a1be140abc2b06f6b297b177eb1080fcfc5d0eb7cc255
+  checksum: 86a4d042be45442e12274bbcb92e1ffa8aeaac5a8a71211a7fc9b02496da05315a333021d0735579094706e35271b699dc368625a05fce1512bbcef1049f5d7a
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:14.2.9":
-  version: 14.2.9
-  resolution: "@angular-devkit/schematics@npm:14.2.9"
+"@angular-devkit/schematics@npm:15.0.0":
+  version: 15.0.0
+  resolution: "@angular-devkit/schematics@npm:15.0.0"
   dependencies:
-    "@angular-devkit/core": 14.2.9
-    jsonc-parser: 3.1.0
-    magic-string: 0.26.2
+    "@angular-devkit/core": 15.0.0
+    jsonc-parser: 3.2.0
+    magic-string: 0.26.7
     ora: 5.4.1
     rxjs: 6.6.7
-  checksum: ba1db91fc67843575ddf38e4fc1b05e1922f53f7f5ffdb5037352f1944887ac1d693a071a9093e98c532bf7334115e726fc0e112377ac1ee539e8d0a4fa5f522
+  checksum: 36872f2d465dc307131a49c077b45c3d8d589f6936160de680fb973ed3ee6f31a2c7e19fd30c5f7ab3b94d82c14fbe932fdafead56396411f0c069d1be358b83
   languageName: node
   linkType: hard
 
@@ -5593,7 +5593,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": 14.2.9
+    "@angular-devkit/schematics": 15.0.0
     "@commitlint/cli": ^17.0.0
     "@commitlint/config-angular": ^17.0.0
     "@nrwl/cli": 15.1.0
@@ -5705,13 +5705,6 @@ __metadata:
   bin:
     json5: lib/cli.js
   checksum: 74b8a23b102a6f2bf2d224797ae553a75488b5adbaee9c9b6e5ab8b510a2fc6e38f876d4c77dea672d4014a44b2399e15f2051ac2b37b87f74c0c7602003543b
-  languageName: node
-  linkType: hard
-
-"jsonc-parser@npm:3.1.0":
-  version: 3.1.0
-  resolution: "jsonc-parser@npm:3.1.0"
-  checksum: 81b00c565c60cb1b400523a918d42ad9c7bb3d9cf34c708bf78d37c8c496ecd670c3ff8828f2f60aa6e6627ef4287982794ddf92261ea71e320973c54b29fb22
   languageName: node
   linkType: hard
 
@@ -5874,12 +5867,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:0.26.2":
-  version: 0.26.2
-  resolution: "magic-string@npm:0.26.2"
+"magic-string@npm:0.26.7":
+  version: 0.26.7
+  resolution: "magic-string@npm:0.26.7"
   dependencies:
     sourcemap-codec: ^1.4.8
-  checksum: b4db4e2b370ac8d9ffc6443a2b591b75364bf1fc9121b5a4068d5b89804abff6709d1fa4a0e0c2d54f2e61e0e44db83efdfe219a5ab0ba6d25ee1f2b51fbed55
+  checksum: 89b0d60cbb32bbf3d1e23c46ea93db082d18a8230b972027aecb10a40bba51be519ecce0674f995571e3affe917b76b09f59d8dbc9a1b2c9c4102a2b6e8a2b01
   languageName: node
   linkType: hard
 
