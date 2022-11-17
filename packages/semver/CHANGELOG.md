@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.29.0](https://github.com/jscutlery/semver/compare/semver-2.28.0...semver-2.29.0) (2022-11-17)
+
+
+### Features
+
+* add support for standalone projects without root config ([#603](https://github.com/jscutlery/semver/issues/603)) ([f8855b7](https://github.com/jscutlery/semver/commit/f8855b77dd2b6b1943cbe3340e5f14bb298f6272))
+
+
+
 # [2.28.0](https://github.com/jscutlery/semver/compare/semver-2.27.2...semver-2.28.0) (2022-11-14)
 
 
