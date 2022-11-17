@@ -1,3 +1,4 @@
+import { NxJsonConfiguration, ProjectsConfigurations } from '@nrwl/devkit';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import {
@@ -37,6 +38,7 @@ export interface CommonVersionOptions {
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
   preset: Preset;
+  workspace: ProjectsConfigurations & NxJsonConfiguration<string[] | '*'>;
 }
 
 export function versionWorkspace({
@@ -54,38 +56,34 @@ export function versionWorkspace({
   skipRootChangelog: boolean;
   projectRoot: string;
 } & CommonVersionOptions) {
+  const projectRoots = getProjectRoots(
+    options.workspaceRoot,
+    options.workspace
+  );
   return forkJoin([
-    getProjectRoots(options.workspaceRoot).pipe(
-      concatMap((projectRoots) =>
-        _generateChangelogs({
-          projectRoots,
-          skipRootChangelog,
-          commitMessage,
+    _generateChangelogs({
+      projectRoots,
+      skipRootChangelog,
+      commitMessage,
+      newVersion,
+      dryRun,
+      noVerify,
+      projectName,
+      skipCommit,
+      tag,
+      ...options,
+    }),
+
+    forkJoin(
+      projectRoots.map((projectRoot) =>
+        updatePackageJson({
+          projectRoot,
           newVersion,
-          dryRun,
-          noVerify,
           projectName,
-          skipCommit,
-          tag,
-          ...options,
+          dryRun,
         })
       )
-    ),
-    getProjectRoots(options.workspaceRoot).pipe(
-      concatMap((projectRoots) =>
-        forkJoin(
-          projectRoots.map((projectRoot) =>
-            updatePackageJson({
-              projectRoot,
-              newVersion,
-              projectName,
-              dryRun,
-            })
-          )
-        )
-      ),
-      map((paths) => paths.filter(isNotNull))
-    ),
+    ).pipe(map((paths) => paths.filter(isNotNull))),
   ]).pipe(
     map((paths) => paths.flat()),
     concatMap((paths) =>

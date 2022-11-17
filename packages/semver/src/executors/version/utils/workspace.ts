@@ -1,8 +1,9 @@
-import type { ExecutorContext, WorkspaceJsonConfiguration } from '@nrwl/devkit';
+import type {
+  ExecutorContext,
+  NxJsonConfiguration,
+  ProjectsConfigurations,
+} from '@nrwl/devkit';
 import { resolve } from 'path';
-import type { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { readJsonFile } from './filesystem';
 
 /* istanbul ignore next */
 export function getProjectRoot(context: ExecutorContext): string {
@@ -10,23 +11,13 @@ export function getProjectRoot(context: ExecutorContext): string {
 }
 
 /* istanbul ignore next */
-export function getProjectRoots(workspaceRoot: string): Observable<string[]> {
-  return _getWorkspaceDefinition(workspaceRoot).pipe(
-    map((workspaceDefinition) =>
-      Object.values(workspaceDefinition.projects).map((project) =>
-        typeof project === 'string'
-          ? resolve(workspaceRoot, project)
-          : resolve(workspaceRoot, project.root)
-      )
-    )
-  );
-}
-
-/* istanbul ignore next */
-function _getWorkspaceDefinition(
-  workspaceRoot: string
-): Observable<WorkspaceJsonConfiguration> {
-  return readJsonFile(resolve(workspaceRoot, 'workspace.json')).pipe(
-    catchError(() => readJsonFile(resolve(workspaceRoot, 'angular.json')))
+export function getProjectRoots(
+  workspaceRoot: string,
+  workspace: ProjectsConfigurations & NxJsonConfiguration<string[] | '*'>
+): string[] {
+  return Object.values(workspace.projects).map((project) =>
+    typeof project === 'string'
+      ? resolve(workspaceRoot, project)
+      : resolve(workspaceRoot, project.root)
   );
 }
