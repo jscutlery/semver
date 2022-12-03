@@ -27,7 +27,7 @@
     "conventional-recommended-bump": "^6.1.0",
     "detect-indent": "6.1.0",
     "inquirer": "8.2.5",
-    "rxjs": "7.5.7"
+    "rxjs": "7.6.0"
   },
   "devDependencies": {
     "@types/conventional-changelog": "^3.1.1",
