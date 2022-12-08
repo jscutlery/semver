@@ -423,6 +423,9 @@ This project follows the [all-contributors](https://github.com/all-contributors/
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nowseemee"><img src="https://avatars.githubusercontent.com/u/4532334?v=4?s=60" width="60px;" alt="Daniel Beck"/><br /><sub><b>Daniel Beck</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=nowseemee" title="Code">💻</a> <a href="https://github.com/jscutlery/semver/commits?author=nowseemee" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.linkedin.com/in/florianguitton/en"><img src="https://avatars.githubusercontent.com/u/2495155?v=4?s=60" width="60px;" alt="Florian Guitton"/><br /><sub><b>Florian Guitton</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=fguitton" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://mauris.github.io/"><img src="https://avatars.githubusercontent.com/u/996939?v=4?s=60" width="60px;" alt="Sam Yong"/><br /><sub><b>Sam Yong</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Amauris" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=mauris" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 

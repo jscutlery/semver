@@ -418,6 +418,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mauris",
+      "name": "Sam Yong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/996939?v=4",
+      "profile": "https://mauris.github.io/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
