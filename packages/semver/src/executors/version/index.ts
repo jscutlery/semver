@@ -82,6 +82,7 @@ export default async function version(
     projectRoot,
     dependencyRoots,
     tagPrefix,
+    versionTagPrefix,
     releaseType: releaseAs,
     preid,
     syncVersions,
