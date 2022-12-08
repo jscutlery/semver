@@ -425,6 +425,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://mauris.github.io/"><img src="https://avatars.githubusercontent.com/u/996939?v=4?s=60" width="60px;" alt="Sam Yong"/><br /><sub><b>Sam Yong</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Amauris" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=mauris" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jamime"><img src="https://avatars.githubusercontent.com/u/2328042?v=4?s=60" width="60px;" alt="Jamie Thompson"/><br /><sub><b>Jamie Thompson</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Ajamime" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

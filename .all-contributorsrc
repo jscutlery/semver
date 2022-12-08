@@ -428,6 +428,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "jamime",
+      "name": "Jamie Thompson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2328042?v=4",
+      "profile": "https://github.com/jamime",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
