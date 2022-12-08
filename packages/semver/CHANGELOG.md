@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.29.2](https://github.com/jscutlery/semver/compare/semver-2.29.1...semver-2.29.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* version tagPrefix for dependencies not propagated [#624](https://github.com/jscutlery/semver/issues/624) ([1656f65](https://github.com/jscutlery/semver/commit/1656f6575317688b35e2ed0e71fc046b57d7d92a))
+
+
+
 ## [2.29.1](https://github.com/jscutlery/semver/compare/semver-2.29.0...semver-2.29.1) (2022-12-08)
 
 
