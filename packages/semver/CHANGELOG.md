@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.29.1](https://github.com/jscutlery/semver/compare/semver-2.29.0...semver-2.29.1) (2022-12-08)
+
+
+### Bug Fixes
+
+* 📦 bump dependency rxjs to v7.6.0 ([f5ee12b](https://github.com/jscutlery/semver/commit/f5ee12b8e5c2d63b2769aff290fbc218c08e9aba))
+* **semver:** 🐞 add missing chalk dependency ([0644d0b](https://github.com/jscutlery/semver/commit/0644d0bbcdb420ec2b4273a1acad636c38949d24)), closes [#623](https://github.com/jscutlery/semver/issues/623)
+
+
+
 # [2.29.0](https://github.com/jscutlery/semver/compare/semver-2.28.0...semver-2.29.0) (2022-11-17)
 
 
