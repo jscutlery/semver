@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.29.3](https://github.com/jscutlery/semver/compare/semver-2.29.2...semver-2.29.3) (2022-12-15)
+
+
+### Bug Fixes
+
+* **semver:** 🐞 fix --preset schema ([6763eaa](https://github.com/jscutlery/semver/commit/6763eaa9d578c012e696113fdecdf7709328af14))
+
+
+
 ## [2.29.2](https://github.com/jscutlery/semver/compare/semver-2.29.1...semver-2.29.2) (2022-12-08)
 
 
