@@ -147,8 +147,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "A string to be used as the main header section of the CHANGELOG.",
-          "default": "# Changelog\n\n"
+          "description": "A base preset name to be customized.",
+          "default": "angular"
         },
         "header": {
           "type": "string",
