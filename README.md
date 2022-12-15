@@ -127,13 +127,17 @@ As an example, suppose you're using GitLab, rather than GitHub, you might modify
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
+      "name": "angular",
       "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
-      "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}"
+      "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
       "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
     }
   }
 }
 ```
+
+See [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec) for available
+configuration options.
 
 #### Version calculation
 
