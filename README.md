@@ -116,11 +116,7 @@ You can customize the default configuration using the definition file (`angular.
 
 #### Customizing Conventional Changelog options
 
-Any of the command line parameters accepted by [Conventional Changelog](https://github.com/conventional-changelog/conventional-changelog) can be provided via the `prefix` option. Please refer to the [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec/) for details on available configuration options.
-
-##### Customizing CHANGELOG Generation
-
-As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
+The preset is highly configurable, following the [conventional-changelog configuration specification](https://github.com/conventional-changelog/conventional-changelog-config-spec). As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
 
 ```json
 {
