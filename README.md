@@ -123,7 +123,6 @@ The preset is highly configurable, following the [conventional-changelog configu
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
-      "name": "angular",
       "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
       "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
       "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
