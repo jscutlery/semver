@@ -355,6 +355,10 @@ release:
 
 Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/user/project/deploy_keys/) in order to push to your remote repository.
 
+## Compatibility overview with Nx
+- v2.28.0 > requires `@nrwl/devkit ^15.0.0`
+- v2.23.0 > requires `@nrwl/devkit ^14.0.0` 
+
 ## Changelog
 
 For new features or breaking changes [see the changelog](https://github.com/jscutlery/semver/blob/main/packages/semver/CHANGELOG.md).
