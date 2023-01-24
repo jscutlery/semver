@@ -356,11 +356,13 @@ release:
 Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/user/project/deploy_keys/) in order to push to your remote repository.
 
 ## Compatibility overview with Nx
+
 - v2.28.0 > requires `@nrwl/devkit ^15.0.0`
-- v2.23.0 > requires `@nrwl/devkit ^14.0.0` 
+- v2.23.0 > requires `@nrwl/devkit ^14.0.0`
 - v2.12.0 > requires `@nrwl/workspace ^13.0.0`
 - v2.4.0 > requires `@nrwl/workspace ^12.0.0`
 - v1.0.0 > requires `@nrwl/workspace ^11.0.0`
+
 ## Changelog
 
 For new features or breaking changes [see the changelog](https://github.com/jscutlery/semver/blob/main/packages/semver/CHANGELOG.md).
@@ -431,6 +433,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://mauris.github.io/"><img src="https://avatars.githubusercontent.com/u/996939?v=4?s=60" width="60px;" alt="Sam Yong"/><br /><sub><b>Sam Yong</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Amauris" title="Bug reports">🐛</a> <a href="https://github.com/jscutlery/semver/commits?author=mauris" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jamime"><img src="https://avatars.githubusercontent.com/u/2328042?v=4?s=60" width="60px;" alt="Jamie Thompson"/><br /><sub><b>Jamie Thompson</b></sub></a><br /><a href="https://github.com/jscutlery/semver/issues?q=author%3Ajamime" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.berger-engineering.io/"><img src="https://avatars.githubusercontent.com/u/29756792?v=4?s=60" width="60px;" alt="Michael Be"/><br /><sub><b>Michael Be</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=mikelgo" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

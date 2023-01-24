@@ -437,6 +437,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "mikelgo",
+      "name": "Michael Be",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29756792?v=4",
+      "profile": "https://www.berger-engineering.io/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
