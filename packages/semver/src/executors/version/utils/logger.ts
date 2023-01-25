@@ -8,6 +8,7 @@ type Step =
   | 'warning'
   | 'calculate_version_success'
   | 'package_json_success'
+  | 'custom_json_success'
   | 'changelog_success'
   | 'tag_success'
   | 'post_target_success'
@@ -22,6 +23,7 @@ const iconMap = new Map<Step, string>([
   ['changelog_success', '📜'],
   ['commit_success', '📦'],
   ['package_json_success', '📝'],
+  ['custom_json_success', '📝'],
   ['post_target_success', '🎉'],
   ['tag_success', '🔖'],
   ['push_success', '🚀'],

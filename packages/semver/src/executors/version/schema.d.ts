@@ -43,6 +43,7 @@ export interface VersionBuilderSchema {
   allowEmptyRelease?: boolean;
   skipCommitTypes?: string[];
   commitMessageFormat?: string;
+  customJsonPaths?: string[];
   preset: Preset;
 }
 
