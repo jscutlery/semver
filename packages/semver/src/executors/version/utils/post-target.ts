@@ -73,14 +73,14 @@ export function _getTargetOptions({
     (optionsAccumulator, [option, value]) => {
       const resolvedValue = Array.isArray(value)
         ? value.map((_element) =>
-            typeof _element !== "object"
-            ? coerce(
-                createTemplateString(
-                  (_element as number | string | boolean).toString(),
-                  context
+            typeof _element !== 'object'
+              ? coerce(
+                  createTemplateString(
+                    (_element as number | string | boolean).toString(),
+                    context
+                  )
                 )
-              )
-            : _getTargetOptions({ options: _element, context })
+              : _getTargetOptions({ options: _element, context })
           )
         : typeof value === 'object'
         ? _getTargetOptions({
@@ -105,14 +105,14 @@ export function _getTargetOptions({
 
 /* istanbul ignore next */
 export function _checkTargetExist(target: Target, context: ExecutorContext) {
-  const project = context.workspace.projects[target.project];
+  const project = context.projectsConfigurations?.projects?.[target.project];
 
   if (project === undefined) {
     throw new Error(
       `The target project "${
         target.project
       }" does not exist in your workspace. Available projects: ${Object.keys(
-        context.workspace.projects
+        context.projectsConfigurations?.projects ?? []
       ).map((project) => `"${project}"`)}.`
     );
   }
