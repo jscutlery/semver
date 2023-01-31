@@ -1,6 +1,7 @@
 name: 'Nx migrate'
 
 on:
+  workflow_dispatch
   schedule:
     # Every day at 6am UTC
     - cron: '0 6 * * *'
