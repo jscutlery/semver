@@ -20,7 +20,7 @@ jobs:
         run: |
           IS_OUTDATED=$(test ! -z "$(npm outdated @nrwl/workspace)" && echo true || echo false)
           echo $IS_OUTDATED
-          echo "::set-output name=outdated::$IS_OUTDATED"
+          echo "outdated=$IS_OUTDATED" >> $GITHUB_OUTPUT
 
       - name: Update @nrwl/workspace
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
@@ -35,7 +35,7 @@ jobs:
         run: |
           HAS_MIGRATIONS=$(test -f migrations.json && echo true || echo false)
           echo $HAS_MIGRATIONS
-          echo "::set-output name=has_migrations::$HAS_MIGRATIONS"
+          echo "has_migrations=$HAS_MIGRATIONS" >> $GITHUB_OUTPUT
 
       - name: Run @nrwl/workspace migrations
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
