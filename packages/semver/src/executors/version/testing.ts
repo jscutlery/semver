@@ -4,7 +4,7 @@ import * as rimraf from 'rimraf';
 import * as tmp from 'tmp';
 import { promisify } from 'util';
 
-import type {
+import {
   ExecutorContext,
   ProjectConfiguration,
   TargetConfiguration,
@@ -68,10 +68,11 @@ export function createFakeContext({
   }[];
 }): ExecutorContext {
   return {
+    isVerbose: false,
     cwd: cwd,
     root: workspaceRoot,
     projectName: project,
-    workspace: {
+    projectsConfigurations: {
       version: 2,
       projects: {
         [project]: {
@@ -81,7 +82,7 @@ export function createFakeContext({
         ...assembleAdditionalProjects(additionalProjects),
       },
     },
-  } as ExecutorContext;
+  } satisfies ExecutorContext;
 }
 
 function assembleAdditionalProjects(
@@ -91,11 +92,13 @@ function assembleAdditionalProjects(
     targets?: Record<string, TargetConfiguration>;
   }[]
 ) {
-  return additionalProjects.reduce((acc, p) => {
+  return additionalProjects.reduce<{
+    [projectName: string]: ProjectConfiguration;
+  }>((acc, p) => {
     acc[p.project] = {
       root: p.projectRoot,
       targets: p.targets || {},
     };
     return acc;
-  }, {} as { [project: string]: ProjectConfiguration });
+  }, {} satisfies { [project: string]: ProjectConfiguration });
 }

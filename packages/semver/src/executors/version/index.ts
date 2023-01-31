@@ -17,7 +17,7 @@ import { _logStep } from './utils/logger';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
-import { getProjectRoot } from './utils/workspace';
+import { getProject } from './utils/workspace';
 import {
   versionProject,
   versionWorkspace,
@@ -76,7 +76,7 @@ export default async function version(
     projectName,
     syncVersions,
   });
-  const projectRoot = getProjectRoot(context);
+  const projectRoot = getProject(context).root;
   const newVersion$ = tryBump({
     preset,
     projectRoot,
@@ -132,7 +132,7 @@ export default async function version(
         commitMessage,
         dependencyUpdates,
         skipCommit,
-        workspace: context.workspace,
+        workspace: context.projectsConfigurations,
       };
 
       const version$ = defer(() =>

@@ -20,7 +20,8 @@ export async function getDependencyRoots({
     // Include any depended-upon libraries in determining the version bump.
     return (await getProjectDependencies(projectName)).map((name) => ({
       name,
-      path: context.workspace.projects[name].root,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      path: context.projectsConfigurations!.projects[name].root,
     }));
   }
 

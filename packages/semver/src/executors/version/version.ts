@@ -1,6 +1,7 @@
-import { NxJsonConfiguration, ProjectsConfigurations } from '@nrwl/devkit';
+import { ProjectsConfigurations } from '@nrwl/devkit';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
+import { Preset } from './schema';
 import {
   insertChangelogDependencyUpdates,
   updateChangelog,
@@ -10,7 +11,6 @@ import { addToStage, createTag, getLastCommitHash } from './utils/git';
 import { logStep } from './utils/logger';
 import { updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
-import { Preset } from './schema';
 
 export type Version =
   | {
@@ -38,7 +38,7 @@ export interface CommonVersionOptions {
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
   preset: Preset;
-  workspace: ProjectsConfigurations & NxJsonConfiguration<string[] | '*'>;
+  workspace: ProjectsConfigurations | undefined;
 }
 
 export function versionWorkspace({
