@@ -51,8 +51,9 @@ jobs:
       - name: Commit changes
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
         run: |
+          LAST_VERSION=$(npm view @nrwl/workspace version)
           git add .
-          [[ $(git status --porcelain) ]] && git commit -m "build: 📦 update nrwl workspace" || echo "nothing to commit"
+          [[ $(git status --porcelain) ]] && git commit -m "build: 📦 update nrwl workspace to ${LAST_VERSION}" || echo "nothing to commit"
 
       - name: Remove migrations.json & commit
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
