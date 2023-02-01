@@ -10,9 +10,19 @@ describe(release.name, () => {
     vol.reset();
   });
 
-  describe('when semver.json does not exist', () => {
-    it('should throw an error', async () => {
+  describe('when semver.json does not exist or is invalid', () => {
+    it('should throw an error when not defined', async () => {
       await expect(release()).rejects.toThrow('Could not find semver.json');
+    });
+
+    it('should throw an error when invalid', async () => {
+      vol.fromJSON(
+        {
+          './semver.json': JSON.stringify({}),
+        },
+        '/tmp'
+      );
+      await expect(release()).rejects.toThrow('Invalid semver.json');
     });
   });
 

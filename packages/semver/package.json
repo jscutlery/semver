@@ -21,5 +21,8 @@
   },
   "peerDependencies": {
     "@nrwl/devkit": "^15.0.0"
+  },
+  "dependencies": {
+    "zod": "3.20.2"
   }
 }
