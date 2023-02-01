@@ -12,6 +12,12 @@ export async function release(): Promise<void> {
     if (pkg.type === 'independent' && !(pkg.name in graph.nodes)) {
       throw new Error(`Could not find project "${pkg.name}"`);
     }
+    if (
+      pkg.type === 'group' &&
+      !pkg.packages.every((child) => child.name in graph.nodes)
+    ) {
+      throw new Error(`Could not find all projects in group "${pkg.name}"`);
+    }
 
     const node = graph.nodes[pkg.name];
   }

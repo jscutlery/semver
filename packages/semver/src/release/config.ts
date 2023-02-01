@@ -20,11 +20,23 @@ export async function getConfig(): Promise<Config> {
 
 const schema = z.object({
   packages: z.array(
-    z.object({
-      name: z.string(),
-      type: z.enum(['independent', 'fixed']),
-      path: z.string(),
-    })
+    z.union([
+      z.object({
+        name: z.string(),
+        type: z.literal('group'),
+        packages: z.array(
+          z.object({
+            name: z.string(),
+            path: z.string(),
+          })
+        ),
+      }),
+      z.object({
+        name: z.string(),
+        type: z.literal('independent'),
+        path: z.string(),
+      }),
+    ])
   ),
 });
 

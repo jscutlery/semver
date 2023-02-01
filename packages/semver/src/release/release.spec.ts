@@ -1,6 +1,7 @@
 import { createProjectGraphAsync, ProjectGraph } from '@nrwl/devkit';
 import * as fs from 'fs/promises';
 import { vol } from 'memfs';
+import { Config } from './config';
 import { release } from './release';
 
 const cwd = '/tmp';
@@ -39,26 +40,56 @@ describe(release.name, () => {
   });
 
   describe('when semver.json exists', () => {
+    const config: Config = {
+      packages: [
+        { name: 'template', type: 'independent', path: 'packages/template' },
+        {
+          name: 'cdk',
+          type: 'group',
+          packages: [
+            { name: 'cdk-core', path: 'packages/cdk/core' },
+            { name: 'cdk-aws', path: 'packages/cdk/aws' },
+          ],
+        },
+      ],
+    };
+
     beforeEach(() => {
       vol.fromJSON(
         {
-          'semver.json': JSON.stringify({
-            packages: [
-              { name: 'cdk', type: 'independent', path: 'packages/cdk' },
-            ],
-          }),
+          'semver.json': JSON.stringify(config),
         },
         cwd
       );
 
       projectGraphMock.mockResolvedValue({
         nodes: {
-          cdk: {
-            name: 'cdk',
+          template: {
+            name: 'template',
             type: 'lib',
             data: {
               files: [],
-              root: 'packages/cdk',
+              root: 'packages/template',
+              targets: {},
+              tags: [],
+            },
+          },
+          'cdk-core': {
+            name: 'cdk-core',
+            type: 'lib',
+            data: {
+              files: [],
+              root: 'packages/cdk/core',
+              targets: {},
+              tags: [],
+            },
+          },
+          'cdk-aws': {
+            name: 'cdk-core',
+            type: 'lib',
+            data: {
+              files: [],
+              root: 'packages/cdk/core',
               targets: {},
               tags: [],
             },
@@ -68,19 +99,42 @@ describe(release.name, () => {
       } satisfies ProjectGraph);
     });
 
-    it('should read config file', async () => {
-      const spy = jest.spyOn(fs, 'readFile');
-      await release();
-      expect(spy).toHaveBeenCalledWith('/tmp/semver.json', 'utf-8');
-      spy.mockClear();
-    });
-
     it('should throw when project is not defined', async () => {
       projectGraphMock.mockResolvedValue({
         nodes: {},
         dependencies: {},
       } satisfies ProjectGraph);
-      await expect(release()).rejects.toThrow('Could not find project "cdk"');
+      await expect(release()).rejects.toThrow(
+        'Could not find project "template"'
+      );
+    });
+
+    it('should throw when a project is not defined in a group', async () => {
+      projectGraphMock.mockResolvedValue({
+        nodes: {
+          template: {
+            name: 'template',
+            type: 'lib',
+            data: {
+              files: [],
+              root: 'packages/template',
+              targets: {},
+              tags: [],
+            },
+          },
+        },
+        dependencies: {},
+      } satisfies ProjectGraph);
+      await expect(release()).rejects.toThrow(
+        'Could not find all projects in group "cdk"'
+      );
+    });
+
+    it('should read config file', async () => {
+      const spy = jest.spyOn(fs, 'readFile');
+      await release();
+      expect(spy).toHaveBeenCalledWith('/tmp/semver.json', 'utf-8');
+      spy.mockClear();
     });
   });
 });
