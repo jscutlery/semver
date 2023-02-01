@@ -6,10 +6,6 @@
     "declaration": true,
     "types": ["node", "jest"]
   },
-  "exclude": [
-    "src/builders/version/testing.ts",
-    "**/*.spec.ts",
-    "jest.config.ts"
-  ],
+  "exclude": ["**/*.spec.ts", "jest.config.ts"],
   "include": ["**/*.ts"]
 }
