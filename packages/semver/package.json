@@ -21,7 +21,5 @@
   },
   "peerDependencies": {
     "@nrwl/devkit": "^15.0.0"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

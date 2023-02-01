@@ -1,0 +1,5 @@
+{
+  "packages": [
+    { "name": "semver", "type": "independent", "path": "packages/semver" }
+  ]
+}
