@@ -3,6 +3,9 @@ name: Setup
 description: Setup Node.js, cache and install dependencies
 
 inputs:
+  git_bot_token:
+    description: Git Bot token used to push to protected branches because github token can't
+    required: false
   node_version:
     description: Node.js version
     required: false
@@ -14,6 +17,7 @@ runs:
     - name: Checkout all commits
       uses: actions/checkout@v3
       with:
+        token: ${{ inputs.git_bot_token || github.token }}
         fetch-depth: 0
 
     - name: Setup git user to "🤖 JSCutlery Bot"

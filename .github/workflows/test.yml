@@ -18,6 +18,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           node_version: ${{ matrix.node_version }}
+          git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
 
       - name: Test
         uses: ./.github/actions/test
