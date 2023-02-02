@@ -18,29 +18,33 @@ export async function getConfig(): Promise<Config> {
   }
 }
 
-const schema = z.object({
+const groupSchema = z.object({
+  name: z.string(),
+  type: z.literal('group'),
+  tagPrefix: z.string().optional(),
+  path: z.string(),
   packages: z.array(
-    z.union([
-      z.object({
-        name: z.string(),
-        type: z.literal('group'),
-        packages: z.array(
-          z.object({
-            name: z.string(),
-            path: z.string(),
-          })
-        ),
-      }),
-      z.object({
-        name: z.string(),
-        type: z.literal('independent'),
-        path: z.string(),
-      }),
-    ])
+    z.object({
+      name: z.string(),
+      path: z.string(),
+    })
   ),
 });
 
+const independentSchema = z.object({
+  name: z.string(),
+  type: z.literal('independent'),
+  tagPrefix: z.string().optional(),
+  path: z.string(),
+});
+
+const schema = z.object({
+  packages: z.array(z.union([groupSchema, independentSchema])),
+});
+
 export type Config = z.infer<typeof schema>;
+export type GroupConfig = z.infer<typeof groupSchema>;
+export type IndependentConfig = z.infer<typeof independentSchema>;
 
 function validate(config: unknown): Config {
   return schema.parse(config);

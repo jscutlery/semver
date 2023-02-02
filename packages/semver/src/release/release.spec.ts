@@ -3,6 +3,7 @@ import * as fs from 'fs/promises';
 import { vol } from 'memfs';
 import { Config } from './config';
 import { release } from './release';
+import { getTags } from './tag';
 
 const cwd = '/tmp';
 
@@ -13,12 +14,19 @@ jest.mock('@nrwl/devkit', () => ({
   createProjectGraphAsync: jest.fn(),
 }));
 
+jest.mock('./tag', () => ({
+  getTags: jest.fn().mockResolvedValue([]),
+}));
+
 describe(release.name, () => {
   const projectGraphMock = createProjectGraphAsync as jest.Mock;
+  const getTagsMock = getTags as jest.Mock;
+  const logSpy = jest.spyOn(console, 'log') as jest.Mock;
 
   afterEach(() => {
     vol.reset();
     projectGraphMock.mockClear();
+    logSpy.mockClear();
   });
 
   describe('when semver.json does not exist or is invalid', () => {
@@ -46,6 +54,7 @@ describe(release.name, () => {
         {
           name: 'cdk',
           type: 'group',
+          path: 'packages/cdk',
           packages: [
             { name: 'cdk-core', path: 'packages/cdk/core' },
             { name: 'cdk-aws', path: 'packages/cdk/aws' },
@@ -131,10 +140,30 @@ describe(release.name, () => {
     });
 
     it('should read config file', async () => {
-      const spy = jest.spyOn(fs, 'readFile');
+      const readFileSpy = jest.spyOn(fs, 'readFile');
       await release();
-      expect(spy).toHaveBeenCalledWith('/tmp/semver.json', 'utf-8');
-      spy.mockClear();
+      expect(readFileSpy).toHaveBeenCalledWith('/tmp/semver.json', 'utf-8');
+      readFileSpy.mockClear();
+    });
+
+    it('should calculate new version', async () => {
+      getTagsMock.mockResolvedValue([
+        'cdk-1.1.0',
+        'cdk-1.0.1',
+        'cdk-1.0.0',
+        'template-1.1.0',
+        'template-1.0.1',
+        'template-1.0.0',
+      ]);
+
+      await release();
+
+      expect(logSpy).toHaveBeenCalledWith(
+        'Releasing template from 1.1.0 to 2.0.0'
+      );
+      expect(logSpy).toHaveBeenCalledWith(
+        'Abort: Releasing cdk is not yet implemented. Skipping.'
+      );
     });
   });
 });
