@@ -2265,21 +2265,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/devkit@npm:15.6.2":
-  version: 15.6.2
-  resolution: "@nrwl/devkit@npm:15.6.2"
-  dependencies:
-    "@phenomnomnominal/tsquery": 4.1.1
-    ejs: ^3.1.7
-    ignore: ^5.0.4
-    semver: 7.3.4
-    tslib: ^2.3.0
-  peerDependencies:
-    nx: ">= 14 <= 16"
-  checksum: 1e8af03fb4606f7c1d356a117209d0607a43dd4d47f7824be49ef1d5de779662578da3070d9e3dd754399c744fb3280fd9b8ea1d26d3678bd5a33eb693e6a67d
-  languageName: node
-  linkType: hard
-
 "@nrwl/devkit@npm:15.6.3":
   version: 15.6.3
   resolution: "@nrwl/devkit@npm:15.6.3"
@@ -6682,7 +6667,7 @@ __metadata:
     husky: ^8.0.0
     jest: 29.4.1
     jest-extended: ^3.0.0
-    ngx-deploy-npm: ^4.0.0
+    ngx-deploy-npm: ^5.0.0
     nx: 15.6.3
     prettier: 2.8.3
     tmp: ^0.2.1
@@ -7364,14 +7349,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-deploy-npm@npm:^4.0.0":
-  version: 4.3.11
-  resolution: "ngx-deploy-npm@npm:4.3.11"
-  dependencies:
-    "@nrwl/devkit": 15.6.2
+"ngx-deploy-npm@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "ngx-deploy-npm@npm:5.0.0"
   peerDependencies:
-    nx: 15.6.2
-  checksum: e0b41831c0cac62412ba2d1c691b8c58a48abe96e71ce41266776aa48fa484cced149768f0ad85a7af06c2117a062cb01bb8ddebbdb6b4a1ca1844f40409176e
+    "@nrwl/devkit": ^15.0.0
+    "@nrwl/workspace": ^15.0.0
+    nx: ^15.0.0
+  checksum: 8bd0edf3aa9c5b04fc1d8d7c0635f8b8eefb8fa2f8d74732d889b17329a7d8da462d1f94b995750385e24fdc00dff407a992c88fc1f513a901cdde7df0a8d715
   languageName: node
   linkType: hard
 
