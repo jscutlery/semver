@@ -1,11 +1,11 @@
 import { createProjectGraphAsync, ProjectGraph } from '@nrwl/devkit';
 import * as fs from 'fs/promises';
 import { vol } from 'memfs';
+import { setupGitRepo } from '../testing';
 import { Config } from './config';
 import { release } from './release';
-import { getTags } from './tag';
 
-const cwd = '/tmp';
+const cwd = '/tmp/project';
 
 jest.mock('process', () => ({ cwd: () => cwd }));
 jest.mock('fs/promises', () => jest.requireActual('memfs').fs.promises);
@@ -14,14 +14,13 @@ jest.mock('@nrwl/devkit', () => ({
   createProjectGraphAsync: jest.fn(),
 }));
 
-jest.mock('./tag', () => ({
-  getTags: jest.fn().mockResolvedValue([]),
-}));
-
 describe(release.name, () => {
   const projectGraphMock = createProjectGraphAsync as jest.Mock;
-  const getTagsMock = getTags as jest.Mock;
   const logSpy = jest.spyOn(console, 'log') as jest.Mock;
+
+  beforeAll(async () => {
+    await setupGitRepo({ cwd });
+  })
 
   afterEach(() => {
     vol.reset();
@@ -147,14 +146,14 @@ describe(release.name, () => {
     });
 
     it('should calculate new version', async () => {
-      getTagsMock.mockResolvedValue([
-        'cdk-1.1.0',
-        'cdk-1.0.1',
-        'cdk-1.0.0',
-        'template-1.1.0',
-        'template-1.0.1',
-        'template-1.0.0',
-      ]);
+      // getTagsMock.mockResolvedValue([
+      //   'cdk-1.1.0',
+      //   'cdk-1.0.1',
+      //   'cdk-1.0.0',
+      //   'template-1.1.0',
+      //   'template-1.0.1',
+      //   'template-1.0.0',
+      // ]);
 
       await release();
 

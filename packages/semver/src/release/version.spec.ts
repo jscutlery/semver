@@ -1,21 +1,10 @@
-import { exec } from './exec';
+import { setupGitRepo } from '../testing';
+import { exec } from '../utils/exec';
 import { getCurrentVersion } from './version';
 
 describe(getCurrentVersion.name, () => {
   beforeAll(async () => {
-    await exec('mkdir', ['-p', '/tmp/semver']);
-    await exec('git', ['init'], { cwd: '/tmp/semver' });
-    await exec('git', ['config', 'user.email', 'test@email.com', '--local'], {
-      cwd: '/tmp/semver',
-    });
-    await exec('git', ['config', 'user.name', 'test', '--local'], {
-      cwd: '/tmp/semver',
-    });
-    await exec(
-      'git',
-      ['commit', '--allow-empty', '-m', 'init', '--no-gpg-sign'],
-      { cwd: '/tmp/semver' }
-    );
+    await setupGitRepo({ cwd: '/tmp/semver' })
   });
 
   afterAll(async () => {

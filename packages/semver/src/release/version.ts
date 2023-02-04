@@ -1,5 +1,5 @@
 import * as semver from 'semver';
-import { getTags } from './tag';
+import { exec } from '../utils/exec';
 
 export async function getCurrentVersion({
   tagPrefix,
@@ -19,4 +19,8 @@ export async function getCurrentVersion({
   }
 
   return version;
+}
+
+async function getTags(): Promise<string[]> {
+  return (await exec('git', ['tag', '--list'])).trim().split('\n');
 }
