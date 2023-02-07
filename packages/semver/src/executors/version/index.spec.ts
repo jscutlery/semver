@@ -5,6 +5,7 @@ import version from './';
 import type { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
 import * as changelog from './utils/changelog';
+import { defaultHeader } from './utils/changelog';
 import * as commit from './utils/commit';
 import { getDependencyRoots } from './utils/get-project-dependencies';
 import * as git from './utils/git';
@@ -12,7 +13,6 @@ import { runPostTargets } from './utils/post-target';
 import * as project from './utils/project';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
-import { defaultHeader } from './utils/changelog';
 const LAST_COMMIT_HASH = 'lastCommitHash';
 jest.mock('./utils/changelog');
 jest.mock('./utils/project');
@@ -99,7 +99,7 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(logger, 'log').mockImplementation();
 
     mockTryBump.mockReturnValue(
-      of({ version: '2.1.0', dependencyUpdates: [] })
+      of({ version: '2.1.0', previousVersion: '2.0.0', dependencyUpdates: [] })
     );
     mockUpdateChangelog.mockImplementation(({ projectRoot }) =>
       of(changelog.getChangelogPath(projectRoot))
@@ -636,6 +636,7 @@ describe('@jscutlery/semver:version', () => {
             projectName: 'a',
             tag: 'a-2.1.0',
             version: '2.1.0',
+            previousTag: 'a-2.0.0',
           },
         })
       );

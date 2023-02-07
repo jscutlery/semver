@@ -79,6 +79,7 @@ Rather than using the entire changelog on every release as your notes you can us
 | **`--discussionCategory`** | `string`   | `undefined` | start a discussion of the specified category                    |
 | **`--repo`**               | `string`   | `undefined` | select another repository using the [HOST/]OWNER/REPO format    |
 | **`--generateNotes`**      | `boolean`  | `undefined` | automatically generate title and notes for the release          |
+| **`--notesStartTag`**      | `string`   | `undefined` | tag to use as the starting point for generating release notes   |
 
 #### CI/CD
 

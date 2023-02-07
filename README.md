@@ -250,6 +250,7 @@ Contextual variables resolved by this option:
 - `version` semver version
 - `tag` formatted git tag
 - `notes` release notes
+- `previousTag` previous version tag
 
 #### Built-in post-targets
 

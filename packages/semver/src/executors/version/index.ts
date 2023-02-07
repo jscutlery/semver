@@ -169,6 +169,10 @@ export default async function version(
               version,
               projectName,
               tag,
+              previousTag: formatTag({
+                tagPrefix,
+                version: newVersion.previousVersion,
+              }),
             },
           })
         );

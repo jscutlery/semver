@@ -16,6 +16,7 @@ export default async function runExecutor({
   discussionCategory,
   repo,
   generateNotes,
+  notesStartTag,
 }: GithubExecutorSchema) {
   const createRelease$ = exec('gh', [
     'release',
@@ -33,6 +34,7 @@ export default async function runExecutor({
       : []),
     ...(repo ? [`--repo`, repo] : []),
     ...(generateNotes ? [`--generate-notes`] : []),
+    ...(notesStartTag ? [`--notes-start-tag`, notesStartTag] : []),
   ]).pipe(
     mapTo({ success: true }),
     catchError((response) => {

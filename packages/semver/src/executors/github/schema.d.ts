@@ -10,4 +10,5 @@ export interface GithubExecutorSchema {
   discussionCategory?: string;
   repo?: string;
   generateNotes?: boolean;
+  notesStartTag?: string;
 }

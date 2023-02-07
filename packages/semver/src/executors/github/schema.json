@@ -50,6 +50,10 @@
     "generateNotes": {
       "type": "boolean",
       "description": "Automatically generate title and notes for the release"
+    },
+    "notesStartTag": {
+      "type": "string",
+      "description": "Tag to use as the starting point for generating release notes"
     }
   },
   "required": ["tag"]
