@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [2.30.0](https://github.com/jscutlery/semver/compare/semver-2.29.3...semver-2.30.0) (2023-02-07)
+
+
+### Bug Fixes
+
+* 📦 bump dependency rxjs to v7.8.0 ([cc7eb91](https://github.com/jscutlery/semver/commit/cc7eb91782ec5e5af5a1db2a2e18e98a6f05aa36))
+
+
+### Features
+
+* **semver:** add option to generate release notes since previous tag ([c272c39](https://github.com/jscutlery/semver/commit/c272c39d3a16bba4253f3376d83d05ec753e974a))
+
+
+
 ## [2.29.3](https://github.com/jscutlery/semver/compare/semver-2.29.2...semver-2.29.3) (2022-12-15)
 
 
