@@ -67,7 +67,7 @@ describe('tryBump', () => {
     );
 
     expect(newVersion?.version).toEqual('2.2.0');
-
+    expect(newVersion?.previousVersion).toEqual('2.1.0');
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
@@ -197,15 +197,16 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'major',
         skipCommitTypes: [],
-
         projectName: '',
       })
     );
 
-    expect(newVersion).toEqual({ dependencyUpdates: [], version: '3.0.0' });
-
+    expect(newVersion).toEqual({
+      version: '3.0.0',
+      previousVersion: '2.1.0',
+      dependencyUpdates: [],
+    });
     expect(mockConventionalRecommendedBump).not.toBeCalled();
-
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
@@ -230,15 +231,16 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'patch',
         projectName: '',
-
         skipCommitTypes: [],
       })
     );
 
-    expect(newVersion).toEqual({ dependencyUpdates: [], version: '2.1.1' });
-
+    expect(newVersion).toEqual({
+      version: '2.1.1',
+      previousVersion: '2.1.0',
+      dependencyUpdates: [],
+    });
     expect(mockConventionalRecommendedBump).not.toBeCalled();
-
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
@@ -268,10 +270,12 @@ describe('tryBump', () => {
       })
     );
 
-    expect(newVersion).toEqual({ dependencyUpdates: [], version: '2.2.0' });
-
+    expect(newVersion).toEqual({
+      version: '2.2.0',
+      previousVersion: '2.1.0',
+      dependencyUpdates: [],
+    });
     expect(mockConventionalRecommendedBump).not.toBeCalled();
-
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
       projectRoot: '/libs/demo',
@@ -296,7 +300,7 @@ describe('tryBump', () => {
     );
 
     expect(newVersion?.version).toEqual('2.1.1');
-
+    expect(newVersion?.previousVersion).toEqual('2.1.0');
     expect(mockConventionalRecommendedBump).not.toBeCalled();
   });
 

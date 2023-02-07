@@ -20,6 +20,7 @@ import { formatTag, formatTagPrefix } from './tag';
 
 export interface NewVersion {
   version: string;
+  previousVersion: string;
   dependencyUpdates: Version[];
 }
 
@@ -136,7 +137,15 @@ export function tryBump({
           releaseType: releaseType as string,
           preid: preid as string,
         }).pipe(
-          map((version) => ({ version, dependencyUpdates: [] } as NewVersion))
+          map((version) =>
+            version
+              ? ({
+                  version,
+                  previousVersion: lastVersion,
+                  dependencyUpdates: [],
+                } satisfies NewVersion)
+              : null
+          )
         );
       }
 
@@ -164,6 +173,7 @@ export function tryBump({
           const dependencyUpdates = dependencyVersions.filter(_isNewVersion);
           const newVersion: NewVersion = {
             version: projectVersion.version || lastVersion,
+            previousVersion: lastVersion,
             dependencyUpdates,
           };
 
@@ -174,12 +184,14 @@ export function tryBump({
               releaseType: 'patch',
               preid: preid as string,
             }).pipe(
-              map(
-                (version) =>
-                  ({
-                    ...newVersion,
-                    version: version || lastVersion,
-                  } as NewVersion)
+              map((version) =>
+                version
+                  ? ({
+                      ...newVersion,
+                      version: version || lastVersion,
+                      previousVersion: lastVersion,
+                    } satisfies NewVersion)
+                  : null
               )
             );
           }
@@ -313,7 +325,7 @@ export function _getDependencyVersions({
               type: 'dependency',
               version: null,
               dependencyName: dependencyName,
-            } as Version);
+            } satisfies Version);
           }
 
           /* Dependency has changes but has no tagged version */
@@ -330,7 +342,7 @@ export function _getDependencyVersions({
                     type: 'dependency',
                     version,
                     dependencyName: dependencyName,
-                  } as Version)
+                  } satisfies Version)
               )
             );
           }
@@ -340,7 +352,7 @@ export function _getDependencyVersions({
             type: 'dependency',
             version: dependencyLastVersion,
             dependencyName: dependencyName,
-          } as Version);
+          } satisfies Version);
         })
       );
     })
