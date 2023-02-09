@@ -165,6 +165,7 @@ export default async function version(
             projectName,
             postTargets,
             templateStringContext: {
+              dryRun,
               notes,
               version,
               projectName,

@@ -632,6 +632,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockRunPostTargets).toBeCalledWith(
         expect.objectContaining({
           templateStringContext: {
+            dryRun: false,
             notes: '',
             projectName: 'a',
             tag: 'a-2.1.0',
