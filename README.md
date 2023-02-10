@@ -252,6 +252,7 @@ Contextual variables resolved by this option:
 - `tag` formatted git tag
 - `notes` release notes
 - `previousTag` previous version tag
+- `dryRun` dry run mode
 
 #### Built-in post-targets
 
