@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.30.1](https://github.com/jscutlery/semver/compare/semver-2.30.0...semver-2.30.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* provide dryRun flag to post targets ([bb70cd9](https://github.com/jscutlery/semver/commit/bb70cd902fefe9603d8e94b268d86e478fd3a916))
+
+
+
 # [2.30.0](https://github.com/jscutlery/semver/compare/semver-2.29.3...semver-2.30.0) (2023-02-07)
 
 
