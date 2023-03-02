@@ -7416,13 +7416,13 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ngx-deploy-npm@npm:5.0.0"
+  version: 5.2.0
+  resolution: "ngx-deploy-npm@npm:5.2.0"
   peerDependencies:
-    "@nrwl/devkit": ^15.0.0
-    "@nrwl/workspace": ^15.0.0
-    nx: ^15.0.0
-  checksum: 8bd0edf3aa9c5b04fc1d8d7c0635f8b8eefb8fa2f8d74732d889b17329a7d8da462d1f94b995750385e24fdc00dff407a992c88fc1f513a901cdde7df0a8d715
+    "@nrwl/devkit": ^14.0.0 || ^15.0.0
+    "@nrwl/workspace": ^14.0.0 || ^15.0.0
+    nx: ^14.0.0 || ^15.0.0
+  checksum: 4fffb7a49529c83ce7e92e5b850075bde54991e2ef7564d28dc9963feb7b990c11249e806e187b77f38b0c62ccd66539f69b17677bd5ce3876d2fd18df9d2351
   languageName: node
   linkType: hard
 
