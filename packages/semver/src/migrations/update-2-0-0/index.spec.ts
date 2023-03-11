@@ -1,6 +1,6 @@
+import type { Tree } from '@nrwl/devkit';
 import { getProjects } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
-import type { Tree } from '@nrwl/devkit';
 
 import migrate from '.';
 
@@ -17,18 +17,13 @@ describe('2.0.0 migration schematic', () => {
 
   it('should update --root-changelog=false option to --skip-root-changelog=true', () => {
     appTree.write(
-      'workspace.json',
+      'apps/demo/project.json',
       serializeJson({
-        version: 1,
-        projects: {
-          demo: {
-            targets: {
-              version: {
-                executor: '@jscutlery/semver',
-                options: {
-                  rootChangelog: false,
-                },
-              },
+        targets: {
+          version: {
+            executor: '@jscutlery/semver',
+            options: {
+              rootChangelog: false,
             },
           },
         },
@@ -50,18 +45,13 @@ describe('2.0.0 migration schematic', () => {
 
   it('should update --root-changelog=true option to --skip-root-changelog=false', () => {
     appTree.write(
-      'workspace.json',
+      'apps/demo/project.json',
       serializeJson({
-        version: 1,
-        projects: {
-          demo: {
-            targets: {
-              version: {
-                executor: '@jscutlery/semver',
-                options: {
-                  rootChangelog: true,
-                },
-              },
+        targets: {
+          version: {
+            executor: '@jscutlery/semver',
+            options: {
+              rootChangelog: true,
             },
           },
         },
@@ -83,17 +73,12 @@ describe('2.0.0 migration schematic', () => {
 
   it('should not update other targets', () => {
     appTree.write(
-      'workspace.json',
+      'apps/demo/project.json',
       serializeJson({
-        version: 1,
-        projects: {
-          demo: {
-            targets: {
-              test: {
-                executor: 'another',
-                options: { option: 'value' },
-              },
-            },
+        targets: {
+          test: {
+            executor: 'another',
+            options: { option: 'value' },
           },
         },
       })
