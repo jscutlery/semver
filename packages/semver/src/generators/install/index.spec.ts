@@ -5,12 +5,10 @@ import {
   type Tree,
 } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
-import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
 import install from '.';
 
-import type { PathLike } from 'fs';
 import type { SchemaOptions } from './schema';
 
 jest.mock('inquirer');
@@ -23,17 +21,6 @@ const defaultOptions: SchemaOptions = {
 
 describe('Install generator', () => {
   let tree: Tree;
-
-  beforeEach(() => {
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined);
-    jest
-      .spyOn(fs, 'writeFileSync')
-      .mockImplementation(
-        (_path: number | PathLike, _content: string | ArrayBufferView) => {
-          tree.write(_path as string, _content as string);
-        }
-      );
-  });
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace();
