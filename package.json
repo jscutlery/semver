@@ -40,7 +40,7 @@
     "@nrwl/js": "15.8.7",
     "@nrwl/nx-plugin": "15.8.7",
     "@nrwl/workspace": "15.8.7",
-    "@types/jest": "29.4.4",
+    "@types/jest": "29.5.0",
     "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "5.55.0",
     "@typescript-eslint/parser": "5.55.0",
