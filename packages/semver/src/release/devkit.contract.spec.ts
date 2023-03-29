@@ -34,7 +34,7 @@ export class TestingDevkit implements DevkitContract {
   }
 
   readFile(path: string, encoding: 'utf-8'): Promise<string> {
-    return fs.readFile(resolve(this.cwd(), path), encoding);
+    return fs.readFile(path, encoding);
   }
 
   createProjectGraphAsync(): Promise<ProjectGraph> {
@@ -78,14 +78,17 @@ describe('contract', () => {
       );
     });
 
-    it('reads a JSON file', async () => {
-      const result = await testDevkit.readFile('semver.json', 'utf-8');
-      expect(result).toEqual(JSON.stringify({ value: 'JSON' }));
-    });
-
     it('returns PWD', async () => {
       const result = await testDevkit.cwd();
       expect(result).toEqual('/tmp/project');
+    });
+
+    it('reads a JSON file', async () => {
+      const result = await testDevkit.readFile(
+        resolve(testDevkit.cwd(), 'semver.json'),
+        'utf-8'
+      );
+      expect(result).toEqual(JSON.stringify({ value: 'JSON' }));
     });
 
     it('creates workspace graph', async () => {

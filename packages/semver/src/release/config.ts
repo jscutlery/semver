@@ -11,7 +11,7 @@ export async function getConfig(): Promise<Config> {
     if (error.code === 'ENOENT') {
       throw new Error('Could not find semver.json');
     }
-    if (error instanceof z.ZodError) {
+    if (error instanceof SyntaxError || error instanceof z.ZodError) {
       throw new Error(`Invalid semver.json`);
     }
     throw error;
