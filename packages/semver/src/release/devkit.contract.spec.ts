@@ -1,8 +1,6 @@
-import { createProjectGraphAsync, ProjectGraph } from '@nrwl/devkit';
-import * as fs from 'fs/promises';
-import { DirectoryJSON, vol } from 'memfs';
 import { resolve } from 'path';
-import { setupGitRepo } from '../testing';
+import { setupGitRepo } from '../testing/setup';
+import { TestingDevkit } from '../testing/testing-devkit';
 
 const cwd = '/tmp/project';
 
@@ -12,47 +10,6 @@ jest.mock('@nrwl/devkit', () => ({
   ...jest.requireActual('@nrwl/devkit'),
   createProjectGraphAsync: jest.fn(),
 }));
-
-export interface DevkitContract {
-  createProjectGraphAsync(options: {
-    exitOnError: boolean;
-    resetDaemonClient: boolean;
-  }): Promise<ProjectGraph>;
-  cwd(): string;
-  readFile(path: string, encoding: string): Promise<string>;
-}
-
-export class TestingDevkit implements DevkitContract {
-  private readonly projectGraphMock = createProjectGraphAsync as jest.Mock;
-
-  constructor(
-    readonly projectGraph: ProjectGraph,
-    readonly virtualFs: DirectoryJSON
-  ) {
-    vol.fromJSON(virtualFs, cwd);
-    this.projectGraphMock.mockResolvedValue(projectGraph);
-  }
-
-  readFile(path: string, encoding: 'utf-8'): Promise<string> {
-    return fs.readFile(path, encoding);
-  }
-
-  createProjectGraphAsync(): Promise<ProjectGraph> {
-    return createProjectGraphAsync({
-      exitOnError: true,
-      resetDaemonClient: false,
-    });
-  }
-
-  cwd(): string {
-    return cwd;
-  }
-
-  teardown(): void {
-    vol.reset();
-    this.projectGraphMock.mockClear();
-  }
-}
 
 describe('contract', () => {
   let testDevkit: TestingDevkit;

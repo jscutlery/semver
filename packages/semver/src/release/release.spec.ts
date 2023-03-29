@@ -1,5 +1,5 @@
-import { setupGitRepo } from '../testing';
-import { TestingDevkit } from './devkit.contract.spec';
+import { setupGitRepo } from '../testing/setup';
+import { TestingDevkit } from '../testing/testing-devkit';
 import { release } from './release';
 
 const cwd = '/tmp/project';

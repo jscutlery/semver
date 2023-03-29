@@ -1,4 +1,4 @@
-import { exec } from './utils/exec';
+import { exec } from '../utils/exec';
 
 export async function setupGitRepo({ cwd = '/tmp/project' }): Promise<void> {
   await exec('mkdir', ['-p', cwd]);

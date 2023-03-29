@@ -1,10 +1,10 @@
-import { setupGitRepo } from '../testing';
+import { setupGitRepo } from '../testing/setup';
 import { exec } from '../utils/exec';
 import { getCurrentVersion } from './version';
 
 describe(getCurrentVersion.name, () => {
   beforeAll(async () => {
-    await setupGitRepo({ cwd: '/tmp/semver' })
+    await setupGitRepo({ cwd: '/tmp/semver' });
   });
 
   afterAll(async () => {
