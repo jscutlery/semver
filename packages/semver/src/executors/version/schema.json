@@ -110,6 +110,11 @@
       "type": "boolean",
       "default": false
     },
+    "skipTag": {
+      "description": "Allows to skip making a tag when bumping a version.",
+      "type": "boolean",
+      "default": false
+    },
     "skipCommitTypes": {
       "description": "Specify array of commit types to be ignored when calculating next version bump.",
       "type": "array",

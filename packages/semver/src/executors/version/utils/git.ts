@@ -154,18 +154,20 @@ export function getFirstCommitRef(): Observable<string> {
 
 export function createTag({
   dryRun,
+  skipTag,
   tag,
   commitHash,
   commitMessage,
   projectName,
 }: {
   dryRun: boolean;
+  skipTag: boolean;
   tag: string;
   commitHash: string;
   commitMessage: string;
   projectName: string;
 }): Observable<string> {
-  if (dryRun) {
+  if (dryRun || skipTag) {
     return EMPTY;
   }
   return exec('git', ['tag', '-a', tag, commitHash, '-m', commitMessage]).pipe(
