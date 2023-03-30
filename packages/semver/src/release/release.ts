@@ -1,14 +1,12 @@
-import { createProjectGraphAsync, ProjectGraph } from '@nrwl/devkit';
+import { ProjectGraph } from '@nrwl/devkit';
 import * as semver from 'semver';
 import { getConfig, GroupConfig, IndependentConfig } from './config';
+import { devkit } from './devkit';
 import { getCurrentVersion } from './version';
 
 export async function release(): Promise<void> {
   const config = await getConfig();
-  const graph = await createProjectGraphAsync({
-    exitOnError: true,
-    resetDaemonClient: false,
-  });
+  const graph = await devkit.createGraph();
 
   for (const pkg of config.packages) {
     checkPackageExists(pkg, graph);

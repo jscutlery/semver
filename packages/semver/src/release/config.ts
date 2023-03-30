@@ -1,11 +1,10 @@
-import { readFile } from 'fs/promises';
 import { resolve } from 'path';
-import { cwd } from 'process';
 import * as z from 'zod';
+import { devkit } from './devkit';
 
 export async function getConfig(): Promise<Config> {
   try {
-    const config = await readFile(resolve(cwd(), 'semver.json'), 'utf-8');
+    const config = await devkit.readFile(resolve(devkit.cwd(), 'semver.json'));
     return validate(JSON.parse(config));
   } catch (error: any) {
     if (error.code === 'ENOENT') {

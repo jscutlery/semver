@@ -1,7 +1,7 @@
 import { createProjectGraphAsync, ProjectGraph } from '@nrwl/devkit';
 import * as fs from 'fs/promises';
 import { DirectoryJSON, vol } from 'memfs';
-import { DevkitContract } from '../release/devkit.contract';
+import { Devkit } from '../release/devkit';
 
 const cwd = '/tmp/project';
 
@@ -12,22 +12,23 @@ jest.mock('@nrwl/devkit', () => ({
   createProjectGraphAsync: jest.fn(),
 }));
 
-export class TestingDevkit implements DevkitContract {
+export class TestingDevkit implements Devkit {
   private readonly projectGraphMock = createProjectGraphAsync as jest.Mock;
 
   constructor(
     readonly projectGraph: ProjectGraph,
-    readonly virtualFs: DirectoryJSON
+    readonly virtualFs: DirectoryJSON,
+    private readonly _cwd = '/tmp/project'
   ) {
-    vol.fromJSON(virtualFs, cwd);
+    vol.fromJSON(virtualFs, this._cwd);
     this.projectGraphMock.mockResolvedValue(projectGraph);
   }
 
-  readFile(path: string, encoding: 'utf-8'): Promise<string> {
-    return fs.readFile(path, encoding);
+  readFile(path: string): Promise<string> {
+    return fs.readFile(path, 'utf-8');
   }
 
-  createProjectGraphAsync(): Promise<ProjectGraph> {
+  createGraph(): Promise<ProjectGraph> {
     return createProjectGraphAsync({
       exitOnError: true,
       resetDaemonClient: false,
@@ -35,7 +36,7 @@ export class TestingDevkit implements DevkitContract {
   }
 
   cwd(): string {
-    return cwd;
+    return this._cwd;
   }
 
   teardown(): void {
