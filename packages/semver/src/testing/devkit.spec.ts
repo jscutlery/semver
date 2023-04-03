@@ -22,6 +22,19 @@ describe('Devkit', () => {
         ],
       });
     });
+
+    it('reads workspace graph', async () => {
+      const result = await devkit.createGraph();
+      expect(result).toEqual(
+        expect.objectContaining({
+          nodes: expect.objectContaining({
+            semver: expect.objectContaining({
+              name: 'semver',
+            }),
+          }),
+        })
+      );
+    });
   });
 
   describe('TestingDevkit', () => {
@@ -31,6 +44,14 @@ describe('Devkit', () => {
     const devkit = new TestingDevkit(
       {
         'semver.json': JSON.stringify({ value: 'JSON' }),
+      },
+      {
+        nodes: {
+          project: {
+            name: 'project',
+            type: 'app',
+          },
+        },
       },
       '/tmp/project'
     );
