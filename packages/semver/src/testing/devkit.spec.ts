@@ -71,5 +71,18 @@ describe('Devkit', () => {
       );
       expect(result).toEqual(JSON.stringify({ value: 'JSON' }));
     });
+
+    it('reads workspace graph', async () => {
+      const result = await devkit.createGraph();
+      expect(result).toEqual(
+        expect.objectContaining({
+          nodes: expect.objectContaining({
+            project: expect.objectContaining({
+              name: 'project',
+            }),
+          }),
+        })
+      );
+    });
   });
 });
