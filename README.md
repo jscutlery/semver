@@ -237,7 +237,8 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "npm": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "dryRun": "${dryRun}"
       }
     }
   }
@@ -250,6 +251,8 @@ Contextual variables resolved by this option:
 - `version` semver version
 - `tag` formatted git tag
 - `notes` release notes
+- `previousTag` previous version tag
+- `dryRun` dry run mode
 
 #### Built-in post-targets
 
