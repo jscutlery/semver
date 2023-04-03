@@ -1,5 +1,5 @@
+import { TestingDevkit } from '../testing/devkit';
 import { setupGitRepo } from '../testing/setup';
-import { TestingDevkit } from '../testing/testing-devkit';
 import { release } from './release';
 
 const cwd = '/tmp/project';
@@ -17,17 +17,14 @@ describe(release.name, () => {
 
   describe('when semver.json does not exist or is invalid', () => {
     it('should throw an error when does not exist', async () => {
-      new TestingDevkit({ nodes: {}, dependencies: {} }, {});
+      new TestingDevkit({});
       await expect(release()).rejects.toThrow('Could not find semver.json');
     });
 
     it('should throw an error when invalid', async () => {
-      new TestingDevkit(
-        { nodes: {}, dependencies: {} },
-        {
-          'semver.json': 'invalid',
-        }
-      );
+      new TestingDevkit({
+        'semver.json': 'invalid',
+      });
       await expect(release()).rejects.toThrow('Invalid semver.json');
     });
   });
