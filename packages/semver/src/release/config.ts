@@ -6,8 +6,8 @@ export async function getConfig(): Promise<Config> {
   try {
     const config = await devkit.readFile(resolve(devkit.cwd(), 'semver.json'));
     return validate(JSON.parse(config));
-  } catch (error: any) {
-    if (error.code === 'ENOENT') {
+  } catch (error: unknown) {
+    if (isErrnoException(error) && error.code === 'ENOENT') {
       throw new Error('Could not find semver.json');
     }
     if (error instanceof SyntaxError || error instanceof z.ZodError) {
@@ -15,6 +15,10 @@ export async function getConfig(): Promise<Config> {
     }
     throw error;
   }
+}
+
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return typeof error === 'object' && error !== null && 'code' in error;
 }
 
 const groupSchema = z.object({
