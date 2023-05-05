@@ -28,6 +28,6 @@ runs:
       shell: bash
       run: yarn nx affected:e2e --headless --base=last-release
     - name: Codecov upload
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ inputs.codecov_token }}
