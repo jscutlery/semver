@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.0.0](https://github.com/jscutlery/semver/compare/semver-2.30.1...semver-3.0.0) (2023-05-05)
+
+
+### Bug Fixes
+
+* 📦 bump dependency rxjs to v7.8.1 ([7baa0d7](https://github.com/jscutlery/semver/commit/7baa0d7b23848502106b3331609d4c2ed9e54db0))
+
+
+### Features
+
+* **semver:** ✨ migrate to Nx v16 ([f46c70d](https://github.com/jscutlery/semver/commit/f46c70da548bba289572bf5aeef7b0dea3f3ecec))
+
+
+### BREAKING CHANGES
+
+* **semver:** Minimum `@nx/devkit` peer dependency version is now set to `^16.0.0`.
+
+
+
 ## [2.30.1](https://github.com/jscutlery/semver/compare/semver-2.30.0...semver-2.30.1) (2023-02-10)
 
 
