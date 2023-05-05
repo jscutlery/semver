@@ -2037,7 +2037,7 @@ __metadata:
     inquirer: 8.2.5
     rxjs: 7.8.1
   peerDependencies:
-    "@nx/devkit": ^15.0.0
+    "@nx/devkit": ^16.0.0
   languageName: unknown
   linkType: soft
 
