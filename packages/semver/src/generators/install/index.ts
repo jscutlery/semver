@@ -3,7 +3,7 @@ import {
   formatFiles,
   installPackagesTask,
   type Tree,
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 
 import { createTarget } from './utils/create-target';
 import { addDependencies } from './utils/dependencies';

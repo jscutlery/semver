@@ -1,4 +1,4 @@
-import type { TargetConfiguration } from '@nrwl/devkit';
+import type { TargetConfiguration } from '@nx/devkit';
 import type { SchemaOptions } from '../schema';
 
 /* istanbul ignore next */

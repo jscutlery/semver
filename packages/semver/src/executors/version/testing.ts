@@ -8,7 +8,7 @@ import {
   ExecutorContext,
   ProjectConfiguration,
   TargetConfiguration,
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 
 export interface TestingWorkspace {
   tearDown(): Promise<void>;

@@ -1,4 +1,4 @@
-import { type ProjectGraph } from '@nrwl/devkit';
+import { type ProjectGraph } from '@nx/devkit';
 import { getProjectDependencies } from './get-project-dependencies';
 
 const projectGraph: ProjectGraph = {
@@ -69,10 +69,10 @@ describe('projectDependencies', () => {
   });
 
   describe('Nx > 13', () => {
-    jest.mock('@nrwl/devkit', () => ({
+    jest.mock('@nx/devkit', () => ({
       createProjectGraphAsync: mockCreateProjectGraphAsync,
     }));
-    jest.mock('@nrwl/workspace/src/core/project-graph', () => ({}));
+    jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
 
     beforeEach(() => {
       mockCreateProjectGraphAsync.mockRestore();
@@ -116,8 +116,8 @@ describe('projectDependencies', () => {
   });
 
   it('should support Nx < 13 project graph', async () => {
-    jest.mock('@nrwl/devkit', () => ({}));
-    jest.mock('@nrwl/workspace/src/core/project-graph', () => ({
+    jest.mock('@nx/devkit', () => ({}));
+    jest.mock('@nx/workspace/src/core/project-graph', () => ({
       createProjectGraph: jest.fn(() => projectGraph),
     }));
 

@@ -6,7 +6,6 @@
   "title": "JSCutlery Version builder",
   "description": "Automate versioning and CHANGELOG generation.",
   "type": "object",
-  "cli": "nx",
   "properties": {
     "dryRun": {
       "description": "See what commands would be run, without committing to git or updating files.",

@@ -1,5 +1,5 @@
-import { createProjectGraphAsync, ExecutorContext } from '@nrwl/devkit';
-import { fileExists } from '@nrwl/nx-plugin/testing';
+import { createProjectGraphAsync, ExecutorContext } from '@nx/devkit';
+import { fileExists } from '@nx/plugin/testing';
 import { execSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -15,7 +15,7 @@ import { readFile } from './utils/filesystem';
 import { getProjectDependencies } from './utils/get-project-dependencies';
 import { readPackageJson } from './utils/project';
 
-jest.mock('@nrwl/devkit');
+jest.mock('@nx/devkit');
 
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
@@ -561,7 +561,7 @@ $`)
     describe('utilizes the project graph', () => {
       beforeEach(() => {
         const originalModule = jest.requireActual(
-          '@nrwl/workspace/src/core/project-graph'
+          '@nx/workspace/src/core/project-graph'
         );
         mockCreateProjectGraphAsync.mockImplementation(
           originalModule.createProjectGraphAsync

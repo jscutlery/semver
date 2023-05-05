@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { logger } from '@nx/devkit';
 import { of, throwError } from 'rxjs';
 
 import { exec } from '../common/exec';

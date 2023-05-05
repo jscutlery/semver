@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { logger } from '@nx/devkit';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
 import { exec } from '../common/exec';
@@ -24,10 +24,12 @@ export default async function runExecutor({
     ...(releasedAt ? ['--released-at', releasedAt] : []),
     ...(ref ? ['--ref', ref] : []),
     ...(assets
-      ? assets.map(
-          (asset) =>
-          ['--assets-link', `{"name": "${asset.name}", "url": "${asset.url}"}`]
-        ).flat()
+      ? assets
+          .map((asset) => [
+            '--assets-link',
+            `{"name": "${asset.name}", "url": "${asset.url}"}`,
+          ])
+          .flat()
       : []),
   ]).pipe(
     mapTo({ success: true }),

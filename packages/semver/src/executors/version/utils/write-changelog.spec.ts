@@ -1,10 +1,11 @@
-import * as Stream from 'stream';
 import * as fs from 'fs';
+import * as Stream from 'stream';
 
 import { initConventionalCommitReadableStream } from './init-conventional-commit-readable-stream';
 import writeChangelog from './write-changelog';
 
-jest.mock('./utils/init-conventional-commit-readable-stream');
+jest.mock('./init-conventional-commit-readable-stream');
+
 const mockInitConventionalCommitReadableStream =
   initConventionalCommitReadableStream as jest.MockedFunction<
     typeof initConventionalCommitReadableStream
@@ -64,7 +65,7 @@ describe('writeChangelog', () => {
 
     beforeAll(async () => {
       mockInitConventionalCommitReadableStream.mockImplementation(
-        jest.requireActual('./utils/init-conventional-commit-readable-stream')
+        jest.requireActual('./init-conventional-commit-readable-stream')
           .initConventionalCommitReadableStream
       );
 

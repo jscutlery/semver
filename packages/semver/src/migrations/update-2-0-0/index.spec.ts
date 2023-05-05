@@ -1,6 +1,6 @@
-import type { Tree } from '@nrwl/devkit';
-import { getProjects } from '@nrwl/devkit';
-import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
+import type { Tree } from '@nx/devkit';
+import { getProjects } from '@nx/devkit';
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 
 import migrate from '.';
 

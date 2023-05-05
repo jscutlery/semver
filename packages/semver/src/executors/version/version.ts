@@ -1,4 +1,4 @@
-import { ProjectsConfigurations } from '@nrwl/devkit';
+import { ProjectsConfigurations } from '@nx/devkit';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { Preset } from './schema';

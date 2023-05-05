@@ -1,4 +1,4 @@
-import type { ExecutorContext, ProjectGraphDependency } from '@nrwl/devkit';
+import type { ExecutorContext, ProjectGraphDependency } from '@nx/devkit';
 import type { VersionBuilderSchema } from '../schema';
 
 export interface DependencyRoot {
@@ -34,7 +34,7 @@ export async function getDependencyRoots({
 export async function getProjectDependencies(
   projectName: string
 ): Promise<string[]> {
-  const { createProjectGraphAsync } = await import('@nrwl/devkit');
+  const { createProjectGraphAsync } = await import('@nx/devkit');
   /* @todo: remove the compatibility support later on. */
   const dependencyGraph =
     typeof createProjectGraphAsync === 'function'
@@ -42,7 +42,7 @@ export async function getProjectDependencies(
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (
-          (await import('@nrwl/workspace/src/core/project-graph')) as any
+          (await import('@nx/workspace/src/core/project-graph')) as any
         ).createProjectGraph();
 
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);

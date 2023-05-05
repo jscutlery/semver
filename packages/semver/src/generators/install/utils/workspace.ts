@@ -2,12 +2,12 @@ import {
   getProjects,
   updateProjectConfiguration,
   type ProjectConfiguration,
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 
 import { createTarget } from './create-target';
 import { createPrompt } from './prompt';
 
-import type { Tree } from '@nrwl/devkit';
+import type { Tree } from '@nx/devkit';
 import type { SchemaOptions } from '../schema';
 
 export type ProjectDefinition = ProjectConfiguration & { projectName: string };

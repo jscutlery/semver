@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { logger } from '@nx/devkit';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, mapTo } from 'rxjs/operators';
 import { exec } from '../common/exec';

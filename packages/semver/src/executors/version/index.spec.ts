@@ -1,5 +1,5 @@
-import type { ExecutorContext } from '@nrwl/devkit';
-import { logger } from '@nrwl/devkit';
+import type { ExecutorContext } from '@nx/devkit';
+import { logger } from '@nx/devkit';
 import { of, throwError } from 'rxjs';
 import version from './';
 import type { VersionBuilderSchema } from './schema';
@@ -13,7 +13,9 @@ import { runPostTargets } from './utils/post-target';
 import * as project from './utils/project';
 import { tryBump } from './utils/try-bump';
 import * as workspace from './utils/workspace';
+
 const LAST_COMMIT_HASH = 'lastCommitHash';
+
 jest.mock('./utils/changelog');
 jest.mock('./utils/project');
 jest.mock('./utils/commit', () => ({

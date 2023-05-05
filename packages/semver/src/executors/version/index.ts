@@ -1,4 +1,4 @@
-import { type ExecutorContext } from '@nrwl/devkit';
+import { type ExecutorContext } from '@nx/devkit';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 import type { VersionBuilderSchema } from './schema';

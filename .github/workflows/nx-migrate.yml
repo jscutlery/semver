@@ -17,14 +17,14 @@ jobs:
         with:
           git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
 
-      - name: Check if @nrwl/workspace is outdated
+      - name: Check if @nx/workspace is outdated
         id: nrwl-workspace-outdated
         run: |
-          IS_OUTDATED=$(test ! -z "$(npm outdated @nrwl/workspace)" && echo true || echo false)
+          IS_OUTDATED=$(test ! -z "$(npm outdated @nx/workspace)" && echo true || echo false)
           echo $IS_OUTDATED
           echo "outdated=$IS_OUTDATED" >> $GITHUB_OUTPUT
 
-      - name: Update @nrwl/workspace
+      - name: Update @nx/workspace
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
         run: yarn nx migrate latest
 
@@ -39,7 +39,7 @@ jobs:
           echo $HAS_MIGRATIONS
           echo "has_migrations=$HAS_MIGRATIONS" >> $GITHUB_OUTPUT
 
-      - name: Run @nrwl/workspace migrations
+      - name: Run @nx/workspace migrations
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
         run: yarn nx migrate --run-migrations
 
@@ -54,7 +54,7 @@ jobs:
       - name: Commit changes
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
         run: |
-          LAST_VERSION=$(npm view @nrwl/workspace version)
+          LAST_VERSION=$(npm view @nx/workspace version)
           git add .
           [[ $(git status --porcelain) ]] && git commit -m "build: 📦 update nrwl workspace to ${LAST_VERSION}" || echo "nothing to commit"
 
@@ -76,10 +76,10 @@ jobs:
       - name: Create PR
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true' && steps.test.outcome != 'success'
         run: |
-          LAST_VERSION=$(npm view @nrwl/workspace version)
+          LAST_VERSION=$(npm view @nx/workspace version)
           BRANCH="update-nrwl-workspace-${LAST_VERSION}"
           git checkout -b ${BRANCH}
           git push -f --set-upstream origin ${BRANCH}
-          gh pr view ${BRANCH} || gh pr create -t "Update @nrwl/workspace to ${BRANCH}" -b "Update @nrwl/workspace dependencies to ${LAST_VERSION}."
+          gh pr view ${BRANCH} || gh pr create -t "Update @nx/workspace to ${BRANCH}" -b "Update @nx/workspace dependencies to ${LAST_VERSION}."
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_BOT_TOKEN }}

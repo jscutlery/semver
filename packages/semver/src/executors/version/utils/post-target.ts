@@ -1,10 +1,10 @@
-import type { ExecutorContext } from '@nrwl/devkit';
+import type { ExecutorContext } from '@nx/devkit';
 import {
   parseTargetString,
   readTargetOptions,
   runExecutor,
   Target,
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 import { catchError, concat, defer, Observable, throwError } from 'rxjs';
 import { logStep } from './logger';
 import { coerce, createTemplateString } from './template-string';

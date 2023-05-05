@@ -2,7 +2,7 @@ import type {
   ExecutorContext,
   ProjectConfiguration,
   ProjectsConfigurations,
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 import { resolve } from 'path';
 
 /* istanbul ignore next */

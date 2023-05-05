@@ -1,4 +1,4 @@
-import { logger } from '@nrwl/devkit';
+import { logger } from '@nx/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as gitSemverTags from 'git-semver-tags';
 import { lastValueFrom, of, throwError } from 'rxjs';

@@ -3,8 +3,8 @@ import {
   readJson,
   writeJson,
   type Tree,
-} from '@nrwl/devkit';
-import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
+} from '@nx/devkit';
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import * as inquirer from 'inquirer';
 
 import install from '.';

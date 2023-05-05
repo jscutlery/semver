@@ -3,7 +3,7 @@ import {
   readJson,
   updateJson,
   type Tree,
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 import { constants } from 'fs';
 import type { SchemaOptions } from '../schema';
 
