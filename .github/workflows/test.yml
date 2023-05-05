@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node_version: [14, 16]
+        node_version: [16]
 
     steps:
       - uses: actions/checkout@v3
