@@ -2027,7 +2027,7 @@ __metadata:
     "@types/conventional-recommended-bump": 6.1.0
     "@types/inquirer": 8.2.6
     "@types/rimraf": 3.0.2
-    "@types/semver": 7.3.13
+    "@types/semver": 7.5.0
     "@types/standard-version": 7.0.1
     "@types/tmp": 0.2.3
     chalk: 4.1.2
@@ -2707,7 +2707,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.3.13, @types/semver@npm:^7.3.12":
+"@types/semver@npm:7.5.0":
+  version: 7.5.0
+  resolution: "@types/semver@npm:7.5.0"
+  checksum: 0a64b9b9c7424d9a467658b18dd70d1d781c2d6f033096a6e05762d20ebbad23c1b69b0083b0484722aabf35640b78ccc3de26368bcae1129c87e9df028a22e2
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.12":
   version: 7.3.13
   resolution: "@types/semver@npm:7.3.13"
   checksum: 00c0724d54757c2f4bc60b5032fe91cda6410e48689633d5f35ece8a0a66445e3e57fa1d6e07eb780f792e82ac542948ec4d0b76eb3484297b79bd18b8cf1cb0
