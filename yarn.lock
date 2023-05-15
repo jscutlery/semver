@@ -6044,7 +6044,7 @@ __metadata:
     husky: ^8.0.0
     jest: 29.5.0
     jest-extended: ^3.0.0
-    ngx-deploy-npm: ^5.0.0
+    ngx-deploy-npm: ^6.0.0
     nx: 16.1.4
     prettier: 2.8.8
     tmp: ^0.2.1
@@ -6724,14 +6724,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-deploy-npm@npm:^5.0.0":
-  version: 5.2.0
-  resolution: "ngx-deploy-npm@npm:5.2.0"
+"ngx-deploy-npm@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "ngx-deploy-npm@npm:6.0.0"
   peerDependencies:
-    "@nrwl/devkit": ^14.0.0 || ^15.0.0
-    "@nrwl/workspace": ^14.0.0 || ^15.0.0
-    nx: ^14.0.0 || ^15.0.0
-  checksum: 4fffb7a49529c83ce7e92e5b850075bde54991e2ef7564d28dc9963feb7b990c11249e806e187b77f38b0c62ccd66539f69b17677bd5ce3876d2fd18df9d2351
+    "@nx/devkit": ^16.0.0
+    tslib: 2.5.0
+  checksum: eb29beb81aed775063ad15c2979b55755c386cee5ca10e936a43b257025281f3030d51e6d5f78c9fefc9147c49875713eceb543dc6aa96b9624fab6f112889f8
   languageName: node
   linkType: hard
 
