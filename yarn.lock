@@ -5779,9 +5779,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-extended@npm:^3.0.0":
-  version: 3.2.4
-  resolution: "jest-extended@npm:3.2.4"
+"jest-extended@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jest-extended@npm:4.0.0"
   dependencies:
     jest-diff: ^29.0.0
     jest-get-type: ^29.0.0
@@ -5790,7 +5790,7 @@ __metadata:
   peerDependenciesMeta:
     jest:
       optional: true
-  checksum: 16e4f300d9c5bf110f7f3422e49e06c968a99a44cede2b2821ddd480c33b3d9cd4dc58035b2f022e6018247da8f887295d6c2499647675dedb6e305142604e7d
+  checksum: 2fd77a4fcda131a93c6f4a60a955c81fa332abad73d68f58d82fd9548672aa2c4f4ff64d4b44ae561caca3d592707eb0cc237d5da3138d8c568f40a1d8f81751
   languageName: node
   linkType: hard
 
@@ -6138,7 +6138,7 @@ __metadata:
     eslint-config-prettier: 8.8.0
     husky: ^8.0.0
     jest: 29.5.0
-    jest-extended: ^3.0.0
+    jest-extended: ^4.0.0
     ngx-deploy-npm: ^6.0.0
     nx: 16.3.2
     prettier: 2.8.8
