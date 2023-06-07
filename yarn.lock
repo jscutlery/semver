@@ -4077,8 +4077,8 @@ __metadata:
   linkType: hard
 
 "conventional-recommended-bump@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "conventional-recommended-bump@npm:7.0.0"
+  version: 7.0.1
+  resolution: "conventional-recommended-bump@npm:7.0.1"
   dependencies:
     concat-stream: ^2.0.0
     conventional-changelog-preset-loader: ^3.0.0
@@ -4089,7 +4089,7 @@ __metadata:
     meow: ^8.1.2
   bin:
     conventional-recommended-bump: cli.js
-  checksum: e4a5b3ad99d98d7c1c8bf231689c5bc8a98045e1155d7ebb14d9b9fadf1f7ff12093bd505db130d44c8a546208efcf3220ef26b3ff620b4fef43d71c72445603
+  checksum: e2d1f2f40f93612a6da035d0c1a12d70208e0da509a17a9c9296a05e73a6eca5d81fe8c6a7b45e973181fa7c876c6edb9a114a2d7da4f6df00c47c7684ab62d2
   languageName: node
   linkType: hard
 
