@@ -1,4 +1,8 @@
 import ConventionalChangelogConfigSpec from '@types/conventional-changelog-config-spec';
+import type { Options as CommitParserOptions } from 'conventional-commits-parser';
+
+export { CommitParserOptions };
+
 export type ReleaseIdentifier =
   | 'patch'
   | 'minor'
@@ -44,6 +48,7 @@ export interface VersionBuilderSchema {
   skipCommitTypes?: string[];
   commitMessageFormat?: string;
   preset: Preset;
+  commitParserOptions?: CommitParserOptions;
 }
 
 export interface WriteChangelogConfig {

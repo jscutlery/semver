@@ -134,6 +134,49 @@
           "$ref": "#/definitions/conventionalChangelogConfiguration"
         }
       ]
+    },
+    "commitParserOptions": {
+      "description": "The options passed to the commit parser.",
+      "type": "object",
+      "properties": {
+        "mergePattern": {
+          "description": "Pattern to match merge headers. EG: branch merge, GitHub or GitLab like pull requests headers. When a merge header is parsed, the next line is used for conventional header parsing.",
+          "type": "string"
+        },
+        "mergeCorrespondence": {
+          "description": "Used to define what capturing group of mergePattern.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Merge correspondence types"
+          }
+        },
+        "headerPattern": {
+          "description": "Used to match header pattern.",
+          "type": "string"
+        },
+        "headerCorrespondence": {
+          "description": "Used to define what capturing group of headerPattern captures what header part. The order of the array should correspond to the order of headerPattern's capturing group. If the part is not captured it is null.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Header correspondence types"
+          }
+        },
+        "fieldPattern": {
+          "description": "Pattern to match other fields.",
+          "type": "string"
+        },
+        "revertPattern": {
+          "description": "Pattern to match what this commit reverts.",
+          "type": "string"
+        },
+        "commentChar": {
+          "description": "What commentChar to use. By default it is null, so no comments are stripped. Set to # if you pass the contents of .git/COMMIT_EDITMSG directly.",
+          "type": "string"
+        }
+      },
+      "required": []
     }
   },
   "definitions": {

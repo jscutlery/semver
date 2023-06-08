@@ -481,4 +481,89 @@ describe('tryBump', () => {
       expect(newVersion).toBeNull();
     });
   });
+
+  describe('custom parser config', () => {
+    it('can deal with a custom commitParserOptions (no changes)', async () => {
+      mockGetCommits.mockReturnValue(
+        of(['JIRA-1234 chore: A', 'JIRA-5678 chore B'])
+      );
+      /* Mock bump to return "minor". */
+      mockConventionalRecommendedBump.mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: 'minor',
+          })
+        ) as () => void
+      );
+
+      const newVersion = await lastValueFrom(
+        tryBump({
+          syncVersions: false,
+          preset: 'angular',
+          projectRoot: '/libs/demo',
+          tagPrefix: 'v',
+          releaseType: undefined,
+          preid: undefined,
+          skipCommitTypes: ['chore'],
+
+          projectName: '',
+          commitParserOptions: {
+            headerPattern:
+              /^([A-Z]{3,}-\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\(([\w-]+)\))?\S* (.+)$/,
+            headerCorrespondence: [
+              'ticketReference',
+              'type',
+              'scope',
+              'subject',
+            ],
+          },
+        })
+      );
+
+      expect(newVersion).toBeNull();
+    });
+
+    it('can deal with a custom commitParserOptions (with changes)', async () => {
+      mockGetCommits.mockReturnValue(
+        of(['JIRA-1234 feat: A', 'JIRA-5678 fix(scope) B'])
+      );
+      /* Mock bump to return "minor". */
+      mockConventionalRecommendedBump.mockImplementation(
+        callbackify(
+          jest.fn().mockResolvedValue({
+            releaseType: 'minor',
+          })
+        ) as () => void
+      );
+
+      const newVersion = await lastValueFrom(
+        tryBump({
+          commitParserOptions: {
+            headerPattern:
+              /^([A-Z]{3,}-\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\(([\w-]+)\))?\S* (.+)$/,
+            headerCorrespondence: [
+              'ticketReference',
+              'type',
+              'scope',
+              'subject',
+            ],
+          },
+          preid: undefined,
+          preset: 'angular',
+          projectName: '',
+          projectRoot: '/libs/demo',
+          releaseType: undefined,
+          skipCommitTypes: ['chore'],
+          syncVersions: false,
+          tagPrefix: 'v',
+        })
+      );
+
+      expect(newVersion).toStrictEqual({
+        dependencyUpdates: [],
+        previousVersion: '2.1.0',
+        version: '2.2.0',
+      });
+    });
+  });
 });

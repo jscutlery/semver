@@ -98,6 +98,7 @@ Important: merge commits messages are ignored by the tool when calculating next 
 | **`--skipCommit`**           | `boolean`          | `false`     | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
 | **`--commitMessageFormat`**  | `string`           | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
 | **`--preset`**               | `string \| object` | `'angular'` | customize Conventional Changelog options ([details](https://github.com/jscutlery/semver#customizing-conventional-changelog-options))                            |
+| **`--commitParserOptions`**  | `object`           | `undefined` | customize the commit parserConfig ([details](https://github.com/jscutlery/semver#customizing-the-commit-parser))                                                |
 
 #### Overwrite default configuration
 
@@ -132,6 +133,25 @@ The preset is highly configurable, following the [conventional-changelog configu
 ```
 
 See [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec) for available
+configuration options.
+
+#### Customizing the commit parser
+
+You may customize the config for the commit parser. This can be helpful when you are using an adapted version of conventional commit for instance.
+
+```json
+{
+  "executor": "@jscutlery/semver:version",
+  "options": {
+    "commitParserOptions": {
+      "headerPattern": "^([A-Z]{3,}-\\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\\(([\\w-]+)\\))?\\S* (.+)$",
+      "headerCorrespondence": ["ticketReference", "type", "scope", "subject"]
+    }
+  }
+}
+```
+
+See the [conventional-commits-parse](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#options) specification for available
 configuration options.
 
 #### Version calculation

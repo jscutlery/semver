@@ -1,4 +1,7 @@
-import * as conventionalCommitsParser from 'conventional-commits-parser';
+import {
+  sync as parseConventionalCommitsSync,
+  Options as CommitParserOptions,
+} from 'conventional-commits-parser';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import { defer, forkJoin, iif, of, type Observable } from 'rxjs';
 import {
@@ -95,6 +98,7 @@ export function getProjectVersion({
  * Return new version or null if nothing changed.
  */
 export function tryBump({
+  commitParserOptions,
   preset,
   projectRoot,
   tagPrefix,
@@ -107,6 +111,7 @@ export function tryBump({
   skipCommitTypes,
   projectName,
 }: {
+  commitParserOptions?: CommitParserOptions;
   preset: string;
   projectRoot: string;
   tagPrefix: string;
@@ -150,6 +155,7 @@ export function tryBump({
       }
 
       const dependencyVersions$ = _getDependencyVersions({
+        commitParserOptions,
         lastVersionGitRef,
         dependencyRoots,
         preset,
@@ -197,7 +203,11 @@ export function tryBump({
           }
 
           const filteredCommits = commits.filter((commit: string) =>
-            shouldCommitBeCalculated({ commit, skipCommitTypes })
+            shouldCommitBeCalculated({
+              commit,
+              commitParserOptions,
+              skipCommitTypes,
+            })
           );
 
           /* No commits since last release & no dependency updates so don't bump if the `releastAtLeast` flag is not present. */
@@ -266,17 +276,23 @@ export function _manualBump({
 
 function shouldCommitBeCalculated({
   commit,
+  commitParserOptions,
   skipCommitTypes,
 }: {
   commit: string;
+  commitParserOptions?: CommitParserOptions;
   skipCommitTypes: string[];
 }): boolean {
-  const { type } = conventionalCommitsParser.sync(commit, {});
+  const { type } = parseConventionalCommitsSync(
+    commit,
+    commitParserOptions ?? {}
+  );
   const shouldSkip = skipCommitTypes.some((typeToSkip) => typeToSkip === type);
   return !shouldSkip;
 }
 
 export function _getDependencyVersions({
+  commitParserOptions,
   preset,
   dependencyRoots,
   releaseType,
@@ -287,6 +303,7 @@ export function _getDependencyVersions({
   projectName,
   preid,
 }: {
+  commitParserOptions?: CommitParserOptions;
   preset: string;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
@@ -318,7 +335,11 @@ export function _getDependencyVersions({
       return forkJoin([lastVersion$, commits$]).pipe(
         switchMap(([dependencyLastVersion, commits]) => {
           const filteredCommits = commits.filter((commit) =>
-            shouldCommitBeCalculated({ commit, skipCommitTypes })
+            shouldCommitBeCalculated({
+              commit,
+              commitParserOptions,
+              skipCommitTypes,
+            })
           );
           if (filteredCommits.length === 0) {
             return of({

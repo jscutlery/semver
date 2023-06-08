@@ -48,7 +48,9 @@ export default async function version(
     allowEmptyRelease,
     skipCommitTypes,
     skipCommit,
+    commitParserOptions,
   } = _normalizeOptions(options);
+
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
 
@@ -78,6 +80,7 @@ export default async function version(
   });
   const projectRoot = getProject(context).root;
   const newVersion$ = tryBump({
+    commitParserOptions,
     preset,
     projectRoot,
     dependencyRoots,
@@ -236,6 +239,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     changelogHeader: options.changelogHeader ?? defaultHeader,
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
     commitMessageFormat: options.commitMessageFormat as string,
+    commitParserOptions: options.commitParserOptions,
     skipCommit: options.skipCommit as boolean,
     preset:
       options.preset === 'conventional'
