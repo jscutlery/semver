@@ -9,7 +9,7 @@ import {
 import { commit } from './utils/commit';
 import { addToStage, createTag, getLastCommitHash } from './utils/git';
 import { logStep } from './utils/logger';
-import { updatePackageJson } from './utils/project';
+import { updateCustomJsons, updatePackageJson } from './utils/project';
 import { getProjectRoots } from './utils/workspace';
 
 export type Version =
@@ -35,6 +35,7 @@ export interface CommonVersionOptions {
   skipCommit: boolean;
   commitMessage: string;
   projectName: string;
+  customJsonPaths: string[];
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
   preset: Preset;
@@ -173,6 +174,24 @@ export function versionProject({
               })
             : of(undefined)
         )
+      )
+    ),
+    concatMap(() =>
+      updateCustomJsons({
+        newVersion,
+        projectRoot,
+        projectName,
+        customJsonPaths: options.customJsonPaths,
+        dryRun,
+      }).pipe(
+        concatMap((files) => {
+          const paths: string[] = files.filter((v) => !!v) as string[];
+          if (files.length !== 0) {
+            return addToStage({ paths, dryRun });
+          } else {
+            return of(undefined);
+          }
+        })
       )
     ),
     concatMap(() =>

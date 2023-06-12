@@ -97,6 +97,7 @@ Important: merge commits messages are ignored by the tool when calculating next 
 | **`--skipCommitTypes`**      | `string[]`         | `[]`        | treat commits with specified types as non invoking version bump ([details](https://github.com/jscutlery/semver#skipping-release-for-specific-types-of-commits)) |
 | **`--skipCommit`**           | `boolean`          | `false`     | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
 | **`--commitMessageFormat`**  | `string`           | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
+| **`--customJsonPaths`**      | `string[]`         | `undefined` | another json files to update version. Values should be like: 'src/version.json:build.version'. Part after colon says path to attribute                          |
 | **`--preset`**               | `string \| object` | `'angular'` | customize Conventional Changelog options ([details](https://github.com/jscutlery/semver#customizing-conventional-changelog-options))                            |
 
 #### Overwrite default configuration

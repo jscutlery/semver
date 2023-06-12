@@ -48,6 +48,7 @@ export default async function version(
     allowEmptyRelease,
     skipCommitTypes,
     skipCommit,
+    customJsonPaths,
   } = _normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
@@ -128,6 +129,7 @@ export default async function version(
         changelogHeader,
         workspaceRoot,
         projectName,
+        customJsonPaths,
         skipProjectChangelog,
         commitMessage,
         dependencyUpdates,
@@ -237,6 +239,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
     commitMessageFormat: options.commitMessageFormat as string,
     skipCommit: options.skipCommit as boolean,
+    customJsonPaths: options.customJsonPaths as string[],
     preset:
       options.preset === 'conventional'
         ? 'conventionalcommits'

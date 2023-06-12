@@ -32,6 +32,10 @@ describe('@jscutlery/semver:version', () => {
     project.updatePackageJson as jest.MockedFunction<
       typeof project.updatePackageJson
     >;
+  const mockUpdateCustomJsons =
+    project.updateCustomJsons as jest.MockedFunction<
+      typeof project.updateCustomJsons
+    >;
   const mockUpdateChangelog = changelog.updateChangelog as jest.MockedFunction<
     typeof changelog.updateChangelog
   >;
@@ -109,6 +113,17 @@ describe('@jscutlery/semver:version', () => {
     mockUpdatePackageJson.mockImplementation(({ projectRoot }) =>
       of(project.getPackageJsonPath(projectRoot))
     );
+    mockUpdateCustomJsons.mockImplementation(
+      ({ projectRoot, customJsonPaths }) => {
+        const result: string[] = [];
+        if (customJsonPaths) {
+          for (const v of customJsonPaths) {
+            result.push('file:' + v.split(':')[0]);
+          }
+        }
+        return of(result);
+      }
+    );
     mockCalculateChangelogChanges.mockReturnValue((source) => {
       source.subscribe();
       return of('');
@@ -152,6 +167,10 @@ describe('@jscutlery/semver:version', () => {
     expect(mockUpdateChangelog).toHaveBeenCalledBefore(
       mockUpdatePackageJson as jest.Mock
     );
+    expect(mockUpdatePackageJson).toHaveBeenCalledBefore(
+      mockUpdateCustomJsons as jest.Mock
+    );
+
     expect(mockCommit).toHaveBeenCalledBefore(mockCreateTag as jest.Mock);
     expect(mockCreateTag).toHaveBeenCalledBefore(mockTryPush as jest.Mock);
     expect(mockTryPush).toHaveBeenCalledBefore(mockRunPostTargets as jest.Mock);
@@ -785,6 +804,27 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({
           changelogHeader: customChangelogHeader,
         })
+      );
+    });
+  });
+
+  describe('--customJsonPaths', () => {
+    it('should use --customJsonPaths ', async () => {
+      const { success } = await version(
+        { ...options, customJsonPaths: ['src/version.json:version'] },
+        context
+      );
+
+      expect(success).toBe(true);
+
+      expect(mockUpdateCustomJsons).toBeCalledWith(
+        expect.objectContaining({
+          customJsonPaths: ['src/version.json:version'],
+        })
+      );
+
+      expect(mockAddToStage).toHaveBeenLastCalledWith(
+        expect.objectContaining({ paths: ['file:src/version.json'] })
       );
     });
   });
