@@ -20,6 +20,7 @@ jest.mock('@nx/devkit');
 describe('@jscutlery/semver:version', () => {
   const defaultBuilderOptions: VersionBuilderSchema = {
     dryRun: false,
+    skipTag: false,
     noVerify: false,
     trackDeps: false,
     push: false,

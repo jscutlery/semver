@@ -48,6 +48,7 @@ export default async function version(
     allowEmptyRelease,
     skipCommitTypes,
     skipCommit,
+    skipTag,
   } = _normalizeOptions(options);
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
@@ -132,6 +133,7 @@ export default async function version(
         commitMessage,
         dependencyUpdates,
         skipCommit,
+        skipTag,
         workspace: context.projectsConfigurations,
       };
 
@@ -237,6 +239,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
     commitMessageFormat: options.commitMessageFormat as string,
     skipCommit: options.skipCommit as boolean,
+    skipTag: options.skipTag as boolean,
     preset:
       options.preset === 'conventional'
         ? 'conventionalcommits'

@@ -237,6 +237,7 @@ describe('git', () => {
           tag: 'project-a-1.0.0',
           commitMessage: 'chore(release): 1.0.0',
           projectName: 'p',
+          skipTag: false,
         })
       );
 
@@ -257,6 +258,23 @@ describe('git', () => {
     it('should skip with --dryRun', (done) => {
       createTag({
         dryRun: true,
+        skipTag: false,
+        tag: 'project-a-1.0.0',
+        commitHash: '123',
+        commitMessage: 'chore(release): 1.0.0',
+        projectName: 'p',
+      }).subscribe({
+        complete: () => {
+          expect(cp.exec).not.toBeCalled();
+          done();
+        },
+      });
+    });
+
+    it('should skip with --skipTag', (done) => {
+      createTag({
+        dryRun: false,
+        skipTag: true,
         tag: 'project-a-1.0.0',
         commitHash: '123',
         commitMessage: 'chore(release): 1.0.0',
@@ -280,6 +298,7 @@ describe('git', () => {
 
       createTag({
         dryRun: false,
+        skipTag: false,
         tag: 'project-a-1.0.0',
         commitHash: '123',
         commitMessage: 'chore(release): 1.0.0',
