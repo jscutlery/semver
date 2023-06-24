@@ -328,4 +328,51 @@ describe('Install generator', () => {
       ]);
     });
   });
+
+  describe('Create Changelog', () => {
+    const options = {
+      ...defaultOptions,
+      syncVersions: false,
+    };
+
+    beforeEach(async () => {
+      addProjectConfiguration(tree, 'lib1', {
+        root: 'libs/lib1',
+        sourceRoot: 'libs/lib1/src',
+        targets: {},
+      });
+
+      writeJson(tree, 'libs/lib1/tsconfig.json', {
+        files: [],
+        include: [],
+        references: [],
+      });
+
+      addProjectConfiguration(tree, 'lib2', {
+        root: 'libs/lib2',
+        sourceRoot: 'libs/lib1/src',
+        targets: {},
+      });
+
+      writeJson(tree, 'libs/lib2/tsconfig.json', {
+        files: [],
+        include: [],
+        references: [],
+      });
+
+      jest.spyOn(inquirer, 'prompt').mockResolvedValue({ projects: ['lib1'] });
+    });
+
+    afterEach(() =>
+      (
+        inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
+      ).mockRestore()
+    );
+    it('should create CHANGELOG.md in lib1', async () => {
+      await install(tree, { ...options, projects: ['lib1', 'lib2'] });
+
+      expect(tree.exists('libs/lib1/CHANGELOG.md')).toBeTrue();
+      expect(tree.exists('libs/lib2/CHANGELOG.md')).toBeTrue();
+    });
+  });
 });
