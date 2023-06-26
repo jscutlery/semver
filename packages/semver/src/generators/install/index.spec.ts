@@ -330,11 +330,12 @@ describe('Install generator', () => {
         inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
       ).mockRestore()
     );
-    it('should create CHANGELOG.md in lib1', async () => {
+    it('should create CHANGELOG.md in lib1 and lib2', async () => {
       await install(tree, { ...options, projects: projects });
 
       expect(findProjectFile(tree, projectName1, 'CHANGELOG.md')).toBeTrue();
       expect(findProjectFile(tree, projectName2, 'CHANGELOG.md')).toBeTrue();
+      expect(findProjectFile(tree, 'lib3', 'CHANGELOG.md')).toBeFalse();
     });
   });
 });
