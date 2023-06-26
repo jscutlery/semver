@@ -10,7 +10,7 @@ import { createPrompt } from './prompt';
 
 import type { Tree } from '@nx/devkit';
 import type { SchemaOptions } from '../schema';
-import { addChangelog } from './create-changelog';
+import { createChangelog } from './create-changelog';
 
 export type ProjectDefinition = ProjectConfiguration & { projectName: string };
 
@@ -35,7 +35,7 @@ export function updateProjects(
       updateProjectConfiguration(tree, projectName, project);
       const libraryRoot = readProjectConfiguration(tree, projectName).root;
 
-      addChangelog(tree, libraryRoot);
+      createChangelog(tree, libraryRoot);
     }
   });
 }
