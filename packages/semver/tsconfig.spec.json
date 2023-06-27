@@ -12,5 +12,6 @@
     "**/*.spec.jsx",
     "**/*.d.ts",
     "jest.config.ts"
-  ]
+  ],
+  "files": ["src/jest-extended.d.ts"]
 }
