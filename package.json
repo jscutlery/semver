@@ -48,7 +48,7 @@
     "eslint": "8.45.0",
     "eslint-config-prettier": "8.8.0",
     "husky": "^8.0.0",
-    "jest": "29.6.1",
+    "jest": "29.6.2",
     "jest-extended": "^4.0.0",
     "ngx-deploy-npm": "^6.0.0",
     "nx": "16.5.5",
