@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.1.0](https://github.com/jscutlery/semver/compare/semver-3.0.0...semver-3.1.0) (2023-07-31)
+
+
+### Bug Fixes
+
+* 📦 bump dependency conventional-changelog to v4 ([fbd3e8c](https://github.com/jscutlery/semver/commit/fbd3e8c3de7002a3d796b63a1ba3eef0f7d5114f))
+* 📦 bump dependency conventional-recommended-bump to v7 ([3366af6](https://github.com/jscutlery/semver/commit/3366af686d4cbb7634a13cd28ecac49237e9c4db))
+
+
+### Features
+
+* add possibility to provide a commit parser config ([2e0bb58](https://github.com/jscutlery/semver/commit/2e0bb58e055e3864e772234dad06962b452794d4))
+
+
+### Reverts
+
+* Revert "build: use non-relative executor name" ([b074d7b](https://github.com/jscutlery/semver/commit/b074d7bac4f4f68ceaf913f04e79a74e7567f2e4))
+
+
+
 # [3.0.0](https://github.com/jscutlery/semver/compare/semver-2.30.1...semver-3.0.0) (2023-05-05)
 
 
