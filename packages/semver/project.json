@@ -10,7 +10,10 @@
       "options": {
         "push": true,
         "noVerify": true,
-        "postTargets": ["semver:publish", "semver:github"],
+        "postTargets": [
+          "semver:publish",
+          "semver:github"
+        ],
         "commitMessageFormat": "release(${projectName}): 🎸 cut release to ${version}"
       }
     },
@@ -30,7 +33,9 @@
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/semver/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/semver/**/*.ts"
+        ]
       }
     },
     "test": {
@@ -64,18 +69,26 @@
           {
             "input": "packages/semver",
             "glob": "**/*.json",
-            "ignore": ["**/tsconfig*.json", "project.json", "node_modules/**"],
+            "ignore": [
+              "**/tsconfig*.json",
+              "project.json",
+              "node_modules/**"
+            ],
             "output": "/"
           },
           {
             "input": "packages/semver",
             "glob": "**/*.d.ts",
-            "ignore": ["node_modules/**"],
+            "ignore": [
+              "node_modules/**"
+            ],
             "output": "/"
           }
         ]
       },
-      "outputs": ["{options.outputPath}"]
+      "outputs": [
+        "{options.outputPath}"
+      ]
     }
   },
   "tags": []
