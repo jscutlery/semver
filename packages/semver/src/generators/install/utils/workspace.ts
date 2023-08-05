@@ -2,6 +2,7 @@ import {
   getProjects,
   updateProjectConfiguration,
   type ProjectConfiguration,
+  readProjectConfiguration,
 } from '@nx/devkit';
 
 import { createTarget } from './create-target';
@@ -9,6 +10,7 @@ import { createPrompt } from './prompt';
 
 import type { Tree } from '@nx/devkit';
 import type { SchemaOptions } from '../schema';
+import { createChangelog } from './create-changelog';
 
 export type ProjectDefinition = ProjectConfiguration & { projectName: string };
 
@@ -30,8 +32,10 @@ export function updateProjects(
     if (predicate(projectName)) {
       const targets = project.targets ?? {};
       targets.version = createTarget(options);
-
       updateProjectConfiguration(tree, projectName, project);
+      const libraryRoot = readProjectConfiguration(tree, projectName).root;
+
+      createChangelog(tree, libraryRoot);
     }
   });
 }

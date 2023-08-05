@@ -51,33 +51,14 @@ describe('Install generator', () => {
       ...defaultOptions,
       syncVersions: false,
     };
+    const { projects, projectName1, projectName2 } = createProjectNames();
 
     beforeEach(async () => {
-      addProjectConfiguration(tree, 'lib1', {
-        root: 'libs/lib1',
-        sourceRoot: 'libs/lib1/src',
-        targets: {},
-      });
+      addProjects(tree, projects);
 
-      writeJson(tree, 'libs/lib1/tsconfig.json', {
-        files: [],
-        include: [],
-        references: [],
-      });
-
-      addProjectConfiguration(tree, 'lib2', {
-        root: 'libs/lib2',
-        sourceRoot: 'libs/lib1/src',
-        targets: {},
-      });
-
-      writeJson(tree, 'libs/lib2/tsconfig.json', {
-        files: [],
-        include: [],
-        references: [],
-      });
-
-      jest.spyOn(inquirer, 'prompt').mockResolvedValue({ projects: ['lib1'] });
+      jest
+        .spyOn(inquirer, 'prompt')
+        .mockResolvedValue({ projects: [projectName1] });
     });
 
     afterEach(() =>
@@ -89,14 +70,16 @@ describe('Install generator', () => {
     it('should prompt user to select which projects should be versioned', async () => {
       await install(tree, options);
 
-      const lib1 = readJson(tree, 'libs/lib1/project.json');
-      const lib2 = readJson(tree, 'libs/lib2/project.json');
+      const lib1 = findJson(tree, projectName1, 'project.json');
+      const lib2 = findJson(tree, projectName2, 'project.json');
 
       expect(inquirer.prompt).toBeCalledWith(
         expect.objectContaining({
           name: 'projects',
           type: 'checkbox',
-          choices: expect.arrayContaining([{ name: 'lib1', checked: true }]),
+          choices: expect.arrayContaining([
+            { name: projectName1, checked: true },
+          ]),
         })
       );
       /* Project "lib1" selected by the prompt. */
@@ -112,10 +95,10 @@ describe('Install generator', () => {
     });
 
     it('should use --projects option', async () => {
-      await install(tree, { ...options, projects: ['lib2'] });
+      await install(tree, { ...options, projects: [projectName2] });
 
-      const lib1 = readJson(tree, 'libs/lib1/project.json');
-      const lib2 = readJson(tree, 'libs/lib2/project.json');
+      const lib1 = findJson(tree, projectName1, 'project.json');
+      const lib2 = findJson(tree, projectName2, 'project.json');
 
       expect(inquirer.prompt).not.toBeCalled();
       expect(lib1.targets.version).toBeUndefined();
@@ -129,14 +112,12 @@ describe('Install generator', () => {
     });
 
     it('should forward --baseBranch option to all projects', async () => {
-      jest
-        .spyOn(inquirer, 'prompt')
-        .mockResolvedValue({ projects: ['lib1', 'lib2'] });
+      jest.spyOn(inquirer, 'prompt').mockResolvedValue({ projects: projects });
 
       await install(tree, { ...options, baseBranch: 'master' });
 
-      const lib1 = readJson(tree, 'libs/lib1/project.json');
-      const lib2 = readJson(tree, 'libs/lib2/project.json');
+      const lib1 = findJson(tree, projectName1, 'project.json');
+      const lib2 = findJson(tree, projectName2, 'project.json');
 
       expect(lib1.targets).toEqual(
         expect.objectContaining({
@@ -176,7 +157,7 @@ describe('Install generator', () => {
         await install(tree, { ...defaultOptions, preset: 'conventional' });
 
         const packageJson = readJson(tree, 'package.json');
-        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib1 = findJson(tree, projectName1, 'project.json');
 
         expect(packageJson.devDependencies).toContainKeys([
           '@commitlint/cli',
@@ -196,7 +177,7 @@ describe('Install generator', () => {
         await install(tree, { ...defaultOptions, preset: 'angular' });
 
         const packageJson = readJson(tree, 'package.json');
-        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib1 = findJson(tree, projectName1, 'project.json');
 
         expect(packageJson.devDependencies).toContainKeys([
           '@commitlint/cli',
@@ -215,7 +196,7 @@ describe('Install generator', () => {
       it('should install angular config', async () => {
         await install(tree, { ...defaultOptions, preset: 'conventional' });
 
-        const lib1 = readJson(tree, 'libs/lib1/project.json');
+        const lib1 = findJson(tree, projectName1, 'project.json');
 
         expect(lib1.targets).toEqual(
           expect.objectContaining({
@@ -328,4 +309,65 @@ describe('Install generator', () => {
       ]);
     });
   });
+
+  describe('Create Changelog', () => {
+    const options = {
+      ...defaultOptions,
+      syncVersions: false,
+    };
+    const { projects, projectName1, projectName2 } = createProjectNames();
+
+    beforeEach(async () => {
+      addProjects(tree, projects);
+
+      jest
+        .spyOn(inquirer, 'prompt')
+        .mockResolvedValue({ projects: [projectName1] });
+    });
+
+    afterEach(() =>
+      (
+        inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
+      ).mockRestore()
+    );
+    it('should create CHANGELOG.md in lib1 and lib2', async () => {
+      await install(tree, { ...options, projects: projects });
+
+      expect(findProjectFile(tree, projectName1, 'CHANGELOG.md')).toBeTrue();
+      expect(findProjectFile(tree, projectName2, 'CHANGELOG.md')).toBeTrue();
+      expect(findProjectFile(tree, 'lib3', 'CHANGELOG.md')).toBeFalse();
+    });
+  });
 });
+
+function createProjectNames() {
+  const projectName1 = 'lib1';
+  const projectName2 = 'lib2';
+  const projects = [projectName1, projectName2];
+
+  return { projects, projectName1, projectName2 };
+}
+
+function findProjectFile(tree: Tree, projectName: string, fileName: string) {
+  return tree.exists(`libs/${projectName}/${fileName}`);
+}
+
+function findJson(tree: Tree, projectName: string, fileName: string) {
+  return readJson(tree, `libs/${projectName}/${fileName}`);
+}
+
+function addProjects(tree: Tree, projectNames: string[]) {
+  projectNames.forEach((projectName) => {
+    addProjectConfiguration(tree, projectName, {
+      root: `libs/${projectName}`,
+      sourceRoot: `libs/${projectName}/src`,
+      targets: {},
+    });
+
+    writeJson(tree, `libs/${projectName}/tsconfig.json`, {
+      files: [],
+      include: [],
+      references: [],
+    });
+  });
+}
