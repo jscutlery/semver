@@ -257,8 +257,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "npm": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public",
-        "dryRun": "${dryRun}"
+        "access": "public"
       }
     }
   }
