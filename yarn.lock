@@ -22,9 +22,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:16.1.8":
-  version: 16.1.8
-  resolution: "@angular-devkit/core@npm:16.1.8"
+"@angular-devkit/core@npm:16.2.0":
+  version: 16.2.0
+  resolution: "@angular-devkit/core@npm:16.2.0"
   dependencies:
     ajv: 8.12.0
     ajv-formats: 2.1.1
@@ -36,20 +36,20 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 422d225df2fc1fcc44670fc51ca25873f3d937b20a0fc344f68182927b7ac775aff2c8014d98647133b65da45f220fbed2c234d25787e72865dab975a43ee907
+  checksum: 307546a9ad9e6cdecff82f49891a6c2a6c63f7eae37442b40f5d492b95c6bf94b9061ac1855e0aab7132a8e4b05e37c5bb10fb6822a9e950720b7ea20cf3cbe0
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:16.1.8":
-  version: 16.1.8
-  resolution: "@angular-devkit/schematics@npm:16.1.8"
+"@angular-devkit/schematics@npm:16.2.0":
+  version: 16.2.0
+  resolution: "@angular-devkit/schematics@npm:16.2.0"
   dependencies:
-    "@angular-devkit/core": 16.1.8
+    "@angular-devkit/core": 16.2.0
     jsonc-parser: 3.2.0
-    magic-string: 0.30.0
+    magic-string: 0.30.1
     ora: 5.4.1
     rxjs: 7.8.1
-  checksum: 9c691145565c8232bb807782ed6dd7de92b540faaa7a806723678964f9f3931fb5dad8d802966b2fcf31f2c388a3e3e8b0c640f8b212b5e3f9845205136f11a0
+  checksum: a793e151ae70894e8784f3f79482dfe416722d3232fe454db685efd095b23da541316e8fe7a0cab54995a24cb95a95b2d443bc915b9637b0b31de526d2e4679c
   languageName: node
   linkType: hard
 
@@ -2041,7 +2041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/sourcemap-codec@npm:^1.4.10, @jridgewell/sourcemap-codec@npm:^1.4.13, @jridgewell/sourcemap-codec@npm:^1.4.14":
+"@jridgewell/sourcemap-codec@npm:^1.4.10, @jridgewell/sourcemap-codec@npm:^1.4.14, @jridgewell/sourcemap-codec@npm:^1.4.15":
   version: 1.4.15
   resolution: "@jridgewell/sourcemap-codec@npm:1.4.15"
   checksum: b881c7e503db3fc7f3c1f35a1dd2655a188cc51a3612d76efc8a6eb74728bef5606e6758ee77423e564092b4a518aba569bbb21c9bac5ab7a35b0c6ae7e344c8
@@ -6096,7 +6096,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": 16.1.8
+    "@angular-devkit/schematics": 16.2.0
     "@commitlint/cli": ^17.0.0
     "@commitlint/config-angular": ^17.0.0
     "@nx/devkit": 16.6.0
@@ -6472,12 +6472,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:0.30.0":
-  version: 0.30.0
-  resolution: "magic-string@npm:0.30.0"
+"magic-string@npm:0.30.1":
+  version: 0.30.1
+  resolution: "magic-string@npm:0.30.1"
   dependencies:
-    "@jridgewell/sourcemap-codec": ^1.4.13
-  checksum: 7bdf22e27334d8a393858a16f5f840af63a7c05848c000fd714da5aa5eefa09a1bc01d8469362f25cc5c4a14ec01b46557b7fff8751365522acddf21e57c488d
+    "@jridgewell/sourcemap-codec": ^1.4.15
+  checksum: 7bc7e4493e32a77068f3753bf8652d4ab44142122eb7fb9fa871af83bef2cd2c57518a6769701cd5d0379bd624a13bc8c72ca25ac5655b27e5a61adf1fd38db2
   languageName: node
   linkType: hard
 
