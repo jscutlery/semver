@@ -6838,12 +6838,12 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "ngx-deploy-npm@npm:7.0.0"
+  version: 7.0.1
+  resolution: "ngx-deploy-npm@npm:7.0.1"
   peerDependencies:
     "@nx/devkit": ^16.0.0
-    tslib: 1.14.1
-  checksum: 110ba402f4911bc8e6c95ec7543f3585f88e6fbb2795cd3cb48f11a5ffe915121288a64b1e98bf2beea4724f99db5e15cff9ca61bc85af4e5cc48f1b07a11c6f
+    tslib: ^2.3.0
+  checksum: ec5f9d930370f7c959a4cd3f9fe46fd16638178432f2645a0113815da64404becb89d5c5b5ff62d0321edff8efa9c59d89b25e1f6d169e0063c97ca0b0e90907
   languageName: node
   linkType: hard
 
