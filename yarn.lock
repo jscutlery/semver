@@ -2279,6 +2279,7 @@ __metadata:
     rxjs: 7.8.1
   peerDependencies:
     "@nx/devkit": ^16.0.0
+    tslib: ^2.3.0
   languageName: unknown
   linkType: soft
 

@@ -1,1 +1,31 @@
-{ "extends": "../../.eslintrc.json", "ignorePatterns": ["!**/*", "node_modules"], "rules": {} }
+{
+  "extends": "../../.eslintrc.json",
+  "ignorePatterns": ["!**/*", "node_modules"],
+  "overrides": [
+    {
+      "files": ["*.json"],
+      "parser": "jsonc-eslint-parser",
+      "rules": {
+        "@nx/nx-plugin-checks": "error",
+        "@nx/dependency-checks": [
+          "error",
+          {
+            "ignoredDependencies": [
+              "@types/conventional-changelog-config-spec",
+              "@nx/devkit",
+              "@nx/plugin",
+              "@nx/workspace",
+              "conventional-commits-parser",
+              "git-raw-commits",
+              "rimraf",
+              "tmp",
+              "git-semver-tags",
+              "semver",
+              "jest-extended"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
