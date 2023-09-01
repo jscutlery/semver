@@ -2593,14 +2593,14 @@ __metadata:
   linkType: hard
 
 "@types/conventional-changelog@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "@types/conventional-changelog@npm:3.1.1"
+  version: 3.1.2
+  resolution: "@types/conventional-changelog@npm:3.1.2"
   dependencies:
     "@types/conventional-changelog-core": "*"
     "@types/conventional-changelog-writer": "*"
     "@types/conventional-commits-parser": "*"
     "@types/node": "*"
-  checksum: 9278f6603fd5594ede86d1c48bdd12f5871564a9070e4c3df6e60f83a723e55e2fb878e572648e92ccb99bea21074090633562240cebb6106c93f930a6cbd442
+  checksum: 74f2a064b1310fac6a141b625cb7b9bc7f946443ba4bb1ac87ee4898e19eab9841bdff4af1d841ed2f1e6c3102919307228d9925e27e9d3c3a4d43d797213ab0
   languageName: node
   linkType: hard
 
