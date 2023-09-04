@@ -2077,7 +2077,7 @@ __metadata:
   resolution: "@jscutlery/semver@workspace:packages/semver"
   dependencies:
     "@types/conventional-changelog": ^3.1.1
-    "@types/conventional-recommended-bump": 6.1.0
+    "@types/conventional-recommended-bump": 6.1.1
     "@types/inquirer": 8.2.6
     "@types/rimraf": 3.0.2
     "@types/semver": 7.5.1
@@ -2613,7 +2613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/conventional-recommended-bump@npm:*, @types/conventional-recommended-bump@npm:6.1.0":
+"@types/conventional-recommended-bump@npm:*":
   version: 6.1.0
   resolution: "@types/conventional-recommended-bump@npm:6.1.0"
   dependencies:
@@ -2621,6 +2621,17 @@ __metadata:
     "@types/conventional-changelog-writer": "*"
     "@types/conventional-commits-parser": "*"
   checksum: 123c0d7a3b9cbf3e4a55f5d0bc9a889e65ccfc22a88543e43b73fb840c5a9c5b386285e5a1c873d86af405dae94c957b3f2401c8b86ee9dcd880558c8a1c79f3
+  languageName: node
+  linkType: hard
+
+"@types/conventional-recommended-bump@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@types/conventional-recommended-bump@npm:6.1.1"
+  dependencies:
+    "@types/conventional-changelog-core": "*"
+    "@types/conventional-changelog-writer": "*"
+    "@types/conventional-commits-parser": "*"
+  checksum: c220614d472b77a8809e7a6736780bf6f09bd42804e5e9b383de60d456207a93e9d34b140bcebb45c922119a78f72f890ad43e3f2ffee92381e5ce92cd135d31
   languageName: node
   linkType: hard
 
