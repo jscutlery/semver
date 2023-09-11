@@ -25,8 +25,7 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate",
-    "postinstall": "husky install"
+    "contributors:generate": "all-contributors generate"
   },
   "private": true,
   "devDependencies": {
