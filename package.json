@@ -2,6 +2,9 @@
   "name": "tylerlhenderson",
   "version": "0.0.0",
   "license": "MIT",
+  "main": "./packages/semver/src/index.js",
+  "builders": "./packages/semver/builders.json",
+  "schematics": "./packages/semver/collection.json",
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
