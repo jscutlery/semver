@@ -1,45 +1,45 @@
-name: Release
+# name: Release
 
-on:
-  - workflow_dispatch
+# on:
+#   - workflow_dispatch
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node_version: [16]
+#     strategy:
+#       matrix:
+#         node_version: [16]
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          node_version: ${{ matrix.node_version }}
-          git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Setup
+#         uses: ./.github/actions/setup
+#         with:
+#           node_version: ${{ matrix.node_version }}
+#           git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
 
-      - name: Test
-        uses: ./.github/actions/test
-        with:
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+#       - name: Test
+#         uses: ./.github/actions/test
+#         with:
+#           codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
-  release:
-    runs-on: ubuntu-latest
+#   release:
+#     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/main'
+#     if: github.ref == 'refs/heads/main'
 
-    needs: [test]
+#     needs: [test]
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Setup
+#         uses: ./.github/actions/setup
+#         with:
+#           git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
 
-      - name: Release
-        uses: ./.github/actions/release
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          npm_token: ${{ secrets.NPM_TOKEN }}
+#       - name: Release
+#         uses: ./.github/actions/release
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           npm_token: ${{ secrets.NPM_TOKEN }}

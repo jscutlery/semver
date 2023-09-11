@@ -1,5 +1,5 @@
 {
-  "name": "@jscutlery/semver",
+  "name": "@tylerlhenderson/semver",
   "version": "3.1.0",
   "description": "Nx plugin for automate versioning and CHANGELOG generation.",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "node": ">=12.0.0"
   },
   "repository": {
-    "url": "https://github.com/jscutlery/semver"
+    "url": "https://github.com/tylerlhenderson/semver"
   },
   "ng-add": {
     "save": "devDependencies"

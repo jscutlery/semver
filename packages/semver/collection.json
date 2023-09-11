@@ -1,11 +1,11 @@
 {
-  "name": "@jscutlery/semver",
+  "name": "@tylerlhenderson/semver",
   "generators": {
     "ng-add": {
       "aliases": ["install"],
       "schema": "./src/generators/install/schema.json",
       "factory": "./src/generators/install",
-      "description": "Add @jscutlery/semver to the workspace."
+      "description": "Add @tylerlhenderson/semver to the workspace."
     }
   },
   "schematics": {
@@ -13,7 +13,7 @@
       "aliases": ["install"],
       "schema": "./src/generators/install/schema.json",
       "factory": "./src/generators/install/compat",
-      "description": "Add @jscutlery/semver to the workspace."
+      "description": "Add @tylerlhenderson/semver to the workspace."
     }
   },
   "required": [],
