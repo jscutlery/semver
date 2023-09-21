@@ -292,13 +292,8 @@ If you wish to track changes at any depth of your dependency graph, then you sho
 
 ```json
 {
-  "targetDependencies": {
-    "version": [
-      {
-        "target": "version",
-        "projects": "dependencies"
-      }
-    ]
+  "targetDefaults": {
+    "version": ["^version"]
   }
 }
 ```
