@@ -35,7 +35,7 @@
     "@types/conventional-recommended-bump": "6.1.1",
     "@types/inquirer": "8.2.6",
     "@types/rimraf": "3.0.2",
-    "@types/semver": "7.5.2",
+    "@types/semver": "7.5.3",
     "@types/standard-version": "7.1.0",
     "@types/tmp": "0.2.4"
   }
