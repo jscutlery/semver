@@ -2081,7 +2081,7 @@ __metadata:
     "@types/inquirer": 8.2.6
     "@types/rimraf": 3.0.2
     "@types/semver": 7.5.3
-    "@types/standard-version": 7.1.0
+    "@types/standard-version": 7.1.1
     "@types/tmp": 0.2.4
     chalk: 4.1.2
     conventional-changelog: ^4.0.0
@@ -2788,13 +2788,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/standard-version@npm:7.1.0":
-  version: 7.1.0
-  resolution: "@types/standard-version@npm:7.1.0"
+"@types/standard-version@npm:7.1.1":
+  version: 7.1.1
+  resolution: "@types/standard-version@npm:7.1.1"
   dependencies:
     "@types/conventional-changelog-config-spec": "*"
     "@types/node": "*"
-  checksum: 0236ed8cd20ebcb8c244c3e3118ea9766da4c18bf55a171a54a6ea80a2ec144cda206a623a87b8f0056fef8e1f09cc0e71ca14184e651c22c919201380f524f9
+  checksum: f2f5212278e1e689c227644386e56b123769422a85f9c75c9b5db6121e994735f65938a4316a6eb96a59a5e382435f8ee7ef9bb5eca0030cfeaf82649281dc91
   languageName: node
   linkType: hard
 
