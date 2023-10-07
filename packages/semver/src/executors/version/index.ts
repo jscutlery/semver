@@ -26,7 +26,7 @@ import {
 
 export default async function version(
   options: VersionBuilderSchema,
-  context: ExecutorContext
+  context: ExecutorContext,
 ): Promise<{ success: boolean }> {
   const {
     push,
@@ -148,7 +148,7 @@ export default async function version(
           : versionProject({
               ...options,
               projectRoot,
-            })
+            }),
       );
 
       const push$ = defer(() =>
@@ -158,7 +158,7 @@ export default async function version(
           noVerify,
           remote,
           projectName,
-        })
+        }),
       );
 
       const _runPostTargets = ({ notes }: { notes: string }) =>
@@ -178,11 +178,11 @@ export default async function version(
                 version: newVersion.previousVersion,
               }),
             },
-          })
+          }),
         );
 
       const changelogPath = getChangelogPath(
-        syncVersions ? workspaceRoot : projectRoot
+        syncVersions ? workspaceRoot : projectRoot,
       );
 
       return version$.pipe(
@@ -193,12 +193,12 @@ export default async function version(
         concatMap((notes) =>
           concat(
             ...(push && dryRun === false ? [push$] : []),
-            ...(dryRun === false ? [_runPostTargets({ notes })] : [])
-          )
+            ...(dryRun === false ? [_runPostTargets({ notes })] : []),
+          ),
         ),
-        reduce((result) => result, { success: true })
+        reduce((result) => result, { success: true }),
       );
-    })
+    }),
   );
 
   return lastValueFrom(
@@ -211,8 +211,8 @@ export default async function version(
           projectName,
         });
         return of({ success: false });
-      })
-    )
+      }),
+    ),
   );
 }
 
@@ -235,9 +235,9 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     skipProjectChangelog: options.skipProjectChangelog as boolean,
     allowEmptyRelease: options.allowEmptyRelease as boolean,
     skipCommitTypes: options.skipCommitTypes as string[],
-    releaseAs: options.releaseAs ?? options.version,
+    releaseAs: options.releaseAs,
     changelogHeader: options.changelogHeader ?? defaultHeader,
-    versionTagPrefix: options.tagPrefix ?? options.versionTagPrefix,
+    versionTagPrefix: options.tagPrefix,
     commitMessageFormat: options.commitMessageFormat as string,
     commitParserOptions: options.commitParserOptions,
     skipCommit: options.skipCommit as boolean,

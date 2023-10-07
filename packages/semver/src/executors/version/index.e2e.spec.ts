@@ -97,7 +97,7 @@ describe('@jscutlery/semver:version', () => {
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -113,13 +113,13 @@ describe('@jscutlery/semver:version', () => {
 
     it('should not bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '0.0.0'
+        '0.0.0',
       );
     });
 
     it(`should bump a's package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.1.0');
     });
 
@@ -144,7 +144,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
     });
   });
@@ -164,7 +164,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -180,7 +180,7 @@ $`)
 
     it('should not bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '0.0.0'
+        '0.0.0',
       );
     });
 
@@ -200,7 +200,7 @@ This file was generated.*
 ### Bug Fixes
 
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
+$`),
       );
     });
   });
@@ -220,7 +220,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -240,7 +240,7 @@ $`)
 
     it(`should bump a's package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.1.0');
     });
 
@@ -267,7 +267,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -283,25 +283,25 @@ $`)
 
     it('should bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '0.1.0'
+        '0.1.0',
       );
     });
 
     it(`should preserve indentation in root package.json`, async () => {
       expect(await lastValueFrom(readFile('package.json'))).toEqual(
-        '{\n  "version": "0.1.0"\n}\n'
+        '{\n  "version": "0.1.0"\n}\n',
       );
     });
 
     it(`should bump "a"'s package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.1.0');
     });
 
     it(`should preserve indentation in a's package.json`, async () => {
       expect(await lastValueFrom(readFile('packages/a/package.json'))).toEqual(
-        '{\n    "version": "0.1.0"\n}\n'
+        '{\n    "version": "0.1.0"\n}\n',
       );
     });
 
@@ -327,7 +327,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
     });
 
@@ -348,7 +348,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
 
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
@@ -362,7 +362,7 @@ This file was generated.*
 ### Bug Fixes
 
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
+$`),
       );
     });
   });
@@ -385,7 +385,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
 
       /* Change b and commit. */
@@ -405,7 +405,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -421,14 +421,14 @@ $`)
 
     it('should bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '0.2.0'
+        '0.2.0',
       );
     });
 
     /* In sync mode, we bump "a" even if change concerns "b". */
     it(`should bump "a"'s package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.2.0');
     });
 
@@ -445,19 +445,19 @@ $`)
 
 
 # 0.1.0 \\(.*\\)
-`)
+`),
       );
     });
 
     it(`should update "a"'s changelog without listing "b"'s feature`, async () => {
       expect(readFileSync('packages/a/CHANGELOG.md', 'utf-8')).toMatch(
-        /\n# \[0.2.0\]\(\/compare\/v0.1.0...v0.2.0\) \(.*\)\n\n\n\n# 0.1.0 \(.*\)\n/
+        /\n# \[0.2.0\]\(\/compare\/v0.1.0...v0.2.0\) \(.*\)\n\n\n\n# 0.1.0 \(.*\)\n/,
       );
     });
 
     it(`should update "b"'s changelog with new feature`, async () => {
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
-        /\n# \[0.2.0\]\(\/compare\/v0.1.0...v0.2.0\) \(.*\)\n\n\n### Features\n\n\* \*\*b:\*\* b .*\n\n\n\n# 0.1.0 \(.*\)\n/
+        /\n# \[0.2.0\]\(\/compare\/v0.1.0...v0.2.0\) \(.*\)\n\n\n### Features\n\n\* \*\*b:\*\* b .*\n\n\n\n# 0.1.0 \(.*\)\n/,
       );
     });
   });
@@ -481,7 +481,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -497,13 +497,13 @@ $`)
 
     it('should bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '0.1.0'
+        '0.1.0',
       );
     });
 
     it(`should bump "a"'s package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.1.0');
     });
 
@@ -528,7 +528,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
 
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
@@ -542,7 +542,7 @@ This file was generated.*
 ### Bug Fixes
 
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
+$`),
       );
     });
   });
@@ -561,10 +561,10 @@ $`)
     describe('utilizes the project graph', () => {
       beforeEach(() => {
         const originalModule = jest.requireActual(
-          '@nx/workspace/src/core/project-graph'
+          '@nx/workspace/src/core/project-graph',
         );
         mockCreateProjectGraphAsync.mockImplementation(
-          originalModule.createProjectGraphAsync
+          originalModule.createProjectGraphAsync,
         );
       });
       afterEach(() => jest.resetAllMocks());
@@ -599,7 +599,7 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects,
-          })
+          }),
         );
       });
 
@@ -645,7 +645,7 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects,
-          })
+          }),
         );
       });
 
@@ -691,7 +691,7 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects,
-          })
+          }),
         );
       });
 
@@ -715,7 +715,7 @@ This file was generated.*
 ### Dependency Updates
 
 \\* \`e\` updated to version \`0.1.0\`
-$`)
+$`),
         );
       });
     });
@@ -751,7 +751,7 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects,
-          })
+          }),
         );
       });
 
@@ -779,7 +779,7 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*c:\\*\\* 🚀 new feature .*
-$`)
+$`),
         );
       });
     });
@@ -805,7 +805,7 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/a'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects,
-          })
+          }),
         );
       });
 
@@ -835,7 +835,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
         );
       });
     });
@@ -868,7 +868,7 @@ $`)
             projectRoot: resolve(testingWorkspace.root, 'packages/c'),
             workspaceRoot: testingWorkspace.root,
             additionalProjects,
-          })
+          }),
         );
       });
 
@@ -888,7 +888,7 @@ $`)
 This file was generated.*
 
 ## 0.0.1 \\(.*\\).*
-`)
+`),
         );
       });
     });
@@ -906,14 +906,14 @@ This file was generated.*
         {
           ...defaultBuilderOptions,
           syncVersions: true,
-          version: 'major',
+          releaseAs: 'major',
         },
         createFakeContext({
           project: 'workspace',
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -929,13 +929,13 @@ This file was generated.*
 
     it('should bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '1.0.0'
+        '1.0.0',
       );
     });
 
     it(`should bump "a"'s package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('1.0.0');
     });
 
@@ -961,7 +961,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
     });
 
@@ -982,7 +982,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
 
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
@@ -996,7 +996,7 @@ This file was generated.*
 ### Bug Fixes
 
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
+$`),
       );
     });
   });
@@ -1019,10 +1019,10 @@ $`)
         {
           ...defaultBuilderOptions,
           syncVersions: true,
-          version: 'prerelease',
+          releaseAs: 'prerelease',
           preid: 'beta',
         },
-        fakeContext
+        fakeContext,
       );
     });
 
@@ -1038,19 +1038,19 @@ $`)
 
     it('should bump root package.json', async () => {
       expect((await lastValueFrom(readPackageJson('.'))).version).toEqual(
-        '0.0.1-beta.0'
+        '0.0.1-beta.0',
       );
     });
 
     it(`should bump "a"'s package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.0.1-beta.0');
     });
 
     it(`should bump "a"'s package.json`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.0.1-beta.0');
     });
 
@@ -1076,7 +1076,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
     });
 
@@ -1097,7 +1097,7 @@ This file was generated.*
 ### Performance Improvements
 
 \\* \\*\\*a:\\*\\* ⚡ improve quickness .*
-$`)
+$`),
       );
 
       expect(readFileSync('packages/b/CHANGELOG.md', 'utf-8')).toMatch(
@@ -1111,7 +1111,7 @@ This file was generated.*
 ### Bug Fixes
 
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
+$`),
       );
     });
   });
@@ -1133,26 +1133,26 @@ $`)
       result = await version(
         {
           ...defaultBuilderOptions,
-          version: 'prerelease',
+          releaseAs: 'prerelease',
           preid: 'fix-bug',
         },
-        fakeContext
+        fakeContext,
       );
       await version(
         {
           ...defaultBuilderOptions,
-          version: 'prerelease',
+          releaseAs: 'prerelease',
           preid: 'add-feature',
         },
-        fakeContext
+        fakeContext,
       );
       await version(
         {
           ...defaultBuilderOptions,
-          version: 'prerelease',
+          releaseAs: 'prerelease',
           preid: 'add-feature',
         },
-        fakeContext
+        fakeContext,
       );
     });
 
@@ -1160,7 +1160,7 @@ $`)
 
     it(`should bump "a"'s package.json with different preids`, async () => {
       expect(
-        (await lastValueFrom(readPackageJson('packages/a'))).version
+        (await lastValueFrom(readPackageJson('packages/a'))).version,
       ).toEqual('0.0.1-add-feature.1');
     });
   });
@@ -1184,7 +1184,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -1192,7 +1192,7 @@ $`)
 
     it('should generate changelogs with custom header', () => {
       expect(readFileSync('CHANGELOG.md', 'utf-8')).toMatch(
-        new RegExp(`^# Custom changelog header *`)
+        new RegExp(`^# Custom changelog header *`),
       );
     });
   });
@@ -1219,7 +1219,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
 
       expect(commitMessage()).toBe('chore(a): 🎸 release 0.1.0 [skip ci]');
@@ -1233,7 +1233,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
 
       expect(commitMessage()).toBe('chore(a): release version 0.1.0');
@@ -1261,7 +1261,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
 
       expect(commitMessage()).toBe('perf(a): ⚡ improve quickness');
@@ -1279,7 +1279,7 @@ This file was generated.*
 ### Bug Fixes
 
 \\* \\*\\*b:\\*\\* 🐞 fix emptiness .*
-$`)
+$`),
       );
     });
   });
@@ -1303,7 +1303,7 @@ $`)
         echo b > packages/b/b.txt
         git add .
         git commit -m "fix(b): 🐞 fix emptiness"
-        `
+        `,
       );
       createMergeCommit();
     });
@@ -1321,7 +1321,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/a'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
 
       expect(commitMessage()).toBe("Merge branch 'another-branch'");
@@ -1345,7 +1345,7 @@ $`)
           projectRoot: resolve(testingWorkspace.root, 'packages/b'),
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
 
       expect(commitMessage()).toBe('chore(b): release version 5.0.1');
@@ -1369,7 +1369,7 @@ $`)
         {
           ...defaultBuilderOptions,
           syncVersions: true,
-          version: 'prerelease',
+          releaseAs: 'prerelease',
           preid: 'beta',
           postTargets: ['e:github'],
         },
@@ -1378,7 +1378,7 @@ $`)
           projectRoot: testingWorkspace.root,
           workspaceRoot: testingWorkspace.root,
           additionalProjects,
-        })
+        }),
       );
     });
 
@@ -1398,7 +1398,7 @@ function initGit() {
         git config user.name "Test Bot"
 
         git config commit.gpgsign false
-`
+`,
   );
 }
 
@@ -1419,7 +1419,7 @@ function createAndCommitFiles() {
         echo c > packages/a/c.txt
         git add .
         git commit -m "perf(a): ⚡ improve quickness"
-      `
+      `,
   );
 }
 
@@ -1439,7 +1439,7 @@ function createMergeCommit() {
 
         git checkout master
         git merge another-branch
-     `
+     `,
   );
 }
 

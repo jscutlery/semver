@@ -51,10 +51,6 @@
       "type": "boolean",
       "default": false
     },
-    "version": {
-      "description": "(Deprecated) Manually increment the version by that keyword.",
-      "type": "string"
-    },
     "releaseAs": {
       "description": "Manually increment the version by that keyword.",
       "type": "string"
@@ -65,17 +61,6 @@
     },
     "tagPrefix": {
       "description": "Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "versionTagPrefix": {
-      "description": "(Deprecated) Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
       "oneOf": [
         {
           "type": "string"
