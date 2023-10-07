@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.3.0](https://github.com/jscutlery/semver/compare/semver-3.2.0...semver-3.3.0) (2023-10-07)
+
+
+### Features
+
+* **semver:** add support for `{var}` and deprecate `${var}` syntax ([3092939](https://github.com/jscutlery/semver/commit/3092939431e01fd9055457c25e5c6e65454002f0))
+
+
+
 # [3.2.0](https://github.com/jscutlery/semver/compare/semver-3.1.0...semver-3.2.0) (2023-10-07)
 
 
