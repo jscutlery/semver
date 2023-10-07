@@ -110,7 +110,7 @@ You can customize the default configuration using the definition file (`angular.
   "options": {
     "baseBranch": "master",
     "preset": "conventional",
-    "tagPrefix": "${projectName}@"
+    "tagPrefix": "{projectName}@"
   }
 }
 ```
@@ -195,14 +195,14 @@ The **`--tagPrefix`** option allows you to customize the tag prefix.
 
 In sync mode only one tag is created for the whole workspace, the tag prefix is set to `v` by default, which is resolved for instance to `v0.0.1`.
 
-In independent mode, the tag prefix uses the contextual project name, the default value is `${projectName}-` which is resolved for instance to `my-project-0.0.1`. Note that each project in the workspace is versioned with its tag.
+In independent mode, the tag prefix uses the contextual project name, the default value is `{projectName}-` which is resolved for instance to `my-project-0.0.1`. Note that each project in the workspace is versioned with its tag.
 
 #### Commit message customization
 
 The **`--commitMessageFormat`** option allows you to customize the commit message. By default, the commit message is formatted as the following:
 
 ```
-chore(${projectName}): release version ${version}
+chore({projectName}): release version {version}
 ```
 
 Contextual variables resolved by this option:
@@ -213,7 +213,7 @@ Contextual variables resolved by this option:
 Note that it's the right place to add common keywords to skip CI workflows, for example: `[skip ci]` for GitHub, eg:
 
 ```
-release: bump ${projectName} to ${version} [skip ci]
+release: bump {projectName} to {version} [skip ci]
 ```
 
 #### Skipping release for specific types of commits
@@ -263,8 +263,8 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
-        "tag": "${tag}",
-        "notes": "${notes}"
+        "tag": "{tag}",
+        "notes": "{notes}"
       }
     },
     "npm": {
