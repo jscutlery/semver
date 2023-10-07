@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.2.0](https://github.com/jscutlery/semver/compare/semver-3.1.0...semver-3.2.0) (2023-10-07)
+
+
+### Bug Fixes
+
+* 📦 bump dependency inquirer to v8.2.6 ([8ef55f6](https://github.com/jscutlery/semver/commit/8ef55f6e0f9f30ae1da369ab306f8d55c8e685b2))
+
+
+### Features
+
+* create CHANGELOG.md when setting up semver for a project ([#713](https://github.com/jscutlery/semver/issues/713)) ([3952e77](https://github.com/jscutlery/semver/commit/3952e772bad4b51e53fc5be013f756195d6fb284))
+
+
+
 # [3.1.0](https://github.com/jscutlery/semver/compare/semver-3.0.0...semver-3.1.0) (2023-07-31)
 
 
