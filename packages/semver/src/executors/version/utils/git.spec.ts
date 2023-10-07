@@ -56,7 +56,7 @@ describe('git', () => {
           branch: 'master',
           noVerify: false,
           projectName: 'p',
-        })
+        }),
       );
 
       expect(cp.exec).toBeCalledWith(
@@ -67,7 +67,7 @@ describe('git', () => {
           'upstream',
           'master',
           'v1.0.0',
-        ])
+        ]),
       );
     });
 
@@ -81,7 +81,7 @@ describe('git', () => {
           branch: 'main',
           noVerify: true,
           projectName: 'p',
-        })
+        }),
       );
 
       expect(cp.exec).toBeCalledWith(
@@ -93,7 +93,7 @@ describe('git', () => {
           'origin',
           'main',
           'v1.0.0',
-        ])
+        ]),
       );
     });
 
@@ -112,18 +112,18 @@ describe('git', () => {
           branch: 'master',
           noVerify: false,
           projectName: 'p',
-        })
+        }),
       );
 
       expect(cp.exec).toHaveBeenNthCalledWith(
         1,
         'git',
-        expect.arrayContaining(['push', '--atomic', 'v1.0.0'])
+        expect.arrayContaining(['push', '--atomic', 'v1.0.0']),
       );
       expect(cp.exec).toHaveBeenNthCalledWith(
         2,
         'git',
-        expect.not.arrayContaining(['--atomic'])
+        expect.not.arrayContaining(['--atomic']),
       );
       expect(console.warn).toBeCalled();
     });
@@ -141,8 +141,8 @@ describe('git', () => {
             branch: 'master',
             noVerify: false,
             projectName: 'p',
-          })
-        )
+          }),
+        ),
       ).rejects.toEqual(new Error('Something went wrong'));
       expect(cp.exec).toBeCalledTimes(1);
     });
@@ -158,8 +158,8 @@ describe('git', () => {
             /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
             projectName: 'p',
-          })
-        )
+          }),
+        ),
       ).rejects.toEqual(expect.any(Error));
     });
   });
@@ -172,7 +172,7 @@ describe('git', () => {
         addToStage({
           paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
           dryRun: false,
-        })
+        }),
       );
 
       expect(cp.exec).toBeCalledWith(
@@ -181,7 +181,7 @@ describe('git', () => {
           'add',
           'packages/demo/file.txt',
           'packages/demo/other-file.ts',
-        ])
+        ]),
       );
     });
 
@@ -193,7 +193,7 @@ describe('git', () => {
           paths: [],
           dryRun: false,
         }),
-        { defaultValue: undefined }
+        { defaultValue: undefined },
       );
 
       expect(cp.exec).not.toBeCalled();
@@ -209,7 +209,7 @@ describe('git', () => {
       expect(tag).toBe('sha1');
       expect(cp.exec).toBeCalledWith(
         'git',
-        expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD'])
+        expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD']),
       );
     });
 
@@ -221,7 +221,7 @@ describe('git', () => {
       expect(tag).toBe('sha3');
       expect(cp.exec).toBeCalledWith(
         'git',
-        expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD'])
+        expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD']),
       );
     });
   });
@@ -237,7 +237,7 @@ describe('git', () => {
           tag: 'project-a-1.0.0',
           commitMessage: 'chore(release): 1.0.0',
           projectName: 'p',
-        })
+        }),
       );
 
       expect(tag).toBe('project-a-1.0.0');
@@ -250,7 +250,7 @@ describe('git', () => {
           '123',
           '-m',
           'chore(release): 1.0.0',
-        ])
+        ]),
       );
     });
 
@@ -274,8 +274,8 @@ describe('git', () => {
         .spyOn(cp, 'exec')
         .mockReturnValue(
           throwError(
-            () => new Error("fatal: tag 'project-a-1.0.0' already exists")
-          )
+            () => new Error("fatal: tag 'project-a-1.0.0' already exists"),
+          ),
         );
 
       createTag({
@@ -290,7 +290,7 @@ describe('git', () => {
         error: (error) => {
           expect(cp.exec).toBeCalled();
           expect(error.message).toMatch(
-            'Failed to tag "project-a-1.0.0", this tag already exists.'
+            'Failed to tag "project-a-1.0.0", this tag already exists.',
           );
           done();
         },

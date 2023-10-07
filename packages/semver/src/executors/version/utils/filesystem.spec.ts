@@ -21,7 +21,7 @@ describe('readJsonFile', () => {
 
   it('should emit error', async () => {
     mockReadFile.mockRejectedValue(
-      new Error('ENOENT: no such file or directory')
+      new Error('ENOENT: no such file or directory'),
     );
 
     const file$ = readJsonFile('/unexisting-file');
@@ -32,7 +32,7 @@ describe('readJsonFile', () => {
     await new Promise(setImmediate);
 
     await expect(lastValueFrom(file$)).rejects.toThrow(
-      'ENOENT: no such file or directory'
+      'ENOENT: no such file or directory',
     );
     expect(mockReadFile).toBeCalledTimes(1);
   });
@@ -51,7 +51,7 @@ describe('readFileIfExists', () => {
     mockAccess.mockResolvedValue(false);
 
     mockReadFile.mockRejectedValue(
-      new Error('ENOENT: no such file or directory')
+      new Error('ENOENT: no such file or directory'),
     );
 
     const file$ = readFileIfExists('/unexisting-file');
@@ -68,7 +68,7 @@ describe('readFileIfExists', () => {
     mockAccess.mockResolvedValue(false);
 
     mockReadFile.mockRejectedValue(
-      new Error('ENOENT: no such file or directory')
+      new Error('ENOENT: no such file or directory'),
     );
 
     const file$ = readFileIfExists('/unexisting-file', 'some fallback');

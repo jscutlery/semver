@@ -27,19 +27,19 @@ describe('2.0.0 migration schematic', () => {
             },
           },
         },
-      })
+      }),
     );
 
     migrate(appTree);
 
     const projects = getProjects(appTree);
     expect(projects.get('demo')?.targets?.version.options).not.toContainKey(
-      'rootChangelog'
+      'rootChangelog',
     );
     expect(projects.get('demo')?.targets?.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: true,
-      })
+      }),
     );
   });
 
@@ -55,19 +55,19 @@ describe('2.0.0 migration schematic', () => {
             },
           },
         },
-      })
+      }),
     );
 
     migrate(appTree);
 
     const projects = getProjects(appTree);
     expect(projects.get('demo')?.targets?.version.options).not.toContainKey(
-      'rootChangelog'
+      'rootChangelog',
     );
     expect(projects.get('demo')?.targets?.version.options).toEqual(
       expect.objectContaining({
         skipRootChangelog: false,
-      })
+      }),
     );
   });
 
@@ -81,7 +81,7 @@ describe('2.0.0 migration schematic', () => {
             options: { option: 'value' },
           },
         },
-      })
+      }),
     );
 
     migrate(appTree);

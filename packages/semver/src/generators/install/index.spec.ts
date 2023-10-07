@@ -41,7 +41,7 @@ describe('Install generator', () => {
             executor: '@jscutlery/semver:version',
             options: expect.objectContaining({ syncVersions: true }),
           },
-        })
+        }),
       );
     });
   });
@@ -64,7 +64,7 @@ describe('Install generator', () => {
     afterEach(() =>
       (
         inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
-      ).mockRestore()
+      ).mockRestore(),
     );
 
     it('should prompt user to select which projects should be versioned', async () => {
@@ -80,7 +80,7 @@ describe('Install generator', () => {
           choices: expect.arrayContaining([
             { name: projectName1, checked: true },
           ]),
-        })
+        }),
       );
       /* Project "lib1" selected by the prompt. */
       expect(lib1.targets).toEqual(
@@ -88,7 +88,7 @@ describe('Install generator', () => {
           version: {
             executor: '@jscutlery/semver:version',
           },
-        })
+        }),
       );
       /* Project "lib2" not selected by the prompt. */
       expect(lib2.targets.version).toBeUndefined();
@@ -107,7 +107,7 @@ describe('Install generator', () => {
           version: {
             executor: '@jscutlery/semver:version',
           },
-        })
+        }),
       );
     });
 
@@ -125,7 +125,7 @@ describe('Install generator', () => {
             executor: '@jscutlery/semver:version',
             options: expect.objectContaining({ baseBranch: 'master' }),
           },
-        })
+        }),
       );
       expect(lib2.targets).toEqual(
         expect.objectContaining({
@@ -133,7 +133,7 @@ describe('Install generator', () => {
             executor: '@jscutlery/semver:version',
             options: expect.objectContaining({ baseBranch: 'master' }),
           },
-        })
+        }),
       );
     });
 
@@ -169,7 +169,7 @@ describe('Install generator', () => {
               executor: '@jscutlery/semver:version',
               options: expect.objectContaining({ preset: 'conventional' }),
             },
-          })
+          }),
         );
       });
 
@@ -189,7 +189,7 @@ describe('Install generator', () => {
               executor: '@jscutlery/semver:version',
               options: expect.objectContaining({ preset: 'angular' }),
             },
-          })
+          }),
         );
       });
 
@@ -204,7 +204,7 @@ describe('Install generator', () => {
               executor: '@jscutlery/semver:version',
               options: expect.objectContaining({ preset: 'conventional' }),
             },
-          })
+          }),
         );
       });
 
@@ -328,7 +328,7 @@ describe('Install generator', () => {
     afterEach(() =>
       (
         inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
-      ).mockRestore()
+      ).mockRestore(),
     );
     it('should create CHANGELOG.md in lib1 and lib2', async () => {
       await install(tree, { ...options, projects: projects });

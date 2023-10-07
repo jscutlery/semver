@@ -36,7 +36,7 @@ export default async function runExecutor({
     catchError((response) => {
       logger.error(response);
       return of({ success: false });
-    })
+    }),
   );
 
   return lastValueFrom(createRelease$);

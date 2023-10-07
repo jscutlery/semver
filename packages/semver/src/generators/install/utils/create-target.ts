@@ -14,7 +14,7 @@ export function createTarget(options: SchemaOptions): TargetConfiguration {
 
 /* istanbul ignore next */
 export function _createOptions(
-  options: SchemaOptions
+  options: SchemaOptions,
 ): TargetConfiguration['options'] {
   const targetOptions = [
     'syncVersions',
@@ -30,6 +30,6 @@ export function _createOptions(
         ...targetOptions,
         [key]: options[key as keyof SchemaOptions],
       }),
-      {}
+      {},
     );
 }

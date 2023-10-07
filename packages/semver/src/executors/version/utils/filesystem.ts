@@ -6,10 +6,10 @@ const fsPromises = fs.promises;
 
 export function exists(filePath: string) {
   return defer(() =>
-    fsPromises.access(filePath, fs.constants.R_OK | fs.constants.W_OK)
+    fsPromises.access(filePath, fs.constants.R_OK | fs.constants.W_OK),
   ).pipe(
     map(() => true),
-    catchError(() => of(false))
+    catchError(() => of(false)),
   );
 }
 
@@ -19,7 +19,7 @@ export function readFile(filePath: string) {
 
 export function readFileIfExists(filePath: string, fallback = '') {
   return exists(filePath).pipe(
-    switchMap((exist) => (exist ? readFile(filePath) : of(fallback)))
+    switchMap((exist) => (exist ? readFile(filePath) : of(fallback))),
   );
 }
 
@@ -29,9 +29,9 @@ export function readJsonFile(filePath: string) {
 
 export function writeFile(
   filePath: string,
-  data: Parameters<typeof fsPromises.writeFile>[1]
+  data: Parameters<typeof fsPromises.writeFile>[1],
 ): Observable<void> {
   return defer(() =>
-    fsPromises.writeFile(filePath, data, { encoding: 'utf-8' })
+    fsPromises.writeFile(filePath, data, { encoding: 'utf-8' }),
   );
 }

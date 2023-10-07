@@ -32,7 +32,7 @@ export function commit({
       step: 'commit_success',
       message: `Committed "${commitMessage}".`,
       projectName,
-    })
+    }),
   );
 }
 

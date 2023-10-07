@@ -15,7 +15,7 @@ describe(getLastVersion.name, () => {
   beforeEach(() => {
     mockGitSemverTags = jest.fn();
     (gitSemverTags as jest.Mock).mockImplementation(
-      callbackify(mockGitSemverTags)
+      callbackify(mockGitSemverTags),
     );
   });
 
@@ -39,7 +39,7 @@ describe(getLastVersion.name, () => {
     ]);
 
     const tag = await lastValueFrom(
-      getLastVersion({ tagPrefix, preid: 'new-feature' })
+      getLastVersion({ tagPrefix, preid: 'new-feature' }),
     );
 
     expect(tag).toEqual('2.0.0');
@@ -56,10 +56,10 @@ describe(getLastVersion.name, () => {
 
     const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
     const tagWithPreidFeat = await lastValueFrom(
-      getLastVersion({ tagPrefix, preid: 'add-feature' })
+      getLastVersion({ tagPrefix, preid: 'add-feature' }),
     );
     const tagWithPreidFix = await lastValueFrom(
-      getLastVersion({ tagPrefix, preid: 'fix-bug' })
+      getLastVersion({ tagPrefix, preid: 'fix-bug' }),
     );
 
     expect(tag).toEqual('2.1.0-z-is-the-last-letter-in-alphabet.0');
@@ -75,7 +75,7 @@ describe(getLastVersion.name, () => {
     ]);
 
     const tag = await lastValueFrom(
-      getLastVersion({ tagPrefix, includePrerelease: false })
+      getLastVersion({ tagPrefix, includePrerelease: false }),
     );
 
     expect(tag).toEqual('2.0.0');
@@ -85,7 +85,7 @@ describe(getLastVersion.name, () => {
     mockGitSemverTags.mockResolvedValue([]);
 
     expect(lastValueFrom(getLastVersion({ tagPrefix }))).rejects.toThrow(
-      'No semver tag found'
+      'No semver tag found',
     );
   });
 });

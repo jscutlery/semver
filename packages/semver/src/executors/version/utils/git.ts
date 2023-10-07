@@ -65,7 +65,7 @@ function getFormattedCommits({
   }).pipe(
     scan((commits, commit) => [...commits, commit.toString()], [] as string[]),
     startWith([]),
-    last()
+    last(),
   );
 }
 
@@ -86,8 +86,8 @@ export function tryPush({
     return throwError(
       () =>
         new Error(
-          'Missing option --remote or --branch, see: https://github.com/jscutlery/semver#configure.'
-        )
+          'Missing option --remote or --branch, see: https://github.com/jscutlery/semver#configure.',
+        ),
     );
   }
 
@@ -114,14 +114,14 @@ export function tryPush({
         }
 
         return throwError(() => error);
-      })
+      }),
     )
     .pipe(
       logStep({
         step: 'push_success',
         message: `Pushed to "${remote}" "${branch}".`,
         projectName,
-      })
+      }),
     );
 }
 
@@ -148,7 +148,7 @@ export function getFirstCommitRef(): Observable<string> {
         .map((c) => c.trim())
         .filter(Boolean)
         .pop()!;
-    })
+    }),
   );
 }
 
@@ -175,7 +175,7 @@ export function createTag({
           () =>
             new Error(`Failed to tag "${tag}", this tag already exists.
             This error occurs because the same version was previously created but the tag does not point to a commit referenced in your base branch.
-            Please delete the tag by running "git tag -d ${tag}", make sure the tag has been removed from the remote repository as well and run this command again.`)
+            Please delete the tag by running "git tag -d ${tag}", make sure the tag has been removed from the remote repository as well and run this command again.`),
         );
       }
 
@@ -186,6 +186,6 @@ export function createTag({
       step: 'tag_success',
       message: `Tagged "${tag}".`,
       projectName,
-    })
+    }),
   );
 }

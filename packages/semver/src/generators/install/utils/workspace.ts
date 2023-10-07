@@ -26,7 +26,7 @@ export function listProjects(tree: Tree): ProjectDefinition[] {
 export function updateProjects(
   tree: Tree,
   options: SchemaOptions,
-  predicate: (projectName: string) => boolean
+  predicate: (projectName: string) => boolean,
 ) {
   getProjects(tree).forEach((project, projectName) => {
     if (predicate(projectName)) {
@@ -42,23 +42,23 @@ export function updateProjects(
 
 export async function updateWorkspaceFromPrompt(
   tree: Tree,
-  options: SchemaOptions
+  options: SchemaOptions,
 ): Promise<void> {
   const projects = listProjects(tree);
   const answers = await createPrompt(projects);
 
   return updateProjects(tree, options, (projectName) =>
-    answers.projects.includes(projectName)
+    answers.projects.includes(projectName),
   );
 }
 
 export function updateWorkspaceFromSchema(
   tree: Tree,
-  options: SchemaOptions
+  options: SchemaOptions,
 ): void {
   return updateProjects(
     tree,
     options,
-    (projectName) => options.projects?.includes(projectName) as boolean
+    (projectName) => options.projects?.includes(projectName) as boolean,
   );
 }

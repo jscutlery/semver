@@ -93,25 +93,25 @@ describe(runPostTargets.name, () => {
           expect.objectContaining({
             project: 'project-a',
             target: 'test',
-          })
+          }),
         );
         expect(mockRunExecutor.mock.calls[1][0]).toEqual(
           expect.objectContaining({
             project: 'project-b',
             target: 'test',
-          })
+          }),
         );
         expect(mockRunExecutor.mock.calls[1][1]).toEqual(
           expect.objectContaining({
             optionA: 'optionA',
-          })
+          }),
         );
         expect(mockRunExecutor.mock.calls[2][0]).toEqual(
           expect.objectContaining({
             project: 'project-c',
             target: 'test',
             configuration: 'prod',
-          })
+          }),
         );
         done();
       },
@@ -136,7 +136,7 @@ describe(runPostTargets.name, () => {
       error: (error) => {
         expect(nextSpy).toBeCalledTimes(1);
         expect(error.toString()).toEqual(
-          'Error: Something went wrong with post-target "project-b:test".'
+          'Error: Something went wrong with post-target "project-b:test".',
         );
         expect(mockRunExecutor).toBeCalledTimes(2);
         done();
@@ -177,7 +177,7 @@ describe(runPostTargets.name, () => {
         expect(nextSpy).toBeCalledTimes(1);
         expect(mockRunExecutor).toBeCalledTimes(1);
         expect(error.toString()).toEqual(
-          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c".'
+          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c".',
         );
         done();
       },
@@ -197,7 +197,7 @@ describe(runPostTargets.name, () => {
         expect(nextSpy).toBeCalledTimes(1);
         expect(mockRunExecutor).toBeCalledTimes(1);
         expect(error.toString()).toEqual(
-          'Error: The target name "foo" does not exist. Available targets for "project-b": "test".'
+          'Error: The target name "foo" does not exist. Available targets for "project-b": "test".',
         );
         done();
       },

@@ -40,7 +40,7 @@ describe('writeChangelog', () => {
           read() {
             this.emit('error', '💥');
           },
-        })
+        }),
       );
       await writeChangelog(config, '0.0.1');
     });
@@ -53,7 +53,7 @@ describe('writeChangelog', () => {
     it('should print a console.warn', async () => {
       expect(console.warn).toHaveBeenCalledWith(
         'changelog creation failed',
-        '💥'
+        '💥',
       );
     });
     it('should not write a changelog file', async () => {
@@ -66,7 +66,7 @@ describe('writeChangelog', () => {
     beforeAll(async () => {
       mockInitConventionalCommitReadableStream.mockImplementation(
         jest.requireActual('./init-conventional-commit-readable-stream')
-          .initConventionalCommitReadableStream
+          .initConventionalCommitReadableStream,
       );
 
       await writeChangelog({ ...config, dryRun: true }, version);
@@ -82,10 +82,10 @@ describe('writeChangelog', () => {
     });
     it('should print a console.info with the changelog contents without the header', async () => {
       expect(console.info).toHaveBeenCalledWith(
-        expect.stringContaining(`## ${version}`)
+        expect.stringContaining(`## ${version}`),
       );
       expect(console.info).toHaveBeenCalledWith(
-        expect.not.stringContaining(config.changelogHeader)
+        expect.not.stringContaining(config.changelogHeader),
       );
     });
   });

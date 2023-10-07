@@ -80,7 +80,7 @@ describe('projectDependencies', () => {
 
     it('returns a list of libs that the project is dependent on', async () => {
       mockCreateProjectGraphAsync.mockReturnValue(
-        Promise.resolve(projectGraph)
+        Promise.resolve(projectGraph),
       );
 
       const dependencies = await getProjectDependencies('demo');
@@ -91,7 +91,7 @@ describe('projectDependencies', () => {
 
     it('returns a sub-dependency', async () => {
       mockCreateProjectGraphAsync.mockReturnValue(
-        Promise.resolve(projectGraph)
+        Promise.resolve(projectGraph),
       );
 
       const dependencies = await getProjectDependencies('lib1');
@@ -102,7 +102,7 @@ describe('projectDependencies', () => {
 
     it('handles a failure in retrieving the dependency graph', async () => {
       mockCreateProjectGraphAsync.mockReturnValue(
-        Promise.reject('thrown error')
+        Promise.reject('thrown error'),
       );
 
       let error;

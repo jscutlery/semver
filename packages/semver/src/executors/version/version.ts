@@ -58,7 +58,7 @@ export function versionWorkspace({
 } & CommonVersionOptions) {
   const projectRoots = getProjectRoots(
     options.workspaceRoot,
-    options.workspace
+    options.workspace,
   );
   return forkJoin([
     _generateChangelogs({
@@ -81,8 +81,8 @@ export function versionWorkspace({
           newVersion,
           projectName,
           dryRun,
-        })
-      )
+        }),
+      ),
     ).pipe(map((paths) => paths.filter(isNotNull))),
   ]).pipe(
     map((paths) => paths.flat()),
@@ -90,7 +90,7 @@ export function versionWorkspace({
       addToStage({
         paths,
         dryRun,
-      })
+      }),
     ),
     concatMap(() =>
       commit({
@@ -99,7 +99,7 @@ export function versionWorkspace({
         noVerify,
         commitMessage,
         projectName,
-      })
+      }),
     ),
     concatMap(() => getLastCommitHash({ projectRoot })),
     concatMap((commitHash) =>
@@ -109,8 +109,8 @@ export function versionWorkspace({
         commitHash,
         commitMessage,
         projectName,
-      })
-    )
+      }),
+    ),
   );
 }
 
@@ -153,10 +153,10 @@ export function versionProject({
             dependencyUpdates: options.dependencyUpdates,
           }).pipe(
             concatMap((changelogPath) =>
-              addToStage({ paths: [changelogPath], dryRun })
-            )
+              addToStage({ paths: [changelogPath], dryRun }),
+            ),
           )
-        : of(undefined)
+        : of(undefined),
     ),
     concatMap(() =>
       updatePackageJson({
@@ -171,9 +171,9 @@ export function versionProject({
                 paths: [packageFile],
                 dryRun,
               })
-            : of(undefined)
-        )
-      )
+            : of(undefined),
+        ),
+      ),
     ),
     concatMap(() =>
       commit({
@@ -182,7 +182,7 @@ export function versionProject({
         noVerify,
         commitMessage,
         projectName,
-      })
+      }),
     ),
     concatMap(() => getLastCommitHash({ projectRoot })),
     concatMap((commitHash) =>
@@ -192,8 +192,8 @@ export function versionProject({
         commitHash,
         commitMessage,
         projectName,
-      })
-    )
+      }),
+    ),
   );
 }
 
@@ -213,10 +213,10 @@ export function _generateChangelogs({
 }): Observable<string[]> {
   const changelogRoots = projectRoots
     .filter(
-      (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot)
+      (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot),
     )
     .filter(
-      (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot)
+      (projectRoot) => !(skipRootChangelog && projectRoot === workspaceRoot),
     );
 
   if (changelogRoots.length === 0) {
@@ -233,9 +233,9 @@ export function _generateChangelogs({
           step: 'changelog_success',
           message: `Generated CHANGELOG.md.`,
           projectName,
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }
 

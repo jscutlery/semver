@@ -16,7 +16,7 @@ export interface TestingWorkspace {
 }
 
 export function setupTestingWorkspace(
-  files: Map<string, string>
+  files: Map<string, string>,
 ): TestingWorkspace {
   /* Create a temporary directory. */
   const tmpDir = tmp.dirSync();
@@ -90,15 +90,18 @@ function assembleAdditionalProjects(
     project: string;
     projectRoot: string;
     targets?: Record<string, TargetConfiguration>;
-  }[]
+  }[],
 ) {
   return additionalProjects.reduce<{
     [projectName: string]: ProjectConfiguration;
-  }>((acc, p) => {
-    acc[p.project] = {
-      root: p.projectRoot,
-      targets: p.targets || {},
-    };
-    return acc;
-  }, {} satisfies { [project: string]: ProjectConfiguration });
+  }>(
+    (acc, p) => {
+      acc[p.project] = {
+        root: p.projectRoot,
+        targets: p.targets || {},
+      };
+      return acc;
+    },
+    {} satisfies { [project: string]: ProjectConfiguration },
+  );
 }

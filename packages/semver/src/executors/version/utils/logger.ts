@@ -54,7 +54,7 @@ export function _logStep({
   level?: keyof typeof logger;
 }): void {
   const msg = `${chalk.bold(`[${projectName}]`)} ${iconMap.get(
-    step
+    step,
   )} ${message}`;
   logger[level](msg);
 }

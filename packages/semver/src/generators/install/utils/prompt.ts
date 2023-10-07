@@ -3,7 +3,7 @@ import * as inquirer from 'inquirer';
 import type { ProjectDefinition } from './workspace';
 
 export function createPrompt(
-  projects: ProjectDefinition[]
+  projects: ProjectDefinition[],
 ): Promise<{ projects: string[] }> {
   return inquirer.prompt({
     name: 'projects',

@@ -7,7 +7,7 @@ describe(formatTagPrefix.name, () => {
         versionTagPrefix: 'testtagPrefix',
         projectName: 'testProjectName',
         syncVersions: true,
-      })
+      }),
     ).toBe('testtagPrefix');
   });
 
@@ -17,7 +17,7 @@ describe(formatTagPrefix.name, () => {
         versionTagPrefix: undefined,
         projectName: 'testProjectName',
         syncVersions: true,
-      })
+      }),
     ).toBe('v');
   });
 
@@ -27,7 +27,7 @@ describe(formatTagPrefix.name, () => {
         versionTagPrefix: undefined,
         projectName: 'testProjectName',
         syncVersions: false,
-      })
+      }),
     ).toBe('testProjectName-');
   });
 });

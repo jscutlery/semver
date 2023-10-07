@@ -26,7 +26,7 @@ export default async function install(tree: Tree, options: SchemaOptions) {
           version: createTarget(options),
         },
       },
-      false
+      false,
     );
 
     /* Independent versioning. */

@@ -34,7 +34,7 @@ describe('diff', () => {
 
     expect(difference).not.toInclude('# This is the header');
     expect(difference).not.toInclude(
-      '## This is the second line of the header'
+      '## This is the second line of the header',
     );
   });
 
@@ -45,8 +45,8 @@ describe('diff', () => {
 
   it('should include changes from after', () => {
     const difference = diff(FILE_BEFORE, FILE_AFTER);
-    expect(difference).toInclude("change 7");
-    expect(difference).toInclude("change 8");
-    expect(difference).toInclude("change 9");
+    expect(difference).toInclude('change 7');
+    expect(difference).toInclude('change 8');
+    expect(difference).toInclude('change 9');
   });
 });

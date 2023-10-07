@@ -8,6 +8,6 @@ export function createChangelog(tree: Tree, libraryRoot: string) {
     tree,
     joinPathFragments(__dirname, '../__files'), // path to the file templates
     libraryRoot,
-    {}
+    {},
   );
 }

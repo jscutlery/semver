@@ -48,9 +48,9 @@ export function updatePackageJson({
           message: `Updated package.json version.`,
           projectName,
         }),
-        map(() => path)
+        map(() => path),
       );
-    })
+    }),
   );
 }
 

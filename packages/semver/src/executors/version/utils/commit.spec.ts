@@ -13,7 +13,7 @@ describe(formatCommitMessage.name, () => {
         commitMessageFormat: 'chore(${projectName}): release ${version}',
         version: '1.0.0',
         projectName: 'a',
-      })
+      }),
     ).toBe('chore(a): release 1.0.0');
   });
 });
@@ -31,12 +31,12 @@ describe(commit.name, () => {
         skipCommit: false,
         commitMessage: 'chore(release): 1.0.0',
         projectName: 'p',
-      })
+      }),
     );
 
     expect(cp.exec).toBeCalledWith(
       'git',
-      expect.arrayContaining(['commit', '-m', 'chore(release): 1.0.0'])
+      expect.arrayContaining(['commit', '-m', 'chore(release): 1.0.0']),
     );
   });
 
@@ -78,12 +78,12 @@ describe(commit.name, () => {
         skipCommit: false,
         commitMessage: 'chore(release): 1.0.0',
         projectName: 'p',
-      })
+      }),
     );
 
     expect(cp.exec).toBeCalledWith(
       'git',
-      expect.arrayContaining(['--no-verify'])
+      expect.arrayContaining(['--no-verify']),
     );
   });
 });

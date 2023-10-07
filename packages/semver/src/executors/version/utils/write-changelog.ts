@@ -8,7 +8,7 @@ const START_OF_LAST_RELEASE_PATTERN =
 
 export default function writeChangelog(
   config: WriteChangelogConfig,
-  newVersion: string
+  newVersion: string,
 ) {
   return buildConventionalChangelog(config, newVersion)
     .then((newContent) => {
@@ -29,7 +29,7 @@ export default function writeChangelog(
         config.changelogHeader +
           '\n' +
           (newContent + buildExistingContent(config)).replace(/\n+$/, '\n'),
-        'utf8'
+        'utf8',
       );
     })
     .catch((err) => {
@@ -41,7 +41,7 @@ export default function writeChangelog(
 function buildExistingContent(config: WriteChangelogConfig) {
   const existingContent = readFileSync(config.changelogPath, 'utf-8');
   const existingContentStart = existingContent.search(
-    START_OF_LAST_RELEASE_PATTERN
+    START_OF_LAST_RELEASE_PATTERN,
   );
   // find the position of the last release and remove header:
   if (existingContentStart !== -1) {
@@ -53,13 +53,13 @@ function buildExistingContent(config: WriteChangelogConfig) {
 
 function buildConventionalChangelog(
   config: WriteChangelogConfig,
-  newVersion: string
+  newVersion: string,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     let changelog = '';
     const changelogStream = initConventionalCommitReadableStream(
       config,
-      newVersion
+      newVersion,
     );
 
     changelogStream.on('error', function (err) {

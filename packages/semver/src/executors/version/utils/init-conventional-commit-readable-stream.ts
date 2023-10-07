@@ -3,7 +3,7 @@ import * as conventionalChangelog from 'conventional-changelog';
 
 export function initConventionalCommitReadableStream(
   config: WriteChangelogConfig,
-  newVersion: string
+  newVersion: string,
 ) {
   const context = { version: newVersion };
   return conventionalChangelog(
@@ -12,6 +12,6 @@ export function initConventionalCommitReadableStream(
       tagPrefix: config.tagPrefix,
     },
     context,
-    { merges: null, path: config.projectRoot } as conventionalChangelog.Options
+    { merges: null, path: config.projectRoot } as conventionalChangelog.Options,
   );
 }

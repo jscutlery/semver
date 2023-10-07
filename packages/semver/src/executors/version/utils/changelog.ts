@@ -50,7 +50,7 @@ export function updateChangelog({
         preset,
         tagPrefix,
       },
-      newVersion
+      newVersion,
     );
     return changelogPath;
   });
@@ -79,12 +79,12 @@ export function insertChangelogDependencyUpdates({
             changelog,
             version,
             dependencyUpdates,
-          })
+          }),
         ),
         switchMap((changelog) => writeFile(changelogPath, changelog)),
-        map(() => changelogPath)
+        map(() => changelogPath),
       );
-    })
+    }),
   );
 }
 
@@ -100,11 +100,11 @@ export function calculateChangelogChanges<T>({
       combineLatestWith(source),
       concatMap(async ([input]) => {
         const output = await lastValueFrom(
-          readFileIfExists(changelogPath, changelogHeader)
+          readFileIfExists(changelogPath, changelogHeader),
         );
 
         return diff(input, output);
-      })
+      }),
     );
   };
 }
@@ -125,7 +125,7 @@ export function _calculateDependencyUpdates({
     const dependencyNames = dependencyUpdates.reduce((acc, ver) => {
       if (ver.type === 'dependency') {
         acc.push(
-          `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``
+          `* \`${ver.dependencyName}\` updated to version \`${ver.version}\``,
         );
       }
       return acc;

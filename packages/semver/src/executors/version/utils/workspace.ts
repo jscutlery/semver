@@ -20,7 +20,7 @@ export function getProject(context: ExecutorContext): ProjectConfiguration {
 /* istanbul ignore next */
 export function getProjectRoots(
   workspaceRoot: string,
-  workspace: ProjectsConfigurations | undefined
+  workspace: ProjectsConfigurations | undefined,
 ): string[] {
   const projects = Object.values(workspace?.projects ?? {});
 
@@ -31,6 +31,6 @@ export function getProjectRoots(
   return projects.map((project) =>
     typeof project === 'string'
       ? resolve(workspaceRoot, project)
-      : resolve(workspaceRoot, project.root)
+      : resolve(workspaceRoot, project.root),
   );
 }

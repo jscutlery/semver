@@ -28,7 +28,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(['create', '--tag-name', 'v1.0.0'])
+      expect.arrayContaining(['create', '--tag-name', 'v1.0.0']),
     );
     expect(output.success).toBe(true);
   });
@@ -44,7 +44,7 @@ describe('@jscutlery/semver:gitlab', () => {
       expect.arrayContaining([
         '--assets-link',
         '{"name": "asset1", "url": "./dist/package"}',
-      ])
+      ]),
     );
     expect(output.success).toBe(true);
   });
@@ -54,7 +54,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(['--ref', 'master'])
+      expect.arrayContaining(['--ref', 'master']),
     );
     expect(output.success).toBe(true);
   });
@@ -64,7 +64,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(['--description', 'add feature'])
+      expect.arrayContaining(['--description', 'add feature']),
     );
     expect(output.success).toBe(true);
   });
@@ -74,7 +74,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(['--name', 'Title for release'])
+      expect.arrayContaining(['--name', 'Title for release']),
     );
     expect(output.success).toBe(true);
   });
@@ -87,7 +87,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(['--milestone', 'v1.0.0'])
+      expect.arrayContaining(['--milestone', 'v1.0.0']),
     );
     expect(output.success).toBe(true);
   });
@@ -97,7 +97,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     expect(mockExec).toBeCalledWith(
       'release-cli',
-      expect.arrayContaining(['--released-at', 'XYZ'])
+      expect.arrayContaining(['--released-at', 'XYZ']),
     );
     expect(output.success).toBe(true);
   });

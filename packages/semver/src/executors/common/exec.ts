@@ -37,7 +37,7 @@ function _killProcess(process: ChildProcess): void {
 
 function _listenExitEvent(
   fn: (signal: number) => void,
-  events: NodeJS.Signals[] = ['SIGINT', 'SIGBREAK']
+  events: NodeJS.Signals[] = ['SIGINT', 'SIGBREAK'],
 ): () => void {
   events.forEach((name) => process.on(name, fn));
   process.on('exit', fn);

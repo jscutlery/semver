@@ -16,7 +16,7 @@ export function getLastVersion({
   preid?: string;
 }): Observable<string> {
   return from(
-    promisify(gitSemverTags)({ tagPrefix }) as Promise<string[]>
+    promisify(gitSemverTags)({ tagPrefix }) as Promise<string[]>,
   ).pipe(
     switchMap((tags: string[]) => {
       const versions = tags
@@ -53,6 +53,6 @@ export function getLastVersion({
       }
 
       return of(version);
-    })
+    }),
   );
 }

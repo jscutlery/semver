@@ -35,11 +35,11 @@ export function runPostTargets({
         for await (const { success } of await runExecutor(
           target,
           targetOptions,
-          context
+          context,
         )) {
           if (!success) {
             throw new Error(
-              `Something went wrong with post-target "${target.project}:${target.target}".`
+              `Something went wrong with post-target "${target.project}:${target.target}".`,
             );
           }
         }
@@ -55,9 +55,9 @@ export function runPostTargets({
           }
 
           return throwError(() => error);
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }
 
@@ -77,10 +77,10 @@ export function _getTargetOptions({
               ? coerce(
                   createTemplateString(
                     (_element as number | string | boolean).toString(),
-                    context
-                  )
+                    context,
+                  ),
                 )
-              : _getTargetOptions({ options: _element, context })
+              : _getTargetOptions({ options: _element, context }),
           )
         : typeof value === 'object'
         ? _getTargetOptions({
@@ -90,8 +90,8 @@ export function _getTargetOptions({
         : coerce(
             createTemplateString(
               (value as number | string | boolean).toString(),
-              context
-            )
+              context,
+            ),
           );
 
       return {
@@ -99,7 +99,7 @@ export function _getTargetOptions({
         [option]: resolvedValue,
       };
     },
-    {}
+    {},
   );
 }
 
@@ -112,8 +112,8 @@ export function _checkTargetExist(target: Target, context: ExecutorContext) {
       `The target project "${
         target.project
       }" does not exist in your workspace. Available projects: ${Object.keys(
-        context.projectsConfigurations?.projects ?? []
-      ).map((project) => `"${project}"`)}.`
+        context.projectsConfigurations?.projects ?? [],
+      ).map((project) => `"${project}"`)}.`,
     );
   }
 
@@ -125,7 +125,9 @@ export function _checkTargetExist(target: Target, context: ExecutorContext) {
         target.target
       }" does not exist. Available targets for "${
         target.project
-      }": ${Object.keys(project.targets || {}).map((target) => `"${target}"`)}.`
+      }": ${Object.keys(project.targets || {}).map(
+        (target) => `"${target}"`,
+      )}.`,
     );
   }
 }

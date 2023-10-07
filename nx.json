@@ -7,12 +7,7 @@
     "default": {
       "runner": "@nx/workspace/tasks-runners/default",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ],
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
         "parallel": 1
       }
     }
@@ -25,41 +20,24 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     },
     "version": {
-      "dependsOn": [
-        "build"
-      ]
+      "dependsOn": ["build"]
     },
     "test": {
-      "inputs": [
-        "default",
-        "^default",
-        "{workspaceRoot}/jest.preset.js"
-      ]
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
     }
   },
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "sharedGlobals": [
       "{workspaceRoot}/workspace.json",
       "{workspaceRoot}/tsconfig.base.json",
       "{workspaceRoot}/tslint.json",
       "{workspaceRoot}/nx.json"
     ],
-    "production": [
-      "default",
-      "!{projectRoot}/src/test-setup.[jt]s"
-    ]
+    "production": ["default", "!{projectRoot}/src/test-setup.[jt]s"]
   }
 }

@@ -31,7 +31,7 @@ describe('tryBump', () => {
   beforeEach(() => {
     mockGitSemverTags = jest.fn();
     (gitSemverTags as jest.Mock).mockImplementation(
-      callbackify(mockGitSemverTags)
+      callbackify(mockGitSemverTags),
     );
     mockGetLastVersion.mockReturnValue(of('2.1.0'));
     loggerSpy = jest.spyOn(logger, 'warn');
@@ -48,8 +48,8 @@ describe('tryBump', () => {
       callbackify(
         jest.fn().mockResolvedValue({
           releaseType: 'minor',
-        })
-      ) as () => void
+        }),
+      ) as () => void,
     );
 
     const newVersion = await lastValueFrom(
@@ -63,7 +63,7 @@ describe('tryBump', () => {
         skipCommitTypes: [],
 
         projectName: '',
-      })
+      }),
     );
 
     expect(newVersion?.version).toEqual('2.2.0');
@@ -81,7 +81,7 @@ describe('tryBump', () => {
         preset: 'angular',
         tagPrefix: 'v',
       },
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 
@@ -104,8 +104,8 @@ describe('tryBump', () => {
           })
           .mockResolvedValueOnce({
             releaseType: 'minor',
-          })
-      ) as () => void
+          }),
+      ) as () => void,
     );
 
     const newVersion = await lastValueFrom(
@@ -121,7 +121,7 @@ describe('tryBump', () => {
         skipCommitTypes: [],
 
         projectName: '',
-      })
+      }),
     );
 
     expect(newVersion?.version).toEqual('2.1.1');
@@ -148,7 +148,7 @@ describe('tryBump', () => {
         preset: 'angular',
         tagPrefix: 'v',
       },
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 
@@ -166,7 +166,7 @@ describe('tryBump', () => {
         preid: 'alpha',
 
         projectName: '',
-      })
+      }),
     );
 
     expect(newVersion?.version).toEqual('3.0.0-alpha.0');
@@ -198,7 +198,7 @@ describe('tryBump', () => {
         releaseType: 'major',
         skipCommitTypes: [],
         projectName: '',
-      })
+      }),
     );
 
     expect(newVersion).toEqual({
@@ -232,7 +232,7 @@ describe('tryBump', () => {
         releaseType: 'patch',
         projectName: '',
         skipCommitTypes: [],
-      })
+      }),
     );
 
     expect(newVersion).toEqual({
@@ -267,7 +267,7 @@ describe('tryBump', () => {
         projectName: '',
 
         skipCommitTypes: [],
-      })
+      }),
     );
 
     expect(newVersion).toEqual({
@@ -296,7 +296,7 @@ describe('tryBump', () => {
         projectName: '',
 
         skipCommitTypes: [],
-      })
+      }),
     );
 
     expect(newVersion?.version).toEqual('2.1.1');
@@ -312,8 +312,8 @@ describe('tryBump', () => {
       callbackify(
         jest.fn().mockResolvedValue({
           releaseType: undefined,
-        })
-      ) as () => void
+        }),
+      ) as () => void,
     );
 
     await lastValueFrom(
@@ -325,11 +325,11 @@ describe('tryBump', () => {
         projectName: '',
 
         skipCommitTypes: [],
-      })
+      }),
     );
 
     expect(loggerSpy).toBeCalledWith(
-      expect.stringContaining('No previous version tag found')
+      expect.stringContaining('No previous version tag found'),
     );
     expect(mockGetCommits).toBeCalledTimes(1);
     expect(mockGetCommits).toBeCalledWith({
@@ -344,8 +344,8 @@ describe('tryBump', () => {
       callbackify(
         jest.fn().mockResolvedValue({
           releaseType: 'patch',
-        })
-      ) as () => void
+        }),
+      ) as () => void,
     );
 
     const newVersion = await lastValueFrom(
@@ -357,7 +357,7 @@ describe('tryBump', () => {
         projectName: '',
 
         skipCommitTypes: [],
-      })
+      }),
     );
 
     expect(newVersion).toBeNull();
@@ -373,8 +373,8 @@ describe('tryBump', () => {
       callbackify(
         jest.fn().mockResolvedValue({
           releaseType: 'patch',
-        })
-      ) as () => void
+        }),
+      ) as () => void,
     );
 
     const newVersion = await lastValueFrom(
@@ -387,7 +387,7 @@ describe('tryBump', () => {
         projectName: '',
 
         skipCommitTypes: [],
-      })
+      }),
     );
 
     expect(newVersion?.version).toEqual('2.1.1');
@@ -404,8 +404,8 @@ describe('tryBump', () => {
         callbackify(
           jest.fn().mockResolvedValue({
             releaseType: 'patch',
-          })
-        ) as () => void
+          }),
+        ) as () => void,
       );
 
       const newVersion = await lastValueFrom(
@@ -417,7 +417,7 @@ describe('tryBump', () => {
           tagPrefix: 'v',
 
           projectName: '',
-        })
+        }),
       );
 
       expect(newVersion).toBeNull();
@@ -428,8 +428,8 @@ describe('tryBump', () => {
         callbackify(
           jest.fn().mockResolvedValue({
             releaseType: 'patch',
-          })
-        ) as () => void
+          }),
+        ) as () => void,
       );
 
       const newVersion = await lastValueFrom(
@@ -441,7 +441,7 @@ describe('tryBump', () => {
           tagPrefix: 'v',
 
           projectName: '',
-        })
+        }),
       );
 
       expect(newVersion?.version).toEqual('2.1.1');
@@ -461,8 +461,8 @@ describe('tryBump', () => {
             })
             .mockResolvedValueOnce({
               releaseType: undefined,
-            })
-        ) as () => void
+            }),
+        ) as () => void,
       );
 
       const newVersion = await lastValueFrom(
@@ -475,7 +475,7 @@ describe('tryBump', () => {
 
           syncVersions: true,
           projectName: '',
-        })
+        }),
       );
 
       expect(newVersion).toBeNull();
@@ -485,15 +485,15 @@ describe('tryBump', () => {
   describe('custom parser config', () => {
     it('can deal with a custom commitParserOptions (no changes)', async () => {
       mockGetCommits.mockReturnValue(
-        of(['JIRA-1234 chore: A', 'JIRA-5678 chore B'])
+        of(['JIRA-1234 chore: A', 'JIRA-5678 chore B']),
       );
       /* Mock bump to return "minor". */
       mockConventionalRecommendedBump.mockImplementation(
         callbackify(
           jest.fn().mockResolvedValue({
             releaseType: 'minor',
-          })
-        ) as () => void
+          }),
+        ) as () => void,
       );
 
       const newVersion = await lastValueFrom(
@@ -517,7 +517,7 @@ describe('tryBump', () => {
               'subject',
             ],
           },
-        })
+        }),
       );
 
       expect(newVersion).toBeNull();
@@ -525,15 +525,15 @@ describe('tryBump', () => {
 
     it('can deal with a custom commitParserOptions (with changes)', async () => {
       mockGetCommits.mockReturnValue(
-        of(['JIRA-1234 feat: A', 'JIRA-5678 fix(scope) B'])
+        of(['JIRA-1234 feat: A', 'JIRA-5678 fix(scope) B']),
       );
       /* Mock bump to return "minor". */
       mockConventionalRecommendedBump.mockImplementation(
         callbackify(
           jest.fn().mockResolvedValue({
             releaseType: 'minor',
-          })
-        ) as () => void
+          }),
+        ) as () => void,
       );
 
       const newVersion = await lastValueFrom(
@@ -556,7 +556,7 @@ describe('tryBump', () => {
           skipCommitTypes: ['chore'],
           syncVersions: false,
           tagPrefix: 'v',
-        })
+        }),
       );
 
       expect(newVersion).toStrictEqual({

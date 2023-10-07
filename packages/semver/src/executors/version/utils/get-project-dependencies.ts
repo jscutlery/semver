@@ -32,7 +32,7 @@ export async function getDependencyRoots({
  * Returns a list of in-repo dependencies based on NX's dependency graph.
  */
 export async function getProjectDependencies(
-  projectName: string
+  projectName: string,
 ): Promise<string[]> {
   const { createProjectGraphAsync } = await import('@nx/devkit');
   /* @todo: remove the compatibility support later on. */
@@ -52,7 +52,7 @@ export async function getProjectDependencies(
  * Gets only the dependencies that are in the project. Not NPM packages.
  */
 function getProjectsFromDependencies(
-  dependencies: ProjectGraphDependency[]
+  dependencies: ProjectGraphDependency[],
 ): string[] {
   return dependencies
     .filter((d) => !d.target.startsWith('npm:'))

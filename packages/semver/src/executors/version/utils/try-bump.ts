@@ -63,7 +63,7 @@ export function getProjectVersion({
     shareReplay({
       refCount: true,
       bufferSize: 1,
-    })
+    }),
   );
 
   const lastVersionGitRef$ = lastVersion$.pipe(
@@ -73,9 +73,9 @@ export function getProjectVersion({
       iif(
         () => _isInitialVersion({ lastVersion }),
         getFirstCommitRef(),
-        of(formatTag({ tagPrefix, version: lastVersion }))
-      )
-    )
+        of(formatTag({ tagPrefix, version: lastVersion })),
+      ),
+    ),
   );
 
   const commits$ = lastVersionGitRef$.pipe(
@@ -84,7 +84,7 @@ export function getProjectVersion({
         projectRoot,
         since: since ?? lastVersionGitRef,
       });
-    })
+    }),
   );
 
   return {
@@ -149,8 +149,8 @@ export function tryBump({
                   previousVersion: lastVersion,
                   dependencyUpdates: [],
                 } satisfies NewVersion)
-              : null
-          )
+              : null,
+          ),
         );
       }
 
@@ -197,8 +197,8 @@ export function tryBump({
                       version: version || lastVersion,
                       previousVersion: lastVersion,
                     } satisfies NewVersion)
-                  : null
-              )
+                  : null,
+              ),
             );
           }
 
@@ -207,7 +207,7 @@ export function tryBump({
               commit,
               commitParserOptions,
               skipCommitTypes,
-            })
+            }),
           );
 
           /* No commits since last release & no dependency updates so don't bump if the `releastAtLeast` flag is not present. */
@@ -220,9 +220,9 @@ export function tryBump({
           }
 
           return of(newVersion);
-        })
+        }),
       );
-    })
+    }),
   );
 }
 
@@ -261,7 +261,7 @@ export function _manualBump({
   return defer(() => {
     const hasPreid =
       ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
-        releaseType
+        releaseType,
       ) && preid !== null;
 
     const semverArgs: [string, semver.ReleaseType, ...string[]] = [
@@ -285,7 +285,7 @@ function shouldCommitBeCalculated({
 }): boolean {
   const { type } = parseConventionalCommitsSync(
     commit,
-    commitParserOptions ?? {}
+    commitParserOptions ?? {},
   );
   const shouldSkip = skipCommitTypes.some((typeToSkip) => typeToSkip === type);
   return !shouldSkip;
@@ -339,7 +339,7 @@ export function _getDependencyVersions({
               commit,
               commitParserOptions,
               skipCommitTypes,
-            })
+            }),
           );
           if (filteredCommits.length === 0) {
             return of({
@@ -363,8 +363,8 @@ export function _getDependencyVersions({
                     type: 'dependency',
                     version,
                     dependencyName: dependencyName,
-                  } satisfies Version)
-              )
+                  }) satisfies Version,
+              ),
             );
           }
 
@@ -374,9 +374,9 @@ export function _getDependencyVersions({
             version: dependencyLastVersion,
             dependencyName: dependencyName,
           } satisfies Version);
-        })
+        }),
       );
-    })
+    }),
   ).pipe(defaultIfEmpty([]));
 }
 

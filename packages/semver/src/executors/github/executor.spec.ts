@@ -28,7 +28,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['release', 'create', 'v1.0.0'])
+      expect.arrayContaining(['release', 'create', 'v1.0.0']),
     );
     expect(output.success).toBe(true);
   });
@@ -38,7 +38,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['./dist/package'])
+      expect.arrayContaining(['./dist/package']),
     );
     expect(output.success).toBe(true);
   });
@@ -48,7 +48,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--target', 'master'])
+      expect.arrayContaining(['--target', 'master']),
     );
     expect(output.success).toBe(true);
   });
@@ -58,7 +58,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--notes', 'add feature'])
+      expect.arrayContaining(['--notes', 'add feature']),
     );
     expect(output.success).toBe(true);
   });
@@ -71,7 +71,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--notes-file', 'libs/my-lib/CHANGELOG.md'])
+      expect.arrayContaining(['--notes-file', 'libs/my-lib/CHANGELOG.md']),
     );
     expect(output.success).toBe(true);
   });
@@ -88,7 +88,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--title', 'Title for release'])
+      expect.arrayContaining(['--title', 'Title for release']),
     );
     expect(output.success).toBe(true);
   });
@@ -98,7 +98,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--prerelease'])
+      expect.arrayContaining(['--prerelease']),
     );
     expect(output.success).toBe(true);
   });
@@ -111,7 +111,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--discussion-category', 'General'])
+      expect.arrayContaining(['--discussion-category', 'General']),
     );
     expect(output.success).toBe(true);
   });
@@ -121,7 +121,7 @@ describe('@jscutlery/semver:github', () => {
 
     expect(mockExec).toBeCalledWith(
       'gh',
-      expect.arrayContaining(['--repo', 'repo:MYORG/REPO'])
+      expect.arrayContaining(['--repo', 'repo:MYORG/REPO']),
     );
     expect(output.success).toBe(true);
   });
