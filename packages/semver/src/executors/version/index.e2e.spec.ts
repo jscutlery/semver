@@ -31,7 +31,7 @@ describe('@jscutlery/semver:version', () => {
 
     postTargets: [],
     preset: 'angular',
-    commitMessageFormat: 'chore(${projectName}): release version ${version}',
+    commitMessageFormat: 'chore({projectName}): release version {version}',
   };
 
   const additionalProjects = [
@@ -1212,7 +1212,7 @@ $`),
         {
           ...defaultBuilderOptions,
           commitMessageFormat:
-            'chore(${projectName}): 🎸 release ${version} [skip ci]',
+            'chore({projectName}): 🎸 release {version} [skip ci]',
         },
         createFakeContext({
           project: 'a',
@@ -1384,7 +1384,7 @@ $`),
 
     afterAll(() => testingWorkspace.tearDown());
 
-    it.todo('should pass in only the new lines from the changelog as ${notes}');
+    it.todo('should pass in only the new lines from the changelog as {notes}');
   });
 });
 

@@ -76,7 +76,7 @@ describe('@jscutlery/semver:version', () => {
     skipProjectChangelog: false,
     postTargets: [],
     preset: 'angular',
-    commitMessageFormat: 'chore(${projectName}): release version ${version}',
+    commitMessageFormat: 'chore({projectName}): release version {version}',
   };
 
   beforeEach(() => {
@@ -101,13 +101,13 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(logger, 'log').mockImplementation();
 
     mockTryBump.mockReturnValue(
-      of({ version: '2.1.0', previousVersion: '2.0.0', dependencyUpdates: [] })
+      of({ version: '2.1.0', previousVersion: '2.0.0', dependencyUpdates: [] }),
     );
     mockUpdateChangelog.mockImplementation(({ projectRoot }) =>
-      of(changelog.getChangelogPath(projectRoot))
+      of(changelog.getChangelogPath(projectRoot)),
     );
     mockUpdatePackageJson.mockImplementation(({ projectRoot }) =>
-      of(project.getPackageJsonPath(projectRoot))
+      of(project.getPackageJsonPath(projectRoot)),
     );
     mockCalculateChangelogChanges.mockReturnValue((source) => {
       source.subscribe();
@@ -143,14 +143,14 @@ describe('@jscutlery/semver:version', () => {
   it('should run tasks in order', async () => {
     const { success } = await version(
       { ...options, push: true, postTargets: ['a:publish'] },
-      context
+      context,
     );
     expect(success).toBe(true);
     expect(mockTryBump).toHaveBeenCalledBefore(
-      mockUpdateChangelog as jest.Mock
+      mockUpdateChangelog as jest.Mock,
     );
     expect(mockUpdateChangelog).toHaveBeenCalledBefore(
-      mockUpdatePackageJson as jest.Mock
+      mockUpdatePackageJson as jest.Mock,
     );
     expect(mockCommit).toHaveBeenCalledBefore(mockCreateTag as jest.Mock);
     expect(mockCreateTag).toHaveBeenCalledBefore(mockTryPush as jest.Mock);
@@ -160,27 +160,27 @@ describe('@jscutlery/semver:version', () => {
   it('should version with --releaseAs', async () => {
     const { success } = await version(
       { ...options, releaseAs: 'major' },
-      context
+      context,
     );
     expect(success).toBe(true);
     expect(mockTryBump).toBeCalledWith(
       expect.objectContaining({
         releaseType: 'major',
-      })
+      }),
     );
     expect(mockUpdateChangelog).toBeCalledWith(
-      expect.objectContaining({ newVersion: '2.1.0' })
+      expect.objectContaining({ newVersion: '2.1.0' }),
     );
     expect(mockUpdatePackageJson).toBeCalledWith(
-      expect.objectContaining({ newVersion: '2.1.0' })
+      expect.objectContaining({ newVersion: '2.1.0' }),
     );
     expect(mockCommit).toBeCalledWith(
       expect.objectContaining({
         commitMessage: 'chore(a): release version 2.1.0',
-      })
+      }),
     );
     expect(mockCreateTag).toBeCalledWith(
-      expect.objectContaining({ tag: 'a-2.1.0' })
+      expect.objectContaining({ tag: 'a-2.1.0' }),
     );
   });
 
@@ -188,7 +188,7 @@ describe('@jscutlery/semver:version', () => {
     const { success } = await version({ ...options, noVerify: true }, context);
     expect(success).toBe(true);
     expect(mockCommit).toBeCalledWith(
-      expect.objectContaining({ noVerify: true })
+      expect.objectContaining({ noVerify: true }),
     );
   });
 
@@ -198,15 +198,15 @@ describe('@jscutlery/semver:version', () => {
         ...options,
         dryRun: true,
       },
-      context
+      context,
     );
 
     expect(success).toBe(true);
     expect(mockUpdatePackageJson).toBeCalledWith(
-      expect.objectContaining({ dryRun: true })
+      expect.objectContaining({ dryRun: true }),
     );
     expect(mockUpdateChangelog).toBeCalledWith(
-      expect.objectContaining({ dryRun: true })
+      expect.objectContaining({ dryRun: true }),
     );
   });
 
@@ -217,12 +217,12 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           skipCommit: true,
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockCommit).toBeCalledWith(
-        expect.objectContaining({ skipCommit: true })
+        expect.objectContaining({ skipCommit: true }),
       );
     });
 
@@ -232,12 +232,12 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           skipCommit: true,
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockCreateTag).toBeCalledWith(
-        expect.objectContaining({ commitHash: LAST_COMMIT_HASH })
+        expect.objectContaining({ commitHash: LAST_COMMIT_HASH }),
       );
     });
   });
@@ -250,21 +250,21 @@ describe('@jscutlery/semver:version', () => {
       expect(mockTryBump).toBeCalledWith(
         expect.objectContaining({
           dependencyRoots: [],
-        })
+        }),
       );
       expect(mockUpdateChangelog).toBeCalledWith(
-        expect.objectContaining({ newVersion: '2.1.0' })
+        expect.objectContaining({ newVersion: '2.1.0' }),
       );
       expect(mockUpdatePackageJson).toBeCalledWith(
-        expect.objectContaining({ newVersion: '2.1.0' })
+        expect.objectContaining({ newVersion: '2.1.0' }),
       );
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
           commitMessage: 'chore(a): release version 2.1.0',
-        })
+        }),
       );
       expect(mockCreateTag).toBeCalledWith(
-        expect.objectContaining({ tag: 'a-2.1.0' })
+        expect.objectContaining({ tag: 'a-2.1.0' }),
       );
     });
 
@@ -273,11 +273,11 @@ describe('@jscutlery/semver:version', () => {
         Promise.resolve([
           { name: 'lib1', path: '/root/libs/lib1' },
           { name: 'lib2', path: '/root/libs/lib2' },
-        ])
+        ]),
       );
       const { success } = await version(
         { ...options, trackDeps: true },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -287,21 +287,21 @@ describe('@jscutlery/semver:version', () => {
             { name: 'lib1', path: '/root/libs/lib1' },
             { name: 'lib2', path: '/root/libs/lib2' },
           ],
-        })
+        }),
       );
       expect(mockUpdateChangelog).toBeCalledWith(
-        expect.objectContaining({ newVersion: '2.1.0' })
+        expect.objectContaining({ newVersion: '2.1.0' }),
       );
       expect(mockUpdatePackageJson).toBeCalledWith(
-        expect.objectContaining({ newVersion: '2.1.0' })
+        expect.objectContaining({ newVersion: '2.1.0' }),
       );
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
           commitMessage: 'chore(a): release version 2.1.0',
-        })
+        }),
       );
       expect(mockCreateTag).toBeCalledWith(
-        expect.objectContaining({ tag: 'a-2.1.0' })
+        expect.objectContaining({ tag: 'a-2.1.0' }),
       );
     });
 
@@ -312,24 +312,24 @@ describe('@jscutlery/semver:version', () => {
         success: false,
       });
       expect(logger.error).toBeCalledWith(
-        expect.stringContaining('Failed to determine dependencies.')
+        expect.stringContaining('Failed to determine dependencies.'),
       );
       expect(mockUpdatePackageJson).not.toBeCalled();
       expect(mockCommit).not.toBeCalled();
       expect(mockCreateTag).not.toBeCalled();
     });
 
-    it('should resolve ${projectName} tagPrefix interpolation', async () => {
+    it('should resolve {projectName} tagPrefix interpolation', async () => {
       const { success } = await version(
-        { ...options, tagPrefix: 'custom-tag-prefix/${projectName}-' },
-        context
+        { ...options, tagPrefix: 'custom-tag-prefix/{projectName}-' },
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockCreateTag).toBeCalledWith(
         expect.objectContaining({
           tag: 'custom-tag-prefix/a-2.1.0',
-        })
+        }),
       );
     });
 
@@ -340,7 +340,7 @@ describe('@jscutlery/semver:version', () => {
 
       expect(success).toBe(true);
       expect(logger.info).toBeCalledWith(
-        expect.stringContaining('Nothing changed since last release.')
+        expect.stringContaining('Nothing changed since last release.'),
       );
       expect(mockUpdatePackageJson).not.toBeCalled();
       expect(mockCommit).not.toBeCalled();
@@ -350,7 +350,7 @@ describe('@jscutlery/semver:version', () => {
     it('should skip changelog generation with --skipProjectChangelog', async () => {
       const { success } = await version(
         { ...options, skipProjectChangelog: true },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -392,7 +392,7 @@ describe('@jscutlery/semver:version', () => {
           /* Enable sync versions. */
           syncVersions: true,
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -402,7 +402,7 @@ describe('@jscutlery/semver:version', () => {
           dryRun: false,
           projectName: 'workspace',
           tag: 'v2.1.0',
-        })
+        }),
       );
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
@@ -410,7 +410,7 @@ describe('@jscutlery/semver:version', () => {
           dryRun: false,
           noVerify: false,
           projectName: 'workspace',
-        })
+        }),
       );
     });
 
@@ -421,7 +421,7 @@ describe('@jscutlery/semver:version', () => {
           /* Enable sync versions. */
           syncVersions: true,
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -430,19 +430,19 @@ describe('@jscutlery/semver:version', () => {
         expect.objectContaining({
           newVersion: '2.1.0',
           projectRoot: '/root/packages/a',
-        })
+        }),
       );
       expect(mockUpdatePackageJson.mock.calls[1][0]).toEqual(
         expect.objectContaining({
           newVersion: '2.1.0',
           projectRoot: '/root/packages/b',
-        })
+        }),
       );
       expect(mockUpdatePackageJson.mock.calls[2][0]).toEqual(
         expect.objectContaining({
           newVersion: '2.1.0',
           projectRoot: '/root',
-        })
+        }),
       );
     });
 
@@ -453,7 +453,7 @@ describe('@jscutlery/semver:version', () => {
           /* Enable sync versions. */
           syncVersions: true,
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -462,19 +462,19 @@ describe('@jscutlery/semver:version', () => {
         1,
         expect.objectContaining({
           projectRoot: '/root/packages/a',
-        })
+        }),
       );
       expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
           projectRoot: '/root/packages/b',
-        })
+        }),
       );
       expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
         3,
         expect.objectContaining({
           projectRoot: '/root',
-        })
+        }),
       );
     });
 
@@ -486,7 +486,7 @@ describe('@jscutlery/semver:version', () => {
           /* Disable root CHANGELOG */
           skipRootChangelog: true,
         },
-        context
+        context,
       );
 
       expect(mockUpdateChangelog).toBeCalledTimes(2);
@@ -494,13 +494,13 @@ describe('@jscutlery/semver:version', () => {
         1,
         expect.objectContaining({
           projectRoot: '/root/packages/a',
-        })
+        }),
       );
       expect(mockUpdateChangelog).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
           projectRoot: '/root/packages/b',
-        })
+        }),
       );
     });
 
@@ -512,13 +512,13 @@ describe('@jscutlery/semver:version', () => {
           /* Disable project CHANGELOG */
           skipProjectChangelog: true,
         },
-        context
+        context,
       );
       expect(mockUpdateChangelog).toBeCalledTimes(1);
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           projectRoot: '/root',
-        })
+        }),
       );
     });
 
@@ -530,12 +530,12 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           syncVersions: true,
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(logger.info).toBeCalledWith(
-        expect.stringContaining('Nothing changed since last release.')
+        expect.stringContaining('Nothing changed since last release.'),
       );
       expect(mockUpdateChangelog).not.toBeCalled();
       expect(mockUpdatePackageJson).not.toBeCalled();
@@ -551,16 +551,16 @@ describe('@jscutlery/semver:version', () => {
         {
           ...options,
           commitMessageFormat:
-            'chore: bump "${projectName}" to ${version} [skip ci]',
+            'chore: bump "{projectName}" to {version} [skip ci]',
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
           commitMessage: 'chore: bump "a" to 2.1.0 [skip ci]',
-        })
+        }),
       );
     });
 
@@ -571,7 +571,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockCommit).toBeCalledWith(
         expect.objectContaining({
           commitMessage: 'chore(a): release version 2.1.0',
-        })
+        }),
       );
     });
   });
@@ -588,20 +588,20 @@ describe('@jscutlery/semver:version', () => {
           remote: 'origin',
           branch: 'main',
           noVerify: false,
-        })
+        }),
       );
     });
 
     it('should handle Git failure', async () => {
       mockTryPush.mockReturnValue(
-        throwError(() => new Error('Something went wrong'))
+        throwError(() => new Error('Something went wrong')),
       );
 
       const { success } = await version({ ...options, push: true }, context);
 
       expect(success).toBe(false);
       expect(logger.error).toBeCalledWith(
-        expect.stringContaining('Error: Something went wrong')
+        expect.stringContaining('Error: Something went wrong'),
       );
     });
 
@@ -627,7 +627,7 @@ describe('@jscutlery/semver:version', () => {
             'project-c:test:prod',
           ],
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -641,7 +641,7 @@ describe('@jscutlery/semver:version', () => {
             version: '2.1.0',
             previousTag: 'a-2.0.0',
           },
-        })
+        }),
       );
     });
 
@@ -653,7 +653,7 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           postTargets: ['project-a:test'],
         },
-        context
+        context,
       );
 
       expect(success).toBe(false);
@@ -667,7 +667,7 @@ describe('@jscutlery/semver:version', () => {
           dryRun: true,
           postTargets: ['project-a:test', 'project-b:test:prod'],
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -680,12 +680,12 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           postTargets: ['project-a:test'],
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockTryBump).toHaveBeenCalledBefore(
-        mockRunPostTargets as jest.Mock
+        mockRunPostTargets as jest.Mock,
       );
     });
 
@@ -697,7 +697,7 @@ describe('@jscutlery/semver:version', () => {
           ...options,
           postTargets: ['project-a:test'],
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -709,28 +709,28 @@ describe('@jscutlery/semver:version', () => {
     it('should use --preset=angular by default', async () => {
       const { success } = await version(
         { ...options, preset: undefined },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           preset: 'angular',
-        })
+        }),
       );
     });
 
     it('should use --preset=conventional', async () => {
       const { success } = await version(
         { ...options, preset: 'conventional' },
-        context
+        context,
       );
 
       expect(success).toBe(true);
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           preset: 'conventionalcommits',
-        })
+        }),
       );
     });
 
@@ -744,7 +744,7 @@ describe('@jscutlery/semver:version', () => {
               '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
           },
         },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -755,7 +755,7 @@ describe('@jscutlery/semver:version', () => {
               '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
             name: 'conventionalcommits',
           },
-        })
+        }),
       );
     });
   });
@@ -770,13 +770,13 @@ describe('@jscutlery/semver:version', () => {
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           changelogHeader: defaultHeader,
-        })
+        }),
       );
     });
     it(`should use --changelogHeader=${customChangelogHeader} by default`, async () => {
       const { success } = await version(
         { ...options, changelogHeader: customChangelogHeader },
-        context
+        context,
       );
 
       expect(success).toBe(true);
@@ -784,7 +784,7 @@ describe('@jscutlery/semver:version', () => {
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
           changelogHeader: customChangelogHeader,
-        })
+        }),
       );
     });
   });
