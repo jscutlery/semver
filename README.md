@@ -124,9 +124,22 @@ The preset is highly configurable, following the [conventional-changelog configu
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
+      "name": "conventionalcommits",
       "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
       "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
-      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
+      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
+      "types": [
+        { "type": "feat", "section": "Features" },
+        { "type": "fix", "section": "Bug Fixes" },
+        { "type": "chore", "section": "Chores" },
+        { "type": "build", "section": "Build System" },
+        { "type": "ci", "section": "Continuous Integration" },
+        { "type": "docs", "section": "Documentation" },
+        { "type": "style", "section": "Styles" },
+        { "type": "refactor", "section": "Code Refactoring" },
+        { "type": "perf", "section": "Performance Improvements" },
+        { "type": "test", "section": "Tests" }
+      ]
     }
   }
 }
