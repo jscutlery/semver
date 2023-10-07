@@ -1,13 +1,17 @@
 export function createTemplateString(
   template: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context: Record<string, any>
+  context: Record<string, any>,
 ): string {
   return Object.keys(context).reduce((accumulator, contextParamKey) => {
-    const interpolationRegex = new RegExp(`\\$\\{${contextParamKey}}`, 'g');
+    // @deprecated ${key} syntax is deprecated and will be removed in the next major version
+    const interpolationRegex = new RegExp(
+      `\\$\{${contextParamKey}}|\\{${contextParamKey}}`,
+      'g',
+    );
     return accumulator.replace(
       interpolationRegex,
-      context[contextParamKey].toString()
+      context[contextParamKey].toString(),
     );
   }, template);
 }
