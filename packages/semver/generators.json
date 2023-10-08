@@ -1,0 +1,12 @@
+{
+  "name": "@jscutlery/semver",
+  "generators": {
+    "install": {
+      "schema": "./src/generators/install/schema.json",
+      "factory": "./src/generators/install",
+      "description": "Add @jscutlery/semver to the workspace."
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

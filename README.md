@@ -14,17 +14,9 @@
 
 ### Install
 
-Using Nx:
-
 ```sh
 npm install -D @jscutlery/semver
 nx g @jscutlery/semver:install
-```
-
-Using Angular CLI:
-
-```sh
-ng add @jscutlery/semver
 ```
 
 This package allows you to manage your Nx workspace using one of two modes: **Synced** or **Independent**.
