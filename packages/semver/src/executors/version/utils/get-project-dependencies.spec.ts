@@ -68,61 +68,42 @@ describe('projectDependencies', () => {
     jest.resetModules();
   });
 
-  describe('Nx > 13', () => {
-    jest.mock('@nx/devkit', () => ({
-      createProjectGraphAsync: mockCreateProjectGraphAsync,
-    }));
-    jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
+  jest.mock('@nx/devkit', () => ({
+    createProjectGraphAsync: mockCreateProjectGraphAsync,
+  }));
+  jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
 
-    beforeEach(() => {
-      mockCreateProjectGraphAsync.mockRestore();
-    });
-
-    it('returns a list of libs that the project is dependent on', async () => {
-      mockCreateProjectGraphAsync.mockReturnValue(
-        Promise.resolve(projectGraph),
-      );
-
-      const dependencies = await getProjectDependencies('demo');
-      expect(dependencies).toEqual(['lib1', 'lib2']);
-
-      expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
-    });
-
-    it('returns a sub-dependency', async () => {
-      mockCreateProjectGraphAsync.mockReturnValue(
-        Promise.resolve(projectGraph),
-      );
-
-      const dependencies = await getProjectDependencies('lib1');
-      expect(dependencies).toEqual(['lib2']);
-
-      expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles a failure in retrieving the dependency graph', async () => {
-      mockCreateProjectGraphAsync.mockReturnValue(
-        Promise.reject('thrown error'),
-      );
-
-      let error;
-      try {
-        await getProjectDependencies('lib1');
-      } catch (e) {
-        error = e;
-      }
-      expect(error).toEqual('thrown error');
-    });
+  beforeEach(() => {
+    mockCreateProjectGraphAsync.mockRestore();
   });
 
-  it('should support Nx < 13 project graph', async () => {
-    jest.mock('@nx/devkit', () => ({}));
-    jest.mock('@nx/workspace/src/core/project-graph', () => ({
-      createProjectGraph: jest.fn(() => projectGraph),
-    }));
+  it('returns a list of libs that the project is dependent on', async () => {
+    mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
 
     const dependencies = await getProjectDependencies('demo');
-
     expect(dependencies).toEqual(['lib1', 'lib2']);
+
+    expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns a sub-dependency', async () => {
+    mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
+
+    const dependencies = await getProjectDependencies('lib1');
+    expect(dependencies).toEqual(['lib2']);
+
+    expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles a failure in retrieving the dependency graph', async () => {
+    mockCreateProjectGraphAsync.mockReturnValue(Promise.reject('thrown error'));
+
+    let error;
+    try {
+      await getProjectDependencies('lib1');
+    } catch (e) {
+      error = e;
+    }
+    expect(error).toEqual('thrown error');
   });
 });

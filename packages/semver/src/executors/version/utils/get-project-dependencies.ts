@@ -35,15 +35,7 @@ export async function getProjectDependencies(
   projectName: string,
 ): Promise<string[]> {
   const { createProjectGraphAsync } = await import('@nx/devkit');
-  /* @todo: remove the compatibility support later on. */
-  const dependencyGraph =
-    typeof createProjectGraphAsync === 'function'
-      ? await createProjectGraphAsync()
-      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (
-          (await import('@nx/workspace/src/core/project-graph')) as any
-        ).createProjectGraph();
+  const dependencyGraph = await createProjectGraphAsync();
 
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);
 }
