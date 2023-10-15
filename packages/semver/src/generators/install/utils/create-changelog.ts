@@ -6,7 +6,7 @@ export function createChangelog(tree: Tree, libraryRoot: string) {
   }
   generateFiles(
     tree,
-    joinPathFragments(__dirname, '../__files'), // path to the file templates
+    joinPathFragments(__dirname, '../files'), // path to the file templates
     libraryRoot,
     {},
   );
