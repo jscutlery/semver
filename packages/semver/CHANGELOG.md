@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.4.0](https://github.com/jscutlery/semver/compare/semver-3.3.0...semver-3.4.0) (2023-10-15)
+
+
+### Features
+
+* **semver:** drop Angular support ([74c8562](https://github.com/jscutlery/semver/commit/74c85626400ac3a901e93c72b155da0440d9ca92))
+* **semver:** drop Nx < 13 support ([6482216](https://github.com/jscutlery/semver/commit/6482216ccddd39ac0bb45a367811b7c2ac3e8a49))
+
+
+
 # [3.3.0](https://github.com/jscutlery/semver/compare/semver-3.2.0...semver-3.3.0) (2023-10-07)
 
 
