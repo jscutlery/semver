@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.1](https://github.com/jscutlery/semver/compare/semver-3.4.0...semver-3.4.1) (2023-10-15)
+
+
+### Bug Fixes
+
+* **semver:** generate files correctly ([2fe4e45](https://github.com/jscutlery/semver/commit/2fe4e453f5a6266accf50a1cf46e74d1d23e8304)), closes [#739](https://github.com/jscutlery/semver/issues/739)
+
+
+
 # [3.4.0](https://github.com/jscutlery/semver/compare/semver-3.3.0...semver-3.4.0) (2023-10-15)
 
 
