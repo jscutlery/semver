@@ -33,9 +33,7 @@ export function updateProjects(
       const targets = project.targets ?? {};
       targets.version = createTarget(options);
       updateProjectConfiguration(tree, projectName, project);
-      const libraryRoot = readProjectConfiguration(tree, projectName).root;
-
-      createChangelog(tree, libraryRoot);
+      createChangelog(tree, project.root);
     }
   });
 }
