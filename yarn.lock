@@ -2078,7 +2078,7 @@ __metadata:
   dependencies:
     "@types/conventional-changelog": ^3.1.1
     "@types/conventional-recommended-bump": 6.1.1
-    "@types/inquirer": 8.2.7
+    "@types/inquirer": 8.2.8
     "@types/rimraf": 3.0.2
     "@types/semver": 7.5.3
     "@types/standard-version": 7.1.1
@@ -2667,13 +2667,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/inquirer@npm:8.2.7":
-  version: 8.2.7
-  resolution: "@types/inquirer@npm:8.2.7"
+"@types/inquirer@npm:8.2.8":
+  version: 8.2.8
+  resolution: "@types/inquirer@npm:8.2.8"
   dependencies:
     "@types/through": "*"
     rxjs: ^7.2.0
-  checksum: 8f021bc2ad0cdcccbd55abd11a8ecc73f716ea108f2ffb5f8f605d23519b47acb46fdcac032d8c81e7c05f183c0f2300a0a394c449ad8980bc11f333708d4387
+  checksum: db02bd8d2bcb99859f2fda9740ca90e4237afa9fd783a9f88d5e1ecd60b5d6e5bd67bd0b5b457a3bc839122c8198648fecede3d1ce83206eb8db63b34d3ba161
   languageName: node
   linkType: hard
 
