@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "chalk": "4.1.2",
-    "conventional-changelog": "^4.0.0",
+    "conventional-changelog": "^5.0.0",
     "conventional-recommended-bump": "^7.0.0",
     "detect-indent": "6.1.0",
     "inquirer": "8.2.6",
