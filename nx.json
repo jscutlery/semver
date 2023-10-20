@@ -1,15 +1,11 @@
 {
-  "npmScope": "jscutlery",
   "affected": {
     "defaultBase": "main"
   },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nx/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
-        "parallel": 1
-      }
+      "options": {}
     }
   },
   "workspaceLayout": {
@@ -21,13 +17,21 @@
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "version": {
       "dependsOn": ["build"]
     },
     "test": {
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "e2e": {
+      "cache": true
     }
   },
   "namedInputs": {
@@ -39,5 +43,6 @@
       "{workspaceRoot}/nx.json"
     ],
     "production": ["default", "!{projectRoot}/src/test-setup.[jt]s"]
-  }
+  },
+  "parallel": 1
 }
