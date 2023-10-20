@@ -31,8 +31,8 @@
   "private": true,
   "devDependencies": {
     "@angular-devkit/schematics": "16.2.7",
-    "@commitlint/cli": "^17.0.0",
-    "@commitlint/config-angular": "^17.0.0",
+    "@commitlint/cli": "^18.0.0",
+    "@commitlint/config-angular": "^18.0.0",
     "@nx/devkit": "17.0.0",
     "@nx/eslint-plugin": "17.0.0",
     "@nx/jest": "17.0.0",
