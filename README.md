@@ -379,6 +379,7 @@ Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/
 
 ## Compatibility overview with Nx
 
+- v4.0.0 requires `@nx/devkit ^17.0.0`
 - v3.0.0 requires `@nx/devkit ^16.0.0`
 - v2.28.0 requires `@nrwl/devkit ^15.0.0`
 - v2.23.0 requires `@nrwl/devkit ^14.0.0`
