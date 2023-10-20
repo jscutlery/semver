@@ -94,7 +94,7 @@ Important: merge commits messages are ignored by the tool when calculating next 
 
 #### Overwrite default configuration
 
-You can customize the default configuration using the definition file (`angular.json`, `workspace.json` or `project.json`):
+You can customize the default configuration using the definition file:
 
 ```json
 {
