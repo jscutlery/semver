@@ -1,6 +1,6 @@
 {
   "name": "@jscutlery/semver",
-  "version": "3.4.1",
+  "version": "4.0.0",
   "description": "Nx plugin for automate versioning and CHANGELOG generation.",
   "license": "MIT",
   "main": "src/index.js",
