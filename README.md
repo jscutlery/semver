@@ -92,7 +92,7 @@ nx run workspace:version [...options]
 
 #### Overwrite default configuration
 
-You can customize the default configuration using the definition file (`angular.json`, `workspace.json` or `project.json`):
+You can customize the default configuration using the definition file:
 
 ```json
 {
@@ -392,12 +392,15 @@ Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/
 
 ## Compatibility overview with Nx
 
-- v3.0.0 requires `@nx/devkit ^16.0.0`
-- v2.28.0 requires `@nrwl/devkit ^15.0.0`
-- v2.23.0 requires `@nrwl/devkit ^14.0.0`
-- v2.12.0 requires `@nrwl/workspace ^13.0.0`
-- v2.4.0 requires `@nrwl/workspace ^12.0.0`
-- v1.0.0 requires `@nrwl/workspace ^11.0.0`
+| Version | Required Package          |
+| ------- | ------------------------- |
+| v4.0.0  | `@nx/devkit ^17.0.0`      |
+| v3.0.0  | `@nx/devkit ^16.0.0`      |
+| v2.28.0 | `@nrwl/devkit ^15.0.0`    |
+| v2.23.0 | `@nrwl/devkit ^14.0.0`    |
+| v2.12.0 | `@nrwl/workspace ^13.0.0` |
+| v2.4.0  | `@nrwl/workspace ^12.0.0` |
+| v1.0.0  | `@nrwl/workspace ^11.0.0` |
 
 ## Changelog
 
