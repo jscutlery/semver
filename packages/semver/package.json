@@ -18,14 +18,14 @@
   "dependencies": {
     "chalk": "4.1.2",
     "conventional-changelog": "^4.0.0",
-    "conventional-recommended-bump": "^7.0.0",
+    "conventional-recommended-bump": "^9.0.0",
     "detect-indent": "6.1.0",
     "inquirer": "8.2.6",
     "rxjs": "7.8.1"
   },
   "devDependencies": {
     "@types/conventional-changelog": "^3.1.1",
-    "@types/conventional-recommended-bump": "6.1.1",
+    "@types/conventional-recommended-bump": "9.0.2",
     "@types/inquirer": "8.2.9",
     "@types/rimraf": "3.0.2",
     "@types/semver": "7.5.4",
