@@ -1,49 +1,80 @@
-import { mkdirSync, writeFileSync } from 'fs';
-import { dirname, resolve } from 'path';
-import * as rimraf from 'rimraf';
+import { promises } from 'fs';
+import { resolve } from 'path';
 import * as tmp from 'tmp';
-import { promisify } from 'util';
-
 import {
   ExecutorContext,
   ProjectConfiguration,
   TargetConfiguration,
 } from '@nx/devkit';
+import { readJsonFile, workspaceRoot, writeJsonFile } from '@nx/devkit';
+import { execSync } from 'child_process';
 
 export interface TestingWorkspace {
+  run(command: string): void;
   tearDown(): Promise<void>;
   root: string;
 }
 
-export function setupTestingWorkspace(
-  files: Map<string, string>,
-): TestingWorkspace {
+function runNxNewCommand(dir: string) {
+  execSync(
+    `node ${require.resolve(
+      'nx',
+    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps`,
+    {
+      cwd: dir,
+      stdio: 'ignore',
+    },
+  );
+}
+
+function linkPackage(dir: string) {
+  const json = readJsonFile(resolve(dir, 'package.json'));
+  json.devDependencies = {
+    ...json.devDependencies,
+    '@jscutlery/semver': `file:${resolve(
+      workspaceRoot,
+      'dist/packages/semver',
+    )}`,
+  };
+  writeJsonFile(resolve(dir, 'package.json'), json);
+}
+
+function runInstall(dir: string) {
+  execSync(`npm install`, {
+    cwd: dir,
+    stdio: 'ignore',
+  });
+}
+
+export function setupTestingWorkspace(): TestingWorkspace {
   /* Create a temporary directory. */
   const tmpDir = tmp.dirSync();
-
-  for (const [fileRelativePath, content] of files.entries()) {
-    const filePath = resolve(tmpDir.name, fileRelativePath);
-    const directory = dirname(filePath);
-    /* Create path. */
-    mkdirSync(directory, { recursive: true });
-    /* Create file. */
-    writeFileSync(filePath, content, 'utf-8');
-  }
 
   const originalCwd = process.cwd();
   process.chdir(tmpDir.name);
 
-  /* Retrieving path from `process.cwd()`
-   * because for some strange reasons it returns a different value.
-   * Cf. https://github.com/nodejs/node/issues/7545 */
-  const workspaceRoot = process.cwd();
+  const tmpRoot = process.cwd();
+  const workspaceRoot = resolve(tmpRoot, 'proj');
+
+  runNxNewCommand(tmpRoot);
+  linkPackage(workspaceRoot);
+  runInstall(workspaceRoot);
 
   return {
+    /**
+     * Run an Nx command in the workspace.
+     */
+    run(command: string) {
+      execSync(`node ${require.resolve('nx')} ${command}`, {
+        cwd: workspaceRoot,
+        stdio: 'inherit',
+      });
+    },
     /**
      * Destroy and restore cwd.
      */
     async tearDown() {
-      await promisify(rimraf)(workspaceRoot);
+      await promises.rm(tmpRoot, { recursive: true });
       process.chdir(originalCwd);
     },
     root: workspaceRoot,
