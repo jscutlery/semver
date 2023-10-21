@@ -13,7 +13,7 @@ import {
 } from 'rxjs/operators';
 import * as semver from 'semver';
 import { promisify } from 'util';
-import { type ReleaseIdentifier } from '../schema';
+import type { Preset, ReleaseIdentifier } from '../schema';
 import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
 import { type DependencyRoot } from './get-project-dependencies';
@@ -112,7 +112,7 @@ export function tryBump({
   projectName,
 }: {
   commitParserOptions?: CommitParserOptions;
-  preset: string;
+  preset: Preset;
   projectRoot: string;
   tagPrefix: string;
   dependencyRoots?: DependencyRoot[];
@@ -233,15 +233,16 @@ export function _semverBump({
   tagPrefix,
 }: {
   since: string;
-  preset: string;
+  preset: Preset;
   projectRoot: string;
   tagPrefix: string;
 }) {
   return defer(async () => {
     const recommended = (await promisify(conventionalRecommendedBump)({
       path: projectRoot,
-      preset,
       tagPrefix,
+      ...(typeof preset === 'string' ? { preset: preset } : {}),
+      ...(typeof preset === 'object' ? { config: preset } : {}),
     })) as { releaseType: semver.ReleaseType };
     const { releaseType } = recommended;
 
@@ -304,7 +305,7 @@ export function _getDependencyVersions({
   preid,
 }: {
   commitParserOptions?: CommitParserOptions;
-  preset: string;
+  preset: Preset;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
   releaseType?: ReleaseIdentifier;

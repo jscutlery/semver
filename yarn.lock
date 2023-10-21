@@ -2064,7 +2064,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jscutlery/semver@workspace:packages/semver"
   dependencies:
-    "@types/conventional-changelog": ^3.1.1
+    "@types/conventional-changelog": "^3.1.4 "
     "@types/conventional-recommended-bump": 6.1.1
     "@types/inquirer": 8.2.9
     "@types/rimraf": 3.0.2
@@ -2072,7 +2072,8 @@ __metadata:
     "@types/standard-version": 7.1.2
     "@types/tmp": 0.2.5
     chalk: 4.1.2
-    conventional-changelog: ^5.0.0
+    conventional-changelog: ^5.1.0
+    conventional-changelog-conventionalcommits: ^7.0.2
     conventional-recommended-bump: ^7.0.0
     detect-indent: 6.1.0
     inquirer: 8.2.6
@@ -2579,7 +2580,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/conventional-changelog@npm:^3.1.1":
+"@types/conventional-changelog@npm:^3.1.4 ":
   version: 3.1.4
   resolution: "@types/conventional-changelog@npm:3.1.4"
   dependencies:
@@ -3982,7 +3983,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog@npm:^5.0.0":
+"conventional-changelog@npm:^5.1.0":
   version: 5.1.0
   resolution: "conventional-changelog@npm:5.1.0"
   dependencies:

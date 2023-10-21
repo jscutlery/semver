@@ -26,6 +26,8 @@ runs:
     - name: Test
       shell: bash
       run: yarn nx test semver --code-coverage
+      env:
+        NODE_OPTIONS: --experimental-vm-modules
     - name: E2E
       shell: bash
       run: yarn nx affected:e2e --headless --base=last-release

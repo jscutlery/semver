@@ -1,7 +1,7 @@
 import { type ExecutorContext } from '@nx/devkit';
 import { concat, defer, lastValueFrom, of } from 'rxjs';
 import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
-import type { VersionBuilderSchema } from './schema';
+import type { Preset, VersionBuilderSchema } from './schema';
 import {
   calculateChangelogChanges,
   defaultHeader,
@@ -241,9 +241,8 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     commitMessageFormat: options.commitMessageFormat as string,
     commitParserOptions: options.commitParserOptions,
     skipCommit: options.skipCommit as boolean,
-    preset:
-      options.preset === 'conventional'
-        ? 'conventionalcommits'
-        : options.preset || 'angular',
+    preset: (options.preset === 'conventional'
+      ? 'conventionalcommits'
+      : options.preset || 'angular') as Preset,
   };
 }

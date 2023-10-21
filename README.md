@@ -65,8 +65,6 @@ nx run workspace:version [...options]
 6. Pushes the version to the remote repository.
 7. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
 
-Important: merge commits messages are ignored by the tool when calculating next version to bump.
-
 #### Available options
 
 | name                         | type               | default     | description                                                                                                                                                     |
@@ -116,10 +114,21 @@ The preset is highly configurable, following the [conventional-changelog configu
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
-      "name": "conventionalcommits",
       "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
       "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
-      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
+      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
+    }
+  }
+}
+```
+
+You can also add your own custom types, for example:
+
+```json
+{
+  "executor": "@jscutlery/semver:version",
+  "options": {
+    "preset": {
       "types": [
         { "type": "feat", "section": "Features" },
         { "type": "fix", "section": "Bug Fixes" },
@@ -137,7 +146,7 @@ The preset is highly configurable, following the [conventional-changelog configu
 }
 ```
 
-See [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec) for available
+See the [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec) for available
 configuration options.
 
 #### Customizing the commit parser
@@ -165,7 +174,11 @@ This package is **tag-based**, which means it never reads the `package.json` to 
 
 To detect a new version this package looks into the commit history and checks if any source files changed since the last version.
 
-> **Note**: Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
+> [!IMPORTANT]
+> Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
+
+> [!NOTE]
+> Merge commits are ignored by the tool when calculating next version to bump.
 
 #### Specify the level of change
 

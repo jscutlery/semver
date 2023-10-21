@@ -1,17 +1,18 @@
 import * as fs from 'fs';
 import * as Stream from 'stream';
 
-import { initConventionalCommitReadableStream } from './init-conventional-commit-readable-stream';
+import { createConventionalCommitStream } from './conventional-commit';
 import writeChangelog from './write-changelog';
+import type { WriteChangelogConfig } from '../schema';
 
-jest.mock('./init-conventional-commit-readable-stream');
+jest.mock('./conventional-commit');
 
-const mockInitConventionalCommitReadableStream =
-  initConventionalCommitReadableStream as jest.MockedFunction<
-    typeof initConventionalCommitReadableStream
+const mockCreateConventionalCommitStream =
+  createConventionalCommitStream as jest.MockedFunction<
+    typeof createConventionalCommitStream
   >;
 
-const config = {
+const config: WriteChangelogConfig = {
   changelogHeader: '# Changelog',
   projectRoot: './',
   preset: 'angular',
@@ -20,22 +21,20 @@ const config = {
   tagPrefix: 'button',
 };
 
-describe('writeChangelog', () => {
-  beforeAll(() => {
+describe(writeChangelog, () => {
+  beforeEach(() => {
     jest.spyOn(console, 'warn').mockImplementation();
     jest.spyOn(console, 'info').mockImplementation();
     jest.spyOn(fs, 'writeFileSync').mockImplementation();
   });
-  afterAll(() => {
-    (console.warn as jest.Mock).mockRestore();
-    (console.info as jest.Mock).mockRestore();
-    (fs.writeFileSync as jest.Mock).mockRestore();
-    mockInitConventionalCommitReadableStream.mockRestore();
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  describe('handle buildConventionalChangelog error', () => {
-    beforeAll(async () => {
-      mockInitConventionalCommitReadableStream.mockReturnValue(
+  describe('handle errors', () => {
+    beforeEach(async () => {
+      mockCreateConventionalCommitStream.mockReturnValue(
         new Stream.Readable({
           read() {
             this.emit('error', '💥');
@@ -45,47 +44,86 @@ describe('writeChangelog', () => {
       await writeChangelog(config, '0.0.1');
     });
 
-    afterAll(() => {
-      (console.warn as jest.Mock).mockClear();
-      (console.info as jest.Mock).mockClear();
-    });
-
     it('should print a console.warn', async () => {
       expect(console.warn).toHaveBeenCalledWith(
         'changelog creation failed',
         '💥',
       );
     });
+
     it('should not write a changelog file', async () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
   });
-  describe('--dryRun', () => {
-    const version = '0.0.1-rc1';
 
-    beforeAll(async () => {
-      mockInitConventionalCommitReadableStream.mockImplementation(
-        jest.requireActual('./init-conventional-commit-readable-stream')
-          .initConventionalCommitReadableStream,
+  describe('--dryRun', () => {
+    const version = '1.0.0';
+
+    beforeEach(async () => {
+      mockCreateConventionalCommitStream.mockImplementation(
+        jest.requireActual('./conventional-commit')
+          .createConventionalCommitStream,
       );
 
       await writeChangelog({ ...config, dryRun: true }, version);
     });
 
-    afterAll(() => {
-      (console.warn as jest.Mock).mockClear();
-      (console.info as jest.Mock).mockClear();
-    });
-
     it('should not write a changelog file', async () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
+
     it('should print a console.info with the changelog contents without the header', async () => {
       expect(console.info).toHaveBeenCalledWith(
         expect.stringContaining(`## ${version}`),
       );
       expect(console.info).toHaveBeenCalledWith(
         expect.not.stringContaining(config.changelogHeader),
+      );
+    });
+  });
+
+  describe('--preset', () => {
+    const version = '1.0.0';
+
+    beforeEach(async () => {
+      mockCreateConventionalCommitStream.mockImplementation(
+        jest.requireActual('./conventional-commit')
+          .createConventionalCommitStream,
+      );
+
+      await writeChangelog(
+        {
+          ...config,
+          preset: {
+            types: [
+              { type: 'feat', section: 'Awesome Features' },
+              { type: 'fix', section: 'Important Fixes' },
+              { type: 'chore', hidden: true },
+              { type: 'docs', hidden: true },
+              { type: 'style', hidden: true },
+              { type: 'refactor', hidden: true },
+              { type: 'perf', hidden: true },
+              { type: 'test', hidden: true },
+            ],
+          },
+          dryRun: true,
+        },
+        version,
+      );
+    });
+
+    it('should load custom preset', () => {
+      expect(
+        mockCreateConventionalCommitStream.mock.calls[0][0].preset,
+      ).toMatchSnapshot();
+    });
+
+    it('should print changelog', () => {
+      expect((console.info as jest.Mock).mock.calls[0][0]).toContain(
+        'Awesome Features',
+      );
+      expect((console.info as jest.Mock).mock.calls[0][0]).toContain(
+        'Important Fixes',
       );
     });
   });
