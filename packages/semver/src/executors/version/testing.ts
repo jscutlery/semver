@@ -83,7 +83,7 @@ export function setupTestingWorkspace(): TestingWorkspace {
     runNx(command: string) {
       execSync(`node ${require.resolve('nx')} ${command}`, {
         cwd: workspaceRoot,
-        stdio: 'inherit',
+        stdio: 'ignore',
       });
     },
     /**
