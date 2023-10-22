@@ -238,15 +238,16 @@ export function _semverBump({
   tagPrefix: string;
 }) {
   return defer(async () => {
-    const recommended = (await promisify(conventionalRecommendedBump)({
+    const recommended = await conventionalRecommendedBump({
       path: projectRoot,
       tagPrefix,
       ...(typeof preset === 'string' ? { preset: preset } : {}),
       ...(typeof preset === 'object' ? { config: preset } : {}),
-    })) as { releaseType: semver.ReleaseType };
+    });
     const { releaseType } = recommended;
 
-    return semver.inc(since, releaseType);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return semver.inc(since, releaseType!);
   });
 }
 

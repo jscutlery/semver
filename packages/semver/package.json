@@ -18,8 +18,10 @@
   "dependencies": {
     "chalk": "4.1.2",
     "conventional-changelog": "^5.1.0",
+    "conventional-changelog-angular": "^7.0.0",
     "conventional-changelog-conventionalcommits": "^7.0.2",
-    "conventional-recommended-bump": "^7.0.0",
+    "conventional-commits-parser": "^5.0.0",
+    "conventional-recommended-bump": "^9.0.0",
     "detect-indent": "6.1.0",
     "git-semver-tags": "^7.0.1",
     "inquirer": "8.2.6",
@@ -27,10 +29,9 @@
   },
   "devDependencies": {
     "@types/conventional-changelog": "^3.1.4 ",
-    "@types/conventional-recommended-bump": "6.1.1",
+    "@types/conventional-recommended-bump": "^9.0.2",
     "@types/inquirer": "8.2.9",
     "@types/semver": "7.5.4",
-    "@types/standard-version": "7.1.2",
     "@types/tmp": "0.2.5"
   }
 }

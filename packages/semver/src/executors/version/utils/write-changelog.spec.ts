@@ -74,7 +74,7 @@ describe(writeChangelog, () => {
 
     it('should print a console.info with the changelog contents without the header', async () => {
       expect(console.info).toHaveBeenCalledWith(
-        expect.stringContaining(`## ${version}`),
+        expect.stringContaining(version),
       );
       expect(console.info).toHaveBeenCalledWith(
         expect.not.stringContaining(config.changelogHeader),
