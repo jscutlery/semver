@@ -7,9 +7,11 @@ describe('@jscutlery/semver', () => {
 
   beforeAll(() => {
     testingWorkspace = setupTestingWorkspace();
+    // Lib a is publishable.
     testingWorkspace.runNx(
       `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
     );
+    // Lib b is publishable.
     testingWorkspace.runNx(
       `g @nx/js:lib b --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/b`,
     );
@@ -30,7 +32,7 @@ describe('@jscutlery/semver', () => {
           git commit -m "build: 📦 setup semver"
       `,
     );
-  });
+  }, 120_000);
 
   afterAll(() => testingWorkspace.tearDown());
 
