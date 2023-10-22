@@ -25,7 +25,7 @@ runs:
       run: yarn nx affected:build --base=last-release
     - name: Test
       shell: bash
-      run: yarn nx test semver --code-coverage
+      run: yarn nx test semver --code-coverage --verbose
     - name: E2E
       shell: bash
       run: yarn nx affected:e2e --headless --base=last-release
