@@ -112,7 +112,18 @@
       "oneOf": [
         {
           "type": "string",
-          "enum": ["angular", "conventional", "conventionalcommits"],
+          "enum": [
+            "angular",
+            "conventional",
+            "conventionalcommits",
+            "atom",
+            "codemirror",
+            "ember",
+            "eslint",
+            "express",
+            "jquery",
+            "jshint"
+          ],
           "default": "angular"
         },
         {
