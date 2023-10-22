@@ -197,9 +197,7 @@ export function versionProject({
   );
 }
 
-/**
- * istanbul ignore next
- */
+/* istanbul ignore next */
 export function _generateChangelogs({
   projectRoots,
   workspaceRoot,

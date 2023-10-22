@@ -225,9 +225,7 @@ export function tryBump({
   );
 }
 
-/**
- * istanbul ignore next
- */
+/* istanbul ignore next */
 export function _semverBump({
   since,
   preset,
@@ -253,9 +251,7 @@ export function _semverBump({
   });
 }
 
-/**
- * istanbul ignore next
- */
+/* istanbul ignore next */
 export function _manualBump({
   since,
   releaseType,

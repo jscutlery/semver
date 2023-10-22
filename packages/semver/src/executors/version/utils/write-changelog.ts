@@ -7,9 +7,7 @@ import { createConventionalCommitStream } from './conventional-commit';
 const START_OF_LAST_RELEASE_PATTERN =
   /(^#+ \[?[0-9]+\.[0-9]+\.[0-9]+|<a name=)/m;
 
-/**
- * istanbul ignore next
- */
+/* istanbul ignore next */
 export default function writeChangelog(
   config: WriteChangelogConfig,
   newVersion: string,
