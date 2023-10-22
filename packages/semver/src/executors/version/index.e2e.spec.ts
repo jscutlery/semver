@@ -5,66 +5,73 @@ import { readFileSync, existsSync } from 'fs';
 describe('@jscutlery/semver', () => {
   let testingWorkspace: TestingWorkspace;
 
-  describe('package "a"', () => {
-    beforeAll(() => {
-      testingWorkspace = setupTestingWorkspace();
-      testingWorkspace.runNx(
-        `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
-      );
-      testingWorkspace.exec(
-        `
+  beforeAll(() => {
+    testingWorkspace = setupTestingWorkspace();
+    testingWorkspace.runNx(
+      `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
+    );
+    testingWorkspace.runNx(
+      `g @nx/js:lib b --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/b`,
+    );
+    // Lib c is not publishable.
+    testingWorkspace.runNx(
+      `g @nx/js:lib c --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal`,
+    );
+    testingWorkspace.exec(
+      `
           git add .
           git commit -m "🐣"
-        `,
-      );
-      testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a`);
-      testingWorkspace.exec(
-        `
+      `,
+    );
+    testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a,b`);
+    testingWorkspace.exec(
+      `
           git add .
           git commit -m "build: 📦 setup semver"
-        `,
+      `,
+    );
+  });
+
+  afterAll(() => testingWorkspace.tearDown());
+
+  describe('@jscutlery/semver:install', () => {
+    it('should add commitlint config', () => {
+      expect(existsSync(`${testingWorkspace.root}/.commitlintrc.json`)).toBe(
+        true,
       );
     });
 
-    afterAll(() => testingWorkspace.tearDown());
+    it('should add commitlint config', () => {
+      expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
+        /@commitlint\/config-angular/,
+      );
+    });
 
-    describe('@jscutlery/semver:install', () => {
+    it('should add commitlint CLI', () => {
+      expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
+        /@commitlint\/cli/,
+      );
+    });
+  });
+
+  describe('@jscutlery/semver:version', () => {
+    describe('when libs/a changed', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
-            echo feat > libs/a/a.txt
-            git add .
-            git commit -m "feat(a): 🚀 new feature"
+              echo feat > libs/a/a.txt
+              git add .
+              git commit -m "feat(a): 🚀 new feature"
 
-            echo fix >> libs/a/a.txt
-            git add .
-            git commit -m "fix(a): 🐞 fix bug"
-          `,
+              echo fix >> libs/a/a.txt
+              git add .
+              git commit -m "fix(a): 🐞 fix bug"
+            `,
         );
         // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
         testingWorkspace.runNx(`run a:version --noVerify`);
       });
 
-      it('should add commitlint config', () => {
-        expect(existsSync(`${testingWorkspace.root}/.commitlintrc.json`)).toBe(
-          true,
-        );
-      });
-
-      it('should add commitlint config', () => {
-        expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
-          /@commitlint\/config-angular/,
-        );
-      });
-
-      it('should add commitlint CLI', () => {
-        expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
-          /@commitlint\/cli/,
-        );
-      });
-    });
-
-    describe('@jscutlery/semver:version', () => {
       it('should commit all changes', () => {
         expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
       });
@@ -108,6 +115,71 @@ This file was generated.*
 ### Features
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
+$`),
+        );
+      });
+    });
+
+    describe('when libs/b changed', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo feat > libs/b/b.txt
+              git add .
+              git commit -m "feat(b): 🚀 new feature"
+
+              echo fix >> libs/b/b.txt
+              git add .
+              git commit -m "fix(b): 🐞 fix bug"
+            `,
+        );
+        // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
+        testingWorkspace.runNx(`run b:version --noVerify`);
+      });
+
+      it('should commit all changes', () => {
+        expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
+      });
+
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('b-0.1.0');
+      });
+
+      it('should create second tag', () => {
+        expect(getTags(testingWorkspace.root)).toHaveLength(2);
+      });
+
+      it('should commit with description', () => {
+        expect(getLastCommitDescription(testingWorkspace.root)).toBe(
+          'chore(b): release version 0.1.0',
+        );
+      });
+
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/b/package.json`),
+        ).toMatch(/"version": "0.1.0"/);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
+        ).toMatch(
+          new RegExp(`^# Changelog
+
+This file was generated.*
+
+# 0.1.0 \\(.*\\)
+
+
+### Bug Fixes
+
+\\* \\*\\*b:\\*\\* 🐞 fix bug .*
+
+
+### Features
+
+\\* \\*\\*b:\\*\\* 🚀 new feature .*
 $`),
         );
       });
