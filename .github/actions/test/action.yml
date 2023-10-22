@@ -25,7 +25,7 @@ runs:
       run: yarn nx affected:build --base=last-release
     - name: Test
       shell: bash
-      run: yarn nx test semver --code-coverage --verbose --runInBand
+      run: npx nx test semver --code-coverage --verbose --runInBand
     - name: Codecov upload
       uses: codecov/codecov-action@v3
       with:
