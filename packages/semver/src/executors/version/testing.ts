@@ -92,7 +92,7 @@ export function setupTestingWorkspace(): TestingWorkspace {
     exec(command: string) {
       execSync(command, {
         cwd: workspaceRoot,
-        stdio: 'inherit',
+        stdio: 'ignore',
       });
     },
     /**

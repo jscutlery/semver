@@ -1,12 +1,12 @@
 import { execSync } from 'child_process';
 import { setupTestingWorkspace, type TestingWorkspace } from './testing';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 
 describe('@jscutlery/semver', () => {
   let testingWorkspace: TestingWorkspace;
 
   describe('package "a"', () => {
-    beforeAll(async () => {
+    beforeAll(() => {
       testingWorkspace = setupTestingWorkspace();
       testingWorkspace.runNx(
         `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
@@ -24,50 +24,76 @@ describe('@jscutlery/semver', () => {
           git commit -m "build: 📦 setup semver"
         `,
       );
-      testingWorkspace.exec(
-        `
-          echo feat > libs/a/a.txt
-          git add .
-          git commit -m "feat(a): 🚀 new feature"
-
-          echo fix >> libs/a/a.txt
-          git add .
-          git commit -m "fix(a): 🐞 fix bug"
-        `,
-      );
-      // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
-      testingWorkspace.runNx(`run a:version --noVerify`);
     });
 
     afterAll(() => testingWorkspace.tearDown());
 
-    it('should commit all changes', () => {
-      expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
+    describe('@jscutlery/semver:install', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+            echo feat > libs/a/a.txt
+            git add .
+            git commit -m "feat(a): 🚀 new feature"
+
+            echo fix >> libs/a/a.txt
+            git add .
+            git commit -m "fix(a): 🐞 fix bug"
+          `,
+        );
+        // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
+        testingWorkspace.runNx(`run a:version --noVerify`);
+      });
+
+      it('should add commitlint config', () => {
+        expect(existsSync(`${testingWorkspace.root}/.commitlintrc.json`)).toBe(
+          true,
+        );
+      });
+
+      it('should add commitlint config', () => {
+        expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
+          /@commitlint\/config-angular/,
+        );
+      });
+
+      it('should add commitlint CLI', () => {
+        expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
+          /@commitlint\/cli/,
+        );
+      });
     });
 
-    it('should tag with version', () => {
-      expect(getLastTag(testingWorkspace.root)).toBe('a-0.1.0');
-    });
+    describe('@jscutlery/semver:version', () => {
+      it('should commit all changes', () => {
+        expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
+      });
 
-    it('should create only one tag', () => {
-      expect(getTags(testingWorkspace.root)).toHaveLength(1);
-    });
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('a-0.1.0');
+      });
 
-    it('should commit with description', () => {
-      expect(getLastCommitDescription(testingWorkspace.root)).toBe(
-        'chore(a): release version 0.1.0',
-      );
-    });
+      it('should create only one tag', () => {
+        expect(getTags(testingWorkspace.root)).toHaveLength(1);
+      });
 
-    it('should bump package version', () => {
-      expect(readFile(`${testingWorkspace.root}/libs/a/package.json`)).toMatch(
-        /"version": "0.1.0"/,
-      );
-    });
+      it('should commit with description', () => {
+        expect(getLastCommitDescription(testingWorkspace.root)).toBe(
+          'chore(a): release version 0.1.0',
+        );
+      });
 
-    it('should generate CHANGELOG.md', () => {
-      expect(readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`)).toMatch(
-        new RegExp(`^# Changelog
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/a/package.json`),
+        ).toMatch(/"version": "0.1.0"/);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+        ).toMatch(
+          new RegExp(`^# Changelog
 
 This file was generated.*
 
@@ -83,7 +109,8 @@ This file was generated.*
 
 \\* \\*\\*a:\\*\\* 🚀 new feature .*
 $`),
-      );
+        );
+      });
     });
   });
 });
@@ -92,7 +119,6 @@ function getLastTag(dir: string) {
   return execSync('git describe --tags --abbrev=0', {
     encoding: 'utf-8',
     cwd: dir,
-    stdio: 'ignore',
   }).trim();
 }
 
@@ -100,7 +126,6 @@ function getLastCommitDescription(dir: string) {
   return execSync('git log -1 --pretty=%B', {
     encoding: 'utf-8',
     cwd: dir,
-    stdio: 'ignore',
   }).trim();
 }
 
@@ -108,7 +133,6 @@ function getTags(dir: string) {
   return execSync('git tag', {
     encoding: 'utf-8',
     cwd: dir,
-    stdio: 'ignore',
   })
     .trim()
     .split('\n');
