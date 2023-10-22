@@ -8,15 +8,35 @@ describe('@jscutlery/semver', () => {
   describe('package "a"', () => {
     beforeAll(async () => {
       testingWorkspace = setupTestingWorkspace();
-      testingWorkspace.run(
+      testingWorkspace.runNx(
         `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
       );
-      testingWorkspace.run(`g @jscutlery/semver:install --projects=a`);
+      testingWorkspace.exec(
+        `
+          git add .
+          git commit -m "🐣"
+        `,
+      );
+      testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a`);
+      testingWorkspace.exec(
+        `
+          git add .
+          git commit -m "build: 📦 setup semver"
+        `,
+      );
+      testingWorkspace.exec(
+        `
+          echo feat > libs/a/a.txt
+          git add .
+          git commit -m "feat(a): 🚀 new feature"
 
-      initGit(testingWorkspace.root);
-      createAndCommitFiles(testingWorkspace.root);
-
-      testingWorkspace.run(`run a:version`);
+          echo fix >> libs/a/a.txt
+          git add .
+          git commit -m "fix(a): 🐞 fix bug"
+        `,
+      );
+      // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
+      testingWorkspace.runNx(`run a:version --noVerify`);
     });
 
     afterAll(() => testingWorkspace.tearDown());
@@ -62,40 +82,8 @@ function getLastTag(dir: string) {
   return execSync('git describe --tags --abbrev=0', {
     encoding: 'utf-8',
     cwd: dir,
+    stdio: 'ignore',
   }).trim();
-}
-
-function createAndCommitFiles(dir: string) {
-  execSync(
-    `
-        echo feat > libs/a/a.txt
-        git add .
-        git commit -m "feat(a): 🚀 new feature"
-
-        echo fix >> libs/a/a.txt
-        git add .
-        git commit -m "fix(a): 🐞 fix bug"
-      `,
-    { cwd: dir, stdio: 'ignore' },
-  );
-}
-
-function initGit(dir: string) {
-  execSync(
-    `
-        git init --quiet
-
-        # These are needed by CI.
-        git config user.email "bot@jest.io"
-        git config user.name "Test Bot"
-
-        git config commit.gpgsign false
-
-        git add .
-        git commit -m "🐣"
-`,
-    { cwd: dir, stdio: 'ignore' },
-  );
 }
 
 function readFile(path: string) {
@@ -106,7 +94,10 @@ function readFile(path: string) {
 
 function uncommitedChanges(dir: string) {
   return (
-    execSync('git status --porcelain', { encoding: 'utf-8', cwd: dir })
+    execSync('git status --porcelain', {
+      encoding: 'utf-8',
+      cwd: dir,
+    })
       .split('\n')
       /* Remove empty line. */
       .filter((line) => line.length !== 0)

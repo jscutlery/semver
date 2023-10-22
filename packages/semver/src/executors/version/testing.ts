@@ -10,7 +10,8 @@ import { readJsonFile, workspaceRoot, writeJsonFile } from '@nx/devkit';
 import { execSync } from 'child_process';
 
 export interface TestingWorkspace {
-  run(command: string): void;
+  exec(command: string): void;
+  runNx(command: string): void;
   tearDown(): Promise<void>;
   root: string;
 }
@@ -46,6 +47,20 @@ function runInstall(dir: string) {
   });
 }
 
+function initGit(dir: string) {
+  execSync(
+    `
+        git init --quiet
+
+        # These are needed by CI.
+        git config user.email "bot@jest.io"
+        git config user.name "Test Bot"
+        git config commit.gpgsign false
+`,
+    { cwd: dir, stdio: 'ignore' },
+  );
+}
+
 export function setupTestingWorkspace(): TestingWorkspace {
   /* Create a temporary directory. */
   const tmpDir = tmp.dirSync();
@@ -57,6 +72,7 @@ export function setupTestingWorkspace(): TestingWorkspace {
   const workspaceRoot = resolve(tmpRoot, 'proj');
 
   runNxNewCommand(tmpRoot);
+  initGit(workspaceRoot);
   linkPackage(workspaceRoot);
   runInstall(workspaceRoot);
 
@@ -64,8 +80,17 @@ export function setupTestingWorkspace(): TestingWorkspace {
     /**
      * Run an Nx command in the workspace.
      */
-    run(command: string) {
+    runNx(command: string) {
       execSync(`node ${require.resolve('nx')} ${command}`, {
+        cwd: workspaceRoot,
+        stdio: 'inherit',
+      });
+    },
+    /**
+     * Run any command in the workspace.
+     */
+    exec(command: string) {
+      execSync(command, {
         cwd: workspaceRoot,
         stdio: 'inherit',
       });
