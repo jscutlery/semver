@@ -184,6 +184,20 @@ $`),
         );
       });
     });
+
+    describe('when libs/c did not change', () => {
+      it('should not create a tag', () => {
+        expect(getTags(testingWorkspace.root)).not.toInclude(
+          expect.stringContaining('c'),
+        );
+      });
+
+      it('should not generate CHANGELOG.md', () => {
+        expect(existsSync(`${testingWorkspace.root}/libs/c/CHANGELOG.md`)).toBe(
+          false,
+        );
+      });
+    });
   });
 });
 
