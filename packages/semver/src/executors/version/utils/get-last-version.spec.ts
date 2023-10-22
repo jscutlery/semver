@@ -1,22 +1,17 @@
 import * as gitSemverTags from 'git-semver-tags';
 import { lastValueFrom } from 'rxjs';
-import { callbackify } from 'util';
 
 import { getLastVersion } from './get-last-version';
 
-jest.mock('git-semver-tags', () => jest.fn());
-jest.mock('./project');
+jest.mock('git-semver-tags');
 
 const tagPrefix = 'my-lib-';
 
 describe(getLastVersion.name, () => {
-  let mockGitSemverTags: jest.Mock;
+  const mockGitSemverTags: jest.Mock = gitSemverTags;
 
   beforeEach(() => {
-    mockGitSemverTags = jest.fn();
-    (gitSemverTags as jest.Mock).mockImplementation(
-      callbackify(mockGitSemverTags),
-    );
+    mockGitSemverTags.mockReset();
   });
 
   it('should compute current version from previous semver tag', async () => {

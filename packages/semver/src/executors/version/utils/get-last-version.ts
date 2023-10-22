@@ -2,8 +2,6 @@ import * as gitSemverTags from 'git-semver-tags';
 import { from, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
-import { promisify } from 'util';
-
 import type { Observable } from 'rxjs';
 
 export function getLastVersion({
@@ -15,10 +13,8 @@ export function getLastVersion({
   includePrerelease?: boolean;
   preid?: string;
 }): Observable<string> {
-  return from(
-    promisify(gitSemverTags)({ tagPrefix }) as Promise<string[]>,
-  ).pipe(
-    switchMap((tags: string[]) => {
+  return from(gitSemverTags({ tagPrefix }) as Promise<string[]>).pipe(
+    switchMap((tags) => {
       const versions = tags
         .map((tag) => tag.substring(tagPrefix.length))
         .filter((v) => {
