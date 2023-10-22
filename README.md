@@ -99,13 +99,25 @@ You can customize the default configuration using the definition file:
   "executor": "@jscutlery/semver:version",
   "options": {
     "baseBranch": "master",
-    "preset": "conventional",
+    "preset": "atom",
     "tagPrefix": "{projectName}@"
   }
 }
 ```
 
-#### Customizing Conventional Changelog options
+#### Customizing Conventional Changelog
+
+This tool comes with a list of pre-configured presets:
+
+- [angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) (default)
+- [atom](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-atom)
+- [codemirror](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-codemirror)
+- [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)
+- [ember](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-ember)
+- [eslint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint)
+- [express](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-express)
+- [jquery](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jquery)
+- [jshint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jshint)
 
 The preset is highly configurable, following the [conventional-changelog configuration specification](https://github.com/conventional-changelog/conventional-changelog-config-spec). As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
 
@@ -165,20 +177,16 @@ You may customize the config for the commit parser. This can be helpful when you
 }
 ```
 
-See the [conventional-commits-parse](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#options) specification for available
-configuration options.
+See the [conventional-commits-parse](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#options) specification for available configuration options.
 
 #### Version calculation
 
 This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the last one and calculates the new version from it.
 
-To detect a new version this package looks into the commit history and checks if any source files changed since the last version.
-
 > [!IMPORTANT]
-> Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
+> To detect a new version this package looks into the commit history and checks if any source files changed since the last version. Note that merge commits are ignored by the tool when calculating next version to bump.
 
-> [!NOTE]
-> Merge commits are ignored by the tool when calculating next version to bump.
+Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
 
 #### Specify the level of change
 
