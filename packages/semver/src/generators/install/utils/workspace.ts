@@ -2,7 +2,6 @@ import {
   getProjects,
   updateProjectConfiguration,
   type ProjectConfiguration,
-  readProjectConfiguration,
 } from '@nx/devkit';
 
 import { createTarget } from './create-target';
