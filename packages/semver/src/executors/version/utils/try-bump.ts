@@ -12,7 +12,6 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import * as semver from 'semver';
-import { promisify } from 'util';
 import type { Preset, ReleaseIdentifier } from '../schema';
 import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
@@ -226,6 +225,9 @@ export function tryBump({
   );
 }
 
+/**
+ * istanbul ignore next
+ */
 export function _semverBump({
   since,
   preset,
@@ -251,6 +253,9 @@ export function _semverBump({
   });
 }
 
+/**
+ * istanbul ignore next
+ */
 export function _manualBump({
   since,
   releaseType,

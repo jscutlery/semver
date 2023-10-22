@@ -8,6 +8,10 @@ import { createConventionalCommitStream } from './conventional-commit';
 
 jest.mock('./conventional-commit');
 
+/**
+ * @todo: This test is disabled because it is not working in the CI environment.
+ */
+
 const config: WriteChangelogConfig = {
   changelogHeader: '# Changelog',
   projectRoot: './',
