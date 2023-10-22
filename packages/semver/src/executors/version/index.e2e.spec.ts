@@ -32,7 +32,7 @@ describe('@jscutlery/semver', () => {
           git commit -m "build: 📦 setup semver"
       `,
     );
-  }, 120_000);
+  });
 
   afterAll(() => testingWorkspace.tearDown());
 
