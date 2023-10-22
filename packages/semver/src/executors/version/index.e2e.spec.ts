@@ -70,7 +70,6 @@ describe('@jscutlery/semver', () => {
               git commit -m "fix(a): 🐞 fix bug"
             `,
         );
-        // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
         testingWorkspace.runNx(`run a:version --noVerify`);
       });
 
@@ -135,7 +134,6 @@ $`),
               git commit -m "fix(b): 🐞 fix bug"
             `,
         );
-        // @TODO: Remove --noVerify when "release" commit type is allowed by commitlint.
         testingWorkspace.runNx(`run b:version --noVerify`);
       });
 

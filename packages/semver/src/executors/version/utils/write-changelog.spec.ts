@@ -1,16 +1,12 @@
 import * as fs from 'fs';
 import * as Stream from 'stream';
+import { jest } from '@jest/globals';
 
-import { createConventionalCommitStream } from './conventional-commit';
 import writeChangelog from './write-changelog';
 import type { WriteChangelogConfig } from '../schema';
+import { createConventionalCommitStream } from './conventional-commit';
 
 jest.mock('./conventional-commit');
-
-const mockCreateConventionalCommitStream =
-  createConventionalCommitStream as jest.MockedFunction<
-    typeof createConventionalCommitStream
-  >;
 
 const config: WriteChangelogConfig = {
   changelogHeader: '# Changelog',
@@ -22,10 +18,15 @@ const config: WriteChangelogConfig = {
 };
 
 describe(writeChangelog, () => {
+  const createConventionalCommitStreamMock =
+    createConventionalCommitStream as jest.Mock<
+      typeof createConventionalCommitStream
+    >;
+
   beforeEach(() => {
-    jest.spyOn(console, 'warn').mockImplementation();
-    jest.spyOn(console, 'info').mockImplementation();
-    jest.spyOn(fs, 'writeFileSync').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
+    jest.spyOn(console, 'info').mockImplementation(() => jest.fn());
+    jest.spyOn(fs, 'writeFileSync').mockImplementation(() => jest.fn());
   });
 
   afterEach(() => {
@@ -34,7 +35,7 @@ describe(writeChangelog, () => {
 
   describe('handle errors', () => {
     beforeEach(async () => {
-      mockCreateConventionalCommitStream.mockReturnValue(
+      createConventionalCommitStreamMock.mockReturnValue(
         new Stream.Readable({
           read() {
             this.emit('error', '💥');
@@ -60,11 +61,13 @@ describe(writeChangelog, () => {
     const version = '1.0.0';
 
     beforeEach(async () => {
-      mockCreateConventionalCommitStream.mockImplementation(
-        jest.requireActual('./conventional-commit')
-          .createConventionalCommitStream,
+      createConventionalCommitStreamMock.mockImplementation(
+        (
+          jest.requireActual(
+            './conventional-commit',
+          ) as typeof import('./conventional-commit')
+        ).createConventionalCommitStream,
       );
-
       await writeChangelog({ ...config, dryRun: true }, version);
     });
 
@@ -86,11 +89,13 @@ describe(writeChangelog, () => {
     const version = '1.0.0';
 
     beforeEach(async () => {
-      mockCreateConventionalCommitStream.mockImplementation(
-        jest.requireActual('./conventional-commit')
-          .createConventionalCommitStream,
+      createConventionalCommitStreamMock.mockImplementation(
+        (
+          jest.requireActual(
+            './conventional-commit',
+          ) as typeof import('./conventional-commit')
+        ).createConventionalCommitStream,
       );
-
       await writeChangelog(
         {
           ...config,
@@ -114,7 +119,7 @@ describe(writeChangelog, () => {
 
     it('should load custom preset', () => {
       expect(
-        mockCreateConventionalCommitStream.mock.calls[0][0].preset,
+        createConventionalCommitStreamMock.mock.calls[0][0].preset,
       ).toMatchSnapshot();
     });
 
