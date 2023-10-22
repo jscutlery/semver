@@ -45,8 +45,18 @@ describe('@jscutlery/semver', () => {
       expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
     });
 
-    it('should tag a-0.1.0', () => {
+    it('should tag with version', () => {
       expect(getLastTag(testingWorkspace.root)).toBe('a-0.1.0');
+    });
+
+    it('should create only one tag', () => {
+      expect(getTags(testingWorkspace.root)).toHaveLength(1);
+    });
+
+    it('should commit with description', () => {
+      expect(getLastCommitDescription(testingWorkspace.root)).toBe(
+        'chore(a): release version 0.1.0',
+      );
     });
 
     it('should bump package version', () => {
@@ -84,6 +94,24 @@ function getLastTag(dir: string) {
     cwd: dir,
     stdio: 'ignore',
   }).trim();
+}
+
+function getLastCommitDescription(dir: string) {
+  return execSync('git log -1 --pretty=%B', {
+    encoding: 'utf-8',
+    cwd: dir,
+    stdio: 'ignore',
+  }).trim();
+}
+
+function getTags(dir: string) {
+  return execSync('git tag', {
+    encoding: 'utf-8',
+    cwd: dir,
+    stdio: 'ignore',
+  })
+    .trim()
+    .split('\n');
 }
 
 function readFile(path: string) {
