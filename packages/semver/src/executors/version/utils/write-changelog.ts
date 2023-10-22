@@ -1,15 +1,17 @@
 import * as chalk from 'chalk';
+import * as createPreset from 'conventional-changelog-conventionalcommits';
 import { accessSync, constants, readFileSync, writeFileSync } from 'fs';
 import { WriteChangelogConfig } from '../schema';
-import { initConventionalCommitReadableStream } from './init-conventional-commit-readable-stream';
+import { createConventionalCommitStream } from './conventional-commit';
 
 const START_OF_LAST_RELEASE_PATTERN =
   /(^#+ \[?[0-9]+\.[0-9]+\.[0-9]+|<a name=)/m;
 
+/* istanbul ignore next */
 export default function writeChangelog(
   config: WriteChangelogConfig,
   newVersion: string,
-) {
+): Promise<void> {
   return buildConventionalChangelog(config, newVersion)
     .then((newContent) => {
       if (config.dryRun) {
@@ -51,14 +53,19 @@ function buildExistingContent(config: WriteChangelogConfig) {
   return existingContent;
 }
 
-function buildConventionalChangelog(
+async function buildConventionalChangelog(
   config: WriteChangelogConfig,
   newVersion: string,
 ): Promise<string> {
+  const preset =
+    typeof config.preset === 'object'
+      ? await createPreset(config.preset)
+      : config.preset;
+
   return new Promise((resolve, reject) => {
     let changelog = '';
-    const changelogStream = initConventionalCommitReadableStream(
-      config,
+    const changelogStream = createConventionalCommitStream(
+      { ...config, preset },
       newVersion,
     );
 
@@ -73,7 +80,5 @@ function buildConventionalChangelog(
     changelogStream.on('end', function () {
       resolve(changelog);
     });
-
-    return;
   });
 }

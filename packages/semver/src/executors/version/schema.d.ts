@@ -1,4 +1,3 @@
-import ConventionalChangelogConfigSpec from '@types/conventional-changelog-config-spec';
 import type { Options as CommitParserOptions } from 'conventional-commits-parser';
 
 export { CommitParserOptions };
@@ -14,9 +13,15 @@ export type ReleaseIdentifier =
 
 export type Preset =
   | 'angular'
-  | 'conventional'
   | 'conventionalcommits'
-  | ({ name: string } & ConventionalChangelogConfigSpec.Config);
+  | 'atom'
+  | 'codemirror'
+  | 'ember'
+  | 'eslint'
+  | 'express'
+  | 'jquery'
+  | 'jshint'
+  | Record<string, any>; // Custom preset, see: https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.2.0/README.md
 
 export interface VersionBuilderSchema {
   dryRun?: boolean;
@@ -37,7 +42,7 @@ export interface VersionBuilderSchema {
   allowEmptyRelease?: boolean;
   skipCommitTypes?: string[];
   commitMessageFormat?: string;
-  preset: Preset;
+  preset: Preset | 'conventional'; // @TODO: Remove 'conventional' in the next major release.
   commitParserOptions?: CommitParserOptions;
 }
 

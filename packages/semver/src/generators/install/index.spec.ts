@@ -19,7 +19,7 @@ const defaultOptions: SchemaOptions = {
   projects: [],
 };
 
-describe('Install generator', () => {
+describe('@jscutlery/semver:install', () => {
   let tree: Tree;
 
   beforeEach(() => {

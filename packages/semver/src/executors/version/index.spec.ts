@@ -708,6 +708,7 @@ describe('@jscutlery/semver:version', () => {
   describe('--preset', () => {
     it('should use --preset=angular by default', async () => {
       const { success } = await version(
+        /// @ts-expect-error - preset is not in the schema
         { ...options, preset: undefined },
         context,
       );
@@ -720,9 +721,9 @@ describe('@jscutlery/semver:version', () => {
       );
     });
 
-    it('should use --preset=conventional', async () => {
+    it('should use --preset=conventionalcommits', async () => {
       const { success } = await version(
-        { ...options, preset: 'conventional' },
+        { ...options, preset: 'conventionalcommits' },
         context,
       );
 
@@ -735,14 +736,14 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should use --preset=conventional-changelog-config-spec', async () => {
+      const preset = {
+        compareUrlFormat:
+          '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
+      };
       const { success } = await version(
         {
           ...options,
-          preset: {
-            name: 'conventionalcommits',
-            compareUrlFormat:
-              '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
-          },
+          preset,
         },
         context,
       );
@@ -750,11 +751,7 @@ describe('@jscutlery/semver:version', () => {
       expect(success).toBe(true);
       expect(mockUpdateChangelog).toBeCalledWith(
         expect.objectContaining({
-          preset: {
-            compareUrlFormat:
-              '{{host}}/{{owner}}/{{repository}}/compareee/{{previousTag}}...{{currentTag}}',
-            name: 'conventionalcommits',
-          },
+          preset,
         }),
       );
     });

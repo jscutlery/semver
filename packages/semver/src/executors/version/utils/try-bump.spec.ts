@@ -2,7 +2,6 @@ import { logger } from '@nx/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as gitSemverTags from 'git-semver-tags';
 import { lastValueFrom, of, throwError } from 'rxjs';
-import { callbackify } from 'util';
 import { getLastVersion } from './get-last-version';
 import { getCommits, getFirstCommitRef } from './git';
 import { tryBump } from './try-bump';
@@ -24,15 +23,11 @@ describe('tryBump', () => {
   const mockGetFirstCommitRef = getFirstCommitRef as jest.MockedFunction<
     typeof getFirstCommitRef
   >;
-  let mockGitSemverTags: jest.Mock;
+  const mockGitSemverTags: jest.Mock = gitSemverTags;
 
   let loggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    mockGitSemverTags = jest.fn();
-    (gitSemverTags as jest.Mock).mockImplementation(
-      callbackify(mockGitSemverTags),
-    );
     mockGetLastVersion.mockReturnValue(of('2.1.0'));
     loggerSpy = jest.spyOn(logger, 'warn');
   });
@@ -45,11 +40,9 @@ describe('tryBump', () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
     /* Mock bump to return "minor". */
     mockConventionalRecommendedBump.mockImplementation(
-      callbackify(
-        jest.fn().mockResolvedValue({
-          releaseType: 'minor',
-        }),
-      ) as () => void,
+      jest.fn().mockResolvedValue({
+        releaseType: 'minor',
+      }),
     );
 
     const newVersion = await lastValueFrom(
@@ -75,14 +68,11 @@ describe('tryBump', () => {
     });
 
     expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
-      {
-        path: '/libs/demo',
-        preset: 'angular',
-        tagPrefix: 'v',
-      },
-      expect.any(Function),
-    );
+    expect(mockConventionalRecommendedBump).toBeCalledWith({
+      path: '/libs/demo',
+      preset: 'angular',
+      tagPrefix: 'v',
+    });
   });
 
   it('should compute the next version based on last version, changes, and dependencies', async () => {
@@ -93,19 +83,17 @@ describe('tryBump', () => {
 
     /* Mock bump to return "minor". */
     mockConventionalRecommendedBump.mockImplementation(
-      callbackify(
-        jest
-          .fn()
-          .mockResolvedValueOnce({
-            releaseType: undefined,
-          })
-          .mockResolvedValueOnce({
-            releaseType: undefined,
-          })
-          .mockResolvedValueOnce({
-            releaseType: 'minor',
-          }),
-      ) as () => void,
+      jest
+        .fn()
+        .mockResolvedValueOnce({
+          releaseType: undefined,
+        })
+        .mockResolvedValueOnce({
+          releaseType: undefined,
+        })
+        .mockResolvedValueOnce({
+          releaseType: 'minor',
+        }),
     );
 
     const newVersion = await lastValueFrom(
@@ -142,14 +130,11 @@ describe('tryBump', () => {
     });
 
     expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
-      {
-        path: '/libs/demo',
-        preset: 'angular',
-        tagPrefix: 'v',
-      },
-      expect.any(Function),
-    );
+    expect(mockConventionalRecommendedBump).toBeCalledWith({
+      path: '/libs/demo',
+      preset: 'angular',
+      tagPrefix: 'v',
+    });
   });
 
   it('should use given type to calculate next version', async () => {
@@ -265,7 +250,6 @@ describe('tryBump', () => {
         tagPrefix: 'v',
         releaseType: 'minor',
         projectName: '',
-
         skipCommitTypes: [],
       }),
     );
@@ -309,11 +293,9 @@ describe('tryBump', () => {
     mockGetCommits.mockReturnValue(of([]));
     mockGetFirstCommitRef.mockReturnValue(of('sha1'));
     mockConventionalRecommendedBump.mockImplementation(
-      callbackify(
-        jest.fn().mockResolvedValue({
-          releaseType: undefined,
-        }),
-      ) as () => void,
+      jest.fn().mockResolvedValue({
+        releaseType: undefined,
+      }),
     );
 
     await lastValueFrom(
@@ -341,11 +323,9 @@ describe('tryBump', () => {
   it('should return undefined if there are no changes in current path', async () => {
     mockGetCommits.mockReturnValue(of([]));
     mockConventionalRecommendedBump.mockImplementation(
-      callbackify(
-        jest.fn().mockResolvedValue({
-          releaseType: 'patch',
-        }),
-      ) as () => void,
+      jest.fn().mockResolvedValue({
+        releaseType: 'patch',
+      }),
     );
 
     const newVersion = await lastValueFrom(
@@ -370,11 +350,9 @@ describe('tryBump', () => {
   it('should try to do a bump even if there are no changes in current path when allowEmptyRelease is true', async () => {
     mockGetCommits.mockReturnValue(of([]));
     mockConventionalRecommendedBump.mockImplementation(
-      callbackify(
-        jest.fn().mockResolvedValue({
-          releaseType: 'patch',
-        }),
-      ) as () => void,
+      jest.fn().mockResolvedValue({
+        releaseType: 'patch',
+      }),
     );
 
     const newVersion = await lastValueFrom(
@@ -401,11 +379,9 @@ describe('tryBump', () => {
     it('should return undefined if all commits types match skipCommitTypes', async () => {
       mockGetCommits.mockReturnValue(of(['docs: A ', 'refactor: B ']));
       mockConventionalRecommendedBump.mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: 'patch',
-          }),
-        ) as () => void,
+        jest.fn().mockResolvedValue({
+          releaseType: 'patch',
+        }),
       );
 
       const newVersion = await lastValueFrom(
@@ -425,11 +401,9 @@ describe('tryBump', () => {
     it('should return correct version if NOT commits types match skipCommitTypes', async () => {
       mockGetCommits.mockReturnValue(of(['feat: A', 'docs: B']));
       mockConventionalRecommendedBump.mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: 'patch',
-          }),
-        ) as () => void,
+        jest.fn().mockResolvedValue({
+          releaseType: 'patch',
+        }),
       );
 
       const newVersion = await lastValueFrom(
@@ -453,16 +427,14 @@ describe('tryBump', () => {
         .mockReturnValueOnce(of(['docs: A', 'refactor(scope): B']));
 
       mockConventionalRecommendedBump.mockImplementation(
-        callbackify(
-          jest
-            .fn()
-            .mockResolvedValueOnce({
-              releaseType: undefined,
-            })
-            .mockResolvedValueOnce({
-              releaseType: undefined,
-            }),
-        ) as () => void,
+        jest
+          .fn()
+          .mockResolvedValueOnce({
+            releaseType: undefined,
+          })
+          .mockResolvedValueOnce({
+            releaseType: undefined,
+          }),
       );
 
       const newVersion = await lastValueFrom(
@@ -489,11 +461,9 @@ describe('tryBump', () => {
       );
       /* Mock bump to return "minor". */
       mockConventionalRecommendedBump.mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: 'minor',
-          }),
-        ) as () => void,
+        jest.fn().mockResolvedValue({
+          releaseType: 'minor',
+        }),
       );
 
       const newVersion = await lastValueFrom(
@@ -529,11 +499,9 @@ describe('tryBump', () => {
       );
       /* Mock bump to return "minor". */
       mockConventionalRecommendedBump.mockImplementation(
-        callbackify(
-          jest.fn().mockResolvedValue({
-            releaseType: 'minor',
-          }),
-        ) as () => void,
+        jest.fn().mockResolvedValue({
+          releaseType: 'minor',
+        }),
       );
 
       const newVersion = await lastValueFrom(

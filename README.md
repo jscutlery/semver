@@ -65,8 +65,6 @@ nx run workspace:version [...options]
 6. Pushes the version to the remote repository.
 7. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
 
-Important: merge commits messages are ignored by the tool when calculating next version to bump.
-
 #### Available options
 
 | name                         | type               | default     | description                                                                                                                                                     |
@@ -101,13 +99,25 @@ You can customize the default configuration using the definition file:
   "executor": "@jscutlery/semver:version",
   "options": {
     "baseBranch": "master",
-    "preset": "conventional",
+    "preset": "atom",
     "tagPrefix": "{projectName}@"
   }
 }
 ```
 
-#### Customizing Conventional Changelog options
+#### Customizing Conventional Changelog
+
+This tool comes with a list of pre-configured presets:
+
+- [angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) (default)
+- [atom](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-atom)
+- [codemirror](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-codemirror)
+- [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)
+- [ember](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-ember)
+- [eslint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint)
+- [express](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-express)
+- [jquery](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jquery)
+- [jshint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jshint)
 
 The preset is highly configurable, following the [conventional-changelog configuration specification](https://github.com/conventional-changelog/conventional-changelog-config-spec). As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
 
@@ -116,10 +126,21 @@ The preset is highly configurable, following the [conventional-changelog configu
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
-      "name": "conventionalcommits",
       "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
       "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
-      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
+      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
+    }
+  }
+}
+```
+
+You can also add your own custom types, for example:
+
+```json
+{
+  "executor": "@jscutlery/semver:version",
+  "options": {
+    "preset": {
       "types": [
         { "type": "feat", "section": "Features" },
         { "type": "fix", "section": "Bug Fixes" },
@@ -137,7 +158,7 @@ The preset is highly configurable, following the [conventional-changelog configu
 }
 ```
 
-See [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec) for available
+See the [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec) for available
 configuration options.
 
 #### Customizing the commit parser
@@ -156,16 +177,16 @@ You may customize the config for the commit parser. This can be helpful when you
 }
 ```
 
-See the [conventional-commits-parse](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#options) specification for available
-configuration options.
+See the [conventional-commits-parse](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#options) specification for available configuration options.
 
 #### Version calculation
 
 This package is **tag-based**, which means it never reads the `package.json` to retrieve the current version. Instead, it looks for a tag matching the `--tagPrefix` (i.e `demo-x.y.z`). Then, if no tag is found it fallbacks to `0.0.0`, and calculates the initial version based on all changes since the first commit. In the other case, if there are matching tags, it retrieves the last one and calculates the new version from it.
 
-To detect a new version this package looks into the commit history and checks if any source files changed since the last version.
+> [!IMPORTANT]
+> To detect a new version this package looks into the commit history and checks if any source files changed since the last version. Note that merge commits are ignored by the tool when calculating next version to bump.
 
-> **Note**: Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
+Major zero version `0.x.y` is for initial development. Anything may change at any time so the consumer won't get any new minor version using the caret or tilde compatibility range, for instance version `0.3.1` won't be resolved if the consumer wants `^0.2.0`.
 
 #### Specify the level of change
 
@@ -210,7 +231,7 @@ release: bump {projectName} to {version} [skip ci]
 
 #### Skipping release for specific types of commits
 
-To avoid releasing a new version if something non-influencing on release was changed(for example, documentation), you can provide `skipCommitTypes` option.
+To avoid releasing a new version if something non-influencing on release was changed (for example, documentation), you can provide `skipCommitTypes` option.
 In this case, any commit with a specified type would be ignored when calculating if there is a need to bump version.
 For example, if you had only one commit from the last version:
 
@@ -229,7 +250,8 @@ fix(project): get rig of annoying bug
 
 would produce a patch bump.
 
-Please keep in mind that changelog would be generated by [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular#type) which ignores some types by design (i.e. `docs`, `test` and others).
+> [!NOTE]
+> Please keep in mind that changelog would be generated by [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular#type) which ignores some types by design (i.e. `docs`, `test` and others).
 
 #### Skipping commit
 

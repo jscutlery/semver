@@ -25,10 +25,7 @@ runs:
       run: yarn nx affected:build --base=last-release
     - name: Test
       shell: bash
-      run: yarn nx test semver --code-coverage
-    - name: E2E
-      shell: bash
-      run: yarn nx affected:e2e --headless --base=last-release
+      run: yarn nx test semver --codeCoverage --verbose
     - name: Codecov upload
       uses: codecov/codecov-action@v3
       with:

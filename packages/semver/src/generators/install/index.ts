@@ -17,17 +17,12 @@ import type { SchemaOptions } from './schema';
 export default async function install(tree: Tree, options: SchemaOptions) {
   /* Synced versioning. */
   if (options.syncVersions) {
-    addProjectConfiguration(
-      tree,
-      'workspace',
-      {
-        root: '.',
-        targets: {
-          version: createTarget(options),
-        },
+    addProjectConfiguration(tree, 'workspace', {
+      root: '.',
+      targets: {
+        version: createTarget(options),
       },
-      false,
-    );
+    });
 
     /* Independent versioning. */
   } else {

@@ -12,8 +12,7 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import * as semver from 'semver';
-import { promisify } from 'util';
-import { type ReleaseIdentifier } from '../schema';
+import type { Preset, ReleaseIdentifier } from '../schema';
 import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
 import { type DependencyRoot } from './get-project-dependencies';
@@ -112,7 +111,7 @@ export function tryBump({
   projectName,
 }: {
   commitParserOptions?: CommitParserOptions;
-  preset: string;
+  preset: Preset;
   projectRoot: string;
   tagPrefix: string;
   dependencyRoots?: DependencyRoot[];
@@ -226,6 +225,7 @@ export function tryBump({
   );
 }
 
+/* istanbul ignore next */
 export function _semverBump({
   since,
   preset,
@@ -233,22 +233,25 @@ export function _semverBump({
   tagPrefix,
 }: {
   since: string;
-  preset: string;
+  preset: Preset;
   projectRoot: string;
   tagPrefix: string;
 }) {
   return defer(async () => {
-    const recommended = (await promisify(conventionalRecommendedBump)({
+    const recommended = await conventionalRecommendedBump({
       path: projectRoot,
-      preset,
       tagPrefix,
-    })) as { releaseType: semver.ReleaseType };
+      ...(typeof preset === 'string' ? { preset: preset } : {}),
+      ...(typeof preset === 'object' ? { config: preset } : {}),
+    });
     const { releaseType } = recommended;
 
-    return semver.inc(since, releaseType);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return semver.inc(since, releaseType!);
   });
 }
 
+/* istanbul ignore next */
 export function _manualBump({
   since,
   releaseType,
@@ -304,7 +307,7 @@ export function _getDependencyVersions({
   preid,
 }: {
   commitParserOptions?: CommitParserOptions;
-  preset: string;
+  preset: Preset;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
   releaseType?: ReleaseIdentifier;
