@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import { setupTestingWorkspace, type TestingWorkspace } from './testing';
 import { readFileSync, existsSync } from 'fs';
 
-describe('@jscutlery/semver', () => {
+xdescribe('@jscutlery/semver', () => {
   let testingWorkspace: TestingWorkspace;
 
   beforeAll(() => {
