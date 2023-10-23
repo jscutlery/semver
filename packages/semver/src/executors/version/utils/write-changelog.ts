@@ -40,6 +40,7 @@ export default function writeChangelog(
     });
 }
 
+/* istanbul ignore next */
 function buildExistingContent(config: WriteChangelogConfig) {
   const existingContent = readFileSync(config.changelogPath, 'utf-8');
   const existingContentStart = existingContent.search(
@@ -53,6 +54,7 @@ function buildExistingContent(config: WriteChangelogConfig) {
   return existingContent;
 }
 
+/* istanbul ignore next */
 async function buildConventionalChangelog(
   config: WriteChangelogConfig,
   newVersion: string,

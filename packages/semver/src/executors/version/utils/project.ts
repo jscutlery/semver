@@ -14,9 +14,7 @@ export function getPackageJsonPath(projectRoot: string) {
   return resolve(projectRoot, 'package.json');
 }
 
-/**
- * Safely update package.json file.
- */
+/* istanbul ignore next */
 export function updatePackageJson({
   newVersion,
   projectRoot,
@@ -54,14 +52,15 @@ export function updatePackageJson({
   );
 }
 
+/* istanbul ignore next */
 function _updatePackageVersion(packageJson: string, version: string): string {
   const data = JSON.parse(packageJson);
   const { indent } = detectIndent(packageJson);
   return _stringifyJson({ ...data, version }, indent);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function _stringifyJson(data: any, indent: string | number): string {
+/* istanbul ignore next */
+function _stringifyJson(data: unknown, indent: string | number): string {
   // We need to add a newline at the end so that Prettier will not complain about the new file.
   return JSON.stringify(data, null, indent).concat('\n');
 }

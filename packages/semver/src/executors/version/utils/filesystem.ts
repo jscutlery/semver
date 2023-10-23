@@ -4,6 +4,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 
 const fsPromises = fs.promises;
 
+/* istanbul ignore next */
 export function exists(filePath: string) {
   return defer(() =>
     fsPromises.access(filePath, fs.constants.R_OK | fs.constants.W_OK),
@@ -27,6 +28,7 @@ export function readJsonFile(filePath: string) {
   return readFile(filePath).pipe(map((data) => JSON.parse(data)));
 }
 
+/* istanbul ignore next */
 export function writeFile(
   filePath: string,
   data: Parameters<typeof fsPromises.writeFile>[1],

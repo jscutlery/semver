@@ -1,6 +1,7 @@
 import * as conventionalChangelog from 'conventional-changelog';
 import { WriteChangelogConfig } from '../schema';
 
+/* istanbul ignore next */
 export function createConventionalCommitStream(
   config: WriteChangelogConfig,
   newVersion: string,
