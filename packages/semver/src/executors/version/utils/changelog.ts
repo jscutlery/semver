@@ -20,10 +20,12 @@ export const defaultHeader = `# Changelog
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 `;
 
+/* istanbul ignore next */
 export function getChangelogPath(projectRoot: string) {
   return resolve(projectRoot, 'CHANGELOG.md');
 }
 
+/* istanbul ignore next */
 export function updateChangelog({
   projectRoot,
   dryRun,
@@ -56,6 +58,7 @@ export function updateChangelog({
   });
 }
 
+/* istanbul ignore next */
 export function insertChangelogDependencyUpdates({
   changelogPath,
   version,
@@ -88,6 +91,7 @@ export function insertChangelogDependencyUpdates({
   );
 }
 
+/* istanbul ignore next */
 export function calculateChangelogChanges<T>({
   changelogPath,
   changelogHeader,

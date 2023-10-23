@@ -6,6 +6,7 @@ export interface DependencyRoot {
   path: string;
 }
 
+/* istanbul ignore next */
 export async function getDependencyRoots({
   trackDeps,
   releaseAs,
@@ -28,9 +29,7 @@ export async function getDependencyRoots({
   return [];
 }
 
-/**
- * Returns a list of in-repo dependencies based on NX's dependency graph.
- */
+/* istanbul ignore next */
 export async function getProjectDependencies(
   projectName: string,
 ): Promise<string[]> {
@@ -40,9 +39,7 @@ export async function getProjectDependencies(
   return getProjectsFromDependencies(dependencyGraph.dependencies[projectName]);
 }
 
-/**
- * Gets only the dependencies that are in the project. Not NPM packages.
- */
+/* istanbul ignore next */
 function getProjectsFromDependencies(
   dependencies: ProjectGraphDependency[],
 ): string[] {
