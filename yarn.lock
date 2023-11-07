@@ -2595,13 +2595,13 @@ __metadata:
   linkType: hard
 
 "@types/conventional-recommended-bump@npm:*, @types/conventional-recommended-bump@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "@types/conventional-recommended-bump@npm:9.0.2"
+  version: 9.0.3
+  resolution: "@types/conventional-recommended-bump@npm:9.0.3"
   dependencies:
     "@types/conventional-changelog-core": "*"
     "@types/conventional-changelog-writer": "*"
     "@types/conventional-commits-parser": "*"
-  checksum: dd8205e3aead5c375841bfff59132d27041d0445f19f6b6adc23f74a58fe57d1a513bac0f809695247bd3ca1c1f58e8997dae5ea9a578f9b4632681b32ffa8ec
+  checksum: 727ba1230ef6dedfc4b1bacd3cf258177693f5aaed03b1494c9b20daed329b8e60393bd4aa7f076dbb0743440250f563e74f7aefb7626aa88fa69081291dc282
   languageName: node
   linkType: hard
 
