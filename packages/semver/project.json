@@ -36,8 +36,7 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "packages/semver/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/semver/jest.config.ts"
       }
     },
     "build": {
