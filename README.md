@@ -271,7 +271,7 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "postTargets": ["my-project:npm", "my-project:github"]
+        "postTargets": ["npm", "github"]
       }
     },
     "github": {
