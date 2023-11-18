@@ -1,3 +1,5 @@
+import type { Preset } from '../../executors/common/preset';
+
 export interface SchemaOptions {
   syncVersions: boolean;
   baseBranch?: string;
@@ -5,5 +7,5 @@ export interface SchemaOptions {
   enforceConventionalCommits?: boolean;
   skipInstall?: boolean;
   commitMessageFormat?: string;
-  preset?: 'angular' | 'conventional';
+  preset?: Preset;
 }

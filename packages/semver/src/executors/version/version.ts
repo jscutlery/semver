@@ -1,7 +1,7 @@
 import { ProjectsConfigurations } from '@nx/devkit';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
-import { Preset } from './schema';
+import { PresetOpt } from './schema';
 import {
   insertChangelogDependencyUpdates,
   updateChangelog,
@@ -37,7 +37,7 @@ export interface CommonVersionOptions {
   projectName: string;
   skipProjectChangelog: boolean;
   dependencyUpdates: Version[];
-  preset: Preset;
+  preset: PresetOpt;
   workspace: ProjectsConfigurations | undefined;
 }
 

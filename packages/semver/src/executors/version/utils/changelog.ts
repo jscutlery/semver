@@ -14,7 +14,7 @@ import writeChangelog from './write-changelog';
 import type { Version } from '../version';
 import { diff } from './diff';
 import { readFile, readFileIfExists, writeFile } from './filesystem';
-import { Preset } from '../schema';
+import { PresetOpt } from '../schema';
 export const defaultHeader = `# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -36,7 +36,7 @@ export function updateChangelog({
 }: {
   projectRoot: string;
   dryRun: boolean;
-  preset: Preset;
+  preset: PresetOpt;
   newVersion: string;
   tagPrefix: string;
   changelogHeader: string;

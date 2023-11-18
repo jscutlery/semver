@@ -1,4 +1,5 @@
 import type { Options as CommitParserOptions } from 'conventional-commits-parser';
+import type { Preset } from '../common/preset';
 
 export { CommitParserOptions };
 
@@ -11,17 +12,8 @@ export type ReleaseIdentifier =
   | 'prepatch'
   | 'prerelease';
 
-export type Preset =
-  | 'angular'
-  | 'conventionalcommits'
-  | 'atom'
-  | 'codemirror'
-  | 'ember'
-  | 'eslint'
-  | 'express'
-  | 'jquery'
-  | 'jshint'
-  | Record<string, any>; // Custom preset, see: https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.2.0/README.md
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PresetOpt = Preset | Record<string, any>; // Custom preset, see: https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.2.0/README.md
 
 export interface VersionBuilderSchema {
   dryRun?: boolean;
@@ -42,14 +34,14 @@ export interface VersionBuilderSchema {
   allowEmptyRelease?: boolean;
   skipCommitTypes?: string[];
   commitMessageFormat?: string;
-  preset: Preset | 'conventional'; // @TODO: Remove 'conventional' in the next major release.
+  preset: PresetOpt | 'conventional'; // @TODO: Remove 'conventional' in the next major release.
   commitParserOptions?: CommitParserOptions;
 }
 
 export interface WriteChangelogConfig {
   changelogHeader: string;
   projectRoot: string;
-  preset: Preset;
+  preset: PresetOpt;
   dryRun?: boolean;
   changelogPath: string;
   tagPrefix: string;

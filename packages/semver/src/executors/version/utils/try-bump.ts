@@ -12,7 +12,7 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import * as semver from 'semver';
-import type { Preset, ReleaseIdentifier } from '../schema';
+import type { PresetOpt, ReleaseIdentifier } from '../schema';
 import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
 import { type DependencyRoot } from './get-project-dependencies';
@@ -111,7 +111,7 @@ export function tryBump({
   projectName,
 }: {
   commitParserOptions?: CommitParserOptions;
-  preset: Preset;
+  preset: PresetOpt;
   projectRoot: string;
   tagPrefix: string;
   dependencyRoots?: DependencyRoot[];
@@ -233,7 +233,7 @@ export function _semverBump({
   tagPrefix,
 }: {
   since: string;
-  preset: Preset;
+  preset: PresetOpt;
   projectRoot: string;
   tagPrefix: string;
 }) {
@@ -307,7 +307,7 @@ export function _getDependencyVersions({
   preid,
 }: {
   commitParserOptions?: CommitParserOptions;
-  preset: Preset;
+  preset: PresetOpt;
   lastVersionGitRef: string;
   dependencyRoots: DependencyRoot[];
   releaseType?: ReleaseIdentifier;
