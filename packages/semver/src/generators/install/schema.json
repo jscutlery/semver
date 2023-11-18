@@ -30,7 +30,16 @@
     "preset": {
       "description": "Customize CHANGELOG generation and lint rules.",
       "type": "string",
-      "enum": ["angular", "conventional"],
+      "enum": [
+        "angular",
+        "conventional",
+        "atom",
+        "codemirror",
+        "ember",
+        "eslint",
+        "express",
+        "jshint"
+      ],
       "default": "angular",
       "x-prompt": {
         "message": "Which preset would you want to use?",
@@ -38,11 +47,35 @@
         "items": [
           {
             "value": "angular",
-            "label": "Angular      [ https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format ]"
+            "label": "Angular      [ https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format                                   ]"
           },
           {
-            "value": "conventional",
-            "label": "Conventional [ https://www.conventionalcommits.org/en/v1.0.0-beta.4                                  ]"
+            "value": "conventionalcommits",
+            "label": "Conventional [ https://www.conventionalcommits.org/en/v1.0.0-beta.4                                                                    ]"
+          },
+          {
+            "value": "atom",
+            "label": "Atom         [ https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-atom       ]"
+          },
+          {
+            "value": "codemirror",
+            "label": "Codemirror   [ https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-codemirror ]"
+          },
+          {
+            "value": "ember",
+            "label": "Ember        [ https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-ember      ]"
+          },
+          {
+            "value": "eslint",
+            "label": "ESLint       [ https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint     ]"
+          },
+          {
+            "value": "express",
+            "label": "Express      [ https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-express    ]"
+          },
+          {
+            "value": "jshint",
+            "label": "JSHint       [ https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jshint     ]"
           }
         ]
       }
