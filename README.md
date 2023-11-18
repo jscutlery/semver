@@ -320,7 +320,9 @@ If you wish to track changes at any depth of your dependency graph, then you sho
 ```json
 {
   "targetDefaults": {
-    "version": ["^version"]
+    "version": {
+      "dependsOn": ["^version"]
+    }
   }
 }
 ```
