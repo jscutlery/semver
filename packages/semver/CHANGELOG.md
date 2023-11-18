@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.1.0](https://github.com/jscutlery/semver/compare/semver-4.0.0...semver-4.1.0) (2023-11-18)
+
+
+### Bug Fixes
+
+* 📦 bump dependency conventional-changelog to v5 ([986209c](https://github.com/jscutlery/semver/commit/986209ca37270c09668e0b01ce3b4a57957855a4))
+* **semver:** bump conventional-recommended-bump ([a05c61b](https://github.com/jscutlery/semver/commit/a05c61b43c2a9b7862e84da1404952b92e47d4c9))
+* **semver:** bump git-semver-tags ([e1b9e05](https://github.com/jscutlery/semver/commit/e1b9e0522584c651357cb5337d256617ed08ffcf))
+* **semver:** ignore enforceConventionalCommits if config not found ([029f60e](https://github.com/jscutlery/semver/commit/029f60e62660e6750f4bb3d85205c95c88561921))
+* **semver:** pass changelog path ([c07a70a](https://github.com/jscutlery/semver/commit/c07a70a71fb66bcddb19ac9c67697753e61033f9))
+
+
+### Features
+
+* **semver:** add conventional presets ([41c0977](https://github.com/jscutlery/semver/commit/41c0977c9d8fa7e0029accc277b6909d0c12f6f7))
+* **semver:** bump conventional-changelog to v5.1.0 ([f6aa922](https://github.com/jscutlery/semver/commit/f6aa922da5081723ecf947370a097ac434e07c84))
+* **semver:** prompt all presets in install generator ([fc0f898](https://github.com/jscutlery/semver/commit/fc0f89825a1b736c2054675bada6270c85bd50f9))
+* **semver:** re-use contextual project in post-target ([5c73fe6](https://github.com/jscutlery/semver/commit/5c73fe604185df5cbf34fdcc61158c7040b97521))
+
+
+
 # [4.0.0](https://github.com/jscutlery/semver/compare/semver-3.4.1...semver-4.0.0) (2023-10-20)
 
 
