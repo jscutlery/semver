@@ -32,7 +32,7 @@
       "type": "string",
       "enum": [
         "angular",
-        "conventional",
+        "conventionalcommits",
         "atom",
         "codemirror",
         "ember",
