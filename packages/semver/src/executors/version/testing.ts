@@ -111,12 +111,14 @@ export function createFakeContext({
   project,
   projectRoot,
   workspaceRoot,
+  targets = {},
   additionalProjects = [],
 }: {
   cwd?: string;
   project: string;
   projectRoot: string;
   workspaceRoot: string;
+  targets?: Record<string, TargetConfiguration>;
   additionalProjects?: {
     project: string;
     projectRoot: string;
@@ -133,10 +135,14 @@ export function createFakeContext({
       projects: {
         [project]: {
           root: projectRoot,
-          targets: {},
+          targets,
         },
         ...assembleAdditionalProjects(additionalProjects),
       },
+    },
+    projectGraph: {
+      nodes: {},
+      dependencies: {},
     },
   } satisfies ExecutorContext;
 }

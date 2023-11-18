@@ -57,6 +57,11 @@ describe(runPostTargets.name, () => {
 
   const context = createFakeContext({
     project: 'test',
+    targets: {
+      test: {
+        command: 'exit 0',
+      },
+    },
     projectRoot: 'libs/test',
     workspaceRoot: '/root',
     additionalProjects: additionalProjects,
@@ -74,7 +79,7 @@ describe(runPostTargets.name, () => {
     jest.resetAllMocks();
   });
 
-  it('should successfully execute post targets', (done) => {
+  it('should execute post targets', (done) => {
     mockReadTargetOptions.mockReturnValue({
       optionA: 'optionA',
     });
@@ -111,6 +116,37 @@ describe(runPostTargets.name, () => {
             project: 'project-c',
             target: 'test',
             configuration: 'prod',
+          }),
+        );
+        done();
+      },
+    });
+  });
+
+  it('should execute post targets without specifying the project name', (done) => {
+    runPostTargets({
+      projectName: 'a',
+      postTargets: ['test'],
+      templateStringContext: {},
+      context: createFakeContext({
+        project: 'a',
+        targets: {
+          test: {
+            command: 'test',
+          },
+        },
+        projectRoot: 'libs/a',
+        workspaceRoot: '/root',
+      }),
+    }).subscribe({
+      next: nextSpy,
+      complete: () => {
+        expect(nextSpy).toBeCalledTimes(1);
+        expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(mockRunExecutor.mock.calls[0][0]).toEqual(
+          expect.objectContaining({
+            project: 'a',
+            target: 'test',
           }),
         );
         done();

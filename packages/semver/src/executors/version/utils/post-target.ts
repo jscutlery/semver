@@ -23,7 +23,10 @@ export function runPostTargets({
   return concat(
     ...postTargets.map((postTargetSchema) =>
       defer(async () => {
-        const target = parseTargetString(postTargetSchema);
+        // TODO: deprecate specifying the project name in the post target schema.
+        const target = postTargetSchema.includes(':')
+          ? parseTargetString(postTargetSchema)
+          : parseTargetString(postTargetSchema, context);
 
         _checkTargetExist(target, context);
 
@@ -83,16 +86,16 @@ export function _getTargetOptions({
               : _getTargetOptions({ options: _element, context }),
           )
         : typeof value === 'object'
-        ? _getTargetOptions({
-            options: value as Record<string, unknown>,
-            context,
-          })
-        : coerce(
-            createTemplateString(
-              (value as number | string | boolean).toString(),
+          ? _getTargetOptions({
+              options: value as Record<string, unknown>,
               context,
-            ),
-          );
+            })
+          : coerce(
+              createTemplateString(
+                (value as number | string | boolean).toString(),
+                context,
+              ),
+            );
 
       return {
         ...optionsAccumulator,
