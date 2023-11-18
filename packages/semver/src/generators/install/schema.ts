@@ -2,10 +2,10 @@ import type { Preset } from '../../executors/common/preset';
 
 export interface SchemaOptions {
   syncVersions: boolean;
-  baseBranch?: string;
+  baseBranch: string;
   projects?: string[];
-  enforceConventionalCommits?: boolean;
-  skipInstall?: boolean;
+  enforceConventionalCommits: boolean;
+  skipInstall: boolean;
   commitMessageFormat?: string;
-  preset?: Preset;
+  preset: Preset;
 }

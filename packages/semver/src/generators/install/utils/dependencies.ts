@@ -3,6 +3,7 @@ import {
   readJson,
   updateJson,
   type Tree,
+  logger,
 } from '@nx/devkit';
 import { constants } from 'fs';
 import type { SchemaOptions } from '../schema';
@@ -21,6 +22,15 @@ export interface PackageJsonPart<T> {
 
 export function addDependencies(tree: Tree, options: SchemaOptions) {
   if (options.enforceConventionalCommits) {
+    const preset = _getCommitlintConfig(options);
+
+    if (preset === null) {
+      logger.warn(
+        `No commitlint config found for ${options.preset} preset, --enforceConventionalCommits option ignored.`,
+      );
+      return tree;
+    }
+
     _addCommitlintConfig(tree, options);
     _addHuskyConfig(tree);
     _addHuskyConfigMsg(tree);
@@ -35,7 +45,8 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       {},
       {
         '@commitlint/cli': '^17.0.0',
-        [_getCommitlintConfig(options)]: '^17.0.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        [_getCommitlintConfig(options)!]: '^17.0.0',
         husky: '^8.0.0',
       },
     );
@@ -58,7 +69,8 @@ function _addCommitlintConfig(tree: Tree, options: SchemaOptions) {
       '.commitlintrc.json',
       JSON.stringify(
         {
-          extends: [_getCommitlintConfig(options)],
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          extends: [_getCommitlintConfig(options)!],
           rules: {},
         },
         null,
@@ -98,8 +110,13 @@ function _addHuskyConfigMsg(tree: Tree) {
   }
 }
 
-function _getCommitlintConfig(options: SchemaOptions) {
-  return options.preset === 'angular'
-    ? '@commitlint/config-angular'
-    : '@commitlint/config-conventional';
+function _getCommitlintConfig(options: SchemaOptions): string | null {
+  switch (options.preset) {
+    case 'angular':
+      return '@commitlint/config-angular';
+    case 'conventionalcommits':
+      return '@commitlint/config-conventional';
+    default:
+      return null;
+  }
 }

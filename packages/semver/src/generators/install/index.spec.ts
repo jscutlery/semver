@@ -3,6 +3,7 @@ import {
   readJson,
   writeJson,
   type Tree,
+  logger,
 } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import * as inquirer from 'inquirer';
@@ -17,6 +18,9 @@ const defaultOptions: SchemaOptions = {
   syncVersions: false,
   enforceConventionalCommits: true,
   projects: [],
+  skipInstall: false,
+  baseBranch: 'main',
+  preset: 'conventionalcommits',
 };
 
 describe('@jscutlery/semver:install', () => {
@@ -73,7 +77,7 @@ describe('@jscutlery/semver:install', () => {
       const lib1 = findJson(tree, projectName1, 'project.json');
       const lib2 = findJson(tree, projectName2, 'project.json');
 
-      expect(inquirer.prompt).toBeCalledWith(
+      expect(inquirer.prompt).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'projects',
           type: 'checkbox',
@@ -87,6 +91,7 @@ describe('@jscutlery/semver:install', () => {
         expect.objectContaining({
           version: {
             executor: '@jscutlery/semver:version',
+            options: expect.toBeObject(),
           },
         }),
       );
@@ -100,12 +105,13 @@ describe('@jscutlery/semver:install', () => {
       const lib1 = findJson(tree, projectName1, 'project.json');
       const lib2 = findJson(tree, projectName2, 'project.json');
 
-      expect(inquirer.prompt).not.toBeCalled();
+      expect(inquirer.prompt).not.toHaveBeenCalled();
       expect(lib1.targets.version).toBeUndefined();
       expect(lib2.targets).toEqual(
         expect.objectContaining({
           version: {
             executor: '@jscutlery/semver:version',
+            options: expect.toBeObject(),
           },
         }),
       );
@@ -154,7 +160,10 @@ describe('@jscutlery/semver:install', () => {
 
     describe('--preset option', () => {
       it('should install conventional config', async () => {
-        await install(tree, { ...defaultOptions, preset: 'conventional' });
+        await install(tree, {
+          ...defaultOptions,
+          preset: 'conventionalcommits',
+        });
 
         const packageJson = readJson(tree, 'package.json');
         const lib1 = findJson(tree, projectName1, 'project.json');
@@ -167,7 +176,9 @@ describe('@jscutlery/semver:install', () => {
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
-              options: expect.objectContaining({ preset: 'conventional' }),
+              options: expect.objectContaining({
+                preset: 'conventionalcommits',
+              }),
             },
           }),
         );
@@ -194,7 +205,10 @@ describe('@jscutlery/semver:install', () => {
       });
 
       it('should install angular config', async () => {
-        await install(tree, { ...defaultOptions, preset: 'conventional' });
+        await install(tree, {
+          ...defaultOptions,
+          preset: 'conventionalcommits',
+        });
 
         const lib1 = findJson(tree, projectName1, 'project.json');
 
@@ -202,14 +216,16 @@ describe('@jscutlery/semver:install', () => {
           expect.objectContaining({
             version: {
               executor: '@jscutlery/semver:version',
-              options: expect.objectContaining({ preset: 'conventional' }),
+              options: expect.objectContaining({
+                preset: 'conventionalcommits',
+              }),
             },
           }),
         );
       });
 
       it('extends conventional commitlint config', async () => {
-        await install(tree, { ...options, preset: 'conventional' });
+        await install(tree, { ...options, preset: 'conventionalcommits' });
 
         const commitlintConfig = readJson(tree, '.commitlintrc.json');
 
@@ -236,6 +252,21 @@ describe('@jscutlery/semver:install', () => {
       enforceConventionalCommits: true,
       preset: 'angular',
     };
+
+    it('skip if config not found', async () => {
+      const warnSpy = jest.spyOn(logger, 'warn').mockImplementation();
+
+      await install(tree, { ...options, preset: 'atom' });
+
+      const packageJson = readJson(tree, 'package.json');
+      expect(packageJson.devDependencies).not.toContainKeys([
+        '@commitlint/cli',
+        'husky',
+      ]);
+      expect(tree.exists('.commitlintrc.json')).toBeFalse();
+      expect(tree.exists('.husky')).toBeFalse();
+      expect(warnSpy).toHaveBeenCalled();
+    });
 
     it('add commitlint to package.json devDepencencies', async () => {
       await install(tree, options);
