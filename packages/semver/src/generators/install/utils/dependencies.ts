@@ -9,6 +9,8 @@ import { constants } from 'fs';
 import type { SchemaOptions } from '../schema';
 
 const PACKAGE_JSON = 'package.json';
+const COMMITLINT_VERSION = '^18.0.0';
+const HUSKY_VERSION = '^8.0.0';
 
 export interface PackageJson {
   scripts: PackageJsonPart<string>;
@@ -44,10 +46,10 @@ function _addDevDependencies(tree: Tree, options: SchemaOptions) {
       tree,
       {},
       {
-        '@commitlint/cli': '^17.0.0',
+        '@commitlint/cli': COMMITLINT_VERSION,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        [_getCommitlintConfig(options)!]: '^17.0.0',
-        husky: '^8.0.0',
+        [_getCommitlintConfig(options)!]: COMMITLINT_VERSION,
+        husky: HUSKY_VERSION,
       },
     );
   }
