@@ -392,7 +392,7 @@ describe('@jscutlery/semver:install', () => {
     await install(tree, defaultOptions);
 
     const commitlintConfig = tree.read('.husky/commit-msg')?.toString();
-    expect(commitlintConfig).toContain('yarn commitlint');
+    expect(commitlintConfig).toContain('yarn run commitlint');
   });
 
   it('use corresponding package manager (pnpm)', async () => {
