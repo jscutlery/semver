@@ -107,7 +107,7 @@ function _addHuskyConfigMsg(tree: Tree) {
   const packageManager = detectPackageManager(tree.root);
   const command =
     packageManager === 'npm'
-      ? 'npm run'
+      ? 'npx --no-install'
       : packageManager === 'yarn'
         ? 'yarn run'
         : 'pnpm';
