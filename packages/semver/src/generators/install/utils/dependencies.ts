@@ -4,6 +4,7 @@ import {
   updateJson,
   type Tree,
   logger,
+  detectPackageManager,
 } from '@nx/devkit';
 import { constants } from 'fs';
 import type { SchemaOptions } from '../schema';
@@ -103,9 +104,16 @@ function _addHuskyConfig(tree: Tree) {
 
 function _addHuskyConfigMsg(tree: Tree) {
   const hasConfigFile: boolean = tree.exists('.husky/commit-msg');
+  const packageManager = detectPackageManager(tree.root);
+  const command =
+    packageManager === 'npm'
+      ? 'npx --no'
+      : packageManager === 'yarn'
+        ? 'yarn'
+        : 'pnpm';
 
   if (!hasConfigFile) {
-    const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\nnpx --no-install commitlint --edit $1\n`;
+    const commitMsg = `#!/bin/sh\n. "$(dirname "$0")/_/husky.sh"\n\n${command} commitlint --edit $1\n`;
 
     tree.write('.husky/commit-msg', commitMsg, {
       /* File mode indicating readable, writable, and executable by owner. */

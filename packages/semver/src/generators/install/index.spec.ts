@@ -4,6 +4,7 @@ import {
   writeJson,
   type Tree,
   logger,
+  detectPackageManager,
 } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import * as inquirer from 'inquirer';
@@ -13,6 +14,14 @@ import install from '.';
 import type { SchemaOptions } from './schema';
 
 jest.mock('inquirer');
+jest.mock('@nx/devkit', () => ({
+  ...jest.requireActual('@nx/devkit'),
+  detectPackageManager: jest.fn().mockReturnValue('npm'),
+}));
+
+const detectPackageManagerMock = detectPackageManager as jest.MockedFunction<
+  typeof detectPackageManager
+>;
 
 const defaultOptions: SchemaOptions = {
   syncVersions: false,
@@ -368,6 +377,31 @@ describe('@jscutlery/semver:install', () => {
       expect(findProjectFile(tree, projectName2, 'CHANGELOG.md')).toBeTrue();
       expect(findProjectFile(tree, 'lib3', 'CHANGELOG.md')).toBeFalse();
     });
+  });
+
+  it('use corresponding package manager (npx)', async () => {
+    await install(tree, defaultOptions);
+
+    const commitlintConfig = tree.read('.husky/commit-msg')?.toString();
+    expect(commitlintConfig).toContain('npx --no commitlint');
+  });
+
+  it('use corresponding package manager (yarn)', async () => {
+    detectPackageManagerMock.mockReturnValue('yarn');
+
+    await install(tree, defaultOptions);
+
+    const commitlintConfig = tree.read('.husky/commit-msg')?.toString();
+    expect(commitlintConfig).toContain('yarn commitlint');
+  });
+
+  it('use corresponding package manager (pnpm)', async () => {
+    detectPackageManagerMock.mockReturnValue('pnpm');
+
+    await install(tree, defaultOptions);
+
+    const commitlintConfig = tree.read('.husky/commit-msg')?.toString();
+    expect(commitlintConfig).toContain('pnpm commitlint');
   });
 });
 
