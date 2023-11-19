@@ -16,11 +16,13 @@ export interface TestingWorkspace {
   root: string;
 }
 
+const packageManager = 'npm';
+
 function runNxNewCommand(dir: string) {
   execSync(
     `node ${require.resolve(
       'nx',
-    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps --package-manager=pnpm`,
+    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps --package-manager=${packageManager}`,
     {
       cwd: dir,
       stdio: 'ignore',
@@ -41,7 +43,7 @@ function linkPackage(dir: string) {
 }
 
 function runInstall(dir: string) {
-  execSync(`pnpm install`, {
+  execSync(`${packageManager} install`, {
     cwd: dir,
     stdio: 'ignore',
   });
