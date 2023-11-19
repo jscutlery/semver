@@ -20,7 +20,7 @@ function runNxNewCommand(dir: string) {
   execSync(
     `node ${require.resolve(
       'nx',
-    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps`,
+    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps --package-manager=pnpm`,
     {
       cwd: dir,
       stdio: 'ignore',
@@ -41,7 +41,7 @@ function linkPackage(dir: string) {
 }
 
 function runInstall(dir: string) {
-  execSync(`npm install`, {
+  execSync(`pnpm install`, {
     cwd: dir,
     stdio: 'ignore',
   });
