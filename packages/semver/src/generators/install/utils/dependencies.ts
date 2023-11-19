@@ -12,13 +12,13 @@ const PACKAGE_JSON = 'package.json';
 const COMMITLINT_VERSION = '^18.0.0';
 const HUSKY_VERSION = '^8.0.0';
 
-export interface PackageJson {
+interface PackageJson {
   scripts: PackageJsonPart<string>;
   devDependencies: PackageJsonPart<string>;
   commitlint: PackageJsonPart<string[]>;
 }
 
-export interface PackageJsonPart<T> {
+interface PackageJsonPart<T> {
   [key: string]: T;
 }
 
@@ -60,11 +60,13 @@ function _addCommitlintConfig(tree: Tree, options: SchemaOptions) {
 
   const hasConfig: boolean =
     packageJson.commitlint != null ||
-    tree.exists('commitlint.config.js') ||
-    tree.exists('commitlint') ||
-    tree.exists('.commitlintrc.js') ||
-    tree.exists('.commitlintrc.json') ||
-    tree.exists('.commitlintrc.yml');
+    [
+      'commitlint.config.js',
+      'commitlint',
+      '.commitlintrc.js',
+      '.commitlintrc.json',
+      '.commitlintrc.yml',
+    ].some((file) => tree.exists(file));
 
   if (!hasConfig) {
     tree.write(
