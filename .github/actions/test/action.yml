@@ -11,9 +11,6 @@ runs:
   using: composite
 
   steps:
-    - name: Commitlint
-      shell: bash
-      run: yarn commitlint --from=last-release
     - name: Format check
       shell: bash
       run: yarn nx format:check --base=last-release

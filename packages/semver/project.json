@@ -31,7 +31,11 @@
       "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["packages/semver/**/*.ts"]
-      }
+      },
+      "dependsOn": ["lint-commits"]
+    },
+    "lint-commits": {
+      "command": "yarn commitlint --from=last-release"
     },
     "test": {
       "executor": "@nx/jest:jest",
