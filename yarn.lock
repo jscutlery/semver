@@ -2077,7 +2077,7 @@ __metadata:
     "@types/conventional-changelog": "npm:^3.1.4 "
     "@types/conventional-recommended-bump": "npm:^9.0.2"
     "@types/inquirer": "npm:8.2.10"
-    "@types/semver": "npm:7.5.5"
+    "@types/semver": "npm:7.5.6"
     "@types/tmp": "npm:0.2.6"
     chalk: "npm:4.1.2"
     conventional-changelog: "npm:^5.1.0"
@@ -2726,7 +2726,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.5.5, @types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
+"@types/semver@npm:7.5.6":
+  version: 7.5.6
+  resolution: "@types/semver@npm:7.5.6"
+  checksum: e77282b17f74354e17e771c0035cccb54b94cc53d0433fa7e9ba9d23fd5d7edcd14b6c8b7327d58bbd89e83b1c5eda71dfe408e06b929007e2b89586e9b63459
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
   version: 7.5.5
   resolution: "@types/semver@npm:7.5.5"
   checksum: 1b0be2c4d830f5ef002a305308e06e3616fc38a41c9a2c5b4267df82a038d9bd0ba32ec1da82a52db84a720be7e4b69bac7593797d8dc1400a69069af8f19219
