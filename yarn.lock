@@ -2697,7 +2697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:20.10.4":
   version: 20.10.4
   resolution: "@types/node@npm:20.10.4"
   dependencies:
@@ -2706,7 +2706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.3, @types/node@npm:^18.11.9":
+"@types/node@npm:^18.11.9":
   version: 18.19.3
   resolution: "@types/node@npm:18.19.3"
   dependencies:
@@ -6067,7 +6067,7 @@ __metadata:
     "@nx/plugin": "npm:17.2.0"
     "@nx/workspace": "npm:17.2.0"
     "@types/jest": "npm:29.5.11"
-    "@types/node": "npm:18.19.3"
+    "@types/node": "npm:20.10.4"
     "@typescript-eslint/eslint-plugin": "npm:5.62.0"
     "@typescript-eslint/parser": "npm:5.62.0"
     all-contributors-cli: "npm:^6.19.0"
