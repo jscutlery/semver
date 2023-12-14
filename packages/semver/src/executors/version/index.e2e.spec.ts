@@ -211,7 +211,7 @@ describe('@jscutlery/semver', () => {
           `
               echo feat >> libs/a/a.txt
               git add .
-              git commit -m "feat(a): new feature\n\nBREAKING CHANGE: this is a breaking change"
+              git commit -m "feat(a): 🚀 new feature\n\nBREAKING CHANGE: 🚨 Breaking change description"
             `,
         );
         testingWorkspace.runNx(`run a:version --noVerify`);
@@ -231,6 +231,44 @@ describe('@jscutlery/semver', () => {
         expect(
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot();
+      });
+    });
+
+    describe('when libs/b changed (with --skipCommit)', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo feat >> libs/b/b.txt
+              git add .
+              git commit -m "feat(b): 🚀 new feature"
+            `,
+        );
+        testingWorkspace.runNx(`run b:version --noVerify --skipCommit`);
+      });
+
+      it('should keep modifications uncommited', () => {
+        expect(uncommitedChanges(testingWorkspace.root)).toEqual([
+          'M  libs/b/CHANGELOG.md',
+          'M  libs/b/package.json',
+        ]);
+      });
+
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('b-0.2.0');
+      });
+
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/b/package.json`),
+        ).toMatch(/"version": "0.2.0"/);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
           ),
         ).toMatchSnapshot();
       });

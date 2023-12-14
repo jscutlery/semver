@@ -10,12 +10,12 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Features
 
-* **a:** new feature xxxxxxx
+* **a:** 🚀 new feature xxxxxxx
 
 
 ### BREAKING CHANGES
 
-* **a:** this is a breaking change
+* **a:** 🚨 Breaking change description
 
 
 
@@ -49,6 +49,32 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 ### Features
 
 * **a:** 🚀 new feature xxxxxxx
+"
+`;
+
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed (with --skipCommit) should generate CHANGELOG.md 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## [0.2.0](///compare/b-0.1.0...b-0.2.0) (yyyy-mm-dd)
+
+
+### Features
+
+* **b:** 🚀 new feature xxxxxxx
+
+## 0.1.0 (yyyy-mm-dd)
+
+
+### Features
+
+* **b:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **b:** 🐞 fix bug xxxxxxx
 "
 `;
 
