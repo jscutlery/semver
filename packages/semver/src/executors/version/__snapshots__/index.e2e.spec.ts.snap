@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed should generate CHANGELOG.md 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+# 0.1.0 (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
+
+
+### Features
+
+* **a:** 🚀 new feature xxxxxxx
+"
+`;
+
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed should generate CHANGELOG.md 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## 0.1.0 (yyyy-mm-dd)
+
+
+### Features
+
+* **b:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **b:** 🐞 fix bug xxxxxxx
+"
+`;

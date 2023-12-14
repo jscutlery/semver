@@ -11,9 +11,13 @@ describe('@jscutlery/semver', () => {
     testingWorkspace.runNx(
       `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
     );
-    // Lib b is publishable.
+    testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a`);
+    // Lib b is publishable and uses the conventional commits preset.
     testingWorkspace.runNx(
       `g @nx/js:lib b --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/b`,
+    );
+    testingWorkspace.runNx(
+      `g @jscutlery/semver:install --projects=b --preset=conventionalcommits`,
     );
     // Lib c is not publishable.
     testingWorkspace.runNx(
@@ -22,14 +26,7 @@ describe('@jscutlery/semver', () => {
     testingWorkspace.exec(
       `
           git add .
-          git commit -m "🐣"
-      `,
-    );
-    testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a,b`);
-    testingWorkspace.exec(
-      `
-          git add .
-          git commit -m "build: 📦 setup semver"
+          git commit -m "chore: 🐣 setup workspace" --no-verify
       `,
     );
   });
@@ -52,6 +49,12 @@ describe('@jscutlery/semver', () => {
     it('should add commitlint CLI', () => {
       expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
         /@commitlint\/cli/,
+      );
+    });
+
+    it('should add custom preset', () => {
+      expect(readFile(`${testingWorkspace.root}/libs/b/project.json`)).toMatch(
+        /conventionalcommits/,
       );
     });
   });
@@ -99,25 +102,10 @@ describe('@jscutlery/semver', () => {
 
       it('should generate CHANGELOG.md', () => {
         expect(
-          readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
-        ).toMatch(
-          new RegExp(`^# Changelog
-
-This file was generated.*
-
-# 0.1.0 \\(.*\\)
-
-
-### Bug Fixes
-
-\\* \\*\\*a:\\*\\* 🐞 fix bug .*
-
-
-### Features
-
-\\* \\*\\*a:\\*\\* 🚀 new feature .*
-$`),
-        );
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot();
       });
     });
 
@@ -163,25 +151,10 @@ $`),
 
       it('should generate CHANGELOG.md', () => {
         expect(
-          readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
-        ).toMatch(
-          new RegExp(`^# Changelog
-
-This file was generated.*
-
-# 0.1.0 \\(.*\\)
-
-
-### Bug Fixes
-
-\\* \\*\\*b:\\*\\* 🐞 fix bug .*
-
-
-### Features
-
-\\* \\*\\*b:\\*\\* 🚀 new feature .*
-$`),
-        );
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot();
       });
     });
 
@@ -240,4 +213,10 @@ function uncommitedChanges(dir: string) {
       /* Remove empty line. */
       .filter((line) => line.length !== 0)
   );
+}
+
+function deterministicChangelog(changelog: string) {
+  return changelog
+    .replace(/(\d{4}-\d{2}-\d{2})/g, 'yyyy-mm-dd')
+    .replace(/([0-9a-f]{7})/g, 'xxxxxxx');
 }
