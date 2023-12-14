@@ -30,12 +30,6 @@ describe('@jscutlery/semver', () => {
     testingWorkspace.runNx(
       `g @jscutlery/semver:install --projects=d --preset=conventionalcommits`,
     );
-    // replace project.json targets.version.options.preset property that is equal to "conventionalcommits" with custom preset object like this:
-    // {
-    //   "types": [
-    //     { "type": "feat", "section": "Awesome features" },
-    //   ]
-    // }
     testingWorkspace.exec(
       `
         sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "Awesome features" } ] }/g' libs/d/project.json
@@ -206,6 +200,37 @@ describe('@jscutlery/semver', () => {
         expect(
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/d/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot();
+      });
+    });
+
+    describe('when libs/a changed (breaking change)', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo feat >> libs/a/a.txt
+              git add .
+              git commit -m "feat(a): new feature\n\nBREAKING CHANGE: this is a breaking change"
+            `,
+        );
+        testingWorkspace.runNx(`run a:version --noVerify`);
+      });
+
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('a-1.0.0');
+      });
+
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/a/package.json`),
+        ).toMatch(/"version": "1.0.0"/);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
           ),
         ).toMatchSnapshot();
       });
