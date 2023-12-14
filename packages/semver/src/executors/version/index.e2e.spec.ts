@@ -12,7 +12,7 @@ describe('@jscutlery/semver', () => {
       `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a`,
     );
     testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a`);
-    // Lib b is publishable and uses the conventional commits preset.
+    // Lib b is publishable and use the conventional commits preset.
     testingWorkspace.runNx(
       `g @nx/js:lib b --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/b`,
     );
@@ -22,6 +22,24 @@ describe('@jscutlery/semver', () => {
     // Lib c is not publishable.
     testingWorkspace.runNx(
       `g @nx/js:lib c --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal`,
+    );
+    // Lib d is publishable and use a custom preset.
+    testingWorkspace.runNx(
+      `g @nx/js:lib d --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/d`,
+    );
+    testingWorkspace.runNx(
+      `g @jscutlery/semver:install --projects=d --preset=conventionalcommits`,
+    );
+    // replace project.json targets.version.options.preset property that is equal to "conventionalcommits" with custom preset object like this:
+    // {
+    //   "types": [
+    //     { "type": "feat", "section": "Awesome features" },
+    //   ]
+    // }
+    testingWorkspace.exec(
+      `
+        sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "Awesome features" } ] }/g' libs/d/project.json
+      `,
     );
     testingWorkspace.exec(
       `
@@ -169,6 +187,27 @@ describe('@jscutlery/semver', () => {
         expect(existsSync(`${testingWorkspace.root}/libs/c/CHANGELOG.md`)).toBe(
           false,
         );
+      });
+    });
+
+    describe('when libs/d changed', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo feat > libs/d/d.txt
+              git add .
+              git commit -m "feat(d): 🚀 new awesome feature"
+            `,
+        );
+        testingWorkspace.runNx(`run d:version --noVerify`);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/d/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot();
       });
     });
   });

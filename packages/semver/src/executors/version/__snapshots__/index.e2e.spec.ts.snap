@@ -37,3 +37,17 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 * **b:** 🐞 fix bug xxxxxxx
 "
 `;
+
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/d changed should generate CHANGELOG.md 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## 0.0.0 (yyyy-mm-dd)
+
+
+### Awesome features
+
+* **d:** 🚀 new awesome feature xxxxxxx
+"
+`;
