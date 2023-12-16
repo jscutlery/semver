@@ -12,6 +12,8 @@ import { execSync } from 'child_process';
 export interface TestingWorkspace {
   exec(command: string): void;
   runNx(command: string): void;
+  generateLib(name: string, options?: string): void;
+  installSemver(project: string, preset?: string): void;
   tearDown(): Promise<void>;
   root: string;
 }
@@ -79,31 +81,36 @@ export function setupTestingWorkspace(): TestingWorkspace {
   runInstall(workspaceRoot);
 
   return {
-    /**
-     * Run an Nx command in the workspace.
-     */
     runNx(command: string) {
       execSync(`node ${require.resolve('nx')} ${command}`, {
         cwd: workspaceRoot,
         stdio: 'inherit',
       });
     },
-    /**
-     * Run any command in the workspace.
-     */
+
     exec(command: string) {
       execSync(command, {
         cwd: workspaceRoot,
         stdio: 'inherit',
       });
     },
-    /**
-     * Destroy and restore cwd.
-     */
+
+    generateLib(name: string, options = '') {
+      const commonArgs = `--directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --skipFormat`;
+      this.runNx(`g @nx/js:lib ${name} ${commonArgs} ${options}`);
+    },
+
+    installSemver(project: string, options = '') {
+      this.runNx(
+        `g @jscutlery/semver:install --projects=${project} ${options}`,
+      );
+    },
+
     async tearDown() {
       await promises.rm(tmpRoot, { recursive: true });
       process.chdir(originalCwd);
     },
+
     root: workspaceRoot,
   };
 }

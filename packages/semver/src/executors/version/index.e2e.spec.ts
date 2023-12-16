@@ -8,28 +8,19 @@ describe('@jscutlery/semver', () => {
   beforeAll(() => {
     testingWorkspace = setupTestingWorkspace();
     // Lib a is publishable.
-    testingWorkspace.runNx(
-      `g @nx/js:lib a --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/a --skipFormat`,
-    );
-    testingWorkspace.runNx(`g @jscutlery/semver:install --projects=a`);
+    testingWorkspace.generateLib('a', '--publishable --importPath=@proj/a');
+    testingWorkspace.installSemver('a');
+
     // Lib b is publishable and use the conventional commits preset.
-    testingWorkspace.runNx(
-      `g @nx/js:lib b --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/b --skipFormat`,
-    );
-    testingWorkspace.runNx(
-      `g @jscutlery/semver:install --projects=b --preset=conventionalcommits`,
-    );
+    testingWorkspace.generateLib('b', '--publishable --importPath=@proj/b');
+    testingWorkspace.installSemver('b', '--preset=conventionalcommits');
+
     // Lib c is not publishable.
-    testingWorkspace.runNx(
-      `g @nx/js:lib c --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --skipFormat`,
-    );
+    testingWorkspace.generateLib('c');
+
     // Lib d is publishable and use a custom preset.
-    testingWorkspace.runNx(
-      `g @nx/js:lib d --directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --publishable --importPath=@proj/d --skipFormat`,
-    );
-    testingWorkspace.runNx(
-      `g @jscutlery/semver:install --projects=d --preset=conventionalcommits`,
-    );
+    testingWorkspace.generateLib('d', '--publishable --importPath=@proj/d');
+    testingWorkspace.installSemver('d', '--preset=conventionalcommits');
     testingWorkspace.exec(
       `
         sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "Awesome features" } ] }/g' libs/d/project.json
