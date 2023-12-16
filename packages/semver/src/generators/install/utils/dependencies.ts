@@ -42,18 +42,16 @@ export function addDependencies(tree: Tree, options: SchemaOptions) {
 }
 
 function _addDevDependencies(tree: Tree, options: SchemaOptions) {
-  if (!options.skipInstall) {
-    addDependenciesToPackageJson(
-      tree,
-      {},
-      {
-        '@commitlint/cli': COMMITLINT_VERSION,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        [_getCommitlintConfig(options)!]: COMMITLINT_VERSION,
-        husky: HUSKY_VERSION,
-      },
-    );
-  }
+  addDependenciesToPackageJson(
+    tree,
+    {},
+    {
+      '@commitlint/cli': COMMITLINT_VERSION,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      [_getCommitlintConfig(options)!]: COMMITLINT_VERSION,
+      husky: HUSKY_VERSION,
+    },
+  );
 }
 
 function _addCommitlintConfig(tree: Tree, options: SchemaOptions) {
