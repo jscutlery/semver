@@ -82,11 +82,11 @@ function configureNxRelease(
   logger.info('Configuring Nx Release.');
 
   // We assume that all projects have the same configuration, so we only take the first one.
-  const [, projectConfig] = semverProjects[0];
-  const options = getSemverOptions(projectConfig);
+  const [, semverConfig] = semverProjects[0];
+  const options = getSemverOptions(semverConfig);
   const tagPrefix = options.tagPrefix ?? '{projectName}-';
   const skipProjectChangelog = options.skipProjectChangelog ?? false;
-  const githubRelease = Object.values(projectConfig.targets!).some(
+  const githubRelease = Object.values(semverConfig.targets!).some(
     (target) => target.executor === '@jscutlery/semver:github',
   );
 
@@ -94,7 +94,10 @@ function configureNxRelease(
     releaseTagPattern: `${tagPrefix}{version}`,
     changelog: {
       git: {
-        commit: true,
+        commit: !options.skipCommit ?? true,
+        ...(options.commitMessageFormat
+          ? { commitMessage: options.commitMessageFormat }
+          : {}),
         tag: true,
       },
       workspaceChangelog: {
@@ -106,6 +109,7 @@ function configureNxRelease(
     groups: {
       npm: {
         projects: semverProjects.map(([projectName]) => projectName),
+        projectsRelationship: 'independent',
         version: {
           generatorOptions: {
             currentVersionResolver: 'git-tag',
@@ -131,5 +135,5 @@ function findVersionTarget(
 function getSemverOptions(
   projectConfig: ProjectConfiguration,
 ): Partial<VersionBuilderSchema> {
-  return projectConfig.targets?.version?.options ?? {};
+  return findVersionTarget(projectConfig)?.[1].options ?? {};
 }

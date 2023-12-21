@@ -41,7 +41,7 @@ describe('Native Nx Release Migration', () => {
     migrate(tree);
 
     const projectConfig = getProjects(tree).get('a');
-    expect(projectConfig?.targets?.version).toBeDefined();
+    expect(projectConfig!.targets!.version).toBeDefined();
     expect(loggerInfoSpy).toHaveBeenCalledWith(
       'Sync mode detected, skipping migration. Please migrate your workspace manually.',
     );
@@ -87,7 +87,7 @@ describe('Native Nx Release Migration', () => {
       release = readNxJson(tree)!.release;
     }
 
-    it('should configure releaseTagPattern', () => {
+    it('should configure release.releaseTagPattern', () => {
       setupSemver();
 
       expect(release!.releaseTagPattern).toBe(`{projectName}-{version}`);
@@ -109,6 +109,32 @@ describe('Native Nx Release Migration', () => {
       });
     });
 
+    it('should configure git with --skipCommit', () => {
+      setupSemver({ skipCommit: true });
+
+      expect(release!.changelog).toEqual(
+        expect.objectContaining({
+          git: expect.objectContaining({
+            commit: false,
+          }),
+        }),
+      );
+    });
+
+    it('should configure commitMessage with --commitMessageFormat', () => {
+      setupSemver({
+        commitMessageFormat: 'chore(release): release v{version}',
+      });
+
+      expect(release!.changelog).toEqual(
+        expect.objectContaining({
+          git: expect.objectContaining({
+            commitMessage: 'chore(release): release v{version}',
+          }),
+        }),
+      );
+    });
+
     it('should configure github release', () => {
       setupSemver(
         { postTargets: ['github'] },
@@ -121,7 +147,7 @@ describe('Native Nx Release Migration', () => {
       });
     });
 
-    it('should configure groups', () => {
+    it('should configure release groups', () => {
       setupSemver(
         { postTargets: ['npm'] },
         { npm: { executor: '@jscutlery/semver:npm' } },
@@ -130,6 +156,7 @@ describe('Native Nx Release Migration', () => {
       expect(release!.groups).toEqual({
         npm: {
           projects: ['a'],
+          projectsRelationship: 'independent',
           version: {
             generatorOptions: {
               currentVersionResolver: 'git-tag',
@@ -155,7 +182,7 @@ describe('Native Nx Release Migration', () => {
       migrate(tree);
 
       const projectConfig = getProjects(tree).get('a');
-      expect(projectConfig?.targets?.version).toBeUndefined();
+      expect(projectConfig!.targets!.version).toBeUndefined();
     });
 
     it('should remove post targets', () => {
@@ -180,8 +207,8 @@ describe('Native Nx Release Migration', () => {
       migrate(tree);
 
       const projectConfig = getProjects(tree).get('a');
-      expect(projectConfig?.targets?.npm).toBeUndefined();
-      expect(projectConfig?.targets?.github).toBeUndefined();
+      expect(projectConfig!.targets!.npm).toBeUndefined();
+      expect(projectConfig!.targets!.github).toBeUndefined();
     });
 
     it.todo('should remove @jscutlery/semver from package.json');
