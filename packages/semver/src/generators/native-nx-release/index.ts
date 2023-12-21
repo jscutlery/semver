@@ -37,16 +37,16 @@ export default function migrate(tree: Tree) {
   configureNxRelease(tree, semverProjects);
 
   semverProjects.forEach(([projectName, projectConfig]) => {
-    removeSemverTargets(projectName, projectConfig, tree);
+    removeSemverTargets(tree, projectName, projectConfig);
   });
 
   return () => formatFiles(tree);
 }
 
 function removeSemverTargets(
+  tree: Tree,
   projectName: string,
   projectConfig: ProjectConfiguration,
-  tree: Tree,
 ): void {
   logger.info(
     `[${projectName}] @jscutlery/semver config detected, removing it.`,
@@ -110,6 +110,17 @@ function configureNxRelease(
       },
       projectChangelogs: !skipProjectChangelog,
     },
+    groups: {
+      npm: {
+        projects: semverProjects.map(([projectName]) => projectName),
+        version: {
+          generatorOptions: {
+            currentVersionResolver: 'git-tag',
+            specifierSource: 'conventional-commits',
+          },
+        },
+      },
+    }
   };
 
   writeJson(tree, 'nx.json', nxJson);
@@ -117,32 +128,6 @@ function configureNxRelease(
 
 function getSemverOptions(
   projectConfig: ProjectConfiguration,
-): VersionBuilderSchema {
+): Partial<VersionBuilderSchema> {
   return projectConfig.targets?.version?.options ?? {};
 }
-
-// "release": {
-//   "releaseTagPattern": "{version}",
-//   "changelog": {
-//     "git": {
-//       "commit": true,
-//       "tag": true
-//     },
-//     "workspaceChangelog": {
-//       "createRelease": "github",
-//       "file": false
-//     },
-//     "projectChangelogs": true
-//   },
-//   "groups": {
-//     "npm": {
-//       "projects": ["rxjs"],
-//       "version": {
-//         "generatorOptions": {
-//           "currentVersionResolver": "git-tag",
-//           "specifierSource": "conventional-commits"
-//         }
-//       }
-//     }
-//   }
-// }

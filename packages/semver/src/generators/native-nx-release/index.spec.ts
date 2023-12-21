@@ -120,6 +120,25 @@ describe('Native Nx Release Migration', () => {
         file: false,
       });
     });
+
+    it('should configure groups', () => {
+      setupSemver(
+        { postTargets: ['npm'] },
+        { npm: { executor: '@jscutlery/semver:npm' } },
+      );
+
+      expect(release!.groups).toEqual({
+        npm: {
+          projects: ['a'],
+          version: {
+            generatorOptions: {
+              currentVersionResolver: 'git-tag',
+              specifierSource: 'conventional-commits',
+            },
+          },
+        },
+      });
+    });
   });
 
   describe('Cleanup @jscutlery/semver', () => {
