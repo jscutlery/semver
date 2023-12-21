@@ -7,6 +7,7 @@ import {
   readNxJson,
   formatFiles,
   writeJson,
+  TargetConfiguration,
 } from '@nx/devkit';
 import { VersionBuilderSchema } from '../../executors/version/schema';
 
@@ -23,11 +24,9 @@ export default function migrate(tree: Tree) {
     return;
   }
 
-  const semverProjects = projects.filter(([, projectConfig]) => {
-    return (
-      projectConfig.targets?.version?.executor === '@jscutlery/semver:version'
-    );
-  });
+  const semverProjects = projects.filter(
+    ([, projectConfig]) => findVersionTarget(projectConfig) !== undefined,
+  );
 
   if (semverProjects.length === 0) {
     logger.info('No @jscutlery/semver config detected, skipping migration.');
@@ -51,9 +50,8 @@ function removeSemverTargets(
   logger.info(
     `[${projectName}] @jscutlery/semver config detected, removing it.`,
   );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-non-null-assertion
-  const { version, ...targets } = projectConfig.targets!;
-  const postTargets = (version?.options?.postTargets as string[]) ?? [];
+  const [versionTarget, targetConfig] = findVersionTarget(projectConfig)!;
+  const postTargets = targetConfig.options?.postTargets ?? [];
 
   if (postTargets.length > 0) {
     logger.info(
@@ -63,16 +61,11 @@ function removeSemverTargets(
     );
   }
 
-  postTargets.forEach((postTarget) => {
-    delete targets[postTarget];
+  [versionTarget, ...postTargets].forEach((target) => {
+    delete projectConfig.targets![target];
   });
 
-  const newProjectConfig = {
-    ...projectConfig,
-    targets,
-  };
-
-  updateProjectConfiguration(tree, projectName, newProjectConfig);
+  updateProjectConfiguration(tree, projectName, projectConfig);
 }
 
 function configureNxRelease(
@@ -120,10 +113,19 @@ function configureNxRelease(
           },
         },
       },
-    }
+    },
   };
 
   writeJson(tree, 'nx.json', nxJson);
+}
+
+function findVersionTarget(
+  projectConfig: ProjectConfiguration,
+): [string, TargetConfiguration<VersionBuilderSchema>] | undefined {
+  return Object.entries(projectConfig.targets ?? {}).find(
+    ([, targetOptions]) =>
+      targetOptions.executor === '@jscutlery/semver:version',
+  );
 }
 
 function getSemverOptions(
