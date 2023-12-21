@@ -93,6 +93,9 @@ function configureNxRelease(
   const options = getSemverOptions(projectConfig);
   const tagPrefix = options.tagPrefix ?? '{projectName}-';
   const skipProjectChangelog = options.skipProjectChangelog ?? false;
+  const githubRelease = Object.values(projectConfig.targets!).some(
+    (target) => target.executor === '@jscutlery/semver:github',
+  );
 
   nxJson.release ??= {
     releaseTagPattern: `${tagPrefix}{version}`,
@@ -102,7 +105,7 @@ function configureNxRelease(
         tag: true,
       },
       workspaceChangelog: {
-        createRelease: 'github',
+        createRelease: githubRelease ? 'github' : false,
         file: false,
       },
       projectChangelogs: !skipProjectChangelog,

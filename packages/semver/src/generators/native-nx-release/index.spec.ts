@@ -1,4 +1,8 @@
-import type { NxJsonConfiguration, Tree } from '@nx/devkit';
+import type {
+  NxJsonConfiguration,
+  ProjectConfiguration,
+  Tree,
+} from '@nx/devkit';
 import {
   addProjectConfiguration,
   getProjects,
@@ -8,6 +12,7 @@ import {
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 
 import migrate from '.';
+import { VersionBuilderSchema } from '../../executors/version/schema';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
@@ -62,36 +67,57 @@ describe('Native Nx Release Migration', () => {
   describe('Nx Release Configuration', () => {
     let release: NxJsonConfiguration['release'];
 
-    beforeEach(() => {
+    function setupSemver(
+      options: Partial<VersionBuilderSchema> = {},
+      targets: ProjectConfiguration['targets'] = {},
+    ) {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
           version: {
             executor: '@jscutlery/semver:version',
+            options,
           },
+          ...targets,
         },
       });
 
       migrate(tree);
 
       release = readNxJson(tree)!.release;
-    });
+    }
 
     it('should configure releaseTagPattern', () => {
+      setupSemver();
+
       expect(release!.releaseTagPattern).toBe(`{projectName}-{version}`);
     });
 
     it('should configure changelog', () => {
+      setupSemver();
+
       expect(release!.changelog).toEqual({
         git: {
           commit: true,
           tag: true,
         },
         workspaceChangelog: {
-          createRelease: 'github',
+          createRelease: false,
           file: false,
         },
         projectChangelogs: true,
+      });
+    });
+
+    it('should configure github release', () => {
+      setupSemver(
+        { postTargets: ['github'] },
+        { github: { executor: '@jscutlery/semver:github' } },
+      );
+
+      expect(release!.changelog!.workspaceChangelog).toEqual({
+        createRelease: 'github',
+        file: false,
       });
     });
   });
