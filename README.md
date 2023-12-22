@@ -161,14 +161,14 @@ You can also add your custom types, for example:
 > [!NOTE]
 > When customizing a preset it will implicitly use the [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits) preset and override the default settings with the given configuration.
 
-It is possible to customize any preset by passing its name:
+It is possible to customize any preset by passing its name.
 
 ```jsonc
 {
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
-      "name": "angular" /* ⬅️ */,
+      "name": "angular" /* ⬅️ Here */,
       "types": [
         { "type": "feat", "section": "✨ Features" },
         { "type": "fix", "section": "🐞 Bug Fixes" }
