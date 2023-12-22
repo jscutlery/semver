@@ -41,7 +41,8 @@
       "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "packages/semver/jest.config.ts"
-      }
+      },
+      "dependsOn": ["build"]
     },
     "build": {
       "executor": "@nx/js:tsc",
