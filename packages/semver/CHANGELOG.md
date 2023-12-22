@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.2.0](https://github.com/jscutlery/semver/compare/semver-4.1.0...semver-4.2.0) (2023-12-22)
+
+
+### Bug Fixes
+
+* **semver:** add json deps even with `--skipInstall` ([21662e4](https://github.com/jscutlery/semver/commit/21662e4495300b96ecfb53e3817ebde767072643))
+* **semver:** allow overriding any preset by passing its name ([c46cf5c](https://github.com/jscutlery/semver/commit/c46cf5cba2eec264f73aca6fe90247757f37b92e))
+* **semver:** overrides conventionalcommits preset with custom preset ([9d1cefc](https://github.com/jscutlery/semver/commit/9d1cefcb61b3977ae15a8c957ba04e0005d32286)), closes [#762](https://github.com/jscutlery/semver/issues/762)
+
+
+### Features
+
+* **semver:** bump commitlint version to v18 ([5ae510e](https://github.com/jscutlery/semver/commit/5ae510eccb65f5d533229044af97d9e3dd61599b))
+* **semver:** support pnpm or npx or yarn with husky ([e253c7b](https://github.com/jscutlery/semver/commit/e253c7b8a991a2b47f60befc1f90e18cf899085c))
+
+
+
 # [4.1.0](https://github.com/jscutlery/semver/compare/semver-4.0.0...semver-4.1.0) (2023-11-18)
 
 
