@@ -353,6 +353,9 @@ then continuing up the graph until the indicated project is reached.
 Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`,
 then it will avoid attempting to version dependencies multiple times.
 
+> [!WARNING]  
+> Be aware that this feature has known [limitations](https://github.com/jscutlery/semver/issues/526).
+
 ### CI/CD usage
 
 #### GitHub Actions
