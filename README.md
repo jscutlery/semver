@@ -158,7 +158,7 @@ You can also add your custom types, for example:
 }
 ```
 
-> [!NOTES]
+> [!NOTE]
 > When customizing a preset it will implicitly use the [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits) preset and overrides the default settings with the given configuration.
 
 It is possible to customize any preset by passing its name:
