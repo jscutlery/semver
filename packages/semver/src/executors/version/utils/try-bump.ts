@@ -243,7 +243,7 @@ export function _semverBump({
       tagPrefix,
       ...(typeof preset === 'string' ? { preset } : {}),
       ...(typeof preset === 'object'
-        ? { preset: 'conventionalcommits', config: preset }
+        ? { preset: preset.name ?? 'conventionalcommits', config: preset }
         : {}),
     });
     const { releaseType } = recommended;
