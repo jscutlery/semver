@@ -241,13 +241,14 @@ export function _semverBump({
     const recommended = await conventionalRecommendedBump({
       path: projectRoot,
       tagPrefix,
-      ...(typeof preset === 'string' ? { preset: preset } : {}),
-      ...(typeof preset === 'object' ? { config: preset } : {}),
+      ...(typeof preset === 'string' ? { preset } : {}),
+      ...(typeof preset === 'object'
+        ? { preset: 'conventionalcommits', config: preset }
+        : {}),
     });
     const { releaseType } = recommended;
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return semver.inc(since, releaseType!);
+    return releaseType ? semver.inc(since, releaseType) : null;
   });
 }
 
