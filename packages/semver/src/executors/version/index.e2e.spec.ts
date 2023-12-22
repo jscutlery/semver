@@ -23,7 +23,7 @@ describe('@jscutlery/semver', () => {
     testingWorkspace.installSemver('d', '--preset=conventionalcommits');
     testingWorkspace.exec(
       `
-        sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "Awesome features" } ] }/g' libs/d/project.json
+        sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "✨ Awesome features" } ] }/g' libs/d/project.json
       `,
     );
     testingWorkspace.exec(
@@ -185,6 +185,25 @@ describe('@jscutlery/semver', () => {
             `,
         );
         testingWorkspace.runNx(`run d:version --noVerify`);
+      });
+
+      it('should commit all changes', () => {
+        expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
+      });
+
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('d-0.1.0');
+      });
+      it('should commit with description', () => {
+        expect(getLastCommitDescription(testingWorkspace.root)).toBe(
+          'chore(d): release version 0.1.0',
+        );
+      });
+
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/d/package.json`),
+        ).toMatch(/"version": "0.1.0"/);
       });
 
       it('should generate CHANGELOG.md', () => {
