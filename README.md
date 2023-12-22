@@ -134,7 +134,7 @@ The preset is highly configurable, following the [conventional-changelog configu
 }
 ```
 
-You can also add your own custom types, for example:
+You can also add your custom types, for example:
 
 ```json
 {
@@ -142,16 +142,37 @@ You can also add your own custom types, for example:
   "options": {
     "preset": {
       "types": [
-        { "type": "feat", "section": "Features" },
-        { "type": "fix", "section": "Bug Fixes" },
-        { "type": "chore", "section": "Chores" },
-        { "type": "build", "section": "Build System" },
-        { "type": "ci", "section": "Continuous Integration" },
-        { "type": "docs", "section": "Documentation" },
-        { "type": "style", "section": "Styles" },
-        { "type": "refactor", "section": "Code Refactoring" },
-        { "type": "perf", "section": "Performance Improvements" },
-        { "type": "test", "section": "Tests" }
+        { "type": "feat", "section": "✨ Features" },
+        { "type": "fix", "section": "🐞 Bug Fixes" },
+        { "type": "chore", "section": "⚙️ Chores" },
+        { "type": "build", "section": "🛠️ Build System" },
+        { "type": "ci", "section": "🤖 Continuous Integration" },
+        { "type": "docs", "section": "📄 Documentation" },
+        { "type": "style", "section": "🎨 Styles" },
+        { "type": "refactor", "section": "🧹 Code Refactoring" },
+        { "type": "perf", "section": "⚡️ Performance Improvements" },
+        { "type": "test", "section": "✅ Tests" }
+      ]
+    }
+  }
+}
+```
+
+> [!NOTES]
+> When customizing a preset it will implicitly use the [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits) preset and overrides the default settings with the given configuration.
+
+It is possible to customize any preset by passing its name:
+
+```jsonc
+{
+  "executor": "@jscutlery/semver:version",
+  "options": {
+    "preset": {
+      "name": "angular" /* ⬅️ */,
+      "types": [
+        { "type": "feat", "section": "✨ Features" },
+        { "type": "fix", "section": "🐞 Bug Fixes" }
+        /* ... */
       ]
     }
   }
