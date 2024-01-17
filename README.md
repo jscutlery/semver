@@ -323,6 +323,9 @@ Contextual variables resolved by this option:
 - `previousTag` previous version tag
 - `dryRun` dry run mode
 
+> [!NOTE]
+> The specified targets are going to be executed as is, without triggering any dependencies. It will not trigger the target's `dependsOn` and Nx caching is not considered
+
 #### Built-in post-targets
 
 - [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) GiHub Release Support
