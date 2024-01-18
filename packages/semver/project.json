@@ -40,7 +40,15 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "packages/semver/jest.config.ts"
+        "jestConfig": "packages/semver/jest.config.ts",
+        "testPathIgnorePatterns": ["packages/semver/.*\\.e2e\\.spec\\.ts$"]
+      }
+    },
+    "e2e": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/semver/jest.config.ts",
+        "testPathPattern": ["packages/semver/.*\\.e2e\\.spec\\.ts$"]
       },
       "dependsOn": ["build"]
     },
