@@ -50,7 +50,7 @@
     "husky": "^8.0.0",
     "jest": "29.7.0",
     "jest-extended": "^4.0.0",
-    "ngx-deploy-npm": "^7.0.0",
+    "ngx-deploy-npm": "^8.0.0",
     "nx": "17.2.8",
     "prettier": "3.1.1",
     "tmp": "^0.2.1",
