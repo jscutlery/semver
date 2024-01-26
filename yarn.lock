@@ -5184,11 +5184,11 @@ __metadata:
   linkType: hard
 
 "husky@npm:^9.0.0":
-  version: 9.0.5
-  resolution: "husky@npm:9.0.5"
+  version: 9.0.6
+  resolution: "husky@npm:9.0.6"
   bin:
     husky: bin.js
-  checksum: 0f9c88867adca36efe01e1fc90ffa89234d57568935dde073b8b12e64f484e1cf3fe7183ef6ed5978fc8aa063e3607de7a6691b33aa7ff7d041516f9e34c546c
+  checksum: e198c90a59d460cf860c33e0a4c3927ecfb645d4fd4c2de3fbcd5fb56b858a923af452508d549f6ed020bb48de08290912cd77c006dd2a83e551c24c17340d5b
   languageName: node
   linkType: hard
 
