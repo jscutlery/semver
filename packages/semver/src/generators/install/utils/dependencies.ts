@@ -11,7 +11,7 @@ import type { SchemaOptions } from '../schema';
 
 const PACKAGE_JSON = 'package.json';
 const COMMITLINT_VERSION = '^18.0.0';
-const HUSKY_VERSION = '^8.0.0';
+const HUSKY_VERSION = '^9.0.0';
 
 interface PackageJson {
   scripts: PackageJsonPart<string>;
