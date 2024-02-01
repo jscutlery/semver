@@ -40,7 +40,7 @@
     "@nx/plugin": "17.2.8",
     "@nx/workspace": "17.2.8",
     "@types/jest": "29.5.11",
-    "@types/node": "20.11.13",
+    "@types/node": "20.11.14",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "all-contributors-cli": "^6.19.0",
