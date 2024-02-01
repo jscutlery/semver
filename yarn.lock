@@ -2704,12 +2704,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.13":
-  version: 18.19.13
-  resolution: "@types/node@npm:18.19.13"
+"@types/node@npm:20.11.15":
+  version: 20.11.15
+  resolution: "@types/node@npm:20.11.15"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 7d83ee3b8e1548c9c6fd83e3e63854832eb4f07ea3f4c011a2e2a91c80e4a6a35c8b5dc095fd26e349abe0b63d0b2283f7ed079b4a6eff9468173a3f1e6c01c0
+  checksum: ec670ab67382b3a45511de0ff1a57640eb51e62dd2f2c3b4484ee35caef18c1d346bba64bd58189e9445cecbfcf9b458ca7850635eb56df2c49472dac656029f
   languageName: node
   linkType: hard
 
@@ -6059,7 +6059,7 @@ __metadata:
     "@nx/plugin": "npm:17.3.1"
     "@nx/workspace": "npm:17.3.1"
     "@types/jest": "npm:29.5.11"
-    "@types/node": "npm:18.19.13"
+    "@types/node": "npm:20.11.15"
     "@typescript-eslint/eslint-plugin": "npm:5.62.0"
     "@typescript-eslint/parser": "npm:5.62.0"
     all-contributors-cli: "npm:^6.19.0"
