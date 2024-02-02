@@ -5062,11 +5062,11 @@ __metadata:
   linkType: hard
 
 "husky@npm:^9.0.0":
-  version: 9.0.7
-  resolution: "husky@npm:9.0.7"
+  version: 9.0.10
+  resolution: "husky@npm:9.0.10"
   bin:
-    husky: bin.js
-  checksum: c5673acb9f224b6d2b36ee4892c6b99dbe9a077b041aee6013efeacb71d2d2cbe6ab7fac061f68fa5653c7dbe93aacfeed69eea01f755688e4c36c4044dcc5c0
+    husky: bin.mjs
+  checksum: c303f1862e2b63873605df55a2b08303155e35c799585d7dd677628f62d716e7304bd984fc7d00ec44e740caac07d51720d1a0abb0a23a70a38859d89eb8e72d
   languageName: node
   linkType: hard
 
