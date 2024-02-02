@@ -1,13 +1,15 @@
-import { promises } from 'fs';
-import { resolve } from 'path';
-import * as tmp from 'tmp';
 import {
   ExecutorContext,
   ProjectConfiguration,
   TargetConfiguration,
+  readJsonFile,
+  workspaceRoot,
+  writeJsonFile,
 } from '@nx/devkit';
-import { readJsonFile, workspaceRoot, writeJsonFile } from '@nx/devkit';
 import { execSync } from 'child_process';
+import { promises, symlinkSync } from 'fs';
+import { resolve } from 'path';
+import * as tmp from 'tmp';
 
 export interface TestingWorkspace {
   exec(command: string): void;
@@ -18,13 +20,13 @@ export interface TestingWorkspace {
   root: string;
 }
 
-const packageManager = 'npm';
+const packageManager = 'yarn';
 
 function runNxNewCommand(dir: string) {
   execSync(
     `node ${require.resolve(
       'nx',
-    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps --package-manager=${packageManager}`,
+    )} new proj --nx-workspace-root=${dir} --no-interactive --skip-install --collection=@nx/workspace --npmScope=proj --preset=apps --e2eTestRunner=none --package-manager=${packageManager}`,
     {
       cwd: dir,
       stdio: 'ignore',
@@ -75,6 +77,12 @@ export function setupTestingWorkspace(): TestingWorkspace {
   const tmpRoot = process.cwd();
   const workspaceRoot = resolve(tmpRoot, 'proj');
 
+  // This symlink is workaround for Nx trying to resolve its module locally when generating a new workspace
+  symlinkSync(
+    resolve(originalCwd, 'node_modules'),
+    resolve(tmpRoot, 'node_modules'),
+    'dir',
+  );
   runNxNewCommand(tmpRoot);
   initGit(workspaceRoot);
   linkPackage(workspaceRoot);
@@ -96,13 +104,15 @@ export function setupTestingWorkspace(): TestingWorkspace {
     },
 
     generateLib(name: string, options = '') {
-      const commonArgs = `--directory=libs --unitTestRunner=none --linter=none --bundler=none --minimal --skipFormat`;
-      this.runNx(`g @nx/js:lib ${name} ${commonArgs} ${options}`);
+      const commonArgs = `--unitTestRunner=none --linter=none --bundler=none --minimal --skipFormat --projectNameAndRootFormat=as-provided`;
+      this.runNx(
+        `g @nx/js:lib ${name} --directory=libs/${name} ${commonArgs} ${options}`,
+      );
     },
 
     installSemver(project: string, options = '') {
       this.runNx(
-        `g @jscutlery/semver:install --projects=${project} ${options}`,
+        `g @jscutlery/semver:install --projects=${project} --interactive=false ${options}`,
       );
     },
 
