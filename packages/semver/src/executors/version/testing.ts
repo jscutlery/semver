@@ -49,7 +49,7 @@ function linkPackage(dir: string) {
 function runInstall(dir: string) {
   execSync(`${packageManager} install`, {
     cwd: dir,
-    stdio: 'ignore',
+    stdio: 'inherit',
   });
 }
 
