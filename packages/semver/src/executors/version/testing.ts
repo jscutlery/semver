@@ -47,7 +47,7 @@ function linkPackage(dir: string) {
 }
 
 function runInstall(dir: string) {
-  execSync(`${packageManager} install --refresh-lockfile`, {
+  execSync(`${packageManager} install --no-immutable`, {
     cwd: dir,
     stdio: 'inherit',
   });
