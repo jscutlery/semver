@@ -10,7 +10,7 @@
       "options": {
         "push": true,
         "noVerify": true,
-        "postTargets": ["publish", "github"],
+        "postTargets": ["build", "publish", "github"],
         "commitMessageFormat": "release({projectName}): 🎸 cut release to {version}"
       }
     },
@@ -24,7 +24,8 @@
     "publish": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "distFolderPath": "dist/packages/semver"
       }
     },
     "lint": {
