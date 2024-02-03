@@ -218,7 +218,7 @@ export default async function version(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function _toErrorMessage(error: any): string {
-  return error.stack ?? error.toString();
+  return error.stack ?? error.message ?? error.toString();
 }
 
 function _normalizeOptions(options: VersionBuilderSchema) {
