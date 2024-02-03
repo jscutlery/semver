@@ -13,7 +13,7 @@
     "url": "https://github.com/jscutlery/semver"
   },
   "peerDependencies": {
-    "@nx/devkit": "^17.0.0"
+    "@nx/devkit": "^18.0.0"
   },
   "dependencies": {
     "chalk": "4.1.2",

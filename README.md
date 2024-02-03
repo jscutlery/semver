@@ -434,6 +434,7 @@ Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/
 
 | Version | Required Package          |
 | ------- | ------------------------- |
+| v5.0.0  | `@nx/devkit ^18.0.0`      |
 | v4.0.0  | `@nx/devkit ^17.0.0`      |
 | v3.0.0  | `@nx/devkit ^16.0.0`      |
 | v2.28.0 | `@nrwl/devkit ^15.0.0`    |
