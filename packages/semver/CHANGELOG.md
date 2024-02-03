@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/jscutlery/semver/compare/semver-4.2.0...semver-5.0.0) (2024-02-03)
+
+
+### Bug Fixes
+
+* **semver:** fix error message [object Object] ([8284417](https://github.com/jscutlery/semver/commit/82844170b97807dfaa23dc23b27baa42de4eb2b0))
+
+
+### Features
+
+* **semver:** bump `@nx/devkit` peer dependency to v18.0.0 ([e26398a](https://github.com/jscutlery/semver/commit/e26398a43992a6ffafb6b21f5df00f65c95f26c2))
+* **semver:** bump installed husky version to v9 ([43a45fd](https://github.com/jscutlery/semver/commit/43a45fd32bf0ce519a98f8db665c5f09ecd37bb9))
+
+
+### BREAKING CHANGES
+
+* **semver:** Minimal `@nx/devkit` version is now set to `^17.0.0`.
+
+
+
 # [4.2.0](https://github.com/jscutlery/semver/compare/semver-4.1.0...semver-4.2.0) (2023-12-22)
 
 
