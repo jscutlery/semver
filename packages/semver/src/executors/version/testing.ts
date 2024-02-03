@@ -47,9 +47,13 @@ function linkPackage(dir: string) {
 }
 
 function runInstall(dir: string) {
+  execSync(`${packageManager} config set enableImmutableInstalls false`, {
+    cwd: dir,
+    stdio: 'inherit',
+  });
   execSync(`${packageManager} install`, {
     cwd: dir,
-    stdio: 'ignore',
+    stdio: 'inherit',
   });
 }
 
