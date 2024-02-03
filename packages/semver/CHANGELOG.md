@@ -18,7 +18,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### BREAKING CHANGES
 
-* **semver:** Minimal `@nx/devkit` version is now set to `^17.0.0`.
+* **semver:** Minimal `@nx/devkit` version is now set to `^18.0.0`.
 
 
 
