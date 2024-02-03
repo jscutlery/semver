@@ -288,13 +288,17 @@ The **`--postTargets`** option allows you to run targets post-release. This is p
 
 Here is a configuration example using [`@jscutlery/semver:github`](https://github.com/jscutlery/semver/blob/main/packages/semver/src/executors/github/README.md) to create a GitHub Release and [`ngx-deploy-npm:deploy`](https://github.com/bikecoders/ngx-deploy-npm) to publish on NPM:
 
-```json
+```jsonc
 {
   "targets": {
+    "build": {
+      /* ... */
+    },
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "postTargets": ["npm", "github"]
+        "push": true,
+        "postTargets": ["build", "npm", "github"]
       }
     },
     "github": {
@@ -307,7 +311,8 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "npm": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "distFolderPath": "dist/packages/my-package"
       }
     }
   }
