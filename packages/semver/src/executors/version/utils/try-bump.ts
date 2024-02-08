@@ -46,7 +46,7 @@ export function getProjectVersion({
   const lastVersion$ = getLastVersion({
     tagPrefix,
     preid,
-    includePrerelease: releaseType === 'prerelease',
+    releaseType,
   }).pipe(
     catchError(() => {
       _logStep({
@@ -263,11 +263,7 @@ export function _manualBump({
   preid: string;
 }) {
   return defer(() => {
-    const hasPreid =
-      ['premajor', 'preminor', 'prepatch', 'prerelease'].includes(
-        releaseType,
-      ) && preid !== null;
-
+    const hasPreid = preid !== null;
     const semverArgs: [string, semver.ReleaseType, ...string[]] = [
       since,
       releaseType as semver.ReleaseType,
