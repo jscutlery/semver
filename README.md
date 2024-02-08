@@ -225,6 +225,21 @@ nx run workspace:version --releaseAs=prerelease --preid=alpha
 nx run workspace:version --releaseAs=prerelease --preid=beta
 ```
 
+#### Initial prerelease version
+
+When using the `--releaseAs=prerelease` option, the initial prerelease version takes into account the commit history to determine the recommended bump type. As an illustration, let's assume the current version is `1.0.0`, and the commit history includes the following:
+
+- **Commit 1:** `feat(my-project): abc`
+- **Commit 2:** `fix(my-project): def`
+
+Running the following command:
+
+```bash
+nx version my-project --releaseAs=prerelease --preid=alpha
+```
+
+Would yield the version `1.1.0-alpha.0`. Subsequent executions of the command would result in incremented prerelease versions, such as `1.1.0-alpha.1`.
+
 ### Tag prefix customization
 
 The **`--tagPrefix`** option allows you to customize the tag prefix.
