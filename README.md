@@ -112,16 +112,23 @@ You can customize the default configuration using the definition file:
 This tool comes with a list of pre-configured presets:
 
 - [angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) (default)
-- [atom](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-atom)
-- [codemirror](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-codemirror)
 - [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)
-- [ember](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-ember)
-- [eslint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint)
-- [express](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-express)
-- [jquery](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jquery)
-- [jshint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jshint)
 
-The preset is highly configurable, following the [conventional-changelog configuration specification](https://github.com/conventional-changelog/conventional-changelog-config-spec). As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
+<details>
+  <summary>Complete list of presets</summary>
+  
+  - [angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) (default)
+  - [conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)
+  - [atom](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-atom)
+  - [codemirror](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-codemirror)
+  - [ember](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-ember)
+  - [eslint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-eslint)
+  - [express](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-express)
+  - [jquery](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jquery)
+  - [jshint](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-jshint)
+</details>
+
+The preset is highly configurable, following the [conventional-changelog-config-spec](https://github.com/conventional-changelog/conventional-changelog-config-spec). As an example, suppose you're using GitLab, rather than GitHub, you might modify the following variables:
 
 ```json
 {
@@ -130,30 +137,11 @@ The preset is highly configurable, following the [conventional-changelog configu
     "preset": {
       "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
       "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
-      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}"
-    }
-  }
-}
-```
-
-You can also add your custom types, for example:
-
-```json
-{
-  "executor": "@jscutlery/semver:version",
-  "options": {
-    "preset": {
+      "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
       "types": [
         { "type": "feat", "section": "✨ Features" },
         { "type": "fix", "section": "🐞 Bug Fixes" },
-        { "type": "chore", "section": "⚙️ Chores" },
-        { "type": "build", "section": "🛠️ Build System" },
-        { "type": "ci", "section": "🤖 Continuous Integration" },
-        { "type": "docs", "section": "📄 Documentation" },
-        { "type": "style", "section": "🎨 Styles" },
-        { "type": "refactor", "section": "🧹 Code Refactoring" },
-        { "type": "perf", "section": "⚡️ Performance Improvements" },
-        { "type": "test", "section": "✅ Tests" }
+        { "type": "chore", "hidden": true }
       ]
     }
   }
@@ -165,16 +153,15 @@ You can also add your custom types, for example:
 
 It is possible to customize any preset by passing its name.
 
-```jsonc
+```json
 {
   "executor": "@jscutlery/semver:version",
   "options": {
     "preset": {
-      "name": "angular" /* ⬅️ Here */,
+      "name": "angular",
       "types": [
         { "type": "feat", "section": "✨ Features" },
         { "type": "fix", "section": "🐞 Bug Fixes" }
-        /* ... */
       ]
     }
   }
