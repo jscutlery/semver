@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.1.0](https://github.com/jscutlery/semver/compare/semver-5.0.0...semver-5.1.0) (2024-02-08)
+
+
+### Bug Fixes
+
+* **semver:** increment version for `preminor`, `prepatch` and `premajor` ([7459d8b](https://github.com/jscutlery/semver/commit/7459d8bcbc6b0dc0d3b8fefa6a65a5b4efdc48d5)), closes [#775](https://github.com/jscutlery/semver/issues/775)
+
+
+### Features
+
+* **semver:** initial `prerelease` version consider commits ([26d60fb](https://github.com/jscutlery/semver/commit/26d60fbecfbecff4af892b75506d78007659cd8e)), closes [#688](https://github.com/jscutlery/semver/issues/688) [#459](https://github.com/jscutlery/semver/issues/459) [#428](https://github.com/jscutlery/semver/issues/428) [#601](https://github.com/jscutlery/semver/issues/601) [#679](https://github.com/jscutlery/semver/issues/679)
+
+
+
 # [5.0.0](https://github.com/jscutlery/semver/compare/semver-4.2.0...semver-5.0.0) (2024-02-03)
 
 
