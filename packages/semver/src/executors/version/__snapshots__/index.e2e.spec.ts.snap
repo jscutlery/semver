@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (breaking change) should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (breaking change) should generate CHANGELOG.md: a-1.0.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -33,7 +33,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed should generate CHANGELOG.md: a-0.1.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -52,7 +52,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed (with --skipCommit) should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed (with --skipCommit) should generate CHANGELOG.md: b-0.2.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -78,7 +78,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed should generate CHANGELOG.md: b-0.1.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -97,7 +97,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/d changed should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/d changed should generate CHANGELOG.md: d-0.1.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -111,7 +111,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a (--releaseAs=preminor --preid=alpha) should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a (--releaseAs=preminor --preid=alpha) when pre-releasing libs/a again (--releaseAs=preminor --preid=alpha) should generate CHANGELOG.md: a-1.2.0-alpha.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -125,7 +125,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.1.0-alpha.0](/compare/a-1.0.1-beta.1...a-1.1.0-alpha.0) (yyyy-mm-dd)
+# [1.1.0-alpha.0](/compare/a-1.1.0-beta.1...a-1.1.0-alpha.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -134,7 +134,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [1.0.1-beta.1](/compare/a-1.0.1-beta.0...a-1.0.1-beta.1) (yyyy-mm-dd)
+# [1.1.0-beta.1](/compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
 
 
 ### Features
@@ -143,7 +143,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [1.0.1-beta.0](/compare/a-1.0.0...a-1.0.1-beta.0) (yyyy-mm-dd)
+# [1.1.0-beta.0](/compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -180,12 +180,12 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a (--releaseAs=prerelease --preid=beta) should generate CHANGELOG.md 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a (--releaseAs=prerelease --preid=beta) when pre-releasing libs/a again (--releaseAs=prerelease --preid=beta) should generate CHANGELOG.md: a-1.1.0-beta.1 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-## [1.0.1-beta.1](/compare/a-1.0.1-beta.0...a-1.0.1-beta.1) (yyyy-mm-dd)
+# [1.1.0-beta.1](/compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
 
 
 ### Features
@@ -194,7 +194,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [1.0.1-beta.0](/compare/a-1.0.0...a-1.0.1-beta.0) (yyyy-mm-dd)
+# [1.1.0-beta.0](/compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
 
 
 ### Features

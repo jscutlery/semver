@@ -133,13 +133,11 @@ export function tryBump({
 
   return forkJoin([lastVersion$, commits$, lastVersionGitRef$]).pipe(
     switchMap(([lastVersion, commits, lastVersionGitRef]) => {
-      /* If release type is manually specified,
-       * we just release even if there are no changes. */
-      if (releaseType !== undefined) {
+      if (releaseType && releaseType !== 'prerelease') {
         return _manualBump({
           since: lastVersion,
-          releaseType: releaseType as string,
-          preid: preid as string,
+          releaseType,
+          preid,
         }).pipe(
           map((version) =>
             version
@@ -153,6 +151,15 @@ export function tryBump({
         );
       }
 
+      const projectBump$ = _semverBump({
+        since: lastVersion,
+        preset,
+        projectRoot,
+        tagPrefix,
+        releaseType,
+        preid,
+      }).pipe(map((version) => ({ type: 'project', version })));
+
       const dependencyVersions$ = _getDependencyVersions({
         commitParserOptions,
         lastVersionGitRef,
@@ -165,13 +172,6 @@ export function tryBump({
         projectName,
         preid,
       });
-
-      const projectBump$ = _semverBump({
-        since: lastVersion,
-        preset,
-        projectRoot,
-        tagPrefix,
-      }).pipe(map((version) => ({ type: 'project', version })));
 
       return forkJoin([projectBump$, dependencyVersions$]).pipe(
         switchMap(([projectVersion, dependencyVersions]) => {
@@ -231,11 +231,15 @@ export function _semverBump({
   preset,
   projectRoot,
   tagPrefix,
+  releaseType,
+  preid,
 }: {
   since: string;
   preset: PresetOpt;
   projectRoot: string;
   tagPrefix: string;
+  releaseType?: ReleaseIdentifier;
+  preid?: string;
 }) {
   return defer(async () => {
     const recommended = await conventionalRecommendedBump({
@@ -246,9 +250,19 @@ export function _semverBump({
         ? { preset: preset.name ?? 'conventionalcommits', config: preset }
         : {}),
     });
-    const { releaseType } = recommended;
 
-    return releaseType ? semver.inc(since, releaseType) : null;
+    let recommendedReleaseType: ReleaseIdentifier | undefined =
+      recommended.releaseType;
+    if (recommendedReleaseType && releaseType === 'prerelease') {
+      recommendedReleaseType =
+        semver.parse(since)?.prerelease.length === 0
+          ? `pre${recommendedReleaseType}`
+          : releaseType;
+    }
+
+    return recommendedReleaseType
+      ? semver.inc(since, recommendedReleaseType, preid)
+      : null;
   });
 }
 
@@ -260,14 +274,13 @@ export function _manualBump({
 }: {
   since: string;
   releaseType: string;
-  preid: string;
+  preid?: string;
 }) {
   return defer(() => {
-    const hasPreid = preid !== null;
-    const semverArgs: [string, semver.ReleaseType, ...string[]] = [
+    const semverArgs: [string, ReleaseIdentifier, ...string[]] = [
       since,
-      releaseType as semver.ReleaseType,
-      ...(hasPreid ? [preid] : []),
+      releaseType as ReleaseIdentifier,
+      ...(preid ? [preid] : []),
     ];
 
     return of(semver.inc(...semverArgs));

@@ -108,7 +108,7 @@ describe('@jscutlery/semver', () => {
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
           ),
-        ).toMatchSnapshot();
+        ).toMatchSnapshot('a-0.1.0');
       });
     });
 
@@ -157,7 +157,7 @@ describe('@jscutlery/semver', () => {
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
           ),
-        ).toMatchSnapshot();
+        ).toMatchSnapshot('b-0.1.0');
       });
     });
 
@@ -211,7 +211,7 @@ describe('@jscutlery/semver', () => {
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/d/CHANGELOG.md`),
           ),
-        ).toMatchSnapshot();
+        ).toMatchSnapshot('d-0.1.0');
       });
     });
 
@@ -242,7 +242,7 @@ describe('@jscutlery/semver', () => {
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
           ),
-        ).toMatchSnapshot();
+        ).toMatchSnapshot('a-1.0.0');
       });
     });
 
@@ -258,34 +258,49 @@ describe('@jscutlery/semver', () => {
         testingWorkspace.runNx(
           `run a:version --releaseAs=prerelease --preid=beta --noVerify`,
         );
-        testingWorkspace.exec(
-          `
-              echo feat >> libs/a/a.txt
-              git add .
-              git commit -m "feat(a): 🚀 new feature 2"
-            `,
-        );
-        testingWorkspace.runNx(
-          `run a:version --releaseAs=prerelease --preid=beta --noVerify`,
-        );
       });
 
       it('should tag with version', () => {
-        expect(getLastTag(testingWorkspace.root)).toBe('a-1.0.1-beta.1');
+        expect(getLastTag(testingWorkspace.root)).toBe('a-1.1.0-beta.0');
       });
 
       it('should bump package version', () => {
         expect(
           readFile(`${testingWorkspace.root}/libs/a/package.json`),
-        ).toMatch(/"version": "1.0.1-beta.1"/);
+        ).toMatch(/"version": "1.1.0-beta.0"/);
       });
 
-      it('should generate CHANGELOG.md', () => {
-        expect(
-          deterministicChangelog(
-            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
-          ),
-        ).toMatchSnapshot();
+      describe('when pre-releasing libs/a again (--releaseAs=prerelease --preid=beta)', () => {
+        beforeAll(() => {
+          testingWorkspace.exec(
+            `
+              echo feat >> libs/a/a.txt
+              git add .
+              git commit -m "feat(a): 🚀 new feature 2"
+            `,
+          );
+          testingWorkspace.runNx(
+            `run a:version --releaseAs=prerelease --preid=beta --noVerify`,
+          );
+        });
+
+        it('should tag with version', () => {
+          expect(getLastTag(testingWorkspace.root)).toBe('a-1.1.0-beta.1');
+        });
+
+        it('should bump package version', () => {
+          expect(
+            readFile(`${testingWorkspace.root}/libs/a/package.json`),
+          ).toMatch(/"version": "1.1.0-beta.1"/);
+        });
+
+        it('should generate CHANGELOG.md', () => {
+          expect(
+            deterministicChangelog(
+              readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+            ),
+          ).toMatchSnapshot('a-1.1.0-beta.1');
+        });
       });
     });
 
@@ -301,34 +316,49 @@ describe('@jscutlery/semver', () => {
         testingWorkspace.runNx(
           `run a:version --releaseAs=preminor --preid=alpha --noVerify`,
         );
-        testingWorkspace.exec(
-          `
-              echo feat >> libs/a/a.txt
-              git add .
-              git commit -m "feat(a): 🚀 new feature 2"
-            `,
-        );
-        testingWorkspace.runNx(
-          `run a:version --releaseAs=preminor --preid=alpha --noVerify`,
-        );
       });
 
       it('should tag with version', () => {
-        expect(getLastTag(testingWorkspace.root)).toBe('a-1.2.0-alpha.0');
+        expect(getLastTag(testingWorkspace.root)).toBe('a-1.1.0-alpha.0');
       });
 
       it('should bump package version', () => {
         expect(
           readFile(`${testingWorkspace.root}/libs/a/package.json`),
-        ).toMatch(/"version": "1.2.0-alpha.0"/);
+        ).toMatch(/"version": "1.1.0-alpha.0"/);
       });
 
-      it('should generate CHANGELOG.md', () => {
-        expect(
-          deterministicChangelog(
-            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
-          ),
-        ).toMatchSnapshot();
+      describe('when pre-releasing libs/a again (--releaseAs=preminor --preid=alpha)', () => {
+        beforeAll(() => {
+          testingWorkspace.exec(
+            `
+              echo feat >> libs/a/a.txt
+              git add .
+              git commit -m "feat(a): 🚀 new feature 2"
+            `,
+          );
+          testingWorkspace.runNx(
+            `run a:version --releaseAs=preminor --preid=alpha --noVerify`,
+          );
+        });
+
+        it('should tag with version', () => {
+          expect(getLastTag(testingWorkspace.root)).toBe('a-1.2.0-alpha.0');
+        });
+
+        it('should bump package version', () => {
+          expect(
+            readFile(`${testingWorkspace.root}/libs/a/package.json`),
+          ).toMatch(/"version": "1.2.0-alpha.0"/);
+        });
+
+        it('should generate CHANGELOG.md', () => {
+          expect(
+            deterministicChangelog(
+              readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+            ),
+          ).toMatchSnapshot('a-1.2.0-alpha.0');
+        });
       });
     });
 
@@ -366,7 +396,7 @@ describe('@jscutlery/semver', () => {
           deterministicChangelog(
             readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
           ),
-        ).toMatchSnapshot();
+        ).toMatchSnapshot('b-0.2.0');
       });
     });
   });
