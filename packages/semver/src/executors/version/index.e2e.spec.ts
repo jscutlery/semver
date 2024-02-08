@@ -246,6 +246,49 @@ describe('@jscutlery/semver', () => {
       });
     });
 
+    describe('when pre-releasing libs/a (--releaseAs=prerelease --preid=beta)', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo feat >> libs/a/a.txt
+              git add .
+              git commit -m "feat(a): 🚀 new feature 1"
+            `,
+        );
+        testingWorkspace.runNx(
+          `run a:version --releaseAs=prerelease --preid=beta --noVerify`,
+        );
+        testingWorkspace.exec(
+          `
+              echo feat >> libs/a/a.txt
+              git add .
+              git commit -m "feat(a): 🚀 new feature 2"
+            `,
+        );
+        testingWorkspace.runNx(
+          `run a:version --releaseAs=prerelease --preid=beta --noVerify`,
+        );
+      });
+
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('a-1.0.1-beta.1');
+      });
+
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/a/package.json`),
+        ).toMatch(/"version": "1.0.1-beta.1"/);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot();
+      });
+    });
+
     describe('when libs/b changed (with --skipCommit)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
