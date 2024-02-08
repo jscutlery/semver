@@ -6,11 +6,11 @@ import type { Observable } from 'rxjs';
 
 export function getLastVersion({
   tagPrefix,
-  includePrerelease = true,
+  releaseType,
   preid,
 }: {
   tagPrefix: string;
-  includePrerelease?: boolean;
+  releaseType?: semver.ReleaseType;
   preid?: string;
 }): Observable<string> {
   return from(gitSemverTags({ tagPrefix }) as Promise<string[]>).pipe(
@@ -25,17 +25,15 @@ export function getLastVersion({
             return true;
           }
 
-          if (includePrerelease) {
-            /* Filter-in everything if preid is not set. */
-            if (preid == null) {
-              return true;
-            }
+          /* Filter-in everything if preid is not set. */
+          if (releaseType && preid == null) {
+            return true;
+          }
 
-            /* Filter-in if preids match. */
-            const [versionPreid] = prerelease;
-            if (versionPreid === preid) {
-              return true;
-            }
+          /* Filter-in if preids match. */
+          const [versionPreid] = prerelease;
+          if (releaseType && versionPreid === preid) {
+            return true;
           }
 
           /* Filter-out everything else.*/

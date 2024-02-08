@@ -49,12 +49,22 @@ describe(getLastVersion.name, () => {
       'my-lib-1.0.0',
     ]);
 
-    const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
+    const tag = await lastValueFrom(
+      getLastVersion({ tagPrefix, releaseType: 'prerelease' }),
+    );
     const tagWithPreidFeat = await lastValueFrom(
-      getLastVersion({ tagPrefix, preid: 'add-feature' }),
+      getLastVersion({
+        tagPrefix,
+        releaseType: 'prerelease',
+        preid: 'add-feature',
+      }),
     );
     const tagWithPreidFix = await lastValueFrom(
-      getLastVersion({ tagPrefix, preid: 'fix-bug' }),
+      getLastVersion({
+        tagPrefix,
+        releaseType: 'prerelease',
+        preid: 'fix-bug',
+      }),
     );
 
     expect(tag).toEqual('2.1.0-z-is-the-last-letter-in-alphabet.0');
@@ -69,9 +79,7 @@ describe(getLastVersion.name, () => {
       'my-lib-1.0.0',
     ]);
 
-    const tag = await lastValueFrom(
-      getLastVersion({ tagPrefix, includePrerelease: false }),
-    );
+    const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
 
     expect(tag).toEqual('2.0.0');
   });
