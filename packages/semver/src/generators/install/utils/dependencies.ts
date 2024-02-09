@@ -92,7 +92,7 @@ function _addHuskyConfig(tree: Tree) {
     if (!hasHusky) {
       packageJson.scripts = {
         ...packageJson.scripts,
-        ...{ prepare: 'husky install' },
+        ...{ prepare: 'husky' },
       };
     }
 

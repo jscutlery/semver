@@ -323,7 +323,7 @@ describe('@jscutlery/semver:install', () => {
       const packageJson = readJson(tree, 'package.json');
 
       expect(tree.exists('.husky/commit-msg')).toEqual(true);
-      expect(packageJson.scripts.prepare).toEqual('husky install');
+      expect(packageJson.scripts.prepare).toEqual('husky');
     });
 
     it('does not add husky config if exists', async () => {
