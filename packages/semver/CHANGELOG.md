@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.1.1](https://github.com/jscutlery/semver/compare/semver-5.1.0...semver-5.1.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* **semver:** migrate husky to v9 in npm prepare script ([0dc731b](https://github.com/jscutlery/semver/commit/0dc731badee4501fe036c28363a89cc775ec4e7a))
+
+
+
 # [5.1.0](https://github.com/jscutlery/semver/compare/semver-5.0.0...semver-5.1.0) (2024-02-08)
 
 
