@@ -60,7 +60,7 @@
       "type": "string"
     },
     "tagPrefix": {
-      "description": "Version tag prefix. Default is 'v' with the sync mode and '${projectName}-' independent mode.",
+      "description": "Version tag prefix. Default is 'v' with the sync mode and '{projectName}-' independent mode.",
       "oneOf": [
         {
           "type": "string"
@@ -106,7 +106,7 @@
     "commitMessageFormat": {
       "description": "A string to be used to format the auto-generated release commit message.",
       "type": "string",
-      "default": "chore(${projectName}): release version ${version}"
+      "default": "chore({projectName}): release version {version}"
     },
     "preset": {
       "oneOf": [
