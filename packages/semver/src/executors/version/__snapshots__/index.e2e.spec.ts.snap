@@ -13,28 +13,21 @@ exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate 
 
 - Test Bot
 
-# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
-
 ## [0.2.0](///compare/b-0.1.0...b-0.2.0) (yyyy-mm-dd)
-
 
 ### Features
 
-* **b:** 🚀 new feature xxxxxxx
+- **b:** 🚀 new feature xxxxxxx
 
 ## 0.1.0 (yyyy-mm-dd)
 
-
 ### Features
 
-* **b:** 🚀 new feature xxxxxxx
-
+- **b:** 🚀 new feature xxxxxxx
 
 ### Bug Fixes
 
-* **b:** 🐞 fix bug xxxxxxx
+- **b:** 🐞 fix bug xxxxxxx
 "
 `;
 

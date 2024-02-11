@@ -10,6 +10,7 @@ import {
   TargetConfiguration,
 } from '@nx/devkit';
 import { VersionBuilderSchema } from '../../executors/version/schema';
+import { defaultHeader } from '../../executors/version/utils/changelog';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
@@ -59,6 +60,7 @@ export default function migrate(tree: Tree, options: { skipFormat: boolean }) {
 
   semverProjects.forEach(([projectName, projectConfig]) => {
     removeSemverTargets(tree, projectName, projectConfig);
+    removeSemverChangelogHeader(tree, projectConfig);
   });
 
   return !options.skipFormat && formatFiles(tree);
@@ -158,4 +160,21 @@ function getSemverOptions(
   projectConfig: ProjectConfiguration,
 ): Partial<VersionBuilderSchema> {
   return findVersionTarget(projectConfig)?.[1].options ?? {};
+}
+
+function removeSemverChangelogHeader(
+  tree: Tree,
+  projectConfig: ProjectConfiguration,
+) {
+  const changelog = projectConfig.root + '/CHANGELOG.md';
+  if (tree.exists(changelog)) {
+    const content = tree.read(changelog)!.toString('utf-8');
+    tree.write(
+      changelog,
+      content.replace(
+        getSemverOptions(projectConfig).changelogHeader ?? defaultHeader,
+        '',
+      ),
+    );
+  }
 }
