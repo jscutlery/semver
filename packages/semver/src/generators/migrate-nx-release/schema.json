@@ -8,6 +8,11 @@
       "description": "Skip formatting files",
       "type": "boolean",
       "default": false
+    },
+    "skipInstall": {
+      "description": "Skip install dependencies",
+      "type": "boolean",
+      "default": false
     }
   },
   "required": []

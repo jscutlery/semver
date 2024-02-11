@@ -8,13 +8,18 @@ import {
   formatFiles,
   writeJson,
   TargetConfiguration,
+  installPackagesTask,
+  updateJson,
 } from '@nx/devkit';
 import { VersionBuilderSchema } from '../../executors/version/schema';
 import { defaultHeader } from '../../executors/version/utils/changelog';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-export default function migrate(tree: Tree, options: { skipFormat: boolean }) {
+export default async function migrate(
+  tree: Tree,
+  options: { skipFormat: boolean; skipInstall: boolean },
+) {
   const projects = Array.from(getProjects(tree));
   const syncModeDetected = projects.some(([, projectConfig]) => {
     return getSemverOptions(projectConfig).syncVersions === true;
@@ -63,7 +68,21 @@ export default function migrate(tree: Tree, options: { skipFormat: boolean }) {
     removeSemverChangelogHeader(tree, projectConfig);
   });
 
-  return !options.skipFormat && formatFiles(tree);
+  updateJson(tree, 'package.json', (packageJson) => {
+    ['@jscutlery/semver', 'ngx-deploy-npm'].forEach((dep) => {
+      delete packageJson?.dependencies?.[dep];
+      delete packageJson?.devDependencies?.[dep];
+    });
+    return packageJson;
+  });
+
+  if (!options.skipFormat) {
+    await formatFiles(tree);
+  }
+
+  return () => {
+    !options.skipInstall && installPackagesTask(tree);
+  };
 }
 
 function removeSemverTargets(

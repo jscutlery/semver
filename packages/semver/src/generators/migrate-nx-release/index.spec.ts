@@ -7,6 +7,7 @@ import {
   addProjectConfiguration,
   getProjects,
   logger,
+  readJson,
   readNxJson,
 } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
@@ -20,12 +21,14 @@ describe('Native Nx Release Migration', () => {
   let tree: Tree;
   let loggerInfoSpy: jest.SpyInstance;
 
+  const options = { skipFormat: true, skipInstall: false };
+
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace();
     loggerInfoSpy = jest.spyOn(logger, 'info').mockImplementation();
   });
 
-  it('should bail out if sync mode is detected', () => {
+  it('should bail out if sync mode is detected', async () => {
     addProjectConfiguration(tree, 'a', {
       root: '.',
       targets: {
@@ -38,7 +41,7 @@ describe('Native Nx Release Migration', () => {
       },
     });
 
-    migrate(tree, { skipFormat: true });
+    await migrate(tree, options);
 
     const projectConfig = getProjects(tree).get('a');
     expect(projectConfig!.targets!.version).toBeDefined();
@@ -47,7 +50,7 @@ describe('Native Nx Release Migration', () => {
     );
   });
 
-  it('should bail out if no semver config is detected', () => {
+  it('should bail out if no semver config is detected', async () => {
     addProjectConfiguration(tree, 'a', {
       root: '.',
       targets: {
@@ -57,7 +60,7 @@ describe('Native Nx Release Migration', () => {
       },
     });
 
-    migrate(tree, { skipFormat: true });
+    await migrate(tree, options);
 
     expect(loggerInfoSpy).toHaveBeenCalledWith(
       'No config detected, skipping migration.',
@@ -65,7 +68,7 @@ describe('Native Nx Release Migration', () => {
     expect(readNxJson(tree)!.release).toBeUndefined();
   });
 
-  it('should log if multiple semver configs are detected', () => {
+  it('should log if multiple semver configs are detected', async () => {
     addProjectConfiguration(tree, 'a', {
       root: 'libs/a',
       targets: {
@@ -89,7 +92,7 @@ describe('Native Nx Release Migration', () => {
       },
     });
 
-    migrate(tree, { skipFormat: true });
+    await migrate(tree, options);
 
     expect(loggerInfoSpy).toHaveBeenCalledWith(
       'Multiple semver configs detected, the migration can eventually break your workspace. Please verify the changes.',
@@ -99,8 +102,8 @@ describe('Native Nx Release Migration', () => {
   describe('Nx Release Configuration', () => {
     let release: NxJsonConfiguration['release'];
 
-    function setupSemver(
-      options: Partial<VersionBuilderSchema> = {},
+    async function setupSemver(
+      versionOpts: Partial<VersionBuilderSchema> = {},
       targets: ProjectConfiguration['targets'] = {},
     ) {
       addProjectConfiguration(tree, 'a', {
@@ -108,33 +111,33 @@ describe('Native Nx Release Migration', () => {
         targets: {
           version: {
             executor: '@jscutlery/semver:version',
-            options,
+            options: versionOpts,
           },
           ...targets,
         },
       });
 
-      migrate(tree, { skipFormat: true });
+      await migrate(tree, options);
 
       release = readNxJson(tree)!.release;
     }
 
-    it('should configure release.releaseTagPattern', () => {
-      setupSemver();
+    it('should configure release.releaseTagPattern', async () => {
+      await setupSemver();
 
       expect(release!.releaseTagPattern).toBe(`{projectName}-{version}`);
     });
 
-    it('should configure projects', () => {
-      setupSemver();
+    it('should configure projects', async () => {
+      await setupSemver();
 
       expect(release!.projects).toEqual(['a']);
       expect(release!.version!.conventionalCommits).toEqual(true);
       expect(release!.projectsRelationship).toEqual('independent');
     });
 
-    it('should configure git with --skipCommit', () => {
-      setupSemver({ skipCommit: true });
+    it('should configure git with --skipCommit', async () => {
+      await setupSemver({ skipCommit: true });
 
       expect(release).toEqual(
         expect.objectContaining({
@@ -145,8 +148,8 @@ describe('Native Nx Release Migration', () => {
       );
     });
 
-    it('should configure github release', () => {
-      setupSemver(
+    it('should configure github release', async () => {
+      await setupSemver(
         { postTargets: ['github'] },
         { github: { executor: '@jscutlery/semver:github' } },
       );
@@ -159,7 +162,7 @@ describe('Native Nx Release Migration', () => {
   });
 
   describe('Cleanup @jscutlery/semver', () => {
-    it('should remove version target', () => {
+    it('should remove version target', async () => {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
@@ -169,13 +172,13 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree, { skipFormat: true });
+      await migrate(tree, options);
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.version).toBeUndefined();
     });
 
-    it('should remove github post-target', () => {
+    it('should remove github post-target', async () => {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
@@ -194,13 +197,13 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree, { skipFormat: true });
+      await migrate(tree, options);
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.github).toBeUndefined();
     });
 
-    it('should remove npm post-target (ngx-deploy-npm)', () => {
+    it('should remove npm post-target (ngx-deploy-npm)', async () => {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
@@ -219,14 +222,14 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree, { skipFormat: true });
+      await migrate(tree, options);
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.npm).toBeUndefined();
       expect(projectConfig!.targets!.build).toBeDefined();
     });
 
-    it('should remove npm post-target (custom npm publish command)', () => {
+    it('should remove npm post-target (custom npm publish command)', async () => {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
@@ -245,14 +248,14 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree, { skipFormat: true });
+      await migrate(tree, options);
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.npm).toBeUndefined();
       expect(projectConfig!.targets!.build).toBeDefined();
     });
 
-    it('should keep build post-target', () => {
+    it('should keep build post-target', async () => {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
@@ -268,13 +271,42 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree, { skipFormat: true });
+      await migrate(tree, options);
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.build).toBeDefined();
     });
 
-    it.todo('should remove @jscutlery/semver from package.json');
+    it('should remove dependencies from package.json', async () => {
+      tree.write(
+        'package.json',
+        JSON.stringify(
+          {
+            devDependencies: {
+              '@jscutlery/semver': '0.0.0',
+              'ngx-deploy-npm': '0.0.0',
+            },
+          },
+          null,
+          2,
+        ),
+      );
+
+      addProjectConfiguration(tree, 'a', {
+        root: 'libs/a',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+          },
+        },
+      });
+
+      await migrate(tree, options);
+
+      const packageJson = readJson(tree, 'package.json');
+      expect(packageJson.devDependencies['@jscutlery/semver']).toBeUndefined();
+      expect(packageJson.devDependencies['ngx-deploy-npm']).toBeUndefined();
+    });
   });
 
   it.todo('should inform about detected ci setup and suggest how to update it');
