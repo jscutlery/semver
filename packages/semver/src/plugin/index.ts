@@ -4,7 +4,6 @@ import {
   TargetConfiguration,
   readJsonFile,
 } from '@nx/devkit';
-import { PackageJson } from 'nx/src/utils/package-json';
 import { dirname, resolve } from 'path';
 
 interface Options {
@@ -24,12 +23,6 @@ export const createNodes: CreateNodes<Options> = [
     opts.githubRelease ??= true;
 
     const projectRoot = dirname(packageJsonPath);
-    // Do not augment project if package.json is private.
-    const packageJson = readJsonFile<PackageJson>(packageJsonPath);
-    if (packageJson.private === undefined || packageJson.private === true) {
-      return {};
-    }
-
     const projectConfig = readJsonFile<ProjectConfiguration>(
       resolve(projectRoot, 'project.json'),
     );
