@@ -5,6 +5,11 @@
       "schema": "./src/generators/install/schema.json",
       "factory": "./src/generators/install",
       "description": "Add @jscutlery/semver to the workspace."
+    },
+    "migrate-nx-release": {
+      "schema": "./src/generators/migrate-nx-release/schema.json",
+      "factory": "./src/generators/migrate-nx-release/index",
+      "description": "Migrate @jscutlery/semver to Nx release."
     }
   },
   "required": [],

@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "migrate-nx-release",
+  "title": "Migrate to Nx release generator.",
+  "type": "object",
+  "properties": {},
+  "required": []
+}
