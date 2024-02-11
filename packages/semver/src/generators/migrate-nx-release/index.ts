@@ -31,7 +31,7 @@ export default function migrate(tree: Tree) {
   );
 
   if (semverProjects.length === 0) {
-    logger.info('No @jscutlery/semver config detected, skipping migration.');
+    logger.info('No config detected, skipping migration.');
     return;
   }
 
@@ -49,11 +49,18 @@ function removeSemverTargets(
   projectName: string,
   projectConfig: ProjectConfiguration,
 ): void {
-  logger.info(
-    `[${projectName}] @jscutlery/semver config detected, removing it.`,
-  );
+  logger.info(`[${projectName}] config detected, removing it.`);
   const [versionTarget, targetConfig] = findVersionTarget(projectConfig)!;
-  const postTargets = targetConfig.options?.postTargets ?? [];
+  const postTargets = (targetConfig.options?.postTargets ?? []).filter(
+    (target) => {
+      const executor = projectConfig.targets?.[target].executor;
+      return (
+        executor?.includes('semver') ||
+        executor?.includes('ngx-deploy-npm') ||
+        false
+      );
+    },
+  );
 
   if (postTargets.length > 0) {
     logger.info(
@@ -89,7 +96,7 @@ function configureNxRelease(
   const tagPrefix = options.tagPrefix ?? '{projectName}-';
   const skipProjectChangelog = options.skipProjectChangelog ?? false;
   const githubRelease = Object.values(semverConfig.targets!).some(
-    (target) => target.executor === '@jscutlery/semver:github',
+    ({ executor }) => executor?.includes('semver:github') ?? false,
   );
 
   nxJson.release ??= {
@@ -121,8 +128,7 @@ function findVersionTarget(
   projectConfig: ProjectConfiguration,
 ): [string, TargetConfiguration<VersionBuilderSchema>] | undefined {
   return Object.entries(projectConfig.targets ?? {}).find(
-    ([, targetOptions]) =>
-      targetOptions.executor === '@jscutlery/semver:version',
+    ([, { executor }]) => executor?.includes('semver:version') ?? false,
   );
 }
 
