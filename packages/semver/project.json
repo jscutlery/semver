@@ -5,29 +5,6 @@
   "projectType": "library",
   "generators": {},
   "targets": {
-    "version": {
-      "executor": "./dist/packages/semver:version",
-      "options": {
-        "push": true,
-        "noVerify": true,
-        "postTargets": ["build", "publish", "github"],
-        "commitMessageFormat": "release({projectName}): 🎸 cut release to {version}"
-      }
-    },
-    "github": {
-      "executor": "./dist/packages/semver:github",
-      "options": {
-        "tag": "{tag}",
-        "notes": "{notes}"
-      }
-    },
-    "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/packages/semver"
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {

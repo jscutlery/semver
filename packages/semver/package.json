@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "executors": "./executors.json",
   "generators": "./generators.json",
+  "private": false,
   "nx-migrations": {
     "migrations": "./migrations.json"
   },
