@@ -1,5 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate CHANGELOG.md: b-0.3.0 1`] = `
+"## 0.3.0 (yyyy-mm-dd)
+
+
+### 🚀 Features
+
+- **b:** 🚀 new feature
+
+
+### ❤️  Thank You
+
+- Test Bot
+
+# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## [0.2.0](///compare/b-0.1.0...b-0.2.0) (yyyy-mm-dd)
+
+
+### Features
+
+* **b:** 🚀 new feature xxxxxxx
+
+## 0.1.0 (yyyy-mm-dd)
+
+
+### Features
+
+* **b:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **b:** 🐞 fix bug xxxxxxx
+"
+`;
+
 exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (breaking change) should generate CHANGELOG.md: a-1.0.0 1`] = `
 "# Changelog
 

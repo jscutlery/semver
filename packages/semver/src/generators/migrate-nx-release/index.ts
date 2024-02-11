@@ -112,9 +112,7 @@ function configureNxRelease(
     },
     git: {
       commit: !options.skipCommit ?? true,
-      commitMessage:
-        options.commitMessageFormat ??
-        'chore({projectName}): release version {version}',
+      commitArgs: '--no-verify',
     },
     changelog: {
       automaticFromRef: true,

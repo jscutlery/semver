@@ -113,20 +113,6 @@ describe('Native Nx Release Migration', () => {
       );
     });
 
-    it('should configure commitMessage with --commitMessageFormat', () => {
-      setupSemver({
-        commitMessageFormat: 'chore(release): release v{version}',
-      });
-
-      expect(release).toEqual(
-        expect.objectContaining({
-          git: expect.objectContaining({
-            commitMessage: 'chore(release): release v{version}',
-          }),
-        }),
-      );
-    });
-
     it('should configure github release', () => {
       setupSemver(
         { postTargets: ['github'] },
