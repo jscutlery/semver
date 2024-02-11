@@ -35,6 +35,27 @@ export default function migrate(tree: Tree, options: { skipFormat: boolean }) {
     return;
   }
 
+  const multipleSemverConfigsDetected =
+    semverProjects
+      .map(
+        ([, projectConfig]) =>
+          findVersionTarget(projectConfig) as [
+            string,
+            TargetConfiguration<VersionBuilderSchema>,
+          ],
+      )
+      .every(
+        ([, { options }], _, [[, { options: baseOptions }]]) =>
+          JSON.stringify(options) === JSON.stringify(baseOptions),
+      ) === false;
+
+  if (multipleSemverConfigsDetected) {
+    logger.info(
+      'Multiple semver configs detected, skipping migration. Please migrate your workspace manually.',
+    );
+    return;
+  }
+
   configureNxRelease(tree, semverProjects);
 
   semverProjects.forEach(([projectName, projectConfig]) => {

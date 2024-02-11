@@ -52,7 +52,7 @@ describe('Native Nx Release Migration', () => {
       root: '.',
       targets: {
         build: {
-          executor: 'version',
+          executor: 'build',
         },
       },
     });
@@ -62,6 +62,39 @@ describe('Native Nx Release Migration', () => {
     expect(loggerInfoSpy).toHaveBeenCalledWith(
       'No config detected, skipping migration.',
     );
+    expect(readNxJson(tree)!.release).toBeUndefined();
+  });
+
+  it('should bail out if multiple incompatible semver configs are detected', () => {
+    addProjectConfiguration(tree, 'a', {
+      root: 'libs/a',
+      targets: {
+        version: {
+          executor: '@jscutlery/semver:version',
+          options: {
+            commitMessageFormat: 'chore(release): {version}',
+          },
+        },
+      },
+    });
+    addProjectConfiguration(tree, 'b', {
+      root: 'libs/b',
+      targets: {
+        version: {
+          executor: '@jscutlery/semver:version',
+          options: {
+            commitMessageFormat: 'release: {version}',
+          },
+        },
+      },
+    });
+
+    migrate(tree, { skipFormat: true });
+
+    expect(loggerInfoSpy).toHaveBeenCalledWith(
+      'Multiple semver configs detected, skipping migration. Please migrate your workspace manually.',
+    );
+    expect(readNxJson(tree)!.release).toBeUndefined();
   });
 
   describe('Nx Release Configuration', () => {
