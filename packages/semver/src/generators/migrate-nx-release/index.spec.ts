@@ -38,7 +38,7 @@ describe('Native Nx Release Migration', () => {
       },
     });
 
-    migrate(tree);
+    migrate(tree, { skipFormat: true });
 
     const projectConfig = getProjects(tree).get('a');
     expect(projectConfig!.targets!.version).toBeDefined();
@@ -57,10 +57,10 @@ describe('Native Nx Release Migration', () => {
       },
     });
 
-    migrate(tree);
+    migrate(tree, { skipFormat: true });
 
     expect(loggerInfoSpy).toHaveBeenCalledWith(
-      'No @jscutlery/semver config detected, skipping migration.',
+      'No config detected, skipping migration.',
     );
   });
 
@@ -82,7 +82,7 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree);
+      migrate(tree, { skipFormat: true });
 
       release = readNxJson(tree)!.release;
     }
@@ -151,36 +151,109 @@ describe('Native Nx Release Migration', () => {
         },
       });
 
-      migrate(tree);
+      migrate(tree, { skipFormat: true });
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.version).toBeUndefined();
     });
 
-    it('should remove post targets', () => {
+    it('should remove github post-target', () => {
       addProjectConfiguration(tree, 'a', {
         root: 'libs/a',
         targets: {
           version: {
             executor: '@jscutlery/semver:version',
             options: {
-              postTargets: ['npm', 'github'],
+              postTargets: ['build', 'github'],
             },
           },
-          npm: {
-            command: 'exit 0',
-          },
           github: {
+            executor: '@jscutlery/semver:github',
+          },
+          build: {
             command: 'exit 0',
           },
         },
       });
 
-      migrate(tree);
+      migrate(tree, { skipFormat: true });
+
+      const projectConfig = getProjects(tree).get('a');
+      expect(projectConfig!.targets!.github).toBeUndefined();
+    });
+
+    it('should remove npm post-target (ngx-deploy-npm)', () => {
+      addProjectConfiguration(tree, 'a', {
+        root: 'libs/a',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              postTargets: ['build', 'npm'],
+            },
+          },
+          npm: {
+            executor: 'ngx-deploy-npm:deploy',
+          },
+          build: {
+            command: 'exit 0',
+          },
+        },
+      });
+
+      migrate(tree, { skipFormat: true });
 
       const projectConfig = getProjects(tree).get('a');
       expect(projectConfig!.targets!.npm).toBeUndefined();
-      expect(projectConfig!.targets!.github).toBeUndefined();
+      expect(projectConfig!.targets!.build).toBeDefined();
+    });
+
+    it('should remove npm post-target (custom npm publish command)', () => {
+      addProjectConfiguration(tree, 'a', {
+        root: 'libs/a',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              postTargets: ['build', 'npm'],
+            },
+          },
+          npm: {
+            command: 'npm publish dist/libs/a',
+          },
+          build: {
+            command: 'exit 0',
+          },
+        },
+      });
+
+      migrate(tree, { skipFormat: true });
+
+      const projectConfig = getProjects(tree).get('a');
+      expect(projectConfig!.targets!.npm).toBeUndefined();
+      expect(projectConfig!.targets!.build).toBeDefined();
+    });
+
+    it('should keep build post-target', () => {
+      addProjectConfiguration(tree, 'a', {
+        root: 'libs/a',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              postTargets: ['build'],
+            },
+          },
+          build: {
+            command: 'exit 0',
+          },
+        },
+      });
+
+      migrate(tree, { skipFormat: true });
+
+      const projectConfig = getProjects(tree).get('a');
+      expect(projectConfig!.targets!.build).toBeDefined();
     });
 
     it.todo('should remove @jscutlery/semver from package.json');

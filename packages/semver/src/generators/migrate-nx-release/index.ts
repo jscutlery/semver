@@ -13,7 +13,7 @@ import { VersionBuilderSchema } from '../../executors/version/schema';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-export default function migrate(tree: Tree) {
+export default function migrate(tree: Tree, options: { skipFormat: boolean }) {
   const projects = Array.from(getProjects(tree));
   const syncModeDetected = projects.some(([, projectConfig]) => {
     return getSemverOptions(projectConfig).syncVersions === true;
@@ -41,7 +41,7 @@ export default function migrate(tree: Tree) {
     removeSemverTargets(tree, projectName, projectConfig);
   });
 
-  return formatFiles(tree);
+  return !options.skipFormat && formatFiles(tree);
 }
 
 function removeSemverTargets(
