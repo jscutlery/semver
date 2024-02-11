@@ -164,7 +164,7 @@ function configureNxRelease(
     },
     git: {
       commit: !options.skipCommit ?? true,
-      commitArgs: '--no-verify',
+      ...(tree.exists('.husky') ? { commitArgs: '--no-verify' } : {}),
     },
     changelog: {
       automaticFromRef: true,
