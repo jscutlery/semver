@@ -41,7 +41,7 @@ export default function migrate(tree: Tree) {
     removeSemverTargets(tree, projectName, projectConfig);
   });
 
-  return () => formatFiles(tree);
+  return formatFiles(tree);
 }
 
 function removeSemverTargets(
