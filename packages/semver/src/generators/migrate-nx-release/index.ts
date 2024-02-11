@@ -76,6 +76,17 @@ export default async function migrate(
     return packageJson;
   });
 
+  if (
+    tree.exists('.github') ||
+    tree.exists('.gitlab-ci.yml') ||
+    tree.exists('.circleci') ||
+    tree.exists('.travis.yml')
+  ) {
+    logger.info(
+      'CI setup detected, please update your CI configuration to use Nx Release.',
+    );
+  }
+
   if (!options.skipFormat) {
     await formatFiles(tree);
   }

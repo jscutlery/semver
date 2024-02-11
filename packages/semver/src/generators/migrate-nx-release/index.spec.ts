@@ -308,6 +308,4 @@ describe('Native Nx Release Migration', () => {
       expect(packageJson.devDependencies['ngx-deploy-npm']).toBeUndefined();
     });
   });
-
-  it.todo('should inform about detected ci setup and suggest how to update it');
 });
