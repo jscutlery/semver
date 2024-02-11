@@ -93,26 +93,18 @@ describe('Native Nx Release Migration', () => {
       expect(release!.releaseTagPattern).toBe(`{projectName}-{version}`);
     });
 
-    it('should configure changelog', () => {
+    it('should configure projects', () => {
       setupSemver();
 
-      expect(release!.changelog).toEqual({
-        git: {
-          commit: true,
-          tag: true,
-        },
-        workspaceChangelog: {
-          createRelease: false,
-          file: false,
-        },
-        projectChangelogs: true,
-      });
+      expect(release!.projects).toEqual(['a']);
+      expect(release!.version!.conventionalCommits).toEqual(true);
+      expect(release!.projectsRelationship).toEqual('independent');
     });
 
     it('should configure git with --skipCommit', () => {
       setupSemver({ skipCommit: true });
 
-      expect(release!.changelog).toEqual(
+      expect(release).toEqual(
         expect.objectContaining({
           git: expect.objectContaining({
             commit: false,
@@ -126,7 +118,7 @@ describe('Native Nx Release Migration', () => {
         commitMessageFormat: 'chore(release): release v{version}',
       });
 
-      expect(release!.changelog).toEqual(
+      expect(release).toEqual(
         expect.objectContaining({
           git: expect.objectContaining({
             commitMessage: 'chore(release): release v{version}',
@@ -141,29 +133,9 @@ describe('Native Nx Release Migration', () => {
         { github: { executor: '@jscutlery/semver:github' } },
       );
 
-      expect(release!.changelog!.workspaceChangelog).toEqual({
-        createRelease: 'github',
-        file: false,
-      });
-    });
-
-    it('should configure release groups', () => {
-      setupSemver(
-        { postTargets: ['npm'] },
-        { npm: { executor: '@jscutlery/semver:npm' } },
-      );
-
-      expect(release!.groups).toEqual({
-        npm: {
-          projects: ['a'],
-          projectsRelationship: 'independent',
-          version: {
-            generatorOptions: {
-              currentVersionResolver: 'git-tag',
-              specifierSource: 'conventional-commits',
-            },
-          },
-        },
+      expect(release!.changelog).toEqual({
+        automaticFromRef: true,
+        projectChangelogs: { createRelease: 'github' },
       });
     });
   });

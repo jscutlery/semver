@@ -11,6 +11,8 @@ import {
 } from '@nx/devkit';
 import { VersionBuilderSchema } from '../../executors/version/schema';
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 export default function migrate(tree: Tree) {
   const projects = Array.from(getProjects(tree));
   const syncModeDetected = projects.some(([, projectConfig]) => {
@@ -92,30 +94,22 @@ function configureNxRelease(
 
   nxJson.release ??= {
     releaseTagPattern: `${tagPrefix}{version}`,
-    changelog: {
-      git: {
-        commit: !options.skipCommit ?? true,
-        ...(options.commitMessageFormat
-          ? { commitMessage: options.commitMessageFormat }
-          : {}),
-        tag: true,
-      },
-      workspaceChangelog: {
-        createRelease: githubRelease ? 'github' : false,
-        file: false,
-      },
-      projectChangelogs: !skipProjectChangelog,
+    projects: semverProjects.map(([projectName]) => projectName),
+    projectsRelationship: 'independent',
+    version: {
+      conventionalCommits: true,
     },
-    groups: {
-      npm: {
-        projects: semverProjects.map(([projectName]) => projectName),
-        projectsRelationship: 'independent',
-        version: {
-          generatorOptions: {
-            currentVersionResolver: 'git-tag',
-            specifierSource: 'conventional-commits',
-          },
-        },
+    git: {
+      commit: !options.skipCommit ?? true,
+      commitMessage:
+        options.commitMessageFormat ??
+        'chore({projectName}): release version {version}',
+    },
+    changelog: {
+      automaticFromRef: true,
+      projectChangelogs: {
+        createRelease: githubRelease ? 'github' : false,
+        ...(skipProjectChangelog ? { file: false } : {}),
       },
     },
   };
