@@ -57,6 +57,10 @@ function removeSemverTargets(
       return (
         executor?.includes('semver') ||
         executor?.includes('ngx-deploy-npm') ||
+        // Drop targets defined with both format:
+        // { command: "npm publish" }
+        // { executor: "nx:run-commands", options: { commands: "npm publish" } }
+        /npm publish/.test(JSON.stringify(projectConfig.targets?.[target])) ||
         false
       );
     },
