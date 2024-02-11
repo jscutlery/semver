@@ -65,7 +65,7 @@ describe('Native Nx Release Migration', () => {
     expect(readNxJson(tree)!.release).toBeUndefined();
   });
 
-  it('should bail out if multiple incompatible semver configs are detected', () => {
+  it('should log if multiple semver configs are detected', () => {
     addProjectConfiguration(tree, 'a', {
       root: 'libs/a',
       targets: {
@@ -92,9 +92,8 @@ describe('Native Nx Release Migration', () => {
     migrate(tree, { skipFormat: true });
 
     expect(loggerInfoSpy).toHaveBeenCalledWith(
-      'Multiple semver configs detected, skipping migration. Please migrate your workspace manually.',
+      'Multiple semver configs detected, the migration can eventually break your workspace. Please verify the changes.',
     );
-    expect(readNxJson(tree)!.release).toBeUndefined();
   });
 
   describe('Nx Release Configuration', () => {

@@ -51,9 +51,8 @@ export default function migrate(tree: Tree, options: { skipFormat: boolean }) {
 
   if (multipleSemverConfigsDetected) {
     logger.info(
-      'Multiple semver configs detected, skipping migration. Please migrate your workspace manually.',
+      'Multiple semver configs detected, the migration can eventually break your workspace. Please verify the changes.',
     );
-    return;
   }
 
   configureNxRelease(tree, semverProjects);
