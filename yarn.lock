@@ -4174,10 +4174,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.4.2":
-  version: 16.4.2
-  resolution: "dotenv@npm:16.4.2"
-  checksum: 10/a6069f3bed960f9bdb5c2e55df8b4d121e7f151441b1ce129600597d7717f7bfda7fa250706b1fbe06bc05b2e764d6649ecedb46dd95455f490882bd324a3ac1
+"dotenv@npm:16.4.3":
+  version: 16.4.3
+  resolution: "dotenv@npm:16.4.3"
+  checksum: 10/f07db902c62c239aef7a7b696b21dfab8e95bf5883bcf23c6b9b55f42578d18b842e6257b4f4ecfdbd024a3ee9949fbaaa4c84807de7ba037c74fe3c70785198
   languageName: node
   linkType: hard
 
@@ -5967,7 +5967,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:6.21.0"
     "@typescript-eslint/parser": "npm:6.21.0"
     all-contributors-cli: "npm:^6.19.0"
-    dotenv: "npm:16.4.2"
+    dotenv: "npm:16.4.3"
     eslint: "npm:8.56.0"
     eslint-config-prettier: "npm:9.1.0"
     husky: "npm:^9.0.0"
