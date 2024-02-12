@@ -26,6 +26,7 @@ describe('Native Nx Release Migration', () => {
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace();
     loggerInfoSpy = jest.spyOn(logger, 'info').mockImplementation();
+    loggerInfoSpy.mockReset();
   });
 
   it('should bail out if sync mode is detected', async () => {
@@ -306,6 +307,68 @@ describe('Native Nx Release Migration', () => {
       const packageJson = readJson(tree, 'package.json');
       expect(packageJson.devDependencies['@jscutlery/semver']).toBeUndefined();
       expect(packageJson.devDependencies['ngx-deploy-npm']).toBeUndefined();
+    });
+
+    it('should inform about CI setup if config detected', async () => {
+      addProjectConfiguration(tree, 'a', {
+        root: 'libs/a',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+          },
+        },
+      });
+      tree.write('.gitlab-ci.yml', '');
+
+      await migrate(tree, options);
+
+      expect(loggerInfoSpy).toHaveBeenCalledWith(
+        'CI setup detected, please update your CI configuration to use Nx Release.',
+      );
+    });
+
+    it('should remove targetDefaults', async () => {
+      addProjectConfiguration(tree, 'a', {
+        root: 'libs/a',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+          },
+        },
+      });
+
+      tree.write(
+        'nx.json',
+        JSON.stringify(
+          {
+            targetDefaults: {
+              version: {
+                cache: false,
+              },
+              '@jscutlery/semver:version': {
+                cache: false,
+                options: {
+                  commitMessageFormat: 'chore(release): {version}',
+                },
+              },
+              npm: {
+                command: 'npm publish dist/lib/a',
+              },
+            },
+          },
+          null,
+          2,
+        ),
+      );
+
+      await migrate(tree, options);
+
+      const nxJson = readJson(tree, 'nx.json');
+      expect(
+        nxJson.targetDefaults['@jscutlery/semver:version'],
+      ).toBeUndefined();
+      expect(nxJson.targetDefaults.version).toBeUndefined();
+      expect(nxJson.targetDefaults.npm).toBeUndefined();
     });
   });
 });

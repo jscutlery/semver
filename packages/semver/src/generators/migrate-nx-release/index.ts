@@ -10,6 +10,7 @@ import {
   TargetConfiguration,
   installPackagesTask,
   updateJson,
+  NxJsonConfiguration,
 } from '@nx/devkit';
 import { VersionBuilderSchema } from '../../executors/version/schema';
 import { defaultHeader } from '../../executors/version/utils/changelog';
@@ -66,6 +67,22 @@ export default async function migrate(
   semverProjects.forEach(([projectName, projectConfig]) => {
     removeSemverTargets(tree, projectName, projectConfig);
     removeSemverChangelogHeader(tree, projectConfig);
+  });
+
+  updateJson<NxJsonConfiguration>(tree, 'nx.json', (nxJson) => {
+    Object.entries(nxJson?.targetDefaults ?? {}).forEach(
+      ([targetKey, target]) => {
+        if (
+          targetKey === 'version' ||
+          targetKey.includes('semver') ||
+          targetKey.includes('ngx-deploy-npm') ||
+          /npm publish/.test(JSON.stringify(target))
+        ) {
+          delete nxJson!.targetDefaults![targetKey];
+        }
+      },
+    );
+    return nxJson;
   });
 
   updateJson(tree, 'package.json', (packageJson) => {
