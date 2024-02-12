@@ -400,6 +400,58 @@ describe('@jscutlery/semver', () => {
       });
     });
   });
+
+  describe('@jscutlery/semver:migrate-nx-release', () => {
+    beforeAll(() => {
+      testingWorkspace.runNx(`g @jscutlery/semver:migrate-nx-release`);
+      testingWorkspace.exec(
+        `
+          git add .
+          git commit -m "build: 🛠️ migrate to nx release"
+        `,
+      );
+      testingWorkspace.exec(
+        `
+          echo feat > libs/b/b.txt
+          git add .
+          git commit -m "feat(b): 🚀 new feature"
+        `,
+      );
+      testingWorkspace.runNx(`release --skip-publish`);
+    });
+
+    it('should commit with description', () => {
+      expect(getLastCommitDescription(testingWorkspace.root)).toBe(
+        `chore(release): publish
+
+- project: b 0.3.0`,
+      );
+    });
+
+    it('should tag with version', () => {
+      expect(getLastTag(testingWorkspace.root)).toBe('b-0.3.0');
+    });
+
+    it('should bump package version', () => {
+      expect(readFile(`${testingWorkspace.root}/libs/b/package.json`)).toMatch(
+        /"version": "0.3.0"/,
+      );
+    });
+
+    it('should generate CHANGELOG.md', () => {
+      expect(
+        deterministicChangelog(
+          readFile(`${testingWorkspace.root}/libs/b/CHANGELOG.md`),
+        ),
+      ).toMatchSnapshot('b-0.3.0');
+    });
+
+    it('should version projects independently', () => {
+      expect(getTags(testingWorkspace.root)).toEqual(
+        expect.arrayContaining(['a-1.2.0-alpha.0', 'b-0.3.0', 'd-0.1.0']),
+      );
+    });
+  });
 });
 
 function getLastTag(dir: string) {

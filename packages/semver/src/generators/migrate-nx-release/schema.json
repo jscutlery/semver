@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "migrate-nx-release",
+  "title": "Migrate to Nx release generator.",
+  "type": "object",
+  "properties": {
+    "skipFormat": {
+      "description": "Skip formatting files",
+      "type": "boolean",
+      "default": false
+    },
+    "skipInstall": {
+      "description": "Skip install dependencies",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": []
+}
