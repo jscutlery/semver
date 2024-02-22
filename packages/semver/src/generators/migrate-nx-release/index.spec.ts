@@ -17,7 +17,7 @@ import { VersionBuilderSchema } from '../../executors/version/schema';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-describe('Native Nx Release Migration', () => {
+describe('Nx Release Migration', () => {
   let tree: Tree;
   let loggerInfoSpy: jest.SpyInstance;
 
