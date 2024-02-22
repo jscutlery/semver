@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.2.0](https://github.com/jscutlery/semver/compare/semver-5.1.1...semver-5.2.0) (2024-02-22)
+
+
+### Features
+
+* **semver:** add Nx Release migration generator ([1cb9351](https://github.com/jscutlery/semver/commit/1cb9351c9843e1301d3d68bdf133a5245e799546))
+
+
+
 ## [5.1.1](https://github.com/jscutlery/semver/compare/semver-5.1.0...semver-5.1.1) (2024-02-09)
 
 
