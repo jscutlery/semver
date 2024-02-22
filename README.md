@@ -437,6 +437,23 @@ release:
 
 Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/user/project/deploy_keys/) in order to push to your remote repository.
 
+## Nx Release migration
+
+If you want to migrate to Nx Release, run the following command:
+
+```bash
+nx g @jscutlery/semver:migrate-nx-release
+```
+
+By executing this generator, the existing `@jscutlery/semver` configuration will be removed, and Nx Release will be appropriately configured for your projects.
+
+> [!NOTE]
+> The migration process does not currently support the sync mode.
+> Complex or highly customized configurations may require additional manual adjustments after running the migration generator.
+> After running this generator, you will need to adjust any custom scripts or CI workflows related to versioning and releases to align with the new Nx release workflow.
+
+For more details on using Nx Release, refer to the [official Nx documentation](https://nx.dev/recipes/nx-release/get-started-with-nx-release#get-started-with-nx-release).
+
 ## Compatibility overview with Nx
 
 | Version | Required Package          |
