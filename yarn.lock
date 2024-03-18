@@ -184,9 +184,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-define-polyfill-provider@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@babel/helper-define-polyfill-provider@npm:0.6.0"
+"@babel/helper-define-polyfill-provider@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@babel/helper-define-polyfill-provider@npm:0.6.1"
   dependencies:
     "@babel/helper-compilation-targets": "npm:^7.22.6"
     "@babel/helper-plugin-utils": "npm:^7.22.5"
@@ -195,7 +195,7 @@ __metadata:
     resolve: "npm:^1.14.2"
   peerDependencies:
     "@babel/core": ^7.4.0 || ^8.0.0-0 <8.0.0
-  checksum: 10/1d5de59e4714bbf2e3623d0b312044e6d60f6320d9720784a740e87bbf58f8a143cb480f1ce3994b6f7beb32b97b7eb1e2c008aac7058e076ad97a78695eb2d5
+  checksum: 10/316e7c0f05d2ae233d5fbb622c6339436da8d2b2047be866b64a16e6996c078a23b4adfebbdb33bc6a9882326a6cc20b95daa79a5e0edc92e9730e36d45fa523
   languageName: node
   linkType: hard
 
@@ -2699,16 +2699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 20.11.25
-  resolution: "@types/node@npm:20.11.25"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10/861265f1bbb151404bd8842b595f027a4ff067c61ecff9a37b9f7f53922c18dd532c8e795e8e7675dd8dba056645623fd2b9848d5ef72863ec3609096cd2923e
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:20.11.28":
+"@types/node@npm:*, @types/node@npm:20.11.28":
   version: 20.11.28
   resolution: "@types/node@npm:20.11.28"
   dependencies:
@@ -3278,13 +3269,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.6.0":
-  version: 1.6.7
-  resolution: "axios@npm:1.6.7"
+  version: 1.6.8
+  resolution: "axios@npm:1.6.8"
   dependencies:
-    follow-redirects: "npm:^1.15.4"
+    follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/a1932b089ece759cd261f175d9ebf4d41c8994cf0c0767cda86055c7a19bcfdade8ae3464bf4cec4c8b142f4a657dc664fb77a41855e8376cf38b86d7a86518f
+  checksum: 10/3f9a79eaf1d159544fca9576261ff867cbbff64ed30017848e4210e49f3b01e97cf416390150e6fdf6633f336cd43dc1151f890bbd09c3c01ad60bb0891eee63
   languageName: node
   linkType: hard
 
@@ -3355,15 +3346,15 @@ __metadata:
   linkType: hard
 
 "babel-plugin-polyfill-corejs2@npm:^0.4.8":
-  version: 0.4.9
-  resolution: "babel-plugin-polyfill-corejs2@npm:0.4.9"
+  version: 0.4.10
+  resolution: "babel-plugin-polyfill-corejs2@npm:0.4.10"
   dependencies:
     "@babel/compat-data": "npm:^7.22.6"
-    "@babel/helper-define-polyfill-provider": "npm:^0.6.0"
+    "@babel/helper-define-polyfill-provider": "npm:^0.6.1"
     semver: "npm:^6.3.1"
   peerDependencies:
     "@babel/core": ^7.4.0 || ^8.0.0-0 <8.0.0
-  checksum: 10/e49de0d2667468193e07986270c2ad9ed45f5b58e3605a288296b02a88e1c10a0333277a9d1609eeb64d862851a03cdb62f22d483fd332410d2016d2f4ec0751
+  checksum: 10/9fb5e59a3235eba66fb05060b2a3ecd6923084f100df7526ab74b6272347d7adcf99e17366b82df36e592cde4e82fdb7ae24346a990eced76c7d504cac243400
   languageName: node
   linkType: hard
 
@@ -3593,9 +3584,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001587":
-  version: 1.0.30001596
-  resolution: "caniuse-lite@npm:1.0.30001596"
-  checksum: 10/4124d6e927193ee31bb7237925720263ac837ef0bf6627c67a8217edfe49eefc3a385a4830d4aa92a213576a0aa6006e61c8dd57a644ec65882c15d15f625182
+  version: 1.0.30001599
+  resolution: "caniuse-lite@npm:1.0.30001599"
+  checksum: 10/c9a5ad806fc0d446e4f995d551b840d8fdcbe97958b7f83ff7a255a8ef5e40ca12ca1a508c66b3ab147e19eef932d28772d205c046500dd0740ea9dfb602e2e1
   languageName: node
   linkType: hard
 
@@ -4281,9 +4272,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.699
-  resolution: "electron-to-chromium@npm:1.4.699"
-  checksum: 10/dd09cc21a204fee05349348f3399fc2a2a02b770fc43c746f3f117d870e8614495eb05647d01dfea92bb05bf2f0dd374ce19e6acd7623a1ad785951e193942d3
+  version: 1.4.708
+  resolution: "electron-to-chromium@npm:1.4.708"
+  checksum: 10/a051ea46f9cddbda4218edfff69cdc8007a50554f4875d09706d43d7c1641267e9f81394c07f04e2d0616e989b227fe5ef36433a8b5bcfbb2185a84ebf346334
   languageName: node
   linkType: hard
 
@@ -4756,13 +4747,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.4":
-  version: 1.15.5
-  resolution: "follow-redirects@npm:1.15.5"
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10/d467f13c1c6aa734599b8b369cd7a625b20081af358f6204ff515f6f4116eb440de9c4e0c49f10798eeb0df26c95dd05d5e0d9ddc5786ab1a8a8abefe92929b4
+  checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
   languageName: node
   linkType: hard
 
