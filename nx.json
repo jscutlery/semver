@@ -51,5 +51,16 @@
     ],
     "production": ["default", "!{projectRoot}/src/test-setup.[jt]s"]
   },
+  "plugins": [
+    {
+      "plugin": "@jscutlery/semver",
+      "options": {
+        "npmPublish": true,
+        "githubRelease": true,
+        "noVerify": true,
+        "commitMessageFormat": "release({projectName}): 🎸 cut release to {version}"
+      }
+    }
+  ],
   "parallel": 1
 }
