@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.2.1](https://github.com/jscutlery/semver/compare/semver-5.2.0...semver-5.2.1) (2024-03-24)
+
+
+### Bug Fixes
+
+* **semver:** handle post targets with format `project:target` ([3f61354](https://github.com/jscutlery/semver/commit/3f61354cd4be008ad3413ab63277c519f6a40931))
+
+
+
 # [5.2.0](https://github.com/jscutlery/semver/compare/semver-5.1.1...semver-5.2.0) (2024-02-22)
 
 
