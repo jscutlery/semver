@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.2.2](https://github.com/jscutlery/semver/compare/semver-5.2.1...semver-5.2.2) (2024-03-24)
+
+
+### Bug Fixes
+
+* **semver:** github and gitlab executor impl path ([bb2b1ab](https://github.com/jscutlery/semver/commit/bb2b1ab0b7b3ab56bd36e626ff136f51c0672e0f))
+
+
+
 ## [5.2.1](https://github.com/jscutlery/semver/compare/semver-5.2.0...semver-5.2.1) (2024-03-24)
 
 
