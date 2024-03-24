@@ -6,12 +6,12 @@
       "description": "Automate versioning and CHANGELOG generation."
     },
     "github": {
-      "implementation": "./src/executors/github/executor/executor",
+      "implementation": "./src/executors/github/executor",
       "schema": "./src/executors/github/schema.json",
       "description": "github executor"
     },
     "gitlab": {
-      "implementation": "./src/executors/gitlab/executor/executor",
+      "implementation": "./src/executors/gitlab/executor",
       "schema": "./src/executors/gitlab/schema.json",
       "description": "gitlab executor"
     }
