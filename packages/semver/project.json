@@ -6,7 +6,7 @@
   "generators": {},
   "targets": {
     "version": {
-      "executor": "./dist/packages/semver:version",
+      "executor": "@jscutlery/semver:version",
       "options": {
         "push": true,
         "noVerify": true,
@@ -15,7 +15,7 @@
       }
     },
     "github": {
-      "executor": "./dist/packages/semver:github",
+      "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "{tag}",
         "notes": "{notes}"
