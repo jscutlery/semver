@@ -122,14 +122,18 @@ function removeSemverTargets(
   const [versionTarget, targetConfig] = findVersionTarget(projectConfig)!;
   const postTargets = (targetConfig.options?.postTargets ?? []).filter(
     (target) => {
-      const executor = projectConfig.targets?.[target].executor;
+      // Note: we are not using parseTargetString here as we need to pass the project graph, let's keep it simple.
+      const targetName = target.includes(':') ? target.split(':')[1] : target;
+      const executor = projectConfig.targets?.[targetName].executor;
       return (
         executor?.includes('semver') ||
         executor?.includes('ngx-deploy-npm') ||
         // Drop targets defined with both format:
         // { command: "npm publish" }
         // { executor: "nx:run-commands", options: { commands: "npm publish" } }
-        /npm publish/.test(JSON.stringify(projectConfig.targets?.[target])) ||
+        /npm publish/.test(
+          JSON.stringify(projectConfig.targets?.[targetName]),
+        ) ||
         false
       );
     },
