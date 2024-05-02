@@ -68,5 +68,5 @@
   "resolutions": {
     "rxjs": "7.8.1"
   },
-  "packageManager": "yarn@4.1.1"
+  "packageManager": "yarn@4.2.1"
 }
