@@ -2123,7 +2123,7 @@ __metadata:
     "@types/tmp": "npm:0.2.6"
     chalk: "npm:4.1.2"
     conventional-changelog: "npm:^5.1.0"
-    conventional-changelog-angular: "npm:^7.0.0"
+    conventional-changelog-angular: "npm:^8.0.0"
     conventional-changelog-atom: "npm:^4.0.0"
     conventional-changelog-codemirror: "npm:^4.0.0"
     conventional-changelog-conventionalcommits: "npm:^7.0.2"
@@ -4039,6 +4039,15 @@ __metadata:
   dependencies:
     compare-func: "npm:^2.0.0"
   checksum: 10/e7966d2fee5475e76263f30f8b714b2b592b5bf556df225b7091e5090831fc9a20b99598a7d2997e19c2ef8118c0a3150b1eba290786367b0f55a5ccfa804ec9
+  languageName: node
+  linkType: hard
+
+"conventional-changelog-angular@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "conventional-changelog-angular@npm:8.0.0"
+  dependencies:
+    compare-func: "npm:^2.0.0"
+  checksum: 10/856e4652015d6ff5a192e2051efe4eb0d57534da304a3bfa6eb1e1ed06c995fe6d7c91d46e7a6de95baea52f7ccaad3ffe18260c972d40bad862f85d00c7b437
   languageName: node
   linkType: hard
 
