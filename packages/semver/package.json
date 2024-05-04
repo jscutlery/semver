@@ -20,7 +20,7 @@
     "conventional-changelog": "^5.1.0",
     "conventional-changelog-angular": "^8.0.0",
     "conventional-changelog-atom": "^5.0.0",
-    "conventional-changelog-codemirror": "^4.0.0",
+    "conventional-changelog-codemirror": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^7.0.2",
     "conventional-changelog-ember": "^4.0.0",
     "conventional-changelog-eslint": "^5.0.0",
