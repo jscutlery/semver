@@ -2129,7 +2129,7 @@ __metadata:
     conventional-changelog-conventionalcommits: "npm:^7.0.2"
     conventional-changelog-ember: "npm:^5.0.0"
     conventional-changelog-eslint: "npm:^6.0.0"
-    conventional-changelog-express: "npm:^4.0.0"
+    conventional-changelog-express: "npm:^5.0.0"
     conventional-changelog-jquery: "npm:^5.0.0"
     conventional-changelog-jshint: "npm:^4.0.0"
     conventional-commits-parser: "npm:^5.0.0"
@@ -4138,6 +4138,13 @@ __metadata:
   version: 4.0.0
   resolution: "conventional-changelog-express@npm:4.0.0"
   checksum: 10/09bbb504b24ceb0e457e24f7b28e6cb2b3720163bac7e0a82b36f4c08c0d0bd031a3b9ddd7c223d394bdea09540d93942a1265442add4a9556da59827df89349
+  languageName: node
+  linkType: hard
+
+"conventional-changelog-express@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "conventional-changelog-express@npm:5.0.0"
+  checksum: 10/f344f057a8756a99637029b912d2c0eb569b68e34983e8948c790bb4bfef40758b2760c0ab720b3943354da3fa76d3d77d8f42f4f4564e07240b574c3bad5d6c
   languageName: node
   linkType: hard
 
