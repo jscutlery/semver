@@ -12,12 +12,13 @@ export async function getDependencyRoots({
   projectName,
   releaseAs,
   trackDeps,
+  trackDepsWithReleaseAs,
 }: Required<Pick<VersionBuilderSchema, 'trackDeps'>> &
-  Pick<VersionBuilderSchema, 'releaseAs'> & {
+  Pick<VersionBuilderSchema, 'releaseAs' | 'trackDepsWithReleaseAs'> & {
     projectName: string;
     context: ExecutorContext;
   }): Promise<DependencyRoot[]> {
-  if (trackDeps && !releaseAs) {
+  if (trackDeps && (trackDepsWithReleaseAs || !releaseAs)) {
     // Include any depended-upon libraries in determining the version bump.
     return (await getProjectDependencies(projectName)).map((name) => ({
       name,

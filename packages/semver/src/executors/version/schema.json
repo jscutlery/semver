@@ -84,6 +84,11 @@
       "type": "boolean",
       "default": false
     },
+    "trackDepsWithReleaseAs": {
+      "description": "Track dependencies when using releaseAs to calculate recommended version bump.",
+      "type": "boolean",
+      "default": false
+    },
     "allowEmptyRelease": {
       "description": "Allow bumping versions even if there are no changes in the library.",
       "type": "boolean",

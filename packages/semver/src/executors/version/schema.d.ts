@@ -36,6 +36,7 @@ export interface VersionBuilderSchema {
   syncVersions?: boolean;
   tagPrefix?: string | null;
   trackDeps?: boolean;
+  trackDepsWithReleaseAs?: boolean;
 }
 
 export interface WriteChangelogConfig {
