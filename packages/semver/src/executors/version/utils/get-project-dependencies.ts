@@ -8,10 +8,10 @@ export interface DependencyRoot {
 
 /* istanbul ignore next */
 export async function getDependencyRoots({
-  trackDeps,
-  releaseAs,
-  projectName,
   context,
+  projectName,
+  releaseAs,
+  trackDeps,
 }: Required<Pick<VersionBuilderSchema, 'trackDeps'>> &
   Pick<VersionBuilderSchema, 'releaseAs'> & {
     projectName: string;

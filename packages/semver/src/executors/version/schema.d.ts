@@ -16,26 +16,26 @@ export type ReleaseIdentifier =
 export type PresetOpt = Preset | Record<string, any>; // Custom preset, see: https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.2.0/README.md
 
 export interface VersionBuilderSchema {
+  allowEmptyRelease?: boolean;
+  baseBranch?: string;
+  changelogHeader?: string;
+  commitMessageFormat?: string;
+  commitParserOptions?: CommitParserOptions;
   dryRun?: boolean;
   noVerify?: boolean;
-  push?: boolean;
-  remote?: string;
-  baseBranch?: string;
-  syncVersions?: boolean;
-  skipRootChangelog?: boolean;
-  skipProjectChangelog?: boolean;
-  trackDeps?: boolean;
-  skipCommit?: boolean;
-  releaseAs?: ReleaseIdentifier;
-  preid?: string;
-  changelogHeader?: string;
-  tagPrefix?: string | null;
   postTargets: string[];
-  allowEmptyRelease?: boolean;
-  skipCommitTypes?: string[];
-  commitMessageFormat?: string;
+  preid?: string;
   preset: PresetOpt | 'conventional'; // @TODO: Remove 'conventional' in the next major release.
-  commitParserOptions?: CommitParserOptions;
+  push?: boolean;
+  releaseAs?: ReleaseIdentifier;
+  remote?: string;
+  skipCommit?: boolean;
+  skipCommitTypes?: string[];
+  skipProjectChangelog?: boolean;
+  skipRootChangelog?: boolean;
+  syncVersions?: boolean;
+  tagPrefix?: string | null;
+  trackDeps?: boolean;
 }
 
 export interface WriteChangelogConfig {
