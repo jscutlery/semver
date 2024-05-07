@@ -300,24 +300,24 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
       "executor": "@jscutlery/semver:version",
       "options": {
         "push": true,
-        "postTargets": ["build", "npm", "github"]
-      }
+        "postTargets": ["build", "npm", "github"],
+      },
     },
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "{tag}",
-        "notes": "{notes}"
-      }
+        "notes": "{notes}",
+      },
     },
     "npm": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public",
-        "distFolderPath": "dist/packages/my-package"
-      }
-    }
-  }
+        "distFolderPath": "dist/packages/my-package",
+      },
+    },
+  },
 }
 ```
 
