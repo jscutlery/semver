@@ -141,7 +141,7 @@ describe('Nx Release Migration', () => {
       await setupSemver();
 
       expect(release!.version!.preVersionCommand).toEqual(
-        'npm run nx run-many -t build',
+        'npx nx run-many -t build',
       );
     });
 
