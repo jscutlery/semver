@@ -11,6 +11,7 @@ import {
   installPackagesTask,
   updateJson,
   NxJsonConfiguration,
+  detectPackageManager,
 } from '@nx/devkit';
 import { VersionBuilderSchema } from '../../executors/version/schema';
 import { defaultHeader } from '../../executors/version/utils/changelog';
@@ -176,11 +177,19 @@ function configureNxRelease(
     ({ executor }) => executor?.includes('semver:github') ?? false,
   );
 
-  nxJson.release ??= {
+  if (nxJson.release) {
+    logger.info('Nx Release already configured, overwriting configuration.');
+  }
+
+  const pm = detectPackageManager(tree.root);
+  const runCmd = pm === 'yarn' ? 'yarn' : pm === 'npm' ? 'npx' : 'pnpm exec';
+
+  nxJson.release = {
     releaseTagPattern: `${tagPrefix}{version}`,
     projects: semverProjects.map(([projectName]) => projectName),
     projectsRelationship: 'independent',
     version: {
+      preVersionCommand: `${runCmd} nx run-many -t build`,
       conventionalCommits: true,
     },
     git: {

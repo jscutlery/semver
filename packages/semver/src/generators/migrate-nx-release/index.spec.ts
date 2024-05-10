@@ -137,6 +137,14 @@ describe('Nx Release Migration', () => {
       expect(release!.projectsRelationship).toEqual('independent');
     });
 
+    it('should configure pre version command', async () => {
+      await setupSemver();
+
+      expect(release!.version!.preVersionCommand).toEqual(
+        'npm run nx run-many -t build',
+      );
+    });
+
     it('should configure git with --skipCommit', async () => {
       await setupSemver({ skipCommit: true });
 
