@@ -300,24 +300,24 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
       "executor": "@jscutlery/semver:version",
       "options": {
         "push": true,
-        "postTargets": ["build", "npm", "github"]
-      }
+        "postTargets": ["build", "npm", "github"],
+      },
     },
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
         "tag": "{tag}",
-        "notes": "{notes}"
-      }
+        "notes": "{notes}",
+      },
     },
     "npm": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public",
-        "distFolderPath": "dist/packages/my-package"
-      }
-    }
-  }
+        "distFolderPath": "dist/packages/my-package",
+      },
+    },
+  },
 }
 ```
 
@@ -458,6 +458,7 @@ For more details on using Nx Release, refer to the [official Nx documentation](h
 
 | Version | Required Package          |
 | ------- | ------------------------- |
+| v5.3.0  | `@nx/devkit ^19.0.0`      |
 | v5.0.0  | `@nx/devkit ^18.0.0`      |
 | v4.0.0  | `@nx/devkit ^17.0.0`      |
 | v3.0.0  | `@nx/devkit ^16.0.0`      |
