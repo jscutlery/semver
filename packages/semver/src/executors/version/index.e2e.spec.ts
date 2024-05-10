@@ -433,9 +433,9 @@ describe('@jscutlery/semver', () => {
     });
 
     it('should bump package version', () => {
-      expect(readFile(`${testingWorkspace.root}/libs/b/package.json`)).toMatch(
-        /"version": "0.3.0"/,
-      );
+      expect(
+        readFile(`${testingWorkspace.root}/dist/libs/b/package.json`),
+      ).toMatch(/"version": "0.3.0"/);
     });
 
     it('should generate CHANGELOG.md', () => {
