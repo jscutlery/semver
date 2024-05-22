@@ -30,7 +30,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@angular-devkit/schematics": "17.3.7",
+    "@angular-devkit/schematics": "17.3.8",
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-angular": "^19.0.0",
     "@nx/devkit": "19.0.5",
