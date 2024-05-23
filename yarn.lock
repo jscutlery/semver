@@ -15,9 +15,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:18.0.0":
-  version: 18.0.0
-  resolution: "@angular-devkit/core@npm:18.0.0"
+"@angular-devkit/core@npm:18.0.1":
+  version: 18.0.1
+  resolution: "@angular-devkit/core@npm:18.0.1"
   dependencies:
     ajv: "npm:8.13.0"
     ajv-formats: "npm:3.0.1"
@@ -30,20 +30,20 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 10/e33c08685dee566db1f01eec7083c975d919f56db35ef990f50e91c67ac57c9b5d013a92b4108985092621784605f829338cfc4ad332c0515492c01a5ad15516
+  checksum: 10/507aa25f32c35eef64562140e10e61acb2b70b1e4699459b4ef0df55aea70bd7e61cd5d7cb292fea01f01b9f7680949b90f46459c2282f320743b4f03e435302
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:18.0.0":
-  version: 18.0.0
-  resolution: "@angular-devkit/schematics@npm:18.0.0"
+"@angular-devkit/schematics@npm:18.0.1":
+  version: 18.0.1
+  resolution: "@angular-devkit/schematics@npm:18.0.1"
   dependencies:
-    "@angular-devkit/core": "npm:18.0.0"
+    "@angular-devkit/core": "npm:18.0.1"
     jsonc-parser: "npm:3.2.1"
     magic-string: "npm:0.30.10"
     ora: "npm:5.4.1"
     rxjs: "npm:7.8.1"
-  checksum: 10/f92db0a042b4e52f9ade32e9dc3285b83ccfeb55ea9242b478c5cd636c1e0bb99eff1fe87fafdbeee92654f8a0cf8ec50de63f1be1c59783350a7c556221c03a
+  checksum: 10/86aca0f2cd938f972ee3f1b929726c1470066eb583412cdc01da0ce59335ddb0648ffc67c59cb05ca4260a65ae94de42f79301327f954b87f709a7ab724f1e97
   languageName: node
   linkType: hard
 
@@ -6365,7 +6365,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": "npm:18.0.0"
+    "@angular-devkit/schematics": "npm:18.0.1"
     "@commitlint/cli": "npm:^19.0.0"
     "@commitlint/config-angular": "npm:^19.0.0"
     "@nx/devkit": "npm:19.0.5"
