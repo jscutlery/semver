@@ -7,3 +7,4 @@ CHANGELOG.md
 .all-contributorsrc
 
 /.nx/cache
+/.nx/workspace-data
