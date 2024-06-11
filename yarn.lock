@@ -7042,12 +7042,12 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "ngx-deploy-npm@npm:8.1.0"
+  version: 8.2.0
+  resolution: "ngx-deploy-npm@npm:8.2.0"
   peerDependencies:
-    "@nx/devkit": ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    "@nx/devkit": ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0
     tslib: ^2.3.0
-  checksum: 10/70742fcae0d445c2d5035c3309918897454d4e893a5b55398eddcc4612865138726f90667811e7468f19a095cd2df79e98dd9bc0ce81e9213c9643e965aac622
+  checksum: 10/6429c0d636abea5f72c2716f680b84556c438dcc089f8f4163cc400d52054786f6581c1c50bd8e035c0ebcef8c7f448597b7bf62882c39afd8784ff0d4e3b10f
   languageName: node
   linkType: hard
 
