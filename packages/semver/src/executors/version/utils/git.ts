@@ -48,7 +48,7 @@ function getFormattedCommits({
   since?: string;
 }): Observable<string[]> {
   return new Observable<string>((observer) => {
-    const params: any = {
+    const params: Record<string, string | boolean> = {
       from: since,
       format,
       path: projectRoot,
@@ -143,11 +143,13 @@ export function addToStage({
 export function getFirstCommitRef(): Observable<string> {
   return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
     map((output) => {
-      return output
-        .split('\n')
-        .map((c) => c.trim())
-        .filter(Boolean)
-        .pop()!;
+      return (
+        output
+          .split('\n')
+          .map((c) => c.trim())
+          .filter(Boolean)
+          .pop() ?? ''
+      );
     }),
   );
 }
