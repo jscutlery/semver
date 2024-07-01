@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { EMPTY, map, type Observable } from 'rxjs';
+import { map, type Observable } from 'rxjs';
 import { exec } from '../../common/exec';
 import { logStep } from './logger';
 import { createTemplateString } from './template-string';
