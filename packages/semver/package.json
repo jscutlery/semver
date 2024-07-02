@@ -28,7 +28,7 @@
     "conventional-changelog-jquery": "^6.0.0",
     "conventional-changelog-jshint": "^5.0.0",
     "conventional-commits-parser": "^5.0.0",
-    "conventional-recommended-bump": "^9.0.0",
+    "conventional-recommended-bump": "^10.0.0",
     "detect-indent": "6.1.0",
     "git-semver-tags": "^7.0.1",
     "inquirer": "8.2.6",
@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/conventional-changelog": "^3.1.4 ",
-    "@types/conventional-recommended-bump": "^9.0.2",
+    "@types/conventional-recommended-bump": "^10.0.0",
     "@types/inquirer": "8.2.10",
     "@types/semver": "7.5.8",
     "@types/tmp": "0.2.6"
