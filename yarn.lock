@@ -2148,7 +2148,7 @@ __metadata:
     conventional-changelog-jshint: "npm:^5.0.0"
     conventional-commits-parser: "npm:^5.0.0"
     conventional-recommended-bump: "npm:^9.0.0"
-    detect-indent: "npm:6.1.0"
+    detect-indent: "npm:7.0.1"
     git-semver-tags: "npm:^7.0.1"
     inquirer: "npm:8.2.6"
     rxjs: "npm:7.8.1"
@@ -4413,10 +4413,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-indent@npm:6.1.0":
-  version: 6.1.0
-  resolution: "detect-indent@npm:6.1.0"
-  checksum: 10/ab953a73c72dbd4e8fc68e4ed4bfd92c97eb6c43734af3900add963fd3a9316f3bc0578b018b24198d4c31a358571eff5f0656e81a1f3b9ad5c547d58b2d093d
+"detect-indent@npm:7.0.1":
+  version: 7.0.1
+  resolution: "detect-indent@npm:7.0.1"
+  checksum: 10/cbf3f0b1c3c881934ca94428e1179b26ab2a587e0d719031d37a67fb506d49d067de54ff057cb1e772e75975fed5155c01cd4518306fee60988b1486e3fc7768
   languageName: node
   linkType: hard
 

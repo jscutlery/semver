@@ -29,7 +29,7 @@
     "conventional-changelog-jshint": "^5.0.0",
     "conventional-commits-parser": "^5.0.0",
     "conventional-recommended-bump": "^9.0.0",
-    "detect-indent": "6.1.0",
+    "detect-indent": "7.0.1",
     "git-semver-tags": "^7.0.1",
     "inquirer": "8.2.6",
     "rxjs": "7.8.1"
