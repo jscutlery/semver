@@ -31,13 +31,13 @@
     "conventional-recommended-bump": "^9.0.0",
     "detect-indent": "6.1.0",
     "git-semver-tags": "^7.0.1",
-    "inquirer": "8.2.6",
+    "inquirer": "9.3.2",
     "rxjs": "7.8.1"
   },
   "devDependencies": {
     "@types/conventional-changelog": "^3.1.4 ",
     "@types/conventional-recommended-bump": "^9.0.2",
-    "@types/inquirer": "8.2.10",
+    "@types/inquirer": "9.0.7",
     "@types/semver": "7.5.8",
     "@types/tmp": "0.2.6"
   }
