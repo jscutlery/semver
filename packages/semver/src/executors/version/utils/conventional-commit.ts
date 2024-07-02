@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import * as conventionalChangelog from 'conventional-changelog';
 import { WriteChangelogConfig } from '../schema';
 
@@ -12,7 +13,7 @@ export function createConventionalCommitStream(
       ...(typeof config.preset === 'object' ? { config: config.preset } : {}),
       tagPrefix: config.tagPrefix,
       pkg: {
-        path: config.projectRoot,
+        path: path.join(config.projectRoot, 'package.json'),
       },
     },
     { version: newVersion },
