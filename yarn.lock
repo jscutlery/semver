@@ -15,35 +15,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:18.0.7":
-  version: 18.0.7
-  resolution: "@angular-devkit/core@npm:18.0.7"
+"@angular-devkit/core@npm:18.1.0":
+  version: 18.1.0
+  resolution: "@angular-devkit/core@npm:18.1.0"
   dependencies:
-    ajv: "npm:8.13.0"
+    ajv: "npm:8.16.0"
     ajv-formats: "npm:3.0.1"
-    jsonc-parser: "npm:3.2.1"
+    jsonc-parser: "npm:3.3.1"
     picomatch: "npm:4.0.2"
     rxjs: "npm:7.8.1"
     source-map: "npm:0.7.4"
   peerDependencies:
     chokidar: ^3.5.2
+  dependenciesMeta:
+    esbuild:
+      built: true
+    puppeteer:
+      built: true
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 10/0004e0b7f332c102649c45066db8835071f2c369047d4b5003b3263da58a7f556c5f6d3a364041f173efd5fe697b7324f54d7dcf0761ae753e199935b5b67c73
+  checksum: 10/566ff6fba00331c47d3229f66adf9b2b57124b98b885fc8cf3be14a8f0896c887693ed93422c86109e991af1c4d82795e3379ef9c97dbd59b557c0d72162b0e3
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:18.0.7":
-  version: 18.0.7
-  resolution: "@angular-devkit/schematics@npm:18.0.7"
+"@angular-devkit/schematics@npm:18.1.0":
+  version: 18.1.0
+  resolution: "@angular-devkit/schematics@npm:18.1.0"
   dependencies:
-    "@angular-devkit/core": "npm:18.0.7"
-    jsonc-parser: "npm:3.2.1"
+    "@angular-devkit/core": "npm:18.1.0"
+    jsonc-parser: "npm:3.3.1"
     magic-string: "npm:0.30.10"
     ora: "npm:5.4.1"
     rxjs: "npm:7.8.1"
-  checksum: 10/f60e01a18e963f3ea5afcba311bd9f99c0c51b2da0c0cc0ca0af4c79783ffa3b94ab60c03784c45083b256c5eee35b2c290be27f9b593a550411f598b386c8e7
+  dependenciesMeta:
+    esbuild:
+      built: true
+    puppeteer:
+      built: true
+  checksum: 10/d4d690686d45ee085a80582751bf2d50d41afbcdb50bd74d69c893c1373c7a12e77e4cef8ff512fd9747508a8d0b19614265b4913dec3ef0b18fd8f8b2f42948
   languageName: node
   linkType: hard
 
@@ -3411,15 +3421,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:8.13.0":
-  version: 8.13.0
-  resolution: "ajv@npm:8.13.0"
+"ajv@npm:8.16.0, ajv@npm:^8.0.0, ajv@npm:^8.11.0":
+  version: 8.16.0
+  resolution: "ajv@npm:8.16.0"
   dependencies:
     fast-deep-equal: "npm:^3.1.3"
     json-schema-traverse: "npm:^1.0.0"
     require-from-string: "npm:^2.0.2"
     uri-js: "npm:^4.4.1"
-  checksum: 10/4ada268c9a6e44be87fd295df0f0a91267a7bae8dbc8a67a2d5799c3cb459232839c99d18b035597bb6e3ffe88af6979f7daece854f590a81ebbbc2dfa80002c
+  checksum: 10/9b4b380efaf8be2639736d535662bd142a6972b43075b404380165c37ab6ceb72f01c7c987536747ff3e9e21eb5cd2e2a194f1e0fa8355364ea6204b1262fcd1
   languageName: node
   linkType: hard
 
@@ -3432,18 +3442,6 @@ __metadata:
     json-schema-traverse: "npm:^0.4.1"
     uri-js: "npm:^4.2.2"
   checksum: 10/48d6ad21138d12eb4d16d878d630079a2bda25a04e745c07846a4ad768319533031e28872a9b3c5790fa1ec41aabdf2abed30a56e5a03ebc2cf92184b8ee306c
-  languageName: node
-  linkType: hard
-
-"ajv@npm:^8.0.0, ajv@npm:^8.11.0":
-  version: 8.16.0
-  resolution: "ajv@npm:8.16.0"
-  dependencies:
-    fast-deep-equal: "npm:^3.1.3"
-    json-schema-traverse: "npm:^1.0.0"
-    require-from-string: "npm:^2.0.2"
-    uri-js: "npm:^4.4.1"
-  checksum: 10/9b4b380efaf8be2639736d535662bd142a6972b43075b404380165c37ab6ceb72f01c7c987536747ff3e9e21eb5cd2e2a194f1e0fa8355364ea6204b1262fcd1
   languageName: node
   linkType: hard
 
@@ -6516,7 +6514,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": "npm:18.0.7"
+    "@angular-devkit/schematics": "npm:18.1.0"
     "@commitlint/cli": "npm:^19.0.0"
     "@commitlint/config-angular": "npm:^19.0.0"
     "@nx/devkit": "npm:19.0.7"
@@ -6656,10 +6654,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonc-parser@npm:3.2.1":
-  version: 3.2.1
-  resolution: "jsonc-parser@npm:3.2.1"
-  checksum: 10/fe2df6f39e21653781d52cae20c5b9e0ab62461918d97f9430b216cea9b6500efc1d8b42c6584cc0a7548b4c996055e9cdc39f09b9782fa6957af2f45306c530
+"jsonc-parser@npm:3.3.1":
+  version: 3.3.1
+  resolution: "jsonc-parser@npm:3.3.1"
+  checksum: 10/9b0dc391f20b47378f843ef1e877e73ec652a5bdc3c5fa1f36af0f119a55091d147a86c1ee86a232296f55c929bba174538c2bf0312610e0817a22de131cc3f4
   languageName: node
   linkType: hard
 
