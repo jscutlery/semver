@@ -4644,7 +4644,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.7":
+"ejs@npm:^3.0.0, ejs@npm:^3.1.7":
   version: 3.1.10
   resolution: "ejs@npm:3.1.10"
   dependencies:
@@ -6542,7 +6542,7 @@ __metadata:
     nx: "npm:19.0.7"
     prettier: "npm:3.3.2"
     tmp: "npm:^0.2.1"
-    ts-jest: "npm:29.2.0"
+    ts-jest: "npm:29.2.1"
     ts-node: "npm:10.9.2"
     tslib: "npm:^2.3.1"
     tslint: "npm:6.1.3"
@@ -8557,11 +8557,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.2.0":
-  version: 29.2.0
-  resolution: "ts-jest@npm:29.2.0"
+"ts-jest@npm:29.2.1":
+  version: 29.2.1
+  resolution: "ts-jest@npm:29.2.1"
   dependencies:
     bs-logger: "npm:0.x"
+    ejs: "npm:^3.0.0"
     fast-json-stable-stringify: "npm:2.x"
     jest-util: "npm:^29.0.0"
     json5: "npm:^2.2.3"
@@ -8589,7 +8590,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10/a94725c313f7e019281835e32c9b2791d3f5fb9a4e6a19e6c51cbf8939cd17a0426e667c19849fed608149d1ec5198da9fd55fefe74c6ed4cff2172442b8288c
+  checksum: 10/cb5480aecc01541256a3a694db4d7ab1df75a00736484050ea216dcb774fd6a480747a52a3e7d70a7fd75b612593f45e86de4268e18d4e29a3502e8299bc63c2
   languageName: node
   linkType: hard
 
