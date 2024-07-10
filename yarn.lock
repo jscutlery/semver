@@ -6540,7 +6540,7 @@ __metadata:
     nx: "npm:19.0.7"
     prettier: "npm:3.3.2"
     tmp: "npm:^0.2.1"
-    ts-jest: "npm:29.2.1"
+    ts-jest: "npm:29.2.2"
     ts-node: "npm:10.9.2"
     tslib: "npm:^2.3.1"
     tslint: "npm:6.1.3"
@@ -8555,9 +8555,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.2.1":
-  version: 29.2.1
-  resolution: "ts-jest@npm:29.2.1"
+"ts-jest@npm:29.2.2":
+  version: 29.2.2
+  resolution: "ts-jest@npm:29.2.2"
   dependencies:
     bs-logger: "npm:0.x"
     ejs: "npm:^3.0.0"
@@ -8588,7 +8588,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10/cb5480aecc01541256a3a694db4d7ab1df75a00736484050ea216dcb774fd6a480747a52a3e7d70a7fd75b612593f45e86de4268e18d4e29a3502e8299bc63c2
+  checksum: 10/6523de2d78493a7901dfc37f2a491b259f5d30beac7a2179ddf8524da0c8e4a7f488aad2d22eca8d074bcc54d7b06a90153fdbf6e9c245f5fc1e484788f0c9d8
   languageName: node
   linkType: hard
 
