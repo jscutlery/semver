@@ -2673,21 +2673,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc-node/core@npm:^1.13.2":
-  version: 1.13.2
-  resolution: "@swc-node/core@npm:1.13.2"
+"@swc-node/core@npm:^1.13.3":
+  version: 1.13.3
+  resolution: "@swc-node/core@npm:1.13.3"
   peerDependencies:
     "@swc/core": ">= 1.4.13"
     "@swc/types": ">= 0.1"
-  checksum: 10/c5600bd036c41f740d8cee48dccdb0463b04817b41fcd78bb020207ce46327b315220cc259d4a2de30aab5c44debbfb97511d326d39f37043fa4e12787ab393b
+  checksum: 10/4fcc180f047e5d60bad49f793a477740262c9833fc7cd9d34ff4286ea7026f9d77aad122f9c728b73c9addc494b27f8405db32c1b5c446dc9eb94b7bc3cdee1f
   languageName: node
   linkType: hard
 
 "@swc-node/register@npm:^1.9.0":
-  version: 1.10.6
-  resolution: "@swc-node/register@npm:1.10.6"
+  version: 1.10.7
+  resolution: "@swc-node/register@npm:1.10.7"
   dependencies:
-    "@swc-node/core": "npm:^1.13.2"
+    "@swc-node/core": "npm:^1.13.3"
     "@swc-node/sourcemap-support": "npm:^0.5.1"
     colorette: "npm:^2.0.20"
     debug: "npm:^4.3.5"
@@ -2697,7 +2697,7 @@ __metadata:
   peerDependencies:
     "@swc/core": ">= 1.4.13"
     typescript: ">= 4.3"
-  checksum: 10/515e214ec65760e42b2f45ace584eff798e4b99962d29bd48071a76c5b4bb7a8289c0233f505e6e7b07eb07b47a3bc7d0a474679c69219ba4d226a99126ef2a3
+  checksum: 10/383c968389b85651ff49d46a6e0b21450d9e9f8497ff86c0779edf7a171e9f0b6194d1b20bae6b0c5926e2916b163e3db1307ac2d6380b0c195b092a1966e0ff
   languageName: node
   linkType: hard
 
