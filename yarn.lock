@@ -2691,8 +2691,8 @@ __metadata:
   linkType: hard
 
 "@swc-node/register@npm:^1.9.0":
-  version: 1.10.8
-  resolution: "@swc-node/register@npm:1.10.8"
+  version: 1.10.9
+  resolution: "@swc-node/register@npm:1.10.9"
   dependencies:
     "@swc-node/core": "npm:^1.13.3"
     "@swc-node/sourcemap-support": "npm:^0.5.1"
@@ -2704,7 +2704,7 @@ __metadata:
   peerDependencies:
     "@swc/core": ">= 1.4.13"
     typescript: ">= 4.3"
-  checksum: 10/1794fabc89a6e84fb543210af92a4e1b60a6b6d5bee7bf6458916d75689620e61095283aa3fd1ac2d8efefc4f1cc29138c8041d4522c83c35b8f5a89e8c8169b
+  checksum: 10/e6b7e2623ddb8e53aa3c941bdc6ca7aaf67336447c3fdb211b218e6db747eb2df5aff88b7da8edcb74fd3fb11c018b92e4b60eba5da3654524504ec36454e1c2
   languageName: node
   linkType: hard
 
