@@ -193,7 +193,7 @@ function configureNxRelease(
       conventionalCommits: true,
     },
     git: {
-      commit: !options.skipCommit ?? true,
+      commit: options.skipCommit != true,
       ...(tree.exists('.husky') ? { commitArgs: '--no-verify' } : {}),
     },
     changelog: {
