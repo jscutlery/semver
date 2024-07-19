@@ -20,6 +20,7 @@ export default function writeChangelog(
 
       try {
         accessSync(config.changelogPath, constants.F_OK);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         if (err.code === 'ENOENT') {
           writeFileSync(config.changelogPath, '\n', 'utf8');
