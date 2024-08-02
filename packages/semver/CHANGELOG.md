@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.3.1](https://github.com/jscutlery/semver/compare/semver-5.3.0...semver-5.3.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* pass package.json path through to `conventional-changelog` ([46a2a8b](https://github.com/jscutlery/semver/commit/46a2a8b9798c26e0d15cc1c1ef1cbce91bcf342b))
+
+
+
 # [5.3.0](https://github.com/jscutlery/semver/compare/semver-5.2.2...semver-5.3.0) (2024-08-02)
 
 
