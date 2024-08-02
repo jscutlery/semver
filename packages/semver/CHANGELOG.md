@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.3.0](https://github.com/jscutlery/semver/compare/semver-5.2.2...semver-5.3.0) (2024-08-02)
+
+
+### Bug Fixes
+
+* 📦 bump dependency conventional-changelog-angular to v8 ([9db143f](https://github.com/jscutlery/semver/commit/9db143fa6ac2159e0784d943f45510f99a35a9c8))
+* 📦 bump dependency conventional-changelog-atom to v5 ([db96e8d](https://github.com/jscutlery/semver/commit/db96e8d7749fd9d560d99a9b7f09a9a604ea0a6c))
+* 📦 bump dependency conventional-changelog-codemirror to v5 ([f131868](https://github.com/jscutlery/semver/commit/f1318682ff73813b642f07a84b111884c51881a3))
+* 📦 bump dependency conventional-changelog-ember to v5 ([795b7b8](https://github.com/jscutlery/semver/commit/795b7b811c15cad0da4ed1ec96540d7b1b907483))
+* 📦 bump dependency conventional-changelog-eslint to v6 ([ba87080](https://github.com/jscutlery/semver/commit/ba87080e2ebde02d7fd4b08c17966aa99cab4d85))
+* 📦 bump dependency conventional-changelog-express to v5 ([103c5aa](https://github.com/jscutlery/semver/commit/103c5aa93d11c2747c58afc0f32b9e1da5f7c139))
+* 📦 bump dependency conventional-changelog-jquery to v6 ([0f5069e](https://github.com/jscutlery/semver/commit/0f5069ed78c2b4218e77f79e620470f9df14ccdf))
+* 📦 bump dependency conventional-changelog-jshint to v5 ([560fdff](https://github.com/jscutlery/semver/commit/560fdffc7796a1a9f938b15306f68a3923ad49d2))
+* lint errors ([1fc0069](https://github.com/jscutlery/semver/commit/1fc0069b6eced19288d37621bfc2b1862274be6d))
+* lint warnings ([21b505d](https://github.com/jscutlery/semver/commit/21b505d1138b45b1815d2d3046e5a19e3c39f30c))
+* **semver:** overwrite default nx release config + run build cmd ([a061178](https://github.com/jscutlery/semver/commit/a0611780ef4cd9bfcb3c2bc5dc1f5012ac0ab664))
+
+
+### Features
+
+* **semver:** bump `@nx/devkit` to v19 ([b45f1f9](https://github.com/jscutlery/semver/commit/b45f1f9e3c78bfdb6a560c24f970da0edb2cfaff))
+
+
+### Reverts
+
+* **semver:** revert incompatible conventional presets upgrade ([617a326](https://github.com/jscutlery/semver/commit/617a3262931f241f6db80cfe7cfe12e5ea3a52f2))
+
+
+
 ## [5.2.2](https://github.com/jscutlery/semver/compare/semver-5.2.1...semver-5.2.2) (2024-03-24)
 
 
