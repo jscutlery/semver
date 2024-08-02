@@ -245,10 +245,9 @@ export function _semverBump({
     const recommended = await conventionalRecommendedBump({
       path: projectRoot,
       tagPrefix,
-      ...(typeof preset === 'string' ? { preset } : {}),
-      ...(typeof preset === 'object'
-        ? { preset: preset.name ?? 'conventionalcommits', config: preset }
-        : {}),
+      ...(typeof preset === 'string'
+        ? { preset }
+        : { preset: preset.name ?? 'conventionalcommits', config: preset }),
     });
 
     let recommendedReleaseType: ReleaseIdentifier | undefined =
