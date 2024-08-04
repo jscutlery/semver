@@ -2115,7 +2115,7 @@ __metadata:
     conventional-changelog: "npm:^5.1.0"
     conventional-changelog-angular: "npm:^8.0.0"
     conventional-changelog-atom: "npm:^5.0.0"
-    conventional-changelog-codemirror: "npm:^4.0.0"
+    conventional-changelog-codemirror: "npm:^5.0.0"
     conventional-changelog-conventionalcommits: "npm:^7.0.2"
     conventional-changelog-ember: "npm:^4.0.0"
     conventional-changelog-eslint: "npm:^5.0.0"
@@ -4066,6 +4066,13 @@ __metadata:
   version: 4.0.0
   resolution: "conventional-changelog-codemirror@npm:4.0.0"
   checksum: 10/faa322c80e056e1005c2175b717a47778b2becce06ab833079f074c9f64e61808e4284470ab5dcde123f986b5a94d51c96ebabe884ffc47a16843e4dcc58f650
+  languageName: node
+  linkType: hard
+
+"conventional-changelog-codemirror@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "conventional-changelog-codemirror@npm:5.0.0"
+  checksum: 10/38dcc3fc3c3dd050b8dc00b68f83845b7c82b3f871c3bbb3c1b9c888ed7d10be3c8042959be93e768ec2bee545eca0f41429e7a63d2abca711e5fdd79bc1bb84
   languageName: node
   linkType: hard
 
