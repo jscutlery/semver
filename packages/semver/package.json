@@ -25,7 +25,7 @@
     "conventional-changelog-ember": "^5.0.0",
     "conventional-changelog-eslint": "^6.0.0",
     "conventional-changelog-express": "^5.0.0",
-    "conventional-changelog-jquery": "^5.0.0",
+    "conventional-changelog-jquery": "^6.0.0",
     "conventional-changelog-jshint": "^4.0.0",
     "conventional-commits-parser": "^5.0.0",
     "conventional-recommended-bump": "^9.0.0",
