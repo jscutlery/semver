@@ -2121,7 +2121,7 @@ __metadata:
     conventional-changelog-eslint: "npm:^6.0.0"
     conventional-changelog-express: "npm:^5.0.0"
     conventional-changelog-jquery: "npm:^6.0.0"
-    conventional-changelog-jshint: "npm:^4.0.0"
+    conventional-changelog-jshint: "npm:^5.0.0"
     conventional-commits-parser: "npm:^5.0.0"
     conventional-recommended-bump: "npm:^9.0.0"
     detect-indent: "npm:6.1.0"
@@ -4165,6 +4165,15 @@ __metadata:
   dependencies:
     compare-func: "npm:^2.0.0"
   checksum: 10/fde7767caff417471c28989a4e06129f34090e722f6971f1f6f800575fc986f2cd6877e96dfbfc174e1db7c85700b7efab7a200feb0295349d5bb17a4ce358fc
+  languageName: node
+  linkType: hard
+
+"conventional-changelog-jshint@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "conventional-changelog-jshint@npm:5.0.0"
+  dependencies:
+    compare-func: "npm:^2.0.0"
+  checksum: 10/9db03b16610f2fbc448646cbb23f1ee28704ffa1175279ee39d51e8e0010bb82000385e662633900220f6834ad84b1ecf8ccbdebcf4ae0d7710a5599de9b0d52
   languageName: node
   linkType: hard
 
