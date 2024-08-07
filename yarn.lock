@@ -15,9 +15,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:18.1.3":
-  version: 18.1.3
-  resolution: "@angular-devkit/core@npm:18.1.3"
+"@angular-devkit/core@npm:18.1.4":
+  version: 18.1.4
+  resolution: "@angular-devkit/core@npm:18.1.4"
   dependencies:
     ajv: "npm:8.16.0"
     ajv-formats: "npm:3.0.1"
@@ -35,15 +35,15 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 10/33d500dbb6e7ec2ebaa16084b248e02603073038251c8a29fb1eea7770c381507bbcb41577da2d432ad34551c207db7413ec08a436692dcab465cf4f033b3f93
+  checksum: 10/8613a4237617863f202d42998c679e9b676d4a6067c312c9a2d9ade4e0b8466d4785c738245dec0b528df9a69d514b4655dbc8b7fbff4de1362151cb54457171
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:18.1.3":
-  version: 18.1.3
-  resolution: "@angular-devkit/schematics@npm:18.1.3"
+"@angular-devkit/schematics@npm:18.1.4":
+  version: 18.1.4
+  resolution: "@angular-devkit/schematics@npm:18.1.4"
   dependencies:
-    "@angular-devkit/core": "npm:18.1.3"
+    "@angular-devkit/core": "npm:18.1.4"
     jsonc-parser: "npm:3.3.1"
     magic-string: "npm:0.30.10"
     ora: "npm:5.4.1"
@@ -53,7 +53,7 @@ __metadata:
       built: true
     puppeteer:
       built: true
-  checksum: 10/2909f349019da46fcda145cacf691f51301e8240652fc396c19e406052b36f80cd3c5b5f2e07e5809922c9dd875d85deb67fbde5f8004ba42698815cf11429a3
+  checksum: 10/5678ff4d0d2f34cea5adfc0fa7828fe699523f175e0a450d32790b303d8d635cedf3713ccb2544d0ef8435382e6e024a1062ffacf80ec0c64a4c1c3003d25042
   languageName: node
   linkType: hard
 
@@ -6313,7 +6313,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": "npm:18.1.3"
+    "@angular-devkit/schematics": "npm:18.1.4"
     "@commitlint/cli": "npm:^19.0.0"
     "@commitlint/config-angular": "npm:^19.0.0"
     "@nx/devkit": "npm:19.5.6"
