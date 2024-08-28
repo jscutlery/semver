@@ -42,7 +42,7 @@
     "@swc-node/register": "1.10.9",
     "@swc/core": "1.7.18",
     "@types/jest": "29.5.12",
-    "@types/node": "20.16.1",
+    "@types/node": "20.16.2",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
     "all-contributors-cli": "^6.19.0",
