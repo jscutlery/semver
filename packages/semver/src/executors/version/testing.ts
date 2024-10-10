@@ -167,6 +167,7 @@ export function createFakeContext({
       nodes: {},
       dependencies: {},
     },
+    nxJsonConfiguration: {},
   } satisfies ExecutorContext;
 }
 
