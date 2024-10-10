@@ -23,10 +23,7 @@ export function runPostTargets({
   return concat(
     ...postTargets.map((postTargetSchema) =>
       defer(async () => {
-        // TODO: deprecate specifying the project name in the post target schema.
-        const target = postTargetSchema.includes(':')
-          ? parseTargetString(postTargetSchema)
-          : parseTargetString(postTargetSchema, context);
+        const target = parseTargetString(postTargetSchema, context);
 
         _checkTargetExist(target, context);
 
