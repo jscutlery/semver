@@ -7028,12 +7028,12 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^8.0.0":
-  version: 8.2.0
-  resolution: "ngx-deploy-npm@npm:8.2.0"
+  version: 8.3.0
+  resolution: "ngx-deploy-npm@npm:8.3.0"
   peerDependencies:
-    "@nx/devkit": ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0
+    "@nx/devkit": ">=16.0.0 <=21.0.0"
     tslib: ^2.3.0
-  checksum: 10/6429c0d636abea5f72c2716f680b84556c438dcc089f8f4163cc400d52054786f6581c1c50bd8e035c0ebcef8c7f448597b7bf62882c39afd8784ff0d4e3b10f
+  checksum: 10/15079bab68af3e1d1ea39577527f36f6a99e2a059d5dfeb3180ffa06452b3a28008df75f27f60e176cd82efa23619291ecd58b9dcc6fcd65cc839a1532f5a431
   languageName: node
   linkType: hard
 
