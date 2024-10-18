@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "chalk": "4.1.2",
-    "conventional-changelog": "^5.1.0",
+    "conventional-changelog": "^6.0.0",
     "conventional-changelog-angular": "^8.0.0",
     "conventional-changelog-atom": "^5.0.0",
     "conventional-changelog-codemirror": "^5.0.0",
