@@ -16,7 +16,7 @@
     "@nx/devkit": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "chalk": "4.1.2",
+    "chalk": "5.3.0",
     "conventional-changelog": "^5.1.0",
     "conventional-changelog-angular": "^8.0.0",
     "conventional-changelog-atom": "^5.0.0",
