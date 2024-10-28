@@ -6979,12 +6979,12 @@ __metadata:
   linkType: hard
 
 "ngx-deploy-npm@npm:^8.0.0":
-  version: 8.3.0
-  resolution: "ngx-deploy-npm@npm:8.3.0"
+  version: 8.3.1
+  resolution: "ngx-deploy-npm@npm:8.3.1"
   peerDependencies:
     "@nx/devkit": ">=16.0.0 <=21.0.0"
     tslib: ^2.3.0
-  checksum: 10/15079bab68af3e1d1ea39577527f36f6a99e2a059d5dfeb3180ffa06452b3a28008df75f27f60e176cd82efa23619291ecd58b9dcc6fcd65cc839a1532f5a431
+  checksum: 10/c9b5a4e6cccab469395ef6695e5b5a86c6b48950d9418040d77ce8d9fb6f9e5254816773547819dd1d64747b1e40b76033a8fc9b3c8670170d8f4ad84c725c76
   languageName: node
   linkType: hard
 
