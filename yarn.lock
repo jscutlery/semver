@@ -3020,12 +3020,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.17.7":
-  version: 20.17.7
-  resolution: "@types/node@npm:20.17.7"
+"@types/node@npm:20.17.9":
+  version: 20.17.9
+  resolution: "@types/node@npm:20.17.9"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10/b54a9e6dedb75d86e2cc1ea249d2cff512fea3185d53e5a8b6b8ba93ad06f61347a4785a963323672f73f53a4847dd8ce9bb706ad4ba23650520abc67c7cffba
+  checksum: 10/11604a47adf383892394a59a339136b2746a71addf4a3b13f661d23b6e81e8a4f3b35e69dbcffc94698368e5ab5ec056a43a86c87eff00b1b8ea8cfcbfe641df
   languageName: node
   linkType: hard
 
@@ -6372,7 +6372,7 @@ __metadata:
     "@swc-node/register": "npm:1.10.9"
     "@swc/core": "npm:1.9.3"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.17.7"
+    "@types/node": "npm:20.17.9"
     "@typescript-eslint/eslint-plugin": "npm:7.18.0"
     "@typescript-eslint/parser": "npm:7.18.0"
     all-contributors-cli: "npm:^6.19.0"
