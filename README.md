@@ -86,6 +86,7 @@ nx run workspace:version [...options]
 | **`--allowEmptyRelease`**    | `boolean`          | `false`     | force a patch increment even if library source didn't change                                                                                                    |
 | **`--skipCommitTypes`**      | `string[]`         | `[]`        | treat commits with specified types as non invoking version bump ([details](https://github.com/jscutlery/semver#skipping-release-for-specific-types-of-commits)) |
 | **`--skipCommit`**           | `boolean`          | `false`     | skips generating a new commit, leaves all changes in index, tag would be put on last commit ([details](https://github.com/jscutlery/semver#skipping-commit))    |
+| **`--skipStage`**            | `boolean`          | `false`     | skips add to git stage, useful when you want to run nx cmd in parallel ([details](https://github.com/jscutlery/semver#skipping-stage))                          |
 | **`--commitMessageFormat`**  | `string`           | `undefined` | format the auto-generated message commit ([details](https://github.com/jscutlery/semver#commit-message-customization))                                          |
 | **`--preset`**               | `string \| object` | `'angular'` | customize Conventional Changelog options ([details](https://github.com/jscutlery/semver#customizing-conventional-changelog))                                    |
 | **`--commitParserOptions`**  | `object`           | `undefined` | customize the commit parserConfig ([details](https://github.com/jscutlery/semver#customizing-the-commit-parser))                                                |
@@ -283,6 +284,10 @@ would produce a patch bump.
 In some cases, your release process relies only on tags and you don't want a new commit with version bumps and changelog updates to be made.
 To achieve this, you can provide the `--skipCommit` flag and changes made by the library would stay in the index without committing.
 The tag for the new version would be put on the last existing commit.
+
+### Skipping Stage
+
+In case you want to run nx cmd in parallel, you can provide the `--skipStage` flag and it will not add to git stage - since that requires a git-lock, this has to be used together with `--skipCommit` and `--skipTag` and not with `--push`, all for the same reason they will require a git-lock.
 
 ### Triggering executors post-release
 

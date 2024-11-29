@@ -48,6 +48,7 @@ export default async function version(
     allowEmptyRelease,
     skipCommitTypes,
     skipCommit,
+    skipStage,
     commitParserOptions,
   } = _normalizeOptions(options);
 
@@ -135,6 +136,7 @@ export default async function version(
         commitMessage,
         dependencyUpdates,
         skipCommit,
+        skipStage,
         workspace: context.projectsConfigurations,
       };
 
@@ -241,6 +243,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     commitMessageFormat: options.commitMessageFormat as string,
     commitParserOptions: options.commitParserOptions,
     skipCommit: options.skipCommit as boolean,
+    skipStage: options.skipStage as boolean,
     preset: (options.preset === 'conventional'
       ? 'conventionalcommits'
       : options.preset || 'angular') as PresetOpt,

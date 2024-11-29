@@ -172,6 +172,7 @@ describe('git', () => {
         addToStage({
           paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
           dryRun: false,
+          skipStage: false,
         }),
       );
 
@@ -185,6 +186,21 @@ describe('git', () => {
       );
     });
 
+    it('should skip add to git stage if skipStage is true', async () => {
+      jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
+
+      await lastValueFrom(
+        addToStage({
+          paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
+          dryRun: false,
+          skipStage: true,
+        }),
+        { defaultValue: undefined },
+      );
+
+      expect(cp.exec).not.toBeCalled();
+    });
+
     it('should skip git add if paths argument is empty', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
 
@@ -192,6 +208,7 @@ describe('git', () => {
         addToStage({
           paths: [],
           dryRun: false,
+          skipStage: false,
         }),
         { defaultValue: undefined },
       );

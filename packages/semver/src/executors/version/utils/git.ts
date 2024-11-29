@@ -128,11 +128,15 @@ export function tryPush({
 export function addToStage({
   paths,
   dryRun,
+  skipStage,
 }: {
   paths: string[];
   dryRun: boolean;
+  skipStage: boolean;
 }): Observable<void> {
   if (paths.length === 0) {
+    return EMPTY;
+  } else if (skipStage) {
     return EMPTY;
   }
 
