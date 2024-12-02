@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.4.0](https://github.com/jscutlery/semver/compare/semver-5.3.1...semver-5.4.0) (2024-12-02)
+
+
+### Bug Fixes
+
+* 📦 bump dependency conventional-changelog-angular to v8 ([bbe8b2c](https://github.com/jscutlery/semver/commit/bbe8b2cdc0eef305ea4a6bf061d7bd5b782336e0))
+* 📦 bump dependency conventional-changelog-atom to v5 ([3d84a35](https://github.com/jscutlery/semver/commit/3d84a35e0dfb20d888683c86fb411d671b07ab5a))
+* 📦 bump dependency conventional-changelog-codemirror to v5 ([490aa25](https://github.com/jscutlery/semver/commit/490aa25a82cfe693d0b7fcd747b389dc8a7676c4))
+* 📦 bump dependency conventional-changelog-ember to v5 ([f87be8e](https://github.com/jscutlery/semver/commit/f87be8e683d737954d4c49e3712e97c4a4f5741b))
+* 📦 bump dependency conventional-changelog-eslint to v6 ([56e76b6](https://github.com/jscutlery/semver/commit/56e76b6b8b1370b3da3a2b7661ee7d242d6c3d93))
+* 📦 bump dependency conventional-changelog-express to v5 ([5dd5385](https://github.com/jscutlery/semver/commit/5dd5385aa3996eca87de261aa65cf9307bab4ff2))
+* 📦 bump dependency conventional-changelog-jquery to v6 ([63228c7](https://github.com/jscutlery/semver/commit/63228c7fd60796ce8f8d3e45902dc55040d26705))
+* 📦 bump dependency conventional-changelog-jshint to v5 ([e77e2f5](https://github.com/jscutlery/semver/commit/e77e2f547713da27f6359377ef4adaaf7a5dfe54))
+* 📦 update lint executor in project.json ([66f7b07](https://github.com/jscutlery/semver/commit/66f7b077aeb65736d18f95baf92e599057a34f80))
+
+
+### Features
+
+* added option to skip stage ([9ff9580](https://github.com/jscutlery/semver/commit/9ff9580396d1d4a8af8e8e2a234657757b76a8f2))
+
+
+
 ## [5.3.1](https://github.com/jscutlery/semver/compare/semver-5.3.0...semver-5.3.1) (2024-08-02)
 
 
