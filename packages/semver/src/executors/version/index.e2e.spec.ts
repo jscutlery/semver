@@ -63,7 +63,7 @@ describe('@jscutlery/semver', () => {
   });
 
   describe('@jscutlery/semver:version', () => {
-    describe('when libs/a changed', () => {
+    describe('when libs/a changed (v0.0.0 => v0.1.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
@@ -112,7 +112,52 @@ describe('@jscutlery/semver', () => {
       });
     });
 
-    describe('when libs/b changed', () => {
+    describe('when libs/a changed (v0.1.0 => v0.1.1)', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo fix >> libs/a/a.txt
+              git add .
+              git commit -m "fix(a): 🐞 fix bug"
+            `,
+        );
+        testingWorkspace.runNx(`run a:version --noVerify`);
+      });
+
+      it('should commit all changes', () => {
+        expect(uncommitedChanges(testingWorkspace.root)).toHaveLength(0);
+      });
+
+      it('should tag with version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('a-0.1.1');
+      });
+
+      it('should create only one tag', () => {
+        expect(getTags(testingWorkspace.root)).toHaveLength(1);
+      });
+
+      it('should commit with description', () => {
+        expect(getLastCommitDescription(testingWorkspace.root)).toBe(
+          'chore(a): release version 0.1.1',
+        );
+      });
+
+      it('should bump package version', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/a/package.json`),
+        ).toMatch(/"version": "0.1.1"/);
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot('a-0.1.1');
+      });
+    });
+
+    describe('when libs/b changed (v0.0.0 => v0.1.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
@@ -175,7 +220,7 @@ describe('@jscutlery/semver', () => {
       });
     });
 
-    describe('when libs/d changed', () => {
+    describe('when libs/d changed (v0.0.0 => v0.1.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
@@ -215,7 +260,7 @@ describe('@jscutlery/semver', () => {
       });
     });
 
-    describe('when libs/a changed (breaking change)', () => {
+    describe('when libs/a changed (v0.1.1 => v1.0.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
@@ -246,7 +291,7 @@ describe('@jscutlery/semver', () => {
       });
     });
 
-    describe('when pre-releasing libs/a (--releaseAs=prerelease --preid=beta)', () => {
+    describe('when pre-releasing libs/a with --releaseAs=prerelease --preid=beta (v1.0.0 => v1.1.0-beta.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
@@ -270,7 +315,7 @@ describe('@jscutlery/semver', () => {
         ).toMatch(/"version": "1.1.0-beta.0"/);
       });
 
-      describe('when pre-releasing libs/a again (--releaseAs=prerelease --preid=beta)', () => {
+      describe('when pre-releasing libs/a with --releaseAs=prerelease --preid=beta (v1.1.0-beta.0 => v1.1.0-beta.1)', () => {
         beforeAll(() => {
           testingWorkspace.exec(
             `
@@ -304,7 +349,7 @@ describe('@jscutlery/semver', () => {
       });
     });
 
-    describe('when pre-releasing libs/a (--releaseAs=preminor --preid=alpha)', () => {
+    describe('when pre-releasing libs/a with --releaseAs=preminor --preid=alpha (v1.1.0-beta.1 => v1.1.0-alpha.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
@@ -328,7 +373,7 @@ describe('@jscutlery/semver', () => {
         ).toMatch(/"version": "1.1.0-alpha.0"/);
       });
 
-      describe('when pre-releasing libs/a again (--releaseAs=preminor --preid=alpha)', () => {
+      describe('when pre-releasing libs/a with --releaseAs=preminor --preid=alpha (v1.1.0-alpha.0 => v1.2.0-alpha.0)', () => {
         beforeAll(() => {
           testingWorkspace.exec(
             `
@@ -362,7 +407,7 @@ describe('@jscutlery/semver', () => {
       });
     });
 
-    describe('when libs/b changed (with --skipCommit)', () => {
+    describe('when libs/b changed with --skipCommit (v0.1.0 => v0.2.0)', () => {
       beforeAll(() => {
         testingWorkspace.exec(
           `
