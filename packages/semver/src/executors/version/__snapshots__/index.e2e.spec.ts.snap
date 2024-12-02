@@ -31,12 +31,59 @@ exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate 
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (breaking change) should generate CHANGELOG.md: a-1.0.0 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (v0.0.0 => v0.1.0) should generate CHANGELOG.md: a-0.1.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [1.0.0](/compare/a-0.1.0...a-1.0.0) (yyyy-mm-dd)
+# 0.1.0 (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
+
+
+### Features
+
+* **a:** 🚀 new feature xxxxxxx
+"
+`;
+
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (v0.1.0 => v0.1.1) should generate CHANGELOG.md: a-0.1.1 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
+
+
+
+# 0.1.0 (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
+
+
+### Features
+
+* **a:** 🚀 new feature xxxxxxx
+"
+`;
+
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (v0.1.1 => v1.0.0) should generate CHANGELOG.md: a-1.0.0 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -50,6 +97,15 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
+## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
+
+
+
 # 0.1.0 (yyyy-mm-dd)
 
 
@@ -64,26 +120,26 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed should generate CHANGELOG.md: a-0.1.0 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed (v0.0.0 => v0.1.0) should generate CHANGELOG.md: b-0.1.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# 0.1.0 (yyyy-mm-dd)
-
-
-### Bug Fixes
-
-* **a:** 🐞 fix bug xxxxxxx
+## 0.1.0 (yyyy-mm-dd)
 
 
 ### Features
 
-* **a:** 🚀 new feature xxxxxxx
+* **b:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **b:** 🐞 fix bug xxxxxxx
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed (with --skipCommit) should generate CHANGELOG.md: b-0.2.0 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed with --skipCommit (v0.1.0 => v0.2.0) should generate CHANGELOG.md: b-0.2.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -109,26 +165,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed should generate CHANGELOG.md: b-0.1.0 1`] = `
-"# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
-
-## 0.1.0 (yyyy-mm-dd)
-
-
-### Features
-
-* **b:** 🚀 new feature xxxxxxx
-
-
-### Bug Fixes
-
-* **b:** 🐞 fix bug xxxxxxx
-"
-`;
-
-exports[`@jscutlery/semver @jscutlery/semver:version when libs/d changed should generate CHANGELOG.md: d-0.1.0 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when libs/d changed (v0.0.0 => v0.1.0) should generate CHANGELOG.md: d-0.1.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -142,7 +179,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a (--releaseAs=preminor --preid=alpha) when pre-releasing libs/a again (--releaseAs=preminor --preid=alpha) should generate CHANGELOG.md: a-1.2.0-alpha.0 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a with --releaseAs=preminor --preid=alpha (v1.1.0-beta.1 => v1.1.0-alpha.0) when pre-releasing libs/a with --releaseAs=preminor --preid=alpha (v1.1.0-alpha.0 => v1.2.0-alpha.0) should generate CHANGELOG.md: a-1.2.0-alpha.0 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -183,7 +220,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.0.0](/compare/a-0.1.0...a-1.0.0) (yyyy-mm-dd)
+# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -194,6 +231,15 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 ### BREAKING CHANGES
 
 * **a:** 🚨 Breaking change description
+
+
+
+## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
 
 
 
@@ -211,7 +257,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 "
 `;
 
-exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a (--releaseAs=prerelease --preid=beta) when pre-releasing libs/a again (--releaseAs=prerelease --preid=beta) should generate CHANGELOG.md: a-1.1.0-beta.1 1`] = `
+exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a with --releaseAs=prerelease --preid=beta (v1.0.0 => v1.1.0-beta.0) when pre-releasing libs/a with --releaseAs=prerelease --preid=beta (v1.1.0-beta.0 => v1.1.0-beta.1) should generate CHANGELOG.md: a-1.1.0-beta.1 1`] = `
 "# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -234,7 +280,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.0.0](/compare/a-0.1.0...a-1.0.0) (yyyy-mm-dd)
+# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -245,6 +291,15 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 ### BREAKING CHANGES
 
 * **a:** 🚨 Breaking change description
+
+
+
+## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
 
 
 

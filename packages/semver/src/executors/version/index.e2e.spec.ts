@@ -132,8 +132,8 @@ describe('@jscutlery/semver', () => {
         expect(getLastTag(testingWorkspace.root)).toBe('a-0.1.1');
       });
 
-      it('should create only one tag', () => {
-        expect(getTags(testingWorkspace.root)).toHaveLength(1);
+      it('should create the second tag', () => {
+        expect(getTags(testingWorkspace.root)).toHaveLength(2);
       });
 
       it('should commit with description', () => {
@@ -179,10 +179,6 @@ describe('@jscutlery/semver', () => {
 
       it('should tag with version', () => {
         expect(getLastTag(testingWorkspace.root)).toBe('b-0.1.0');
-      });
-
-      it('should create second tag', () => {
-        expect(getTags(testingWorkspace.root)).toHaveLength(2);
       });
 
       it('should commit with description', () => {
