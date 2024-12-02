@@ -21,6 +21,21 @@
       "enabled": false
     },
     {
+      "matchPackagePatterns": [
+        "conventional-changelog-angular",
+        "conventional-changelog-atom",
+        "conventional-changelog-codemirror",
+        "conventional-changelog-conventionalcommits",
+        "conventional-changelog-ember",
+        "conventional-changelog-eslint",
+        "conventional-changelog-express",
+        "conventional-changelog-jquery",
+        "conventional-changelog-jshint"
+      ],
+      "groupName": "Conventional presets",
+      "enabled": false
+    },
+    {
       "matchPackagePatterns": ["*"],
       "semanticCommitType": "build"
     },
