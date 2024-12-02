@@ -94,6 +94,11 @@
       "type": "boolean",
       "default": false
     },
+    "skipStage": {
+      "description": "Allows to skip adding files to git stage.",
+      "type": "boolean",
+      "default": false
+    },
     "skipCommitTypes": {
       "description": "Specify array of commit types to be ignored when calculating next version bump.",
       "type": "array",

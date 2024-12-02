@@ -33,6 +33,7 @@ export interface VersionBuilderSchema {
   postTargets: string[];
   allowEmptyRelease?: boolean;
   skipCommitTypes?: string[];
+  skipStage?: boolean;
   commitMessageFormat?: string;
   preset: PresetOpt | 'conventional'; // @TODO: Remove 'conventional' in the next major release.
   commitParserOptions?: CommitParserOptions;
