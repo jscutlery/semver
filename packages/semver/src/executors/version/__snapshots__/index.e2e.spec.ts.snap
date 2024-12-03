@@ -3,13 +3,11 @@
 exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate CHANGELOG.md: b-0.3.0 1`] = `
 "## 0.3.0 (yyyy-mm-dd)
 
-
 ### 🚀 Features
 
 - **b:** 🚀 new feature
 
-
-### ❤️  Thank You
+### ❤️ Thank You
 
 - Test Bot
 

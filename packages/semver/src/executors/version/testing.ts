@@ -108,9 +108,9 @@ export function setupTestingWorkspace(): TestingWorkspace {
     },
 
     generateLib(name: string, options = '') {
-      const commonArgs = `--unitTestRunner=none --linter=none --bundler=none --minimal --skipFormat --projectNameAndRootFormat=as-provided`;
+      const commonArgs = `--unitTestRunner=none --linter=none --bundler=tsc --minimal --skipFormat`;
       this.runNx(
-        `g @nx/js:lib ${name} --directory=libs/${name} ${commonArgs} ${options}`,
+        `g @nx/js:lib --directory=libs/${name} ${commonArgs} ${options}`,
       );
     },
 
@@ -167,6 +167,7 @@ export function createFakeContext({
       nodes: {},
       dependencies: {},
     },
+    nxJsonConfiguration: {},
   } satisfies ExecutorContext;
 }
 
