@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.5.0](https://github.com/jscutlery/semver/compare/semver-5.4.0...semver-5.5.0) (2024-12-03)
+
+
+### Features
+
+* add support for Nx 20 ([d73cf9d](https://github.com/jscutlery/semver/commit/d73cf9d9df1338ac53c7e1d4d3b469f13c183c64))
+
+
+
 # [5.4.0](https://github.com/jscutlery/semver/compare/semver-5.3.1...semver-5.4.0) (2024-12-02)
 
 
