@@ -201,6 +201,21 @@ describe('git', () => {
       expect(cp.exec).not.toBeCalled();
     });
 
+    it('should skip add to git stage if skipStage is true but should continue the chain', async () => {
+      jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
+
+      const value = await lastValueFrom(
+        addToStage({
+          paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
+          dryRun: false,
+          skipStage: true,
+        }),
+      );
+
+      expect(cp.exec).not.toBeCalled();
+      expect(value).toEqual(undefined);
+    });
+
     it('should skip git add if paths argument is empty', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
 
