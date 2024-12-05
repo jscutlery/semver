@@ -1,5 +1,5 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { EMPTY, Observable, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 import { exec } from '../../common/exec';
 import { logStep, _logStep } from './logger';
@@ -137,7 +137,8 @@ export function addToStage({
   if (paths.length === 0) {
     return EMPTY;
   } else if (skipStage) {
-    return EMPTY;
+    // skip stage and return like this to ensure the chain will continue.
+    return of(undefined);
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
