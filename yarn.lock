@@ -15,9 +15,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:19.0.7":
-  version: 19.0.7
-  resolution: "@angular-devkit/core@npm:19.0.7"
+"@angular-devkit/core@npm:19.1.2":
+  version: 19.1.2
+  resolution: "@angular-devkit/core@npm:19.1.2"
   dependencies:
     ajv: "npm:8.17.1"
     ajv-formats: "npm:3.0.1"
@@ -27,33 +27,23 @@ __metadata:
     source-map: "npm:0.7.4"
   peerDependencies:
     chokidar: ^4.0.0
-  dependenciesMeta:
-    esbuild:
-      built: true
-    puppeteer:
-      built: true
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 10/6c0d4422bcff1930f2b9782d60bbfbac030925017621405a4215498f1cfa525c9cbc0a5fb60bae65d8638c7d859a785295d3810a322492ce12050f5ac23e69fe
+  checksum: 10/df33d0edd996f4339306b4238e7726644ced8aae929d4cb4e49823dca18134192e6da05bbde08770fe6bad464e18fd448fc8dfbd9faab4c4d85bdfd1ecd40bb5
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:19.0.7":
-  version: 19.0.7
-  resolution: "@angular-devkit/schematics@npm:19.0.7"
+"@angular-devkit/schematics@npm:19.1.2":
+  version: 19.1.2
+  resolution: "@angular-devkit/schematics@npm:19.1.2"
   dependencies:
-    "@angular-devkit/core": "npm:19.0.7"
+    "@angular-devkit/core": "npm:19.1.2"
     jsonc-parser: "npm:3.3.1"
-    magic-string: "npm:0.30.12"
+    magic-string: "npm:0.30.17"
     ora: "npm:5.4.1"
     rxjs: "npm:7.8.1"
-  dependenciesMeta:
-    esbuild:
-      built: true
-    puppeteer:
-      built: true
-  checksum: 10/d567ed339fb9d829e0ed0682b2b3a5b8e04077348d0e3ec87cf30a3e8fad13849ae784008ce4b0848b89c57e7e1a7a39304d4147a557aa1281ec0fbcb04c7be0
+  checksum: 10/8b34530e341c16dcaba2bede7c2279732f87a2225a739dbdd13ccfd31e52b3c28b8d0664930100141de2e95d53b10507d48b56d7752b074da985bf899398146a
   languageName: node
   linkType: hard
 
@@ -6153,7 +6143,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jscutlery@workspace:."
   dependencies:
-    "@angular-devkit/schematics": "npm:19.0.7"
+    "@angular-devkit/schematics": "npm:19.1.2"
     "@commitlint/cli": "npm:^19.0.0"
     "@commitlint/config-angular": "npm:^19.0.0"
     "@nx/devkit": "npm:20.3.2"
@@ -6498,12 +6488,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:0.30.12":
-  version: 0.30.12
-  resolution: "magic-string@npm:0.30.12"
+"magic-string@npm:0.30.17":
+  version: 0.30.17
+  resolution: "magic-string@npm:0.30.17"
   dependencies:
     "@jridgewell/sourcemap-codec": "npm:^1.5.0"
-  checksum: 10/98016180a52b28efc1362152b45671067facccdaead6b70c1c14c566cba98491bc2e1336474b0996397730dca24400e85649da84d3da62b2560ed03c067573e6
+  checksum: 10/2f71af2b0afd78c2e9012a29b066d2c8ba45a9cd0c8070f7fd72de982fb1c403b4e3afdb1dae00691d56885ede66b772ef6bedf765e02e3a7066208fe2fec4aa
   languageName: node
   linkType: hard
 
