@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.6.0](https://github.com/jscutlery/semver/compare/semver-5.5.1...semver-5.6.0) (2025-02-05)
+
+
+### Features
+
+* add flag to enforce atomic push without a retry ([7088491](https://github.com/jscutlery/semver/commit/7088491175ef5a97180062396a381798cb8c6322))
+
+
+
 ## [5.5.1](https://github.com/jscutlery/semver/compare/semver-5.5.0...semver-5.5.1) (2024-12-05)
 
 
