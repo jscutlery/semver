@@ -39,9 +39,9 @@ describe('git', () => {
       stream.emit('data', 'feat B');
       stream.emit('close');
 
-      expect(observer.next).toBeCalledTimes(1);
-      expect(observer.next).toBeCalledWith(['feat A', 'feat B']);
-      expect(observer.complete).toBeCalledTimes(1);
+      expect(observer.next).toHaveBeenCalledTimes(1);
+      expect(observer.next).toHaveBeenCalledWith(['feat A', 'feat B']);
+      expect(observer.complete).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -55,11 +55,12 @@ describe('git', () => {
           remote: 'upstream',
           branch: 'master',
           noVerify: false,
+          enforceAtomicPush: false,
           projectName: 'p',
         }),
       );
 
-      expect(cp.exec).toBeCalledWith(
+      expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
           'push',
@@ -80,11 +81,12 @@ describe('git', () => {
           remote: 'origin',
           branch: 'main',
           noVerify: true,
+          enforceAtomicPush: false,
           projectName: 'p',
         }),
       );
 
-      expect(cp.exec).toBeCalledWith(
+      expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
           'push',
@@ -97,7 +99,7 @@ describe('git', () => {
       );
     });
 
-    it(`should retry Git push if '--atomic' option not supported`, async () => {
+    it(`should retry Git push if '--atomic' option is not supported`, async () => {
       jest
         .spyOn(cp, 'exec')
         .mockReturnValueOnce(throwError(() => new Error('atomic failed')))
@@ -111,6 +113,7 @@ describe('git', () => {
           remote: 'origin',
           branch: 'master',
           noVerify: false,
+          enforceAtomicPush: false,
           projectName: 'p',
         }),
       );
@@ -125,7 +128,34 @@ describe('git', () => {
         'git',
         expect.not.arrayContaining(['--atomic']),
       );
-      expect(console.warn).toBeCalled();
+      expect(console.warn).toHaveBeenCalled();
+    });
+
+    it('should not retry with a non atomic Git push if asked for', async () => {
+      jest
+        .spyOn(cp, 'exec')
+        .mockReturnValueOnce(throwError(() => new Error('atomic failed')));
+
+      await expect(
+        lastValueFrom(
+          tryPush({
+            tag: 'v1.0.0',
+            remote: 'origin',
+            branch: 'master',
+            noVerify: false,
+            enforceAtomicPush: true,
+            projectName: 'p',
+          }),
+        ),
+      ).rejects.toEqual(new Error('atomic failed'));
+
+      expect(cp.exec).toHaveBeenCalledTimes(1);
+
+      expect(cp.exec).toHaveBeenNthCalledWith(
+        1,
+        'git',
+        expect.arrayContaining(['push', '--atomic', 'v1.0.0']),
+      );
     });
 
     it(`should throw if Git push failed`, async () => {
@@ -140,11 +170,12 @@ describe('git', () => {
             remote: 'origin',
             branch: 'master',
             noVerify: false,
+            enforceAtomicPush: false,
             projectName: 'p',
           }),
         ),
       ).rejects.toEqual(new Error('Something went wrong'));
-      expect(cp.exec).toBeCalledTimes(1);
+      expect(cp.exec).toHaveBeenCalledTimes(1);
     });
 
     it('should fail if options are undefined', async () => {
@@ -157,6 +188,7 @@ describe('git', () => {
             branch: undefined as any,
             /* eslint-enable @typescript-eslint/no-explicit-any */
             noVerify: false,
+            enforceAtomicPush: false,
             projectName: 'p',
           }),
         ),
@@ -176,7 +208,7 @@ describe('git', () => {
         }),
       );
 
-      expect(cp.exec).toBeCalledWith(
+      expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
           'add',
@@ -198,7 +230,7 @@ describe('git', () => {
         { defaultValue: undefined },
       );
 
-      expect(cp.exec).not.toBeCalled();
+      expect(cp.exec).not.toHaveBeenCalled();
     });
 
     it('should skip add to git stage if skipStage is true but should continue the chain', async () => {
@@ -212,7 +244,7 @@ describe('git', () => {
         }),
       );
 
-      expect(cp.exec).not.toBeCalled();
+      expect(cp.exec).not.toHaveBeenCalled();
       expect(value).toEqual(undefined);
     });
 
@@ -228,7 +260,7 @@ describe('git', () => {
         { defaultValue: undefined },
       );
 
-      expect(cp.exec).not.toBeCalled();
+      expect(cp.exec).not.toHaveBeenCalled();
     });
   });
 
@@ -239,7 +271,7 @@ describe('git', () => {
       const tag = await lastValueFrom(getFirstCommitRef());
 
       expect(tag).toBe('sha1');
-      expect(cp.exec).toBeCalledWith(
+      expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD']),
       );
@@ -251,7 +283,7 @@ describe('git', () => {
       const tag = await lastValueFrom(getFirstCommitRef());
 
       expect(tag).toBe('sha3');
-      expect(cp.exec).toBeCalledWith(
+      expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD']),
       );
@@ -273,7 +305,7 @@ describe('git', () => {
       );
 
       expect(tag).toBe('project-a-1.0.0');
-      expect(cp.exec).toBeCalledWith(
+      expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
           'tag',
@@ -295,7 +327,7 @@ describe('git', () => {
         projectName: 'p',
       }).subscribe({
         complete: () => {
-          expect(cp.exec).not.toBeCalled();
+          expect(cp.exec).not.toHaveBeenCalled();
           done();
         },
       });
@@ -320,7 +352,7 @@ describe('git', () => {
         next: expect.fail,
         complete: () => expect.fail('should not complete'),
         error: (error) => {
-          expect(cp.exec).toBeCalled();
+          expect(cp.exec).toHaveBeenCalled();
           expect(error.message).toMatch(
             'Failed to tag "project-a-1.0.0", this tag already exists.',
           );

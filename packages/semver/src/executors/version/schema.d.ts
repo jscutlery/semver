@@ -19,6 +19,7 @@ export interface VersionBuilderSchema {
   dryRun?: boolean;
   noVerify?: boolean;
   push?: boolean;
+  enforceAtomicPush?: boolean;
   remote?: string;
   baseBranch?: string;
   syncVersions?: boolean;

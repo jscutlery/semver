@@ -73,6 +73,7 @@ export function tryPush({
   remote,
   branch,
   noVerify,
+  enforceAtomicPush,
   projectName,
   tag,
 }: {
@@ -80,6 +81,7 @@ export function tryPush({
   remote: string;
   branch: string;
   noVerify: boolean;
+  enforceAtomicPush: boolean;
   projectName: string;
 }): Observable<string> {
   if (remote == null || branch == null) {
@@ -103,7 +105,7 @@ export function tryPush({
   ])
     .pipe(
       catchError((error) => {
-        if (/atomic/.test(error)) {
+        if (!enforceAtomicPush && /atomic/.test(error)) {
           _logStep({
             step: 'warning',
             level: 'warn',

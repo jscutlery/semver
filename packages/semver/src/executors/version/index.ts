@@ -30,6 +30,7 @@ export default async function version(
 ): Promise<{ success: boolean }> {
   const {
     push,
+    enforceAtomicPush,
     remote,
     dryRun,
     trackDeps,
@@ -158,6 +159,7 @@ export default async function version(
           tag,
           branch: baseBranch,
           noVerify,
+          enforceAtomicPush,
           remote,
           projectName,
         }),
@@ -227,6 +229,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
   return {
     ...options,
     push: options.push as boolean,
+    enforceAtomicPush: options.enforceAtomicPush as boolean,
     remote: options.remote as string,
     dryRun: options.dryRun as boolean,
     trackDeps: options.trackDeps as boolean,
