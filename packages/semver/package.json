@@ -32,7 +32,7 @@
     "detect-indent": "6.1.0",
     "git-semver-tags": "^7.0.1",
     "inquirer": "8.2.6",
-    "rxjs": "7.8.1"
+    "rxjs": "7.8.2"
   },
   "devDependencies": {
     "@types/conventional-changelog": "^3.1.4 ",
