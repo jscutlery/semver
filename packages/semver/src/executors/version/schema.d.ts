@@ -47,4 +47,5 @@ export interface WriteChangelogConfig {
   dryRun?: boolean;
   changelogPath: string;
   tagPrefix: string;
+  commitParserOptions?: CommitParserOptions;
 }

@@ -19,5 +19,6 @@ export function createConventionalCommitStream(
     { version: newVersion },
     /// @ts-expect-error - Partially typed API
     { path: config.projectRoot },
+    config.commitParserOptions,
   );
 }
