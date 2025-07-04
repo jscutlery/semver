@@ -1,6 +1,9 @@
 import { execSync } from 'child_process';
 import { setupTestingWorkspace, type TestingWorkspace } from './testing';
 import { readFileSync, existsSync } from 'fs';
+import { ProjectConfiguration } from '@nx/devkit';
+import { writeFile } from './utils/filesystem';
+import { firstValueFrom } from 'rxjs';
 
 describe('@jscutlery/semver', () => {
   let testingWorkspace: TestingWorkspace;
@@ -21,9 +24,14 @@ describe('@jscutlery/semver', () => {
     // Lib d is publishable and use a custom preset.
     testingWorkspace.generateLib('d', '--publishable --importPath=@proj/d');
     testingWorkspace.installSemver('d', '--preset=conventionalcommits');
+    // macOS's BSD sed !== Linux's GNU sed
     testingWorkspace.exec(
       `
-        sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "✨ Awesome features" } ] }/g' libs/d/project.json
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          sed -i '' 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "✨ Awesome features" } ] }/g' libs/d/project.json
+        else
+          sed -i 's/"preset": "conventionalcommits"/"preset": { "types": [ { "type": "feat", "section": "✨ Awesome features" } ] }/g' libs/d/project.json
+        fi
       `,
     );
     testingWorkspace.exec(
@@ -400,6 +408,48 @@ describe('@jscutlery/semver', () => {
             ),
           ).toMatchSnapshot('a-1.2.0-alpha.0');
         });
+      });
+    });
+
+    describe('when using commitParserOptions and libs/d changed (v0.1.0 => v0.2.0)', () => {
+      beforeAll(async () => {
+        const projectJson = JSON.parse(
+          readFile(`${testingWorkspace.root}/libs/d/project.json`),
+        );
+        projectJson.targets['version'].options.commitParserOptions = {
+          headerPattern:
+            '^([A-Z]{3,}-\\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\\(([\\w-]+)\\))?\\S* (.+)$',
+          headerCorrespondence: ['ticketReference', 'type', 'scope', 'subject'],
+        };
+        await firstValueFrom(
+          writeFile(
+            `${testingWorkspace.root}/libs/d/project.json`,
+            JSON.stringify(projectJson, null, 2),
+          ),
+        );
+        console.log(readFile(`${testingWorkspace.root}/libs/d/project.json`));
+        testingWorkspace.exec(
+          `
+              echo feat >> libs/d/d.txt
+              git add .
+              git commit -m "TKT-1010: feat(d): 🚀 new feature"
+            `,
+        );
+        testingWorkspace.runNx(`run d:version --noVerify`);
+      });
+
+      it('should semver bump properly based on the custom commit header', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/d/package.json`),
+        ).toMatch(/"version": "0.2.0"/);
+      });
+
+      it('should generate CHANGELOG.md properly', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/d/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot('d-0.2.0');
       });
     });
 

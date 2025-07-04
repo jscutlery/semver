@@ -1,6 +1,7 @@
 import { ProjectsConfigurations } from '@nx/devkit';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
+import type { Options as CommitParserOptions } from 'conventional-commits-parser';
 import { PresetOpt } from './schema';
 import {
   insertChangelogDependencyUpdates,
@@ -40,6 +41,7 @@ export interface CommonVersionOptions {
   dependencyUpdates: Version[];
   preset: PresetOpt;
   workspace: ProjectsConfigurations | undefined;
+  commitParserOptions?: CommitParserOptions;
 }
 
 export function versionWorkspace({

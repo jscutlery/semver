@@ -158,6 +158,7 @@ export function tryBump({
         tagPrefix,
         releaseType,
         preid,
+        commitParserOptions,
       }).pipe(map((version) => ({ type: 'project', version })));
 
       const dependencyVersions$ = _getDependencyVersions({
@@ -233,6 +234,7 @@ export function _semverBump({
   tagPrefix,
   releaseType,
   preid,
+  commitParserOptions,
 }: {
   since: string;
   preset: PresetOpt;
@@ -240,15 +242,19 @@ export function _semverBump({
   tagPrefix: string;
   releaseType?: ReleaseIdentifier;
   preid?: string;
+  commitParserOptions?: CommitParserOptions;
 }) {
   return defer(async () => {
-    const recommended = await conventionalRecommendedBump({
-      path: projectRoot,
-      tagPrefix,
-      ...(typeof preset === 'string'
-        ? { preset }
-        : { preset: preset.name ?? 'conventionalcommits', config: preset }),
-    });
+    const recommended = await conventionalRecommendedBump(
+      {
+        path: projectRoot,
+        tagPrefix,
+        ...(typeof preset === 'string'
+          ? { preset }
+          : { preset: preset.name ?? 'conventionalcommits', config: preset }),
+      },
+      commitParserOptions,
+    );
 
     let recommendedReleaseType: ReleaseIdentifier | undefined =
       recommended.releaseType;
@@ -368,6 +374,7 @@ export function _getDependencyVersions({
               preset,
               projectRoot,
               tagPrefix,
+              commitParserOptions,
             }).pipe(
               map(
                 (version) =>

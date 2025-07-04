@@ -138,6 +138,7 @@ export default async function version(
         dependencyUpdates,
         skipCommit,
         skipStage,
+        commitParserOptions,
         workspace: context.projectsConfigurations,
       };
 
