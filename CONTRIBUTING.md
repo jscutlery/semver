@@ -14,12 +14,14 @@ Thank you for your contribution 🤗!
 # install dependencies
 yarn install
 
-# run the tests
-yarn test
-
 # build the library
 yarn build
+
+# run the tests
+yarn test
 ```
+
+> Note that you need to build the library first to run the e2e tests.
 
 ## Using `npm link` or `yarn link`
 
