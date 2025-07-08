@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.6.1](https://github.com/jscutlery/semver/compare/semver-5.6.0...semver-5.6.1) (2025-07-08)
+
+
+### Bug Fixes
+
+* 📦 bump dependency rxjs to v7.8.2 ([#982](https://github.com/jscutlery/semver/issues/982)) ([3f20123](https://github.com/jscutlery/semver/commit/3f20123d2bc0ba49031ca79d1b3878097c88028c))
+
+
+
 # [5.6.0](https://github.com/jscutlery/semver/compare/semver-5.5.1...semver-5.6.0) (2025-02-05)
 
 
