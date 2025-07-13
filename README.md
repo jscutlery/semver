@@ -429,7 +429,7 @@ release:
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
   stage: release
-  image: node:16.13.2
+  image: node:20.19.3
   before_script:
     - git config --global user.name "GitLab Bot"
     - git config --global user.email "gituser@example.com"
