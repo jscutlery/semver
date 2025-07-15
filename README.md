@@ -390,13 +390,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
       - name: Setup Git
         run: |
           git config user.name "GitHub Bot"
@@ -429,7 +429,7 @@ release:
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
   stage: release
-  image: node:16.13.2
+  image: node:20.19.3
   before_script:
     - git config --global user.name "GitLab Bot"
     - git config --global user.email "gituser@example.com"
