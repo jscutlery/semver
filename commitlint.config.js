@@ -18,6 +18,7 @@ module.exports = {
         'test',
         'release',
         'wip',
+        'chore',
       ],
     ],
   },
