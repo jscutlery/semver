@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.7.1](https://github.com/jscutlery/semver/compare/semver-5.7.0...semver-5.7.1) (2025-07-15)
+
+
+### Bug Fixes
+
+* **semver:** commitParserOptions support in changelog and semver bump ([3b3779c](https://github.com/jscutlery/semver/commit/3b3779c12b209628bb36bbd65d23cafe6856b6df))
+
+
+
 # [5.7.0](https://github.com/jscutlery/semver/compare/semver-5.6.1...semver-5.7.0) (2025-07-15)
 
 
