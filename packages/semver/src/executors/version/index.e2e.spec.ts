@@ -427,7 +427,6 @@ describe('@jscutlery/semver', () => {
             JSON.stringify(projectJson, null, 2),
           ),
         );
-        console.log(readFile(`${testingWorkspace.root}/libs/d/project.json`));
         testingWorkspace.exec(
           `
               echo feat >> libs/d/d.txt
