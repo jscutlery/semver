@@ -464,6 +464,7 @@ For more details on using Nx Release, refer to the [official Nx documentation](h
 
 | Version | Required Package          |
 | ------- | ------------------------- |
+| v5.7.0  | `@nx/devkit ^21.0.0`      |
 | v5.5.0  | `@nx/devkit ^20.0.0`      |
 | v5.3.0  | `@nx/devkit ^19.0.0`      |
 | v5.0.0  | `@nx/devkit ^18.0.0`      |
