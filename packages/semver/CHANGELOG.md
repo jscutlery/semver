@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.7.0](https://github.com/jscutlery/semver/compare/semver-5.6.1...semver-5.7.0) (2025-07-15)
+
+
+### Features
+
+* **semver:** add support for Nx 21 in peerDependencies ([d6d2878](https://github.com/jscutlery/semver/commit/d6d2878353d4345f09a3975c53a4130a67f84d90))
+
+
+
 ## [5.6.1](https://github.com/jscutlery/semver/compare/semver-5.6.0...semver-5.6.1) (2025-07-08)
 
 
