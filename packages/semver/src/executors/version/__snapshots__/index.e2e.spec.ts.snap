@@ -314,3 +314,24 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 * **a:** 🚀 new feature xxxxxxx
 "
 `;
+
+exports[`@jscutlery/semver @jscutlery/semver:version when using commitParserOptions and libs/d changed (v0.1.0 => v0.2.0) should generate CHANGELOG.md properly: d-0.2.0 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## [0.2.0](///compare/d-0.1.0...d-0.2.0) (yyyy-mm-dd)
+
+
+### ✨ Awesome features
+
+* **d:** 🚀 new feature xxxxxxx
+
+## 0.1.0 (yyyy-mm-dd)
+
+
+### ✨ Awesome features
+
+* **d:** 🚀 new awesome feature xxxxxxx
+"
+`;

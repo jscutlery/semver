@@ -15,6 +15,7 @@ import type { Version } from '../version';
 import { diff } from './diff';
 import { readFile, readFileIfExists, writeFile } from './filesystem';
 import { PresetOpt } from '../schema';
+import { Options as CommitParserOptions } from 'conventional-commits-parser';
 export const defaultHeader = `# Changelog
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
@@ -33,6 +34,7 @@ export function updateChangelog({
   newVersion,
   changelogHeader,
   tagPrefix,
+  commitParserOptions,
 }: {
   projectRoot: string;
   dryRun: boolean;
@@ -40,6 +42,7 @@ export function updateChangelog({
   newVersion: string;
   tagPrefix: string;
   changelogHeader: string;
+  commitParserOptions?: CommitParserOptions;
 }): Observable<string> {
   return defer(async () => {
     const changelogPath = getChangelogPath(projectRoot);
@@ -51,6 +54,7 @@ export function updateChangelog({
         projectRoot,
         preset,
         tagPrefix,
+        commitParserOptions,
       },
       newVersion,
     );

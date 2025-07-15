@@ -68,11 +68,14 @@ describe('tryBump', () => {
     });
 
     expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
-    expect(mockConventionalRecommendedBump).toBeCalledWith({
-      path: '/libs/demo',
-      preset: 'angular',
-      tagPrefix: 'v',
-    });
+    expect(mockConventionalRecommendedBump).toBeCalledWith(
+      {
+        path: '/libs/demo',
+        preset: 'angular',
+        tagPrefix: 'v',
+      },
+      undefined,
+    );
   });
 
   it('should compute the next version based on last version, changes, and dependencies', async () => {
@@ -130,11 +133,14 @@ describe('tryBump', () => {
     });
 
     expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
-    expect(mockConventionalRecommendedBump).toBeCalledWith({
-      path: '/libs/demo',
-      preset: 'angular',
-      tagPrefix: 'v',
-    });
+    expect(mockConventionalRecommendedBump).toBeCalledWith(
+      {
+        path: '/libs/demo',
+        preset: 'angular',
+        tagPrefix: 'v',
+      },
+      undefined,
+    );
   });
 
   it('should use given type to calculate next version', async () => {
