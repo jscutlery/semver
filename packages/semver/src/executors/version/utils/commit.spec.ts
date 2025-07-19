@@ -34,7 +34,7 @@ describe(commit.name, () => {
       }),
     );
 
-    expect(cp.exec).toBeCalledWith(
+    expect(cp.exec).toHaveBeenCalledWith(
       'git',
       expect.arrayContaining(['commit', '-m', 'chore(release): 1.0.0']),
     );
@@ -49,7 +49,7 @@ describe(commit.name, () => {
       projectName: 'p',
     }).subscribe({
       complete: () => {
-        expect(cp.exec).not.toBeCalled();
+        expect(cp.exec).not.toHaveBeenCalled();
         done();
       },
     });
@@ -64,7 +64,7 @@ describe(commit.name, () => {
       projectName: 'p',
     }).subscribe({
       next: () => {
-        expect(cp.exec).not.toBeCalled();
+        expect(cp.exec).not.toHaveBeenCalled();
         done();
       },
     });
@@ -81,7 +81,7 @@ describe(commit.name, () => {
       }),
     );
 
-    expect(cp.exec).toBeCalledWith(
+    expect(cp.exec).toHaveBeenCalledWith(
       'git',
       expect.arrayContaining(['--no-verify']),
     );

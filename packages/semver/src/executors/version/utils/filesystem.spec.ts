@@ -34,7 +34,7 @@ describe('readJsonFile', () => {
     await expect(lastValueFrom(file$)).rejects.toThrow(
       'ENOENT: no such file or directory',
     );
-    expect(mockReadFile).toBeCalledTimes(1);
+    expect(mockReadFile).toHaveBeenCalledTimes(1);
   });
 });
 

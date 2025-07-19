@@ -26,7 +26,7 @@ describe('@jscutlery/semver:gitlab', () => {
   it('create release with specified --tag', async () => {
     const output = await executor(options);
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining(['create', '--tag-name', 'v1.0.0']),
     );
@@ -39,7 +39,7 @@ describe('@jscutlery/semver:gitlab', () => {
       assets: [{ name: 'asset1', url: './dist/package' }],
     });
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining([
         '--assets-link',
@@ -52,7 +52,7 @@ describe('@jscutlery/semver:gitlab', () => {
   it('create release with specified --ref', async () => {
     const output = await executor({ ...options, ref: 'master' });
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining(['--ref', 'master']),
     );
@@ -62,7 +62,7 @@ describe('@jscutlery/semver:gitlab', () => {
   it('create release with specified --description', async () => {
     const output = await executor({ ...options, description: 'add feature' });
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining(['--description', 'add feature']),
     );
@@ -72,7 +72,7 @@ describe('@jscutlery/semver:gitlab', () => {
   it('create release with specified --name', async () => {
     const output = await executor({ ...options, name: 'Title for release' });
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining(['--name', 'Title for release']),
     );
@@ -85,7 +85,7 @@ describe('@jscutlery/semver:gitlab', () => {
       milestones: ['v1.0.0'],
     });
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining(['--milestone', 'v1.0.0']),
     );
@@ -95,7 +95,7 @@ describe('@jscutlery/semver:gitlab', () => {
   it('create release with specified --releasedAt', async () => {
     const output = await executor({ ...options, releasedAt: 'XYZ' });
 
-    expect(mockExec).toBeCalledWith(
+    expect(mockExec).toHaveBeenCalledWith(
       'release-cli',
       expect.arrayContaining(['--released-at', 'XYZ']),
     );
@@ -112,7 +112,7 @@ describe('@jscutlery/semver:gitlab', () => {
 
     const output = await executor(options);
 
-    expect(logger.error).toBeCalled();
+    expect(logger.error).toHaveBeenCalled();
     expect(output.success).toBe(false);
   });
 });

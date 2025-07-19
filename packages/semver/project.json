@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/semver/src",
   "projectType": "library",
+  "tags": [],
   "generators": {},
   "targets": {
     "version": {
@@ -49,7 +50,7 @@
       "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "packages/semver/jest.config.ts",
-        "testPathPattern": ["packages/semver/.*\\.e2e\\.spec\\.ts$"]
+        "testPathPatterns": ["packages/semver/.*\\.e2e\\.spec\\.ts$"]
       },
       "dependsOn": ["build"]
     },
@@ -90,6 +91,5 @@
       },
       "outputs": ["{options.outputPath}"]
     }
-  },
-  "tags": []
+  }
 }

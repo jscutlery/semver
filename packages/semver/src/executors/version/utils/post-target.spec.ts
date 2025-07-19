@@ -92,8 +92,8 @@ describe(runPostTargets.name, () => {
     }).subscribe({
       next: nextSpy,
       complete: () => {
-        expect(nextSpy).toBeCalledTimes(3);
-        expect(mockRunExecutor).toBeCalledTimes(3);
+        expect(nextSpy).toHaveBeenCalledTimes(3);
+        expect(mockRunExecutor).toHaveBeenCalledTimes(3);
         expect(mockRunExecutor.mock.calls[0][0]).toEqual(
           expect.objectContaining({
             project: 'project-a',
@@ -141,8 +141,8 @@ describe(runPostTargets.name, () => {
     }).subscribe({
       next: nextSpy,
       complete: () => {
-        expect(nextSpy).toBeCalledTimes(1);
-        expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(nextSpy).toHaveBeenCalledTimes(1);
+        expect(mockRunExecutor).toHaveBeenCalledTimes(1);
         expect(mockRunExecutor.mock.calls[0][0]).toEqual(
           expect.objectContaining({
             project: 'a',
@@ -170,11 +170,11 @@ describe(runPostTargets.name, () => {
     }).subscribe({
       next: nextSpy,
       error: (error) => {
-        expect(nextSpy).toBeCalledTimes(1);
+        expect(nextSpy).toHaveBeenCalledTimes(1);
         expect(error.toString()).toEqual(
           'Error: Something went wrong with post-target "project-b:test".',
         );
-        expect(mockRunExecutor).toBeCalledTimes(2);
+        expect(mockRunExecutor).toHaveBeenCalledTimes(2);
         done();
       },
     });
@@ -192,9 +192,9 @@ describe(runPostTargets.name, () => {
       next: nextSpy,
       error: errorSpy,
       complete: () => {
-        expect(nextSpy).not.toBeCalled();
-        expect(errorSpy).not.toBeCalled();
-        expect(mockRunExecutor).not.toBeCalled();
+        expect(nextSpy).not.toHaveBeenCalled();
+        expect(errorSpy).not.toHaveBeenCalled();
+        expect(mockRunExecutor).not.toHaveBeenCalled();
         done();
       },
     });
@@ -210,8 +210,8 @@ describe(runPostTargets.name, () => {
     }).subscribe({
       next: nextSpy,
       error: (error) => {
-        expect(nextSpy).toBeCalledTimes(1);
-        expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(nextSpy).toHaveBeenCalledTimes(1);
+        expect(mockRunExecutor).toHaveBeenCalledTimes(1);
         expect(error.toString()).toEqual(
           'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c".',
         );
@@ -230,8 +230,8 @@ describe(runPostTargets.name, () => {
     }).subscribe({
       next: nextSpy,
       error: (error) => {
-        expect(nextSpy).toBeCalledTimes(1);
-        expect(mockRunExecutor).toBeCalledTimes(1);
+        expect(nextSpy).toHaveBeenCalledTimes(1);
+        expect(mockRunExecutor).toHaveBeenCalledTimes(1);
         expect(error.toString()).toEqual(
           'Error: The target name "foo" does not exist. Available targets for "project-b": "test".',
         );

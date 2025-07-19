@@ -61,14 +61,14 @@ describe('tryBump', () => {
 
     expect(newVersion?.version).toEqual('2.2.0');
     expect(newVersion?.previousVersion).toEqual('2.1.0');
-    expect(mockGetCommits).toBeCalledTimes(1);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
 
-    expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
+    expect(mockConventionalRecommendedBump).toHaveBeenCalledTimes(1);
+    expect(mockConventionalRecommendedBump).toHaveBeenCalledWith(
       {
         path: '/libs/demo',
         preset: 'angular',
@@ -117,23 +117,23 @@ describe('tryBump', () => {
 
     expect(newVersion?.version).toEqual('2.1.1');
 
-    expect(mockGetCommits).toBeCalledTimes(3);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledTimes(3);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
 
       since: 'v2.1.0',
     });
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/dep1',
       since: 'v2.1.0',
     });
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/dep2',
       since: 'v2.1.0',
     });
 
-    expect(mockConventionalRecommendedBump).toBeCalledTimes(1);
-    expect(mockConventionalRecommendedBump).toBeCalledWith(
+    expect(mockConventionalRecommendedBump).toHaveBeenCalledTimes(1);
+    expect(mockConventionalRecommendedBump).toHaveBeenCalledWith(
       {
         path: '/libs/demo',
         preset: 'angular',
@@ -162,10 +162,10 @@ describe('tryBump', () => {
 
     expect(newVersion?.version).toEqual('3.0.0-alpha.0');
 
-    expect(mockConventionalRecommendedBump).not.toBeCalled();
+    expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
 
-    expect(mockGetCommits).toBeCalledTimes(1);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -197,9 +197,9 @@ describe('tryBump', () => {
       previousVersion: '2.1.0',
       dependencyUpdates: [],
     });
-    expect(mockConventionalRecommendedBump).not.toBeCalled();
-    expect(mockGetCommits).toBeCalledTimes(1);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -231,9 +231,9 @@ describe('tryBump', () => {
       previousVersion: '2.1.0',
       dependencyUpdates: [],
     });
-    expect(mockConventionalRecommendedBump).not.toBeCalled();
-    expect(mockGetCommits).toBeCalledTimes(1);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -265,9 +265,9 @@ describe('tryBump', () => {
       previousVersion: '2.1.0',
       dependencyUpdates: [],
     });
-    expect(mockConventionalRecommendedBump).not.toBeCalled();
-    expect(mockGetCommits).toBeCalledTimes(1);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -291,7 +291,7 @@ describe('tryBump', () => {
 
     expect(newVersion?.version).toEqual('2.1.1');
     expect(newVersion?.previousVersion).toEqual('2.1.0');
-    expect(mockConventionalRecommendedBump).not.toBeCalled();
+    expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
   });
 
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
@@ -316,11 +316,11 @@ describe('tryBump', () => {
       }),
     );
 
-    expect(loggerSpy).toBeCalledWith(
+    expect(loggerSpy).toHaveBeenCalledWith(
       expect.stringContaining('No previous version tag found'),
     );
-    expect(mockGetCommits).toBeCalledTimes(1);
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'sha1',
     });
@@ -347,7 +347,7 @@ describe('tryBump', () => {
     );
 
     expect(newVersion).toBeNull();
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });
@@ -375,7 +375,7 @@ describe('tryBump', () => {
     );
 
     expect(newVersion?.version).toEqual('2.1.1');
-    expect(mockGetCommits).toBeCalledWith({
+    expect(mockGetCommits).toHaveBeenCalledWith({
       projectRoot: '/libs/demo',
       since: 'v2.1.0',
     });

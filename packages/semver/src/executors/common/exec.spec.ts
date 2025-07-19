@@ -11,14 +11,16 @@ describe(exec.name, () => {
       next: observer.next,
       error: done.fail,
       complete: () => {
-        expect(observer.next).toBeCalledTimes(1);
-        expect(observer.next).toBeCalledWith(expect.stringContaining('v'));
+        expect(observer.next).toHaveBeenCalledTimes(1);
+        expect(observer.next).toHaveBeenCalledWith(
+          expect.stringContaining('v'),
+        );
         done();
       },
     });
   });
 
   it('should handle failure and return stderr', async () => {
-    await expect(lastValueFrom(exec('exit', ['1']))).rejects.toThrowError();
+    await expect(lastValueFrom(exec('exit', ['1']))).rejects.toThrow();
   });
 });
