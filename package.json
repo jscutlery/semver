@@ -48,7 +48,7 @@
     "all-contributors-cli": "^6.19.0",
     "dotenv": "16.4.7",
     "eslint": "9.14.0",
-    "eslint-config-prettier": "10.1.1",
+    "eslint-config-prettier": "10.1.8",
     "husky": "^9.0.0",
     "jest": "30.0.4",
     "jest-extended": "^4.0.0",
