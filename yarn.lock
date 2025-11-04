@@ -4927,7 +4927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.10, ejs@npm:^3.1.7":
+"ejs@npm:^3.1.7":
   version: 3.1.10
   resolution: "ejs@npm:3.1.10"
   dependencies:
@@ -5753,7 +5753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.7":
+"handlebars@npm:^4.7.7, handlebars@npm:^4.7.8":
   version: 4.7.8
   resolution: "handlebars@npm:4.7.8"
   dependencies:
@@ -6795,7 +6795,7 @@ __metadata:
     nx: "npm:21.6.5"
     prettier: "npm:3.5.3"
     tmp: "npm:^0.2.1"
-    ts-jest: "npm:29.4.0"
+    ts-jest: "npm:29.4.5"
     ts-node: "npm:10.9.2"
     tslib: "npm:^2.3.1"
     tslint: "npm:6.1.3"
@@ -8342,6 +8342,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.7.3":
+  version: 7.7.3
+  resolution: "semver@npm:7.7.3"
+  bin:
+    semver: bin/semver.js
+  checksum: 10/8dbc3168e057a38fc322af909c7f5617483c50caddba135439ff09a754b20bdd6482a5123ff543dad4affa488ecf46ec5fb56d61312ad20bb140199b88dfaea9
+  languageName: node
+  linkType: hard
+
 "set-blocking@npm:^2.0.0":
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
@@ -8803,17 +8812,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.4.0":
-  version: 29.4.0
-  resolution: "ts-jest@npm:29.4.0"
+"ts-jest@npm:29.4.5":
+  version: 29.4.5
+  resolution: "ts-jest@npm:29.4.5"
   dependencies:
     bs-logger: "npm:^0.2.6"
-    ejs: "npm:^3.1.10"
     fast-json-stable-stringify: "npm:^2.1.0"
+    handlebars: "npm:^4.7.8"
     json5: "npm:^2.2.3"
     lodash.memoize: "npm:^4.1.2"
     make-error: "npm:^1.3.6"
-    semver: "npm:^7.7.2"
+    semver: "npm:^7.7.3"
     type-fest: "npm:^4.41.0"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
@@ -8839,7 +8848,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10/fe501f3d9946ec52db78ae0ac6cfd72942b1c1f5d657c12db321c9d570f0f499e83eb6c7e26074cd11dfe534a6a09c676947e7a63ee08fcda552aabcdeb6c592
+  checksum: 10/48d867e0707474241b6339336cbe57d85122d6018fef957c8c095ff365e5d9428f112fe2cb11a8301343bbd32cec3ff639523d9bf9eea3a371734aa9a100f8a2
   languageName: node
   linkType: hard
 
