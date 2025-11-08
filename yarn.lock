@@ -2415,7 +2415,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jscutlery/semver@workspace:packages/semver"
   dependencies:
-    "@types/conventional-changelog": "npm:^3.1.4 "
+    "@types/conventional-changelog": "npm:^6.0.0"
     "@types/conventional-recommended-bump": "npm:^9.0.2"
     "@types/inquirer": "npm:8.2.12"
     "@types/semver": "npm:7.5.8"
@@ -3167,15 +3167,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/conventional-changelog@npm:^3.1.4 ":
-  version: 3.1.5
-  resolution: "@types/conventional-changelog@npm:3.1.5"
+"@types/conventional-changelog@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "@types/conventional-changelog@npm:6.0.1"
   dependencies:
     "@types/conventional-changelog-core": "npm:*"
     "@types/conventional-changelog-writer": "npm:*"
     "@types/conventional-commits-parser": "npm:*"
     "@types/node": "npm:*"
-  checksum: 10/bd13d1042001749f3ece420e4a4635e8d20cfb60c6de7ef0263c11a01ce19314caee33408ebd9875dbb0a5035075e15dd2c6ab9d9952ac7601bf37de4b496db9
+  checksum: 10/d605895f0b837453b93176c0cb4ace5dde89ddd6df4b452d9067f031af7b148fd56cc2158bf3ab1267b1cee3f7f17f04098ae39a3f1eebaf53af7ff60a675555
   languageName: node
   linkType: hard
 
