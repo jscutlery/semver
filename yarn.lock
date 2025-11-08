@@ -2417,7 +2417,7 @@ __metadata:
   dependencies:
     "@types/conventional-changelog": "npm:^3.1.4 "
     "@types/conventional-recommended-bump": "npm:^9.0.2"
-    "@types/inquirer": "npm:8.2.12"
+    "@types/inquirer": "npm:9.0.9"
     "@types/semver": "npm:7.5.8"
     "@types/tmp": "npm:0.2.6"
     chalk: "npm:4.1.2"
@@ -3215,13 +3215,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/inquirer@npm:8.2.12":
-  version: 8.2.12
-  resolution: "@types/inquirer@npm:8.2.12"
+"@types/inquirer@npm:9.0.9":
+  version: 9.0.9
+  resolution: "@types/inquirer@npm:9.0.9"
   dependencies:
     "@types/through": "npm:*"
     rxjs: "npm:^7.2.0"
-  checksum: 10/b382693011a5f33c92ac1f90a16f3d6fa600c2a294433ca5dc65ab108eccd658b9293e968c34a738ef60d5cd1f2f150ebef7da731aa302201d9978abad1fcb94
+  checksum: 10/015ee6fa65d1d79c070c889906be3eceedd77aa08a4aea3d17b188c9d169b459994244525f054b60de0e28fe9c492df75527a7b63da16e06fcc09e54039ac652
   languageName: node
   linkType: hard
 
