@@ -6831,7 +6831,7 @@ __metadata:
     jest-util: "npm:30.0.5"
     ngx-deploy-npm: "npm:^8.0.0"
     nx: "npm:21.6.5"
-    prettier: "npm:3.5.3"
+    prettier: "npm:3.6.2"
     tmp: "npm:^0.2.1"
     ts-jest: "npm:29.4.5"
     ts-node: "npm:10.9.2"
@@ -7996,12 +7996,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.5.3":
-  version: 3.5.3
-  resolution: "prettier@npm:3.5.3"
+"prettier@npm:3.6.2":
+  version: 3.6.2
+  resolution: "prettier@npm:3.6.2"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/7050c08f674d9e49fbd9a4c008291d0715471f64e94cc5e4b01729affce221dfc6875c8de7e66b728c64abc9352eefb7eaae071b5f79d30081be207b53774b78
+  checksum: 10/1213691706bcef1371d16ef72773c8111106c3533b660b1cc8ec158bd109cdf1462804125f87f981f23c4a3dba053b6efafda30ab0114cc5b4a725606bb9ff26
   languageName: node
   linkType: hard
 

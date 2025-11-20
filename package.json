@@ -55,7 +55,7 @@
     "jest-util": "30.0.5",
     "ngx-deploy-npm": "^8.0.0",
     "nx": "21.6.5",
-    "prettier": "3.5.3",
+    "prettier": "3.6.2",
     "tmp": "^0.2.1",
     "ts-jest": "29.4.5",
     "ts-node": "10.9.2",
