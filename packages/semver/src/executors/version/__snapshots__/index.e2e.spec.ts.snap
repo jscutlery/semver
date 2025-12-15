@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate CHANGELOG.md: b-0.3.0 1`] = `
 "## 0.3.0 (yyyy-mm-dd)
