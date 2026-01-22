@@ -1,6 +1,5 @@
 import { type ProjectGraph } from '@nx/devkit';
 import { getProjectDependencies } from './get-project-dependencies';
-
 const projectGraph: ProjectGraph = {
   nodes: {},
   dependencies: {
@@ -60,44 +59,32 @@ const projectGraph: ProjectGraph = {
     ],
   },
 };
-
 describe('projectDependencies', () => {
   const mockCreateProjectGraphAsync = jest.fn();
-
   beforeEach(() => {
     jest.resetModules();
   });
-
   jest.mock('@nx/devkit', () => ({
     createProjectGraphAsync: mockCreateProjectGraphAsync,
   }));
   jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
-
   beforeEach(() => {
     mockCreateProjectGraphAsync.mockRestore();
   });
-
   it('returns a list of libs that the project is dependent on', async () => {
     mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
-
     const dependencies = await getProjectDependencies('demo');
     expect(dependencies).toEqual(['lib1', 'lib2']);
-
     expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
   });
-
   it('returns a sub-dependency', async () => {
     mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
-
     const dependencies = await getProjectDependencies('lib1');
     expect(dependencies).toEqual(['lib2']);
-
     expect(mockCreateProjectGraphAsync).toHaveBeenCalledTimes(1);
   });
-
   it('handles a failure in retrieving the dependency graph', async () => {
     mockCreateProjectGraphAsync.mockReturnValue(Promise.reject('thrown error'));
-
     let error;
     try {
       await getProjectDependencies('lib1');
