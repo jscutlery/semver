@@ -1,5 +1,4 @@
 import { formatTagPrefix } from './tag';
-
 describe(formatTagPrefix.name, () => {
   it('should resolve interpolated string', () => {
     expect(
@@ -10,7 +9,6 @@ describe(formatTagPrefix.name, () => {
       }),
     ).toBe('testtagPrefix');
   });
-
   it('should resolve syncVersions', () => {
     expect(
       formatTagPrefix({
@@ -20,7 +18,6 @@ describe(formatTagPrefix.name, () => {
       }),
     ).toBe('v');
   });
-
   it('should resolve default tag', () => {
     expect(
       formatTagPrefix({
