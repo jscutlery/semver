@@ -5,7 +5,6 @@ import {
 } from '@nx/devkit';
 import { createFakeContext } from '../testing';
 import { runPostTargets } from './post-target';
-
 jest.mock('@nx/devkit', () => ({
   runExecutor: jest.fn(),
   readTargetOptions: jest.fn(),
@@ -14,13 +13,10 @@ jest.mock('@nx/devkit', () => ({
     log: jest.fn(),
   },
 }));
-
 describe(runPostTargets.name, () => {
   const mockRunExecutor = runExecutor as jest.Mock;
   const mockReadTargetOptions = readTargetOptions as jest.Mock;
-
   let nextSpy: jest.Mock;
-
   const additionalProjects: {
     project: string;
     projectRoot: string;
@@ -54,7 +50,6 @@ describe(runPostTargets.name, () => {
       },
     },
   ];
-
   const context = createFakeContext({
     project: 'test',
     targets: {
@@ -66,7 +61,6 @@ describe(runPostTargets.name, () => {
     workspaceRoot: '/root',
     additionalProjects: additionalProjects,
   });
-
   beforeEach(() => {
     nextSpy = jest.fn();
     mockRunExecutor.mockImplementation(function* () {
@@ -74,16 +68,13 @@ describe(runPostTargets.name, () => {
     });
     mockReadTargetOptions.mockReturnValue({});
   });
-
   afterEach(() => {
     jest.resetAllMocks();
   });
-
   it('should execute post targets', (done) => {
     mockReadTargetOptions.mockReturnValue({
       optionA: 'optionA',
     });
-
     runPostTargets({
       projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test:prod'],
@@ -122,7 +113,6 @@ describe(runPostTargets.name, () => {
       },
     });
   });
-
   it('should execute post targets without specifying the project name', (done) => {
     runPostTargets({
       projectName: 'a',
@@ -153,7 +143,6 @@ describe(runPostTargets.name, () => {
       },
     });
   });
-
   it('should handle post target failure', (done) => {
     mockRunExecutor.mockImplementationOnce(function* () {
       yield { success: true };
@@ -161,7 +150,6 @@ describe(runPostTargets.name, () => {
     mockRunExecutor.mockImplementationOnce(function* () {
       yield new Error('Nop!');
     });
-
     runPostTargets({
       projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test'],
@@ -179,10 +167,8 @@ describe(runPostTargets.name, () => {
       },
     });
   });
-
   it('should handle empty post target', (done) => {
     const errorSpy = jest.fn();
-
     runPostTargets({
       projectName: 'p',
       postTargets: [],
@@ -199,7 +185,6 @@ describe(runPostTargets.name, () => {
       },
     });
   });
-
   it('should handle wrong post target project', (done) => {
     runPostTargets({
       projectName: 'p',
@@ -219,7 +204,6 @@ describe(runPostTargets.name, () => {
       },
     });
   });
-
   it('should handle wrong post target name', (done) => {
     runPostTargets({
       projectName: 'p',
@@ -239,7 +223,6 @@ describe(runPostTargets.name, () => {
       },
     });
   });
-
   it('should forward and resolve options', (done) => {
     mockReadTargetOptions.mockReturnValueOnce({
       optionA: 'optionA',
@@ -277,14 +260,12 @@ describe(runPostTargets.name, () => {
       },
       arrayWithStrings: ['first-${version}', 'seconnd-${version}'],
     });
-
     const templateStringContext = {
       version: '2.0.0',
       dryRun: true,
       num: 42,
       falseyValue: false,
     };
-
     runPostTargets({
       projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test'],
