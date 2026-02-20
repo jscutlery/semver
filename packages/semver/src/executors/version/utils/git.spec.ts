@@ -9,46 +9,35 @@ import {
   getFirstCommitRef,
   tryPush,
 } from './git';
-
 jest.mock('git-raw-commits', () => jest.fn());
 jest.mock('../../common/exec');
-
 describe('git', () => {
   jest.spyOn(console, 'log').mockImplementation();
-
   afterEach(() => (cp.exec as jest.Mock).mockReset());
-
   describe(getCommits.name, () => {
     const mockGitRawCommits = gitRawCommits as jest.Mock;
-
     it('should get commits list', () => {
       const stream = new PassThrough();
       mockGitRawCommits.mockReturnValue(stream);
-
       const observer = {
         next: jest.fn(),
         complete: jest.fn(),
       };
-
       getCommits({
         projectRoot: 'libs/demo',
         since: 'x1.0.0',
       }).subscribe(observer);
-
       stream.emit('data', 'feat A');
       stream.emit('data', 'feat B');
       stream.emit('close');
-
       expect(observer.next).toHaveBeenCalledTimes(1);
       expect(observer.next).toHaveBeenCalledWith(['feat A', 'feat B']);
       expect(observer.complete).toHaveBeenCalledTimes(1);
     });
   });
-
   describe(tryPush.name, () => {
     it('should Git push with right options', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('success'));
-
       await lastValueFrom(
         tryPush({
           tag: 'v1.0.0',
@@ -59,7 +48,6 @@ describe('git', () => {
           projectName: 'p',
         }),
       );
-
       expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
@@ -71,10 +59,8 @@ describe('git', () => {
         ]),
       );
     });
-
     it(`should Git push and add '--no-verify' option when asked for`, async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('success'));
-
       await lastValueFrom(
         tryPush({
           tag: 'v1.0.0',
@@ -85,7 +71,6 @@ describe('git', () => {
           projectName: 'p',
         }),
       );
-
       expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
@@ -98,15 +83,12 @@ describe('git', () => {
         ]),
       );
     });
-
     it(`should retry Git push if '--atomic' option is not supported`, async () => {
       jest
         .spyOn(cp, 'exec')
         .mockReturnValueOnce(throwError(() => new Error('atomic failed')))
         .mockReturnValueOnce(of('success'));
-
       jest.spyOn(console, 'warn').mockImplementation();
-
       await lastValueFrom(
         tryPush({
           tag: 'v1.0.0',
@@ -117,7 +99,6 @@ describe('git', () => {
           projectName: 'p',
         }),
       );
-
       expect(cp.exec).toHaveBeenNthCalledWith(
         1,
         'git',
@@ -130,12 +111,10 @@ describe('git', () => {
       );
       expect(console.warn).toHaveBeenCalled();
     });
-
     it('should not retry with a non atomic Git push if asked for', async () => {
       jest
         .spyOn(cp, 'exec')
         .mockReturnValueOnce(throwError(() => new Error('atomic failed')));
-
       await expect(
         lastValueFrom(
           tryPush({
@@ -148,21 +127,17 @@ describe('git', () => {
           }),
         ),
       ).rejects.toEqual(new Error('atomic failed'));
-
       expect(cp.exec).toHaveBeenCalledTimes(1);
-
       expect(cp.exec).toHaveBeenNthCalledWith(
         1,
         'git',
         expect.arrayContaining(['push', '--atomic', 'v1.0.0']),
       );
     });
-
     it(`should throw if Git push failed`, async () => {
       jest
         .spyOn(cp, 'exec')
         .mockReturnValue(throwError(() => new Error('Something went wrong')));
-
       await expect(
         lastValueFrom(
           tryPush({
@@ -177,7 +152,6 @@ describe('git', () => {
       ).rejects.toEqual(new Error('Something went wrong'));
       expect(cp.exec).toHaveBeenCalledTimes(1);
     });
-
     it('should fail if options are undefined', async () => {
       await expect(
         lastValueFrom(
@@ -195,11 +169,9 @@ describe('git', () => {
       ).rejects.toEqual(expect.any(Error));
     });
   });
-
   describe(addToStage.name, () => {
     it('should add to git stage', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
-
       await lastValueFrom(
         addToStage({
           paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
@@ -207,7 +179,6 @@ describe('git', () => {
           skipStage: false,
         }),
       );
-
       expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining([
@@ -217,10 +188,8 @@ describe('git', () => {
         ]),
       );
     });
-
     it('should skip add to git stage if skipStage is true', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
-
       await lastValueFrom(
         addToStage({
           paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
@@ -229,13 +198,10 @@ describe('git', () => {
         }),
         { defaultValue: undefined },
       );
-
       expect(cp.exec).not.toHaveBeenCalled();
     });
-
     it('should skip add to git stage if skipStage is true but should continue the chain', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
-
       const value = await lastValueFrom(
         addToStage({
           paths: ['packages/demo/file.txt', 'packages/demo/other-file.ts'],
@@ -243,14 +209,11 @@ describe('git', () => {
           skipStage: true,
         }),
       );
-
       expect(cp.exec).not.toHaveBeenCalled();
       expect(value).toEqual(undefined);
     });
-
     it('should skip git add if paths argument is empty', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('ok'));
-
       await lastValueFrom(
         addToStage({
           paths: [],
@@ -259,29 +222,22 @@ describe('git', () => {
         }),
         { defaultValue: undefined },
       );
-
       expect(cp.exec).not.toHaveBeenCalled();
     });
   });
-
   describe(getFirstCommitRef.name, () => {
     it('should get last git commit', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('sha1\n'));
-
       const tag = await lastValueFrom(getFirstCommitRef());
-
       expect(tag).toBe('sha1');
       expect(cp.exec).toHaveBeenCalledWith(
         'git',
         expect.arrayContaining(['rev-list', '--max-parents=0', 'HEAD']),
       );
     });
-
     it(`should get last listed git commit when multiple unrelated histories' origins exist`, async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('sha1\nsha2\nsha3\n\r\n'));
-
       const tag = await lastValueFrom(getFirstCommitRef());
-
       expect(tag).toBe('sha3');
       expect(cp.exec).toHaveBeenCalledWith(
         'git',
@@ -289,11 +245,9 @@ describe('git', () => {
       );
     });
   });
-
   describe(createTag.name, () => {
     it('should create git tag', async () => {
       jest.spyOn(cp, 'exec').mockReturnValue(of('success'));
-
       const tag = await lastValueFrom(
         createTag({
           dryRun: false,
@@ -303,7 +257,6 @@ describe('git', () => {
           projectName: 'p',
         }),
       );
-
       expect(tag).toBe('project-a-1.0.0');
       expect(cp.exec).toHaveBeenCalledWith(
         'git',
@@ -317,7 +270,6 @@ describe('git', () => {
         ]),
       );
     });
-
     it('should skip with --dryRun', (done) => {
       createTag({
         dryRun: true,
@@ -332,7 +284,6 @@ describe('git', () => {
         },
       });
     });
-
     it('should handle tag already exists error', (done) => {
       jest
         .spyOn(cp, 'exec')
@@ -341,7 +292,6 @@ describe('git', () => {
             () => new Error("fatal: tag 'project-a-1.0.0' already exists"),
           ),
         );
-
       createTag({
         dryRun: false,
         tag: 'project-a-1.0.0',

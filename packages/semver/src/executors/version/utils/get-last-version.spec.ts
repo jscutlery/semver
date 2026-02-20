@@ -1,45 +1,33 @@
 import * as gitSemverTags from 'git-semver-tags';
 import { lastValueFrom } from 'rxjs';
-
 import { getLastVersion } from './get-last-version';
-
 jest.mock('git-semver-tags');
-
 const tagPrefix = 'my-lib-';
-
 describe(getLastVersion.name, () => {
   const mockGitSemverTags: jest.Mock = gitSemverTags;
-
   beforeEach(() => {
     mockGitSemverTags.mockReset();
   });
-
   it('should compute current version from previous semver tag', async () => {
     mockGitSemverTags.mockResolvedValue([
       'my-lib-2.1.0',
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-
     const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
-
     expect(tag).toEqual('2.1.0');
   });
-
   it('should compute current version without a matching prerelease preid', async () => {
     mockGitSemverTags.mockResolvedValue([
       'my-lib-2.1.0-add-feature.5',
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-
     const tag = await lastValueFrom(
       getLastVersion({ tagPrefix, preid: 'new-feature' }),
     );
-
     expect(tag).toEqual('2.0.0');
   });
-
   it('should compute current version from previous semver prerelease tag with corresponding preid', async () => {
     mockGitSemverTags.mockResolvedValue([
       'my-lib-2.1.0-z-is-the-last-letter-in-alphabet.0',
@@ -48,7 +36,6 @@ describe(getLastVersion.name, () => {
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-
     const tag = await lastValueFrom(
       getLastVersion({ tagPrefix, releaseType: 'prerelease' }),
     );
@@ -66,27 +53,21 @@ describe(getLastVersion.name, () => {
         preid: 'fix-bug',
       }),
     );
-
     expect(tag).toEqual('2.1.0-z-is-the-last-letter-in-alphabet.0');
     expect(tagWithPreidFeat).toEqual('2.1.0-add-feature.5');
     expect(tagWithPreidFix).toEqual('2.1.0-fix-bug.0');
   });
-
   it('should compute current version from previous semver release tag', async () => {
     mockGitSemverTags.mockResolvedValue([
       'my-lib-2.1.0-beta.0',
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-
     const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
-
     expect(tag).toEqual('2.0.0');
   });
-
   it('should throw error if no tag available', async () => {
     mockGitSemverTags.mockResolvedValue([]);
-
     expect(lastValueFrom(getLastVersion({ tagPrefix }))).rejects.toThrow(
       'No semver tag found',
     );
