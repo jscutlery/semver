@@ -443,6 +443,35 @@ release:
 
 Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/user/project/deploy_keys/) in order to push to your remote repository.
 
+## Nx Release vs @jscutlery/semver
+
+Both tools solve release automation, but they have different defaults and trade-offs.
+
+### Main differences
+
+- **Project strategy**: `nx release` is sync-first (one version for a group by default), while `@jscutlery/semver` is independent-first (each project versions independently by default).
+- **Execution model**: `nx release` runs globally at workspace/release-group level, while `@jscutlery/semver` runs per project target in independent mode.
+- **Commits/tags flow**: `nx release` typically creates a single coordinated release commit, while `@jscutlery/semver` can create multiple project-specific release commits in independent mode.
+- **Version resolution**: `@jscutlery/semver` is tag-based; `nx release` exposes configurable release configuration patterns.
+- **Extensibility**: `@jscutlery/semver` supports `postTargets`, configurable conventional changelog presets, `skipCommitTypes`, and `trackDeps`.
+
+### Feature gaps at a glance
+
+`nx release` features not available in `@jscutlery/semver`:
+
+- Release groups
+- Updating dependent projects to consume newly released versions
+- Programmatic APIs
+- Optional tagging strategies
+
+`@jscutlery/semver` features not available in `nx release`:
+
+- `postTargets` pipeline for custom release steps
+- Configurable conventional changelog presets
+- `skipCommitTypes` for release triggering
+- `trackDeps` to patch-bump when dependency versions change
+- GitLab release support
+
 ## Nx Release migration
 
 If you want to migrate to Nx Release, run the following command:
@@ -451,12 +480,18 @@ If you want to migrate to Nx Release, run the following command:
 nx g @jscutlery/semver:migrate-nx-release
 ```
 
-By executing this generator, the existing `@jscutlery/semver` configuration will be removed, and Nx Release will be appropriately configured for your projects.
+By executing this generator, the existing `@jscutlery/semver` configuration will be removed, and Nx Release will be configured for your projects.
+
+### Migration options
+
+- **Fast path**: run the generator and then update CI scripts to `nx release` commands.
+- **Incremental path**: migrate one pipeline/environment first (for example staging), validate release output, then roll out to production pipelines.
+- **Hybrid transition**: keep historical tags/changelog conventions, migrate workflows first, then standardize release settings in a second pass.
 
 > [!NOTE]
-> The migration process does not currently support the sync mode.
-> Complex or highly customized configurations may require additional manual adjustments after running the migration generator.
-> After running this generator, you will need to adjust any custom scripts or CI workflows related to versioning and releases to align with the new Nx release workflow.
+> The migration generator currently does not support sync mode.
+> Complex or highly customized release logic may need manual adjustments after generation.
+> After migration, update custom scripts, tokens, and CI jobs to align with the Nx Release workflow.
 
 For more details on using Nx Release, refer to the [official Nx documentation](https://nx.dev/recipes/nx-release/get-started-with-nx-release#get-started-with-nx-release).
 
