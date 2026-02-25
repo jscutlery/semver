@@ -486,6 +486,7 @@ By executing this generator, the existing `@jscutlery/semver` configuration will
 
 - **Fast path**: run the generator and then update CI scripts to `nx release` commands.
 - **Incremental path**: migrate one pipeline/environment first (for example staging), validate release output, then roll out to production pipelines.
+- **Preflight checks**: run release in dry-run mode and compare generated notes/tags before switching CI defaults.
 - **Hybrid transition**: keep historical tags/changelog conventions, migrate workflows first, then standardize release settings in a second pass.
 
 > [!NOTE]
