@@ -1,17 +1,13 @@
 import * as fs from 'fs';
 import * as Stream from 'stream';
 import { jest } from '@jest/globals';
-
 import writeChangelog from './write-changelog';
 import type { WriteChangelogConfig } from '../schema';
 import { createConventionalCommitStream } from './conventional-commit';
-
 jest.mock('./conventional-commit');
-
 /**
  * @todo: This test is disabled because it is not working in the CI environment.
  */
-
 const config: WriteChangelogConfig = {
   changelogHeader: '# Changelog',
   projectRoot: './',
@@ -20,23 +16,19 @@ const config: WriteChangelogConfig = {
   changelogPath: 'CHANGELOG.md',
   tagPrefix: 'button',
 };
-
 describe(writeChangelog, () => {
   const createConventionalCommitStreamMock =
     createConventionalCommitStream as jest.Mock<
       typeof createConventionalCommitStream
     >;
-
   beforeEach(() => {
     jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     jest.spyOn(console, 'info').mockImplementation(() => jest.fn());
     jest.spyOn(fs, 'writeFileSync').mockImplementation(() => jest.fn());
   });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
-
   xdescribe('handle errors', () => {
     beforeEach(async () => {
       createConventionalCommitStreamMock.mockReturnValue(
@@ -48,22 +40,18 @@ describe(writeChangelog, () => {
       );
       await writeChangelog(config, '0.0.1');
     });
-
     it('should print a console.warn', async () => {
       expect(console.warn).toHaveBeenCalledWith(
         'changelog creation failed',
         '💥',
       );
     });
-
     it('should not write a changelog file', async () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
   });
-
   xdescribe('--dryRun', () => {
     const version = '1.0.0';
-
     beforeEach(async () => {
       createConventionalCommitStreamMock.mockImplementation(
         (
@@ -74,11 +62,9 @@ describe(writeChangelog, () => {
       );
       await writeChangelog({ ...config, dryRun: true }, version);
     });
-
     it('should not write a changelog file', async () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
-
     it('should print a console.info with the changelog contents without the header', async () => {
       expect(console.info).toHaveBeenCalledWith(
         expect.stringContaining(version),
@@ -88,10 +74,8 @@ describe(writeChangelog, () => {
       );
     });
   });
-
   xdescribe('--preset', () => {
     const version = '1.0.0';
-
     beforeEach(async () => {
       createConventionalCommitStreamMock.mockImplementation(
         (
@@ -120,7 +104,6 @@ describe(writeChangelog, () => {
         version,
       );
     });
-
     it('should print changelog', () => {
       expect((console.info as jest.Mock).mock.calls[0][0]).toContain(
         'Awesome Features',
