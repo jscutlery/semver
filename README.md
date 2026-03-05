@@ -290,6 +290,8 @@ The tag for the new version would be put on the last existing commit.
 
 In case you want to run nx cmd in parallel, you can provide the `--skipStage` flag and it will not add to git stage - since that requires a git-lock, this has to be used together with `--skipCommit` and `--skipTag` and not with `--push`, all for the same reason they will require a git-lock.
 
+If you use Nx Cloud distributed task execution for releases, setting `parallel=1` (for example `nx affected --target=version --parallel=1`) avoids running multiple versioning tasks at the same time, which can otherwise race on Git operations.
+
 ### Triggering executors post-release
 
 The **`--postTargets`** option allows you to run targets post-release. This is particularly handful for publishing packages on a registry or scheduling any other task.
