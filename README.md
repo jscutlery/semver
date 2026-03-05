@@ -312,8 +312,8 @@ Here is a configuration example using [`@jscutlery/semver:github`](https://githu
     "github": {
       "executor": "@jscutlery/semver:github",
       "options": {
-        "tag": "{tag}",
-        "notes": "{notes}",
+        "tag": "${tag}",
+        "notes": "${notes}",
       },
     },
     "npm": {
