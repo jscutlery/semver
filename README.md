@@ -443,6 +443,22 @@ release:
 
 Note that you might need to configure a [deploy key](https://docs.gitlab.com/ee/user/project/deploy_keys/) in order to push to your remote repository.
 
+## `@jscutlery/semver` vs `nx release`
+
+Both tools can automate versioning and changelog generation in Nx workspaces, but they are optimized for different workflows.
+
+| Topic | `@jscutlery/semver` | `nx release` |
+| --- | --- | --- |
+| Scope | Community plugin focused on conventional-commit driven project versioning in Nx | Official Nx integrated release workflow |
+| Configuration | Executor-based setup in `project.json`/`workspace.json` | Centralized release config in `nx.json` |
+| Migration path | Existing setups can keep running as-is | Use the migration generator below to switch from semver config |
+| Best fit | Teams already standardized on this plugin and its options | Teams that want the Nx-native release workflow moving forward |
+
+A practical rule of thumb:
+
+- Stay on `@jscutlery/semver` when your current release process is stable and tailored to this plugin.
+- Prefer `nx release` when you want to align with Nx core release features and future defaults.
+
 ## Nx Release migration
 
 If you want to migrate to Nx Release, run the following command:
