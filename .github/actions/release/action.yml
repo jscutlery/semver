@@ -20,7 +20,10 @@ runs:
       run: |
         # Use the npmrc file created by setup-node action if it exists
         if [ -n "$NPM_CONFIG_USERCONFIG" ] && [ -f "$NPM_CONFIG_USERCONFIG" ]; then
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> $NPM_CONFIG_USERCONFIG
+          # Replace the existing auth token line instead of appending a duplicate,
+          # because setup-node writes a line referencing ${NODE_AUTH_TOKEN} which
+          # would take precedence and cause a 401.
+          sed -i 's|//registry.npmjs.org/:_authToken=.*|//registry.npmjs.org/:_authToken='"${NPM_TOKEN}"'|' "$NPM_CONFIG_USERCONFIG"
         else
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
         fi
