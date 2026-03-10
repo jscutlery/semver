@@ -15,9 +15,15 @@ runs:
   steps:
     - name: Configure npm authentication
       shell: bash
+      env:
+        NPM_TOKEN: ${{ inputs.npm_token }}
       run: |
-        echo "//registry.npmjs.org/:_authToken=${{ inputs.npm_token }}" > ~/.npmrc
-        echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+        # Use the npmrc file created by setup-node action if it exists
+        if [ -n "$NPM_CONFIG_USERCONFIG" ] && [ -f "$NPM_CONFIG_USERCONFIG" ]; then
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> $NPM_CONFIG_USERCONFIG
+        else
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+        fi
         npm whoami
 
     - name: Version
