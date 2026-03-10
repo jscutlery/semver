@@ -74,6 +74,7 @@ jobs:
           tags: true
 
       - name: Create PR
+        id: create-pr
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true' && steps.test.outcome != 'success'
         run: |
           LAST_VERSION=$(npm view @nx/workspace version)
@@ -81,5 +82,18 @@ jobs:
           git checkout -b ${BRANCH}
           git push -f --set-upstream origin ${BRANCH}
           gh pr view ${BRANCH} || gh pr create -t "Update @nx/workspace to ${BRANCH}" -b "Update @nx/workspace dependencies to ${LAST_VERSION}."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_BOT_TOKEN }}
+
+      - name: Close old @nx/workspace PRs
+        if: steps.create-pr.outcome == 'success'
+        run: |
+          LAST_VERSION=$(npm view @nx/workspace version)
+          CURRENT_BRANCH="update-nrwl-workspace-${LAST_VERSION}"
+          # Find and close all open PRs with titles starting with "Update @nx/workspace to", except the current one
+          gh pr list --state open --json number,title,headRefName --jq '.[] | select(.title | startswith("Update @nx/workspace to")) | select(.headRefName != "'"${CURRENT_BRANCH}"'") | .number' | while read -r pr_number; do
+            echo "Closing PR #${pr_number}"
+            gh pr close ${pr_number} --comment "Closing in favor of newer @nx/workspace update PR"
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_BOT_TOKEN }}
