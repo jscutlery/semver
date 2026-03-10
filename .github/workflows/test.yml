@@ -11,8 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node_version: [20, 22, 24]
+        include:
+          - node_version: 24
+            nx_version: 22
+          - node_version: 24
+            nx_version: 21
+          - node_version: 22
+            nx_version: 20
+          - node_version: 20
+            nx_version: 19
+          - node_version: 20
+            nx_version: 18
 
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +32,17 @@ jobs:
         with:
           node_version: ${{ matrix.node_version }}
           git_bot_token: ${{ secrets.GIT_BOT_TOKEN }}
+
+      - name: Override Nx version
+        run: |
+          yarn add \
+            "nx@^${{ matrix.nx_version }}" \
+            "@nx/devkit@^${{ matrix.nx_version }}" \
+            "@nx/jest@^${{ matrix.nx_version }}" \
+            "@nx/js@^${{ matrix.nx_version }}" \
+            "@nx/workspace@^${{ matrix.nx_version }}" \
+            "@nx/plugin@^${{ matrix.nx_version }}" \
+            "@nx/eslint-plugin@^${{ matrix.nx_version }}"
 
       - name: Test
         uses: ./.github/actions/test
