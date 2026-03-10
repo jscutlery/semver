@@ -15,7 +15,7 @@ runs:
   steps:
     - name: Version
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm_token }}
         GITHUB_TOKEN: ${{ inputs.github_token }}
       # Use npx instead of yarn because yarn automagically sets NPM_* environment variables
       # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
