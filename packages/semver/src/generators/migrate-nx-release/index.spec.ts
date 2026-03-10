@@ -10,6 +10,7 @@ import {
   readJson,
   readNxJson,
 } from '@nx/devkit';
+import * as devkit from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 
 import migrate from '.';
@@ -27,6 +28,7 @@ describe('Nx Release Migration', () => {
     tree = createTreeWithEmptyWorkspace();
     loggerInfoSpy = jest.spyOn(logger, 'info').mockImplementation();
     loggerInfoSpy.mockReset();
+    jest.spyOn(devkit, 'detectPackageManager').mockReturnValue('npm');
   });
 
   it('should bail out if sync mode is detected', async () => {
