@@ -13,9 +13,15 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Configure npm authentication
+      shell: bash
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${{ inputs.npm_token }}" > ~/.npmrc
+        echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+        npm whoami
+
     - name: Version
       env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm_token }}
         GITHUB_TOKEN: ${{ inputs.github_token }}
       # Use npx instead of yarn because yarn automagically sets NPM_* environment variables
       # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
