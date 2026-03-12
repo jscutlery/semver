@@ -12,32 +12,32 @@ Thank you for your contribution 🤗!
 
 ```sh
 # install dependencies
-yarn install
+pnpm install
 
 # build the library
-yarn build
+pnpm build
 
 # run the tests
-yarn test
+pnpm test
 ```
 
 > Note that you need to build the library first to run the e2e tests.
 
-## Using `npm link` or `yarn link`
+## Using `npm link` or `pnpm link`
 
-In order to use the library locally on another project, you can use the `npm`|`yarn` link feature.
+In order to use the library locally on another project, you can use the `pnpm link` feature.
 
-1. Head to the built package and inform npm|yarn about it:
+1. Head to the built package and inform pnpm about it:
 
 ```sh
 cd dist/packages/semver
-yarn link # or npm link
+pnpm link --global
 ```
 
 2. Go to your project and link the package:
 
 ```sh
-yarn link @jscutlery/semver # or npm link @jscutlery/semver
+pnpm link --global @jscutlery/semver
 ```
 
 If you want to try semver on an already existing workspace, you can clone the following repository [@yjaaidi/semver-sandbox](https://github.com/yjaaidi/semver-sandbox) and run the following command to reset the git history: `tools/reset.sh`.

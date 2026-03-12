@@ -20,7 +20,7 @@ export interface TestingWorkspace {
   root: string;
 }
 
-const packageManager = 'yarn';
+const packageManager = 'pnpm';
 
 function runNxNewCommand(dir: string) {
   execSync(
@@ -47,11 +47,7 @@ function linkPackage(dir: string) {
 }
 
 function runInstall(dir: string) {
-  execSync(`${packageManager} config set enableImmutableInstalls false`, {
-    cwd: dir,
-    stdio: 'inherit',
-  });
-  execSync(`${packageManager} install`, {
+  execSync(`${packageManager} install --no-frozen-lockfile`, {
     cwd: dir,
     stdio: 'inherit',
   });
@@ -94,9 +90,10 @@ export function setupTestingWorkspace(): TestingWorkspace {
 
   return {
     runNx(command: string) {
-      execSync(`node ${require.resolve('nx')} ${command}`, {
+      execSync(`pnpm exec nx ${command}`, {
         cwd: workspaceRoot,
         stdio: 'inherit',
+        env: { ...process.env, NX_DAEMON: 'false' },
       });
     },
 
@@ -104,6 +101,7 @@ export function setupTestingWorkspace(): TestingWorkspace {
       execSync(command, {
         cwd: workspaceRoot,
         stdio: 'inherit',
+        env: { ...process.env, NX_DAEMON: 'false' },
       });
     },
 

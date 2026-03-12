@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as Stream from 'stream';
-import { jest } from '@jest/globals';
 
 import writeChangelog from './write-changelog';
 import type { WriteChangelogConfig } from '../schema';
@@ -23,7 +22,7 @@ const config: WriteChangelogConfig = {
 
 describe(writeChangelog, () => {
   const createConventionalCommitStreamMock =
-    createConventionalCommitStream as jest.Mock<
+    createConventionalCommitStream as jest.MockedFunction<
       typeof createConventionalCommitStream
     >;
 

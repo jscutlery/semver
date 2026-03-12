@@ -13,19 +13,19 @@ runs:
   steps:
     - name: Format check
       shell: bash
-      run: yarn nx format:check --base=last-release
+      run: pnpm nx format:check --base=last-release
     - name: Lint
       shell: bash
-      run: yarn nx affected:lint --base=last-release
+      run: pnpm nx affected:lint --base=last-release
     - name: Build
       shell: bash
-      run: yarn nx affected:build --base=last-release
+      run: pnpm nx affected:build --base=last-release
     - name: Test
       shell: bash
-      run: yarn nx affected:test --base=last-release -c=ci
+      run: pnpm nx affected:test --base=last-release -c=ci
     - name: E2E
       shell: bash
-      run: yarn nx affected:e2e --base=last-release
+      run: pnpm nx affected:e2e --base=last-release
     - name: Codecov upload
       uses: codecov/codecov-action@v3
       with:

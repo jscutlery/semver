@@ -401,10 +401,10 @@ jobs:
         run: |
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
-      - run: yarn install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
       - name: Version
         shell: bash
-        run: yarn nx affected --base=last-release --target=version
+        run: pnpm nx affected --base=last-release --target=version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Tag last-release
@@ -435,8 +435,8 @@ release:
     - git config --global user.email "gituser@example.com"
     - git remote set-url origin http://gitlab-ci-token:${DEPLOY_KEY}@gitlab.com/org/project.git
   script:
-    - yarn install --frozen-lockfile
-    - yarn nx affected --target=version --base=last-release
+    - pnpm install --frozen-lockfile
+    - pnpm nx affected --target=version --base=last-release
     - git tag -f last-release
     - git push origin last-release --force -o ci.skip
 ```

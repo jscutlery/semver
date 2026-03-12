@@ -35,6 +35,9 @@ runs:
         # and sets the NPM_CONFIG_USERCONFIG environment variable.
         registry-url: https://registry.npmjs.org
 
-    - name: yarn install
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: pnpm install
       shell: bash
-      run: yarn install --immutable --immutable-cache
+      run: pnpm install --frozen-lockfile

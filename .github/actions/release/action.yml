@@ -25,11 +25,8 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
         NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
-      # Use npx instead of yarn because yarn automagically sets NPM_* environment variables
-      # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
-      # which is set up by `setup-node` action.
       shell: bash
-      run: npx nx affected --base=last-release --target=version
+      run: pnpm nx affected --base=last-release --target=version
 
     - name: Tag last-release
       shell: bash

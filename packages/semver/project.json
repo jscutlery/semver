@@ -37,7 +37,7 @@
       "dependsOn": ["lint-commits"]
     },
     "lint-commits": {
-      "command": "yarn commitlint --from=last-release"
+      "command": "pnpm commitlint --from=last-release"
     },
     "test": {
       "executor": "@nx/jest:jest",

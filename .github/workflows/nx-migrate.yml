@@ -26,11 +26,11 @@ jobs:
 
       - name: Update @nx/workspace
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
-        run: yarn nx migrate latest
+        run: pnpm nx migrate latest
 
       - name: Install dependencies
         if: steps.nrwl-workspace-outdated.outputs.outdated == 'true'
-        run: yarn install --no-immutable
+        run: pnpm install --no-frozen-lockfile
 
       - name: Check if has migrations
         id: nrwl-workspace-has-migrations
@@ -41,7 +41,7 @@ jobs:
 
       - name: Run @nx/workspace migrations
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
-        run: yarn nx migrate --run-migrations
+        run: pnpm nx migrate --run-migrations
 
       - name: Test
         id: test
