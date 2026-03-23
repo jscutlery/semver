@@ -372,8 +372,38 @@ then continuing up the graph until the indicated project is reached.
 Additionally, if used in conjunction with `nx run-many --all`, or `nx affected`,
 then it will avoid attempting to version dependencies multiple times.
 
-> [!WARNING]  
+> [!WARNING]
 > Be aware that this feature has known [limitations](https://github.com/jscutlery/semver/issues/526).
+
+### Running versioning on multiple projects
+
+When versioning multiple projects using `nx run-many` or `nx affected`, the version target must **not** run in parallel. Parallel execution causes concurrent git operations that conflict over the `.git/index.lock` file, resulting in errors like:
+
+```
+Another git process seems to be running in this repository
+```
+
+To fix this, set `--parallel=1` to ensure projects are versioned sequentially:
+
+```
+nx run-many --target=version --all --parallel=1
+nx affected --target=version --parallel=1
+```
+
+Alternatively, you can set this in `nx.json` so it applies automatically:
+
+```json
+{
+  "targetDefaults": {
+    "version": {
+      "parallelism": false
+    }
+  }
+}
+```
+
+> [!NOTE]
+> This limitation exists because the version target performs git operations (commits, tags, pushes) that require exclusive access to the repository's `.git/index.lock` file.
 
 ## CI/CD usage
 
@@ -405,7 +435,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Version
         shell: bash
-        run: pnpm nx affected --base=last-release --target=version
+        run: pnpm nx affected --base=last-release --target=version --parallel=1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Tag last-release
@@ -437,7 +467,7 @@ release:
     - git remote set-url origin http://gitlab-ci-token:${DEPLOY_KEY}@gitlab.com/org/project.git
   script:
     - pnpm install --frozen-lockfile
-    - pnpm nx affected --target=version --base=last-release
+    - pnpm nx affected --target=version --base=last-release --parallel=1
     - git tag -f last-release
     - git push origin last-release --force -o ci.skip
 ```
