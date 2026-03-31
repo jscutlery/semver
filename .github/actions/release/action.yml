@@ -17,7 +17,9 @@ runs:
       shell: bash
       env:
         NPM_TOKEN: ${{ inputs.npm_token }}
-      run: npm whoami --registry https://registry.npmjs.org
+      run: |
+        npm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
+        npm whoami --registry https://registry.npmjs.org
 
     - name: Version
       env:
