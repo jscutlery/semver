@@ -333,69 +333,76 @@ export function _getDependencyVersions({
   preid?: string;
 }): Observable<Version[]> {
   return forkJoin(
-    dependencyRoots.map(({ path: projectRoot, name: dependencyName }) => {
-      /* Get dependency version changes since last project version */
-      const tagPrefix = formatTagPrefix({
-        versionTagPrefix,
-        projectName: dependencyName,
-        syncVersions,
-      });
+    dependencyRoots.map(
+      ({
+        path: projectRoot,
+        name: dependencyName,
+        options: dependencyOptions,
+      }) => {
+        const dependencyVersionTagPrefix = dependencyOptions?.tagPrefix;
+        /* Get dependency version changes since last project version */
+        const tagPrefix = formatTagPrefix({
+          versionTagPrefix: dependencyVersionTagPrefix || versionTagPrefix,
+          projectName: dependencyName,
+          syncVersions,
+        });
 
-      const { lastVersion$, commits$ } = getProjectVersion({
-        tagPrefix,
-        projectRoot,
-        releaseType,
-        since: lastVersionGitRef,
-        projectName,
-        preid,
-      });
+        const { lastVersion$, commits$ } = getProjectVersion({
+          tagPrefix,
+          projectRoot,
+          releaseType,
+          since: lastVersionGitRef,
+          projectName: dependencyName,
+          preid,
+        });
 
-      return forkJoin([lastVersion$, commits$]).pipe(
-        switchMap(([dependencyLastVersion, commits]) => {
-          const filteredCommits = commits.filter((commit) =>
-            shouldCommitBeCalculated({
-              commit,
-              commitParserOptions,
-              skipCommitTypes,
-            }),
-          );
-          if (filteredCommits.length === 0) {
+        return forkJoin([lastVersion$, commits$]).pipe(
+          switchMap(([dependencyLastVersion, commits]) => {
+            const filteredCommits = commits.filter((commit) =>
+              shouldCommitBeCalculated({
+                commit,
+                commitParserOptions,
+                skipCommitTypes,
+              }),
+            );
+            if (filteredCommits.length === 0) {
+              return of({
+                type: 'dependency',
+                version: null,
+                dependencyName: dependencyName,
+              } satisfies Version);
+            }
+
+            /* Dependency has changes but has no tagged version */
+            if (_isInitialVersion({ lastVersion: dependencyLastVersion })) {
+              return _semverBump({
+                since: dependencyLastVersion,
+                preset,
+                projectRoot,
+                tagPrefix,
+                commitParserOptions,
+              }).pipe(
+                map(
+                  (version) =>
+                    ({
+                      type: 'dependency',
+                      version,
+                      dependencyName: dependencyName,
+                    }) satisfies Version,
+                ),
+              );
+            }
+
+            /* Return the changed version of dependency since last commit within project */
             return of({
               type: 'dependency',
-              version: null,
+              version: dependencyLastVersion,
               dependencyName: dependencyName,
             } satisfies Version);
-          }
-
-          /* Dependency has changes but has no tagged version */
-          if (_isInitialVersion({ lastVersion: dependencyLastVersion })) {
-            return _semverBump({
-              since: dependencyLastVersion,
-              preset,
-              projectRoot,
-              tagPrefix,
-              commitParserOptions,
-            }).pipe(
-              map(
-                (version) =>
-                  ({
-                    type: 'dependency',
-                    version,
-                    dependencyName: dependencyName,
-                  }) satisfies Version,
-              ),
-            );
-          }
-
-          /* Return the changed version of dependency since last commit within project */
-          return of({
-            type: 'dependency',
-            version: dependencyLastVersion,
-            dependencyName: dependencyName,
-          } satisfies Version);
-        }),
-      );
-    }),
+          }),
+        );
+      },
+    ),
   ).pipe(defaultIfEmpty([]));
 }
 
