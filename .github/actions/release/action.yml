@@ -14,7 +14,10 @@ runs:
       shell: bash
       run: |
         pnpm nx build semver
-        pnpm publish --dry-run --access public dist/packages/semver
+        cd dist/packages/semver
+        npm version prerelease --no-git-tag-version --preid=verify
+        cd -
+        pnpm publish --dry-run --access public --tag verify dist/packages/semver
 
     - name: Version
       env:
