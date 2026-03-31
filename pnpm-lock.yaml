@@ -164,6 +164,9 @@ importers:
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
+      semver:
+        specifier: ^7.0.0
+        version: 7.7.4
     devDependencies:
       '@types/conventional-changelog':
         specifier: '^3.1.4 '
