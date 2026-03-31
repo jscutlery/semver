@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.8.0](https://github.com/jscutlery/semver/compare/semver-5.7.1...semver-5.8.0) (2026-03-31)
+
+
+### Bug Fixes
+
+* 📦 bump dependency inquirer to v8.2.7 ([#1016](https://github.com/jscutlery/semver/issues/1016)) ([521d290](https://github.com/jscutlery/semver/commit/521d290d9c6ae319f5e5c02b3a23f38553a18ff1))
+* **semver:** add missing dependencies for build and test ([6def39f](https://github.com/jscutlery/semver/commit/6def39fb889d043b43f325e2584ed63e327aa04b))
+
+
+### Features
+
+* add @nx/devkit v22 peer dependency support ([5d87e6f](https://github.com/jscutlery/semver/commit/5d87e6f91ec74d902d9f3b3cab6df7d6bbf3713a))
+
+
+
 ## [5.7.1](https://github.com/jscutlery/semver/compare/semver-5.7.0...semver-5.7.1) (2025-07-15)
 
 
