@@ -15,7 +15,7 @@ runs:
   using: composite
   steps:
     - name: Checkout all commits
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         token: ${{ inputs.git_bot_token || github.token }}
         fetch-depth: 0
@@ -25,7 +25,7 @@ runs:
       run: git config user.email "-" && git config user.name "🤖 JSCutlery Bot"
 
     - name: Use Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ inputs.node_version }}
         registry-url: 'https://registry.npmjs.org'

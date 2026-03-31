@@ -27,7 +27,7 @@ runs:
       run: git tag -f last-release
 
     - name: Push changes
-      uses: ad-m/github-push-action@master
+      uses: ad-m/github-push-action@v1
       with:
         github_token: ${{ inputs.github_token }}
         branch: ${{ github.ref }}
