@@ -17,7 +17,7 @@ exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate 
 
 - **b:** 🚀 new feature xxxxxxx
 
-## 0.1.0 (yyyy-mm-dd)
+### 0.1.0 (yyyy-mm-dd)
 
 ### Features
 
@@ -34,17 +34,17 @@ exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (v0.0.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# 0.1.0 (yyyy-mm-dd)
-
-
-### Bug Fixes
-
-* **a:** 🐞 fix bug xxxxxxx
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### Features
 
 * **a:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
 "
 `;
 
@@ -53,26 +53,24 @@ exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (v0.1.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+## [0.1.1](///compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
 
 
 ### Bug Fixes
 
 * **a:** 🐞 fix bug xxxxxxx
 
-
-
-# 0.1.0 (yyyy-mm-dd)
-
-
-### Bug Fixes
-
-* **a:** 🐞 fix bug xxxxxxx
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### Features
 
 * **a:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
 "
 `;
 
@@ -81,7 +79,7 @@ exports[`@jscutlery/semver @jscutlery/semver:version when libs/a changed (v0.1.1
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
+## [1.0.0](///compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -95,26 +93,24 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+## [0.1.1](///compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
 
 
 ### Bug Fixes
 
 * **a:** 🐞 fix bug xxxxxxx
 
-
-
-# 0.1.0 (yyyy-mm-dd)
-
-
-### Bug Fixes
-
-* **a:** 🐞 fix bug xxxxxxx
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### Features
 
 * **a:** 🚀 new feature xxxxxxx
+
+
+### Bug Fixes
+
+* **a:** 🐞 fix bug xxxxxxx
 "
 `;
 
@@ -123,7 +119,7 @@ exports[`@jscutlery/semver @jscutlery/semver:version when libs/b changed (v0.0.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-## 0.1.0 (yyyy-mm-dd)
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### Features
@@ -149,7 +145,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 * **b:** 🚀 new feature xxxxxxx
 
-## 0.1.0 (yyyy-mm-dd)
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### Features
@@ -168,7 +164,7 @@ exports[`@jscutlery/semver @jscutlery/semver:version when libs/d changed (v0.0.0
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-## 0.1.0 (yyyy-mm-dd)
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### ✨ Awesome features
@@ -182,7 +178,7 @@ exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a w
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [1.2.0-alpha.0](/compare/a-1.1.0-alpha.0...a-1.2.0-alpha.0) (yyyy-mm-dd)
+## [1.2.0-alpha.0](///compare/a-1.1.0-alpha.0...a-1.2.0-alpha.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -200,7 +196,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.1.0-beta.1](/compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
+## [1.1.0-beta.1](///compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
 
 
 ### Features
@@ -209,7 +205,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.1.0-beta.0](/compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
+## [1.1.0-beta.0](///compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -218,7 +214,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
+## [1.0.0](///compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -232,7 +228,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+## [0.1.1](///compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -241,7 +237,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# 0.1.0 (yyyy-mm-dd)
+## 0.1.0 (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -260,7 +256,7 @@ exports[`@jscutlery/semver @jscutlery/semver:version when pre-releasing libs/a w
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [1.1.0-beta.1](/compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
+## [1.1.0-beta.1](///compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
 
 
 ### Features
@@ -269,7 +265,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.1.0-beta.0](/compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
+## [1.1.0-beta.0](///compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -278,7 +274,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
+## [1.0.0](///compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -292,7 +288,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+## [0.1.1](///compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -301,7 +297,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# 0.1.0 (yyyy-mm-dd)
+## 0.1.0 (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -320,7 +316,7 @@ exports[`@jscutlery/semver @jscutlery/semver:version when graduating prerelease 
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [1.2.0](/compare/a-1.2.0-alpha.0...a-1.2.0) (yyyy-mm-dd)
+## [1.2.0](///compare/a-1.2.0-alpha.0...a-1.2.0) (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -329,7 +325,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.2.0-alpha.0](/compare/a-1.1.0-alpha.0...a-1.2.0-alpha.0) (yyyy-mm-dd)
+## [1.2.0-alpha.0](///compare/a-1.1.0-alpha.0...a-1.2.0-alpha.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -347,7 +343,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.1.0-beta.1](/compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
+## [1.1.0-beta.1](///compare/a-1.1.0-beta.0...a-1.1.0-beta.1) (yyyy-mm-dd)
 
 
 ### Features
@@ -356,7 +352,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.1.0-beta.0](/compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
+## [1.1.0-beta.0](///compare/a-1.0.0...a-1.1.0-beta.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -365,7 +361,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# [1.0.0](/compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
+## [1.0.0](///compare/a-0.1.1...a-1.0.0) (yyyy-mm-dd)
 
 
 ### Features
@@ -379,7 +375,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-## [0.1.1](/compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
+## [0.1.1](///compare/a-0.1.0...a-0.1.1) (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -388,7 +384,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
-# 0.1.0 (yyyy-mm-dd)
+## 0.1.0 (yyyy-mm-dd)
 
 
 ### Bug Fixes
@@ -414,7 +410,7 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 * **d:** 🚀 new feature xxxxxxx
 
-## 0.1.0 (yyyy-mm-dd)
+### 0.1.0 (yyyy-mm-dd)
 
 
 ### ✨ Awesome features
