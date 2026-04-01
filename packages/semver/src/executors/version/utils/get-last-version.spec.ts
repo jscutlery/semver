@@ -26,7 +26,7 @@ describe(getLastVersion.name, () => {
     expect(tag).toEqual('2.1.0');
   });
 
-  it('should compute current version without a matching prerelease preid', async () => {
+  it('should filter out prereleases with different preid when preid is specified', async () => {
     mockGitSemverTags.mockResolvedValue([
       'my-lib-2.1.0-add-feature.5',
       'my-lib-2.0.0',
@@ -72,7 +72,7 @@ describe(getLastVersion.name, () => {
     expect(tagWithPreidFix).toEqual('2.1.0-fix-bug.0');
   });
 
-  it('should compute current version from previous semver release tag', async () => {
+  it('should compute current version from highest version including prereleases', async () => {
     mockGitSemverTags.mockResolvedValue([
       'my-lib-2.1.0-beta.0',
       'my-lib-2.0.0',
@@ -81,7 +81,48 @@ describe(getLastVersion.name, () => {
 
     const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
 
+    expect(tag).toEqual('2.1.0-beta.0');
+  });
+
+  it('should return highest prerelease when multiple prereleases exist', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-3.0.0-rc.1',
+      'my-lib-3.0.0-rc.0',
+      'my-lib-2.5.0',
+      'my-lib-2.0.0',
+    ]);
+
+    const tag = await lastValueFrom(getLastVersion({ tagPrefix }));
+
+    expect(tag).toEqual('3.0.0-rc.1');
+  });
+
+  it('should filter out prereleases with different preid when preid is specified', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.1.0-add-feature.5',
+      'my-lib-2.0.0',
+      'my-lib-1.0.0',
+    ]);
+
+    const tag = await lastValueFrom(
+      getLastVersion({ tagPrefix, preid: 'new-feature' }),
+    );
+
     expect(tag).toEqual('2.0.0');
+  });
+
+  it('should include stable releases when searching for matching preid', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.2.0',
+      'my-lib-2.1.0-beta.5',
+      'my-lib-2.0.0',
+    ]);
+
+    const tag = await lastValueFrom(
+      getLastVersion({ tagPrefix, preid: 'beta' }),
+    );
+
+    expect(tag).toEqual('2.2.0');
   });
 
   it('should throw error if no tag available', async () => {
