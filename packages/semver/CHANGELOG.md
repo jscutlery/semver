@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.8.1](https://github.com/jscutlery/semver/compare/semver-5.8.0...semver-5.8.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* **semver:** fix dependency version in changelog ([#1064](https://github.com/jscutlery/semver/issues/1064)) ([de72a7d](https://github.com/jscutlery/semver/commit/de72a7df13d8a6a8528ccc30ba3e96a20f9cf9f5))
+
+
+
 # [5.8.0](https://github.com/jscutlery/semver/compare/semver-5.7.1...semver-5.8.0) (2026-03-31)
 
 
