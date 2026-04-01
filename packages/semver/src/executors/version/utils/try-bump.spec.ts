@@ -48,7 +48,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: undefined,
@@ -71,7 +71,7 @@ describe('tryBump', () => {
     expect(mockConventionalRecommendedBump).toHaveBeenCalledWith(
       {
         path: '/libs/demo',
-        preset: 'angular',
+        preset: 'conventionalcommits',
         tagPrefix: 'v',
       },
       undefined,
@@ -101,7 +101,7 @@ describe('tryBump', () => {
 
     const newVersion = await lastValueFrom(
       tryBump({
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         dependencyRoots: [
           { name: 'dep1', path: '/libs/dep1' },
@@ -136,7 +136,7 @@ describe('tryBump', () => {
     expect(mockConventionalRecommendedBump).toHaveBeenCalledWith(
       {
         path: '/libs/demo',
-        preset: 'angular',
+        preset: 'conventionalcommits',
         tagPrefix: 'v',
       },
       undefined,
@@ -149,7 +149,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'premajor',
@@ -183,7 +183,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'major',
@@ -217,7 +217,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'patch',
@@ -251,7 +251,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'minor',
@@ -279,7 +279,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         releaseType: 'patch',
@@ -369,7 +369,7 @@ describe('tryBump', () => {
     await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
@@ -399,7 +399,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         projectName: '',
@@ -426,7 +426,7 @@ describe('tryBump', () => {
     const newVersion = await lastValueFrom(
       tryBump({
         syncVersions: false,
-        preset: 'angular',
+        preset: 'conventionalcommits',
         projectRoot: '/libs/demo',
         tagPrefix: 'v',
         allowEmptyRelease: true,
@@ -455,7 +455,7 @@ describe('tryBump', () => {
       const newVersion = await lastValueFrom(
         tryBump({
           syncVersions: false,
-          preset: 'angular',
+          preset: 'conventionalcommits',
           skipCommitTypes: ['docs', 'refactor'],
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
@@ -477,7 +477,7 @@ describe('tryBump', () => {
       const newVersion = await lastValueFrom(
         tryBump({
           syncVersions: false,
-          preset: 'angular',
+          preset: 'conventionalcommits',
           skipCommitTypes: ['docs', 'refactor'],
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
@@ -507,7 +507,7 @@ describe('tryBump', () => {
 
       const newVersion = await lastValueFrom(
         tryBump({
-          preset: 'angular',
+          preset: 'conventionalcommits',
           projectRoot: '/libs/demo',
           dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
           tagPrefix: 'v',
@@ -537,7 +537,7 @@ describe('tryBump', () => {
       const newVersion = await lastValueFrom(
         tryBump({
           syncVersions: false,
-          preset: 'angular',
+          preset: 'conventionalcommits',
           projectRoot: '/libs/demo',
           tagPrefix: 'v',
           releaseType: undefined,
@@ -585,7 +585,7 @@ describe('tryBump', () => {
             ],
           },
           preid: undefined,
-          preset: 'angular',
+          preset: 'conventionalcommits',
           projectName: '',
           projectRoot: '/libs/demo',
           releaseType: undefined,

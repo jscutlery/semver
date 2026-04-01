@@ -706,10 +706,24 @@ describe('@jscutlery/semver:version', () => {
   });
 
   describe('--preset', () => {
-    it('should use --preset=angular by default', async () => {
+    it('should use --preset=conventionalcommits by default', async () => {
       const { success } = await version(
         /// @ts-expect-error - preset is not in the schema
         { ...options, preset: undefined },
+        context,
+      );
+
+      expect(success).toBe(true);
+      expect(mockUpdateChangelog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          preset: 'conventionalcommits',
+        }),
+      );
+    });
+
+    it('should use --preset=angular', async () => {
+      const { success } = await version(
+        { ...options, preset: 'angular' },
         context,
       );
 

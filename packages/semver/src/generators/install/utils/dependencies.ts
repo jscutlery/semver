@@ -122,10 +122,10 @@ function _addHuskyConfigMsg(tree: Tree) {
 
 function _getCommitlintConfig(options: SchemaOptions): string | null {
   switch (options.preset) {
-    case 'angular':
-      return '@commitlint/config-angular';
     case 'conventionalcommits':
       return '@commitlint/config-conventional';
+    case 'angular':
+      return '@commitlint/config-angular';
     default:
       return null;
   }

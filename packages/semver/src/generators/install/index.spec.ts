@@ -168,7 +168,7 @@ describe('@jscutlery/semver:install', () => {
     });
 
     describe('--preset option', () => {
-      it('should install conventional config', async () => {
+      it('should install conventionalcommits config', async () => {
         await install(tree, {
           ...defaultOptions,
           preset: 'conventionalcommits',
@@ -181,46 +181,6 @@ describe('@jscutlery/semver:install', () => {
           '@commitlint/cli',
           '@commitlint/config-conventional',
         ]);
-        expect(lib1.targets).toEqual(
-          expect.objectContaining({
-            version: {
-              executor: '@jscutlery/semver:version',
-              options: expect.objectContaining({
-                preset: 'conventionalcommits',
-              }),
-            },
-          }),
-        );
-      });
-
-      it('should install angular config', async () => {
-        await install(tree, { ...defaultOptions, preset: 'angular' });
-
-        const packageJson = readJson(tree, 'package.json');
-        const lib1 = findJson(tree, projectName1, 'project.json');
-
-        expect(packageJson.devDependencies).toContainKeys([
-          '@commitlint/cli',
-          '@commitlint/config-angular',
-        ]);
-        expect(lib1.targets).toEqual(
-          expect.objectContaining({
-            version: {
-              executor: '@jscutlery/semver:version',
-              options: expect.objectContaining({ preset: 'angular' }),
-            },
-          }),
-        );
-      });
-
-      it('should install angular config', async () => {
-        await install(tree, {
-          ...defaultOptions,
-          preset: 'conventionalcommits',
-        });
-
-        const lib1 = findJson(tree, projectName1, 'project.json');
-
         expect(lib1.targets).toEqual(
           expect.objectContaining({
             version: {
@@ -259,7 +219,7 @@ describe('@jscutlery/semver:install', () => {
     const options: SchemaOptions = {
       ...defaultOptions,
       enforceConventionalCommits: true,
-      preset: 'angular',
+      preset: 'conventionalcommits',
     };
 
     it('skip if config not found', async () => {
@@ -283,7 +243,7 @@ describe('@jscutlery/semver:install', () => {
       const packageJson = readJson(tree, 'package.json');
       expect(packageJson.devDependencies).toContainKeys([
         '@commitlint/cli',
-        '@commitlint/config-angular',
+        '@commitlint/config-conventional',
       ]);
     });
 
@@ -292,7 +252,9 @@ describe('@jscutlery/semver:install', () => {
 
       const commitlintConfig = readJson(tree, '.commitlintrc.json');
 
-      expect(commitlintConfig.extends).toEqual(['@commitlint/config-angular']);
+      expect(commitlintConfig.extends).toEqual([
+        '@commitlint/config-conventional',
+      ]);
     });
 
     it('does not add commitlint config to package.json if exists', async () => {
