@@ -31,8 +31,8 @@
       "description": "Customize CHANGELOG generation and lint rules.",
       "type": "string",
       "enum": [
-        "angular",
         "conventionalcommits",
+        "angular",
         "atom",
         "codemirror",
         "ember",
@@ -40,18 +40,18 @@
         "express",
         "jshint"
       ],
-      "default": "angular",
+      "default": "conventionalcommits",
       "x-prompt": {
         "message": "Which preset would you want to use?",
         "type": "list",
         "items": [
           {
-            "value": "angular",
-            "label": "Angular      [ https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format                                   ]"
-          },
-          {
             "value": "conventionalcommits",
             "label": "Conventional [ https://www.conventionalcommits.org/en/v1.0.0-beta.4                                                                    ]"
+          },
+          {
+            "value": "angular",
+            "label": "Angular      [ https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format                                   ]"
           },
           {
             "value": "atom",

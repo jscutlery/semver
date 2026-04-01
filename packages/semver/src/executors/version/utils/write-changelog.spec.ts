@@ -14,7 +14,7 @@ jest.mock('./conventional-commit');
 const config: WriteChangelogConfig = {
   changelogHeader: '# Changelog',
   projectRoot: './',
-  preset: 'angular',
+  preset: 'conventionalcommits',
   dryRun: false,
   changelogPath: 'CHANGELOG.md',
   tagPrefix: 'button',

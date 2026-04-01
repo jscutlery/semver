@@ -118,9 +118,9 @@
         {
           "type": "string",
           "enum": [
+            "conventionalcommits",
             "angular",
             "conventional",
-            "conventionalcommits",
             "atom",
             "codemirror",
             "ember",
@@ -129,7 +129,7 @@
             "jquery",
             "jshint"
           ],
-          "default": "angular"
+          "default": "conventionalcommits"
         },
         {
           "$ref": "#/definitions/conventionalChangelogConfiguration"

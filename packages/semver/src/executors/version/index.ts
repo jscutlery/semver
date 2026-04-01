@@ -250,6 +250,6 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     skipStage: options.skipStage as boolean,
     preset: (options.preset === 'conventional'
       ? 'conventionalcommits'
-      : options.preset || 'angular') as PresetOpt,
+      : options.preset || 'conventionalcommits') as PresetOpt,
   };
 }

@@ -49,7 +49,7 @@ describe('@jscutlery/semver', () => {
 
     it('should add commitlint config', () => {
       expect(readFile(`${testingWorkspace.root}/package.json`)).toMatch(
-        /@commitlint\/config-angular/,
+        /@commitlint\/config-conventional/,
       );
     });
 

@@ -1,6 +1,6 @@
 export type Preset =
-  | 'angular'
   | 'conventionalcommits'
+  | 'angular'
   | 'atom'
   | 'codemirror'
   | 'ember'
