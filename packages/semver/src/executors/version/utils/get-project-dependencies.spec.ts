@@ -167,7 +167,7 @@ describe('projectDependencies', () => {
   });
 
   it('handles a failure in retrieving the dependency graph', async () => {
-    mockCreateProjectGraphAsync.mockReturnValue(Promise.reject('thrown error'));
+    mockCreateProjectGraphAsync.mockRejectedValue('thrown error');
 
     let error;
     try {
