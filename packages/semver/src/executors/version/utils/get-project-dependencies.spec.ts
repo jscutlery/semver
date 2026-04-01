@@ -4,6 +4,14 @@ import {
   getDependencyRoots,
 } from './get-project-dependencies';
 
+// Mock @nx/devkit at the top level for dynamic import support
+const mockCreateProjectGraphAsync = jest.fn();
+jest.mock('@nx/devkit', () => ({
+  ...jest.requireActual('@nx/devkit'),
+  createProjectGraphAsync: mockCreateProjectGraphAsync,
+}));
+jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
+
 const projectGraph: ProjectGraph = {
   nodes: {},
   dependencies: {
@@ -133,19 +141,9 @@ const context: ExecutorContext = {
 } as const;
 
 describe('projectDependencies', () => {
-  const mockCreateProjectGraphAsync = jest.fn();
-
   beforeEach(() => {
     jest.resetModules();
-  });
-
-  jest.mock('@nx/devkit', () => ({
-    createProjectGraphAsync: mockCreateProjectGraphAsync,
-  }));
-  jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
-
-  beforeEach(() => {
-    mockCreateProjectGraphAsync.mockRestore();
+    mockCreateProjectGraphAsync.mockReset();
   });
 
   it('returns a list of libs that the project is dependent on', async () => {
@@ -180,19 +178,9 @@ describe('projectDependencies', () => {
 });
 
 describe('getDependencyRootsWithVersionBuilderSchema', () => {
-  const mockCreateProjectGraphAsync = jest.fn();
-
   beforeEach(() => {
     jest.resetModules();
-  });
-
-  jest.mock('@nx/devkit', () => ({
-    createProjectGraphAsync: mockCreateProjectGraphAsync,
-  }));
-  jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
-
-  beforeEach(() => {
-    mockCreateProjectGraphAsync.mockRestore();
+    mockCreateProjectGraphAsync.mockReset();
   });
 
   it('returns an empty array if trackDeps is false', async () => {
