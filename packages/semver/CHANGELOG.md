@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.0.0](https://github.com/jscutlery/semver/compare/semver-5.8.1...semver-6.0.0) (2026-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* change default preset to conventionalcommits (#1067)
+* **semver:** Prerelease tags are now included when determining the last
+version for regular releases. This may affect version calculation for projects
+with existing prerelease tags.
+
+### Features
+
+* change default preset to conventionalcommits ([#1067](https://github.com/jscutlery/semver/issues/1067)) ([8042cb1](https://github.com/jscutlery/semver/commit/8042cb100da4fdf73996f619af29c0d428ed98e6))
+
+
+### Bug Fixes
+
+* **semver:** consider prerelease tags when calculating release version ([#1066](https://github.com/jscutlery/semver/issues/1066)) ([57a7547](https://github.com/jscutlery/semver/commit/57a75475dc9aa806a60954e9e6af00f9e2b836a7)), closes [#433](https://github.com/jscutlery/semver/issues/433) [#817](https://github.com/jscutlery/semver/issues/817) [#808](https://github.com/jscutlery/semver/issues/808) [#788](https://github.com/jscutlery/semver/issues/788)
+
 ## [5.8.1](https://github.com/jscutlery/semver/compare/semver-5.8.0...semver-5.8.1) (2026-04-01)
 
 
