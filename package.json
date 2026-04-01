@@ -32,7 +32,7 @@
   "devDependencies": {
     "@angular-devkit/schematics": "19.2.19",
     "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-angular": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
     "@nx/devkit": "22.6.3",
     "@nx/eslint-plugin": "22.6.3",
     "@nx/jest": "22.6.3",

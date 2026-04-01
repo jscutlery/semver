@@ -17,7 +17,7 @@ importers:
       '@commitlint/cli':
         specifier: ^19.0.0
         version: 19.8.1(@types/node@22.19.1)(typescript@5.9.3)
-      '@commitlint/config-angular':
+      '@commitlint/config-conventional':
         specifier: ^19.0.0
         version: 19.8.1
       '@nx/devkit':
@@ -112,7 +112,7 @@ importers:
     dependencies:
       '@nx/devkit':
         specifier: ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0 || ^22.0.0
-        version: 22.5.4(nx@22.6.3(@swc-node/register@1.11.1(@swc/core@1.15.8)(@swc/types@0.1.25)(typescript@5.9.3))(@swc/core@1.15.8))
+        version: 22.6.3(nx@22.6.3(@swc-node/register@1.11.1(@swc/core@1.15.8)(@swc/types@0.1.25)(typescript@5.9.3))(@swc/core@1.15.8))
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1171,17 +1171,10 @@ packages:
     engines: { node: '>=v18' }
     hasBin: true
 
-  '@commitlint/config-angular-type-enum@19.8.1':
+  '@commitlint/config-conventional@19.8.1':
     resolution:
       {
-        integrity: sha512-JKEINTDQcH5+qSq0Fcp/gzT7SQ3RvY74SNXiMABNTsseocB33TKMzPwDJHZbl/hyRemWEE97Qbxz+ILnJ+9AZQ==,
-      }
-    engines: { node: '>=v18' }
-
-  '@commitlint/config-angular@19.8.1':
-    resolution:
-      {
-        integrity: sha512-5OAVgqwg6m4iXP2FkrswKZjrgzyQetR5Jkyt5SajlxLfKzZOzdB3hSqVJQdtvF/AxiMwz9Ey5BIXTCfSIrvZGg==,
+        integrity: sha512-/AZHJL6F6B/G959CsMAzrPKKZjeEiAVifRyEwXxcT6qtqbPwGw+iQxmNS+Bu+i09OCtdNRW6pNpBvgPrtMr9EQ==,
       }
     engines: { node: '>=v18' }
 
@@ -1672,14 +1665,6 @@ packages:
         integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==,
       }
     engines: { node: '>= 8' }
-
-  '@nx/devkit@22.5.4':
-    resolution:
-      {
-        integrity: sha512-+QCmpQZQmEGvi8IurC6bOgUTk+Q0dQo7wkp6V04lskXBztSyasBS0BGy5ic90kY05UlQUd++zRA1VY0jc+Yz5Q==,
-      }
-    peerDependencies:
-      nx: '>= 21 <= 23 || ^22.0.0-0'
 
   '@nx/devkit@22.6.3':
     resolution:
@@ -7271,11 +7256,10 @@ snapshots:
       - '@types/node'
       - typescript
 
-  '@commitlint/config-angular-type-enum@19.8.1': {}
-
-  '@commitlint/config-angular@19.8.1':
+  '@commitlint/config-conventional@19.8.1':
     dependencies:
-      '@commitlint/config-angular-type-enum': 19.8.1
+      '@commitlint/types': 19.8.1
+      conventional-changelog-conventionalcommits: 7.0.2
 
   '@commitlint/config-validator@19.8.1':
     dependencies:
@@ -7707,17 +7691,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
-
-  '@nx/devkit@22.5.4(nx@22.6.3(@swc-node/register@1.11.1(@swc/core@1.15.8)(@swc/types@0.1.25)(typescript@5.9.3))(@swc/core@1.15.8))':
-    dependencies:
-      '@zkochan/js-yaml': 0.0.7
-      ejs: 3.1.10
-      enquirer: 2.3.6
-      minimatch: 10.2.4
-      nx: 22.6.3(@swc-node/register@1.11.1(@swc/core@1.15.8)(@swc/types@0.1.25)(typescript@5.9.3))(@swc/core@1.15.8)
-      semver: 7.7.4
-      tslib: 2.8.1
-      yargs-parser: 21.1.1
 
   '@nx/devkit@22.6.3(nx@22.6.3(@swc-node/register@1.11.1(@swc/core@1.15.8)(@swc/types@0.1.25)(typescript@5.9.3))(@swc/core@1.15.8))':
     dependencies:
