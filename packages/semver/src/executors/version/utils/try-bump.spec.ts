@@ -294,6 +294,68 @@ describe('tryBump', () => {
     expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
   });
 
+  it('should graduate prerelease to release using conventional commits', async () => {
+    // Mock getLastVersion to return the highest version (including prerelease)
+    mockGetLastVersion.mockReturnValueOnce(of('2.0.0-rc.1'));
+
+    mockGetCommits.mockReturnValue(of(['fix: bug fix']));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest.fn().mockResolvedValue({
+        releaseType: 'patch',
+      }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        syncVersions: false,
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        projectName: '',
+        skipCommitTypes: [],
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      version: '2.0.0',
+      previousVersion: '2.0.0-rc.1',
+      dependencyUpdates: [],
+    });
+    expect(mockGetCommits).toHaveBeenCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v2.0.0-rc.1',
+    });
+  });
+
+  it('should handle multiple prerelease versions with different preids', async () => {
+    // Mock getLastVersion to return the highest prerelease version (beta.2 > alpha.5)
+    mockGetLastVersion.mockReturnValueOnce(of('3.0.0-beta.2'));
+
+    mockGetCommits.mockReturnValue(of(['feat: new feature']));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest.fn().mockResolvedValue({
+        releaseType: 'minor',
+      }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        syncVersions: false,
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        projectName: '',
+        skipCommitTypes: [],
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      version: '3.0.0',
+      previousVersion: '3.0.0-beta.2',
+      dependencyUpdates: [],
+    });
+  });
+
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
     mockGetLastVersion.mockReturnValue(throwError(() => 'No version found'));
     mockGetCommits.mockReturnValue(of([]));

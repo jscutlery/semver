@@ -20,23 +20,23 @@ export function getLastVersion({
         .filter((v) => {
           const prerelease = semver.prerelease(v);
 
-          /* Filter-in everything except prereleases. */
+          /* Filter-in all versions. */
           if (prerelease == null) {
             return true;
           }
 
-          /* Filter-in everything if preid is not set. */
-          if (releaseType && preid == null) {
+          /* Filter-in all prereleases if no preid is specified. */
+          if (preid == null) {
             return true;
           }
 
           /* Filter-in if preids match. */
           const [versionPreid] = prerelease;
-          if (releaseType && versionPreid === preid) {
+          if (versionPreid === preid) {
             return true;
           }
 
-          /* Filter-out everything else.*/
+          /* Filter-out only prereleases with different preids. */
           return false;
         });
 

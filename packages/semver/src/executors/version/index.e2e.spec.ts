@@ -1,7 +1,6 @@
 import { execSync } from 'child_process';
 import { setupTestingWorkspace, type TestingWorkspace } from './testing';
 import { readFileSync, existsSync, writeFileSync } from 'fs';
-import { ProjectConfiguration } from '@nx/devkit';
 import { writeFile } from './utils/filesystem';
 import { firstValueFrom } from 'rxjs';
 
@@ -405,6 +404,45 @@ describe('@jscutlery/semver', () => {
             ),
           ).toMatchSnapshot('a-1.2.0-alpha.0');
         });
+      });
+    });
+
+    describe('when graduating prerelease to stable release (v1.2.0-alpha.0 => v1.2.0)', () => {
+      beforeAll(() => {
+        testingWorkspace.exec(
+          `
+              echo fix >> libs/a/a.txt
+              git add .
+              git commit -m "fix(a): 🐞 final fix before release"
+            `,
+        );
+        testingWorkspace.runNx(`run a:version --noVerify`);
+      });
+
+      it('should graduate prerelease to stable version', () => {
+        expect(getLastTag(testingWorkspace.root)).toBe('a-1.2.0');
+      });
+
+      it('should bump package version to stable', () => {
+        expect(
+          readFile(`${testingWorkspace.root}/libs/a/package.json`),
+        ).toMatch(/"version": "1.2.0"/);
+      });
+
+      it('should base version on prerelease tag not previous stable', () => {
+        const changelog = readFile(
+          `${testingWorkspace.root}/libs/a/CHANGELOG.md`,
+        );
+        // Should show changes since 1.2.0-alpha.0, not since 1.1.0-beta.1
+        expect(changelog).toContain('1.2.0');
+      });
+
+      it('should generate CHANGELOG.md', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/a/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot('a-1.2.0');
       });
     });
 
