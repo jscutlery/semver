@@ -113,6 +113,11 @@
       "type": "string",
       "default": "chore({projectName}): release version {version}"
     },
+    "considerPrereleaseForRelease": {
+      "description": "When true, prerelease tags (e.g., 2.0.0-rc.0) are considered when calculating the next release version. This allows a regular release after a prerelease to correctly graduate the prerelease version (e.g., 2.0.0-rc.1 → 2.0.0) instead of being based on the last non-prerelease tag.",
+      "type": "boolean",
+      "default": false
+    },
     "preset": {
       "oneOf": [
         {

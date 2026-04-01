@@ -35,6 +35,7 @@ export function getProjectVersion({
   since,
   projectName,
   preid,
+  considerPrereleaseForRelease,
 }: {
   tagPrefix: string;
   projectRoot: string;
@@ -42,11 +43,13 @@ export function getProjectVersion({
   since?: string;
   projectName: string;
   preid?: string;
+  considerPrereleaseForRelease?: boolean;
 }) {
   const lastVersion$ = getLastVersion({
     tagPrefix,
     preid,
     releaseType,
+    considerPrereleaseForRelease,
   }).pipe(
     catchError(() => {
       _logStep({
@@ -109,6 +112,7 @@ export function tryBump({
   allowEmptyRelease,
   skipCommitTypes,
   projectName,
+  considerPrereleaseForRelease,
 }: {
   commitParserOptions?: CommitParserOptions;
   preset: PresetOpt;
@@ -122,6 +126,7 @@ export function tryBump({
   allowEmptyRelease?: boolean;
   skipCommitTypes: string[];
   projectName: string;
+  considerPrereleaseForRelease?: boolean;
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
     tagPrefix,
@@ -129,6 +134,7 @@ export function tryBump({
     releaseType,
     projectName,
     preid,
+    considerPrereleaseForRelease,
   });
 
   return forkJoin([lastVersion$, commits$, lastVersionGitRef$]).pipe(

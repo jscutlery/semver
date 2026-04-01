@@ -51,6 +51,7 @@ export default async function version(
     skipCommit,
     skipStage,
     commitParserOptions,
+    considerPrereleaseForRelease,
   } = _normalizeOptions(options);
 
   const workspaceRoot = context.root;
@@ -94,6 +95,7 @@ export default async function version(
     allowEmptyRelease,
     skipCommitTypes,
     projectName,
+    considerPrereleaseForRelease,
   });
 
   const runSemver$ = newVersion$.pipe(

@@ -273,6 +273,77 @@ describe('tryBump', () => {
     });
   });
 
+  it('should graduate prerelease to release when considerPrereleaseForRelease is true', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.0.0-rc.1',
+      'my-lib-2.0.0-rc.0',
+      'my-lib-1.0.0',
+    ]);
+    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest.fn().mockResolvedValue({
+        releaseType: 'minor',
+      }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        syncVersions: false,
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        projectName: '',
+        skipCommitTypes: [],
+        considerPrereleaseForRelease: true,
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      version: '2.0.0',
+      previousVersion: '2.0.0-rc.1',
+      dependencyUpdates: [],
+    });
+    expect(mockGetCommits).toHaveBeenCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v2.0.0-rc.1',
+    });
+  });
+
+  it('should use prerelease to calculate next major release version when considerPrereleaseForRelease is true', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-3.0.0-beta.0',
+      'my-lib-2.1.0',
+      'my-lib-2.0.0',
+      'my-lib-1.0.0',
+    ]);
+    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        syncVersions: false,
+        preset: 'angular',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: 'major',
+        skipCommitTypes: [],
+        projectName: '',
+        considerPrereleaseForRelease: true,
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      version: '3.0.0',
+      previousVersion: '3.0.0-beta.0',
+      dependencyUpdates: [],
+    });
+    expect(mockConventionalRecommendedBump).not.toHaveBeenCalled();
+    expect(mockGetCommits).toHaveBeenCalledTimes(1);
+    expect(mockGetCommits).toHaveBeenCalledWith({
+      projectRoot: '/libs/demo',
+      since: 'v3.0.0-beta.0',
+    });
+  });
+
   it('should use given type to calculate next version even if there are no changes', async () => {
     mockGetCommits.mockReturnValue(of([]));
 

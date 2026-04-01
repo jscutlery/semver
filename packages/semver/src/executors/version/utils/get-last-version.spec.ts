@@ -84,6 +84,35 @@ describe(getLastVersion.name, () => {
     expect(tag).toEqual('2.0.0');
   });
 
+  it('should compute current version from previous semver prerelease tag when considerPrereleaseForRelease is true', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.1.0-beta.0',
+      'my-lib-2.0.0',
+      'my-lib-1.0.0',
+    ]);
+
+    const tag = await lastValueFrom(
+      getLastVersion({ tagPrefix, considerPrereleaseForRelease: true }),
+    );
+
+    expect(tag).toEqual('2.1.0-beta.0');
+  });
+
+  it('should use highest prerelease version when considerPrereleaseForRelease is true', async () => {
+    mockGitSemverTags.mockResolvedValue([
+      'my-lib-2.2.0-rc.1',
+      'my-lib-2.2.0-rc.0',
+      'my-lib-2.1.0',
+      'my-lib-2.0.0',
+    ]);
+
+    const tag = await lastValueFrom(
+      getLastVersion({ tagPrefix, considerPrereleaseForRelease: true }),
+    );
+
+    expect(tag).toEqual('2.2.0-rc.1');
+  });
+
   it('should throw error if no tag available', async () => {
     mockGitSemverTags.mockResolvedValue([]);
 

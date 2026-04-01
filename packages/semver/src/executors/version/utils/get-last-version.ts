@@ -8,10 +8,12 @@ export function getLastVersion({
   tagPrefix,
   releaseType,
   preid,
+  considerPrereleaseForRelease = false,
 }: {
   tagPrefix: string;
   releaseType?: semver.ReleaseType;
   preid?: string;
+  considerPrereleaseForRelease?: boolean;
 }): Observable<string> {
   return from(gitSemverTags({ tagPrefix }) as Promise<string[]>).pipe(
     switchMap((tags) => {
@@ -22,6 +24,11 @@ export function getLastVersion({
 
           /* Filter-in everything except prereleases. */
           if (prerelease == null) {
+            return true;
+          }
+
+          /* Filter-in everything if preid is not set and considerPrereleaseForRelease is true. */
+          if (releaseType == null && considerPrereleaseForRelease) {
             return true;
           }
 
