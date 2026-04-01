@@ -306,7 +306,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should run semver independently on a project with failure on dependencies', async () => {
-      mockGetDependencyRoots.mockReturnValue(Promise.reject('thrown error'));
+      mockGetDependencyRoots.mockRejectedValue('thrown error');
 
       expect(await version({ ...options, trackDeps: true }, context)).toEqual({
         success: false,

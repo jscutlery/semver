@@ -4,6 +4,7 @@ import type { VersionBuilderSchema } from '../schema';
 export interface DependencyRoot {
   name: string;
   path: string;
+  options?: VersionBuilderSchema;
 }
 
 /* istanbul ignore next */
@@ -23,6 +24,7 @@ export async function getDependencyRoots({
       name,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       path: context.projectsConfigurations!.projects[name].root,
+      options: getProjectVersionBuilderSchema(projectName, context),
     }));
   }
 
@@ -46,4 +48,17 @@ function getProjectsFromDependencies(
   return dependencies
     .filter((d) => !d.target.startsWith('npm:'))
     .map((d) => d.target);
+}
+
+function getProjectVersionBuilderSchema(
+  projectName: string,
+  context: ExecutorContext,
+): VersionBuilderSchema | undefined {
+  const versionTarget = Object.values(
+    context.projectsConfigurations!.projects[projectName].targets ?? {},
+  ).find((target) => target.executor === '@jscutlery/semver:version');
+  if (!versionTarget) {
+    return;
+  }
+  return versionTarget.options || undefined;
 }

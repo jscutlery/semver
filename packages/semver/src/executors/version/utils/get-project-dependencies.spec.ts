@@ -1,5 +1,16 @@
-import { type ProjectGraph } from '@nx/devkit';
-import { getProjectDependencies } from './get-project-dependencies';
+import { ExecutorContext, type ProjectGraph } from '@nx/devkit';
+import {
+  getProjectDependencies,
+  getDependencyRoots,
+} from './get-project-dependencies';
+
+// Mock @nx/devkit at the top level for dynamic import support
+const mockCreateProjectGraphAsync = jest.fn();
+jest.mock('@nx/devkit', () => ({
+  ...jest.requireActual('@nx/devkit'),
+  createProjectGraphAsync: mockCreateProjectGraphAsync,
+}));
+jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
 
 const projectGraph: ProjectGraph = {
   nodes: {},
@@ -61,20 +72,78 @@ const projectGraph: ProjectGraph = {
   },
 };
 
-describe('projectDependencies', () => {
-  const mockCreateProjectGraphAsync = jest.fn();
+const context: ExecutorContext = {
+  root: '',
+  cwd: '',
+  isVerbose: false,
+  nxJsonConfiguration: {},
+  projectGraph,
+  projectsConfigurations: {
+    version: 0,
+    projects: {
+      demo: {
+        root: 'apps/demo',
+        targets: {
+          versionAlias: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              tagPrefix: '{projectName}@',
+            },
+          },
+        },
+      },
+      lib1: {
+        root: 'libs/lib1',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              tagPrefix: '{projectName}@v',
+            },
+          },
+        },
+      },
+      lib2: {
+        root: 'libs/lib2',
+        targets: {
+          release: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              tagPrefix: '{projectName}@v',
+            },
+          },
+        },
+      },
+      lib3: {
+        root: 'libs/lib3',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              tagPrefix: '{projectName}@v',
+            },
+          },
+        },
+      },
+      'demo-e2e': {
+        root: 'apps/demo-e2e',
+        targets: {
+          version: {
+            executor: '@jscutlery/semver:version',
+            options: {
+              tagPrefix: '{projectName}@',
+            },
+          },
+        },
+      },
+    },
+  },
+} as const;
 
+describe('projectDependencies', () => {
   beforeEach(() => {
     jest.resetModules();
-  });
-
-  jest.mock('@nx/devkit', () => ({
-    createProjectGraphAsync: mockCreateProjectGraphAsync,
-  }));
-  jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
-
-  beforeEach(() => {
-    mockCreateProjectGraphAsync.mockRestore();
+    mockCreateProjectGraphAsync.mockReset();
   });
 
   it('returns a list of libs that the project is dependent on', async () => {
@@ -96,7 +165,7 @@ describe('projectDependencies', () => {
   });
 
   it('handles a failure in retrieving the dependency graph', async () => {
-    mockCreateProjectGraphAsync.mockReturnValue(Promise.reject('thrown error'));
+    mockCreateProjectGraphAsync.mockRejectedValue('thrown error');
 
     let error;
     try {
@@ -105,5 +174,52 @@ describe('projectDependencies', () => {
       error = e;
     }
     expect(error).toEqual('thrown error');
+  });
+});
+
+describe('getDependencyRootsWithVersionBuilderSchema', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    mockCreateProjectGraphAsync.mockReset();
+  });
+
+  it('returns an empty array if trackDeps is false', async () => {
+    mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
+    const result = await getDependencyRoots({
+      trackDeps: false,
+      releaseAs: undefined,
+      projectName: 'demo',
+      context,
+    });
+    expect(result).toEqual([]);
+  });
+
+  it('returns an array of dependency roots with version builder schema', async () => {
+    mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
+    const result = await getDependencyRoots({
+      trackDeps: true,
+      releaseAs: undefined,
+      projectName: 'demo',
+      context,
+    });
+
+    expect(result).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "name": "lib1",
+          "options": Object {
+            "tagPrefix": "{projectName}@",
+          },
+          "path": "libs/lib1",
+        },
+        Object {
+          "name": "lib2",
+          "options": Object {
+            "tagPrefix": "{projectName}@",
+          },
+          "path": "libs/lib2",
+        },
+      ]
+    `);
   });
 });
