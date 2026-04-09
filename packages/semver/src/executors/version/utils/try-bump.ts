@@ -12,10 +12,15 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import * as semver from 'semver';
+import type { ProjectsConfigurations } from '@nx/devkit';
 import type { PresetOpt, ReleaseIdentifier } from '../schema';
 import { type Version } from '../version';
 import { getLastVersion } from './get-last-version';
-import { type DependencyRoot } from './get-project-dependencies';
+import {
+  getDependencyRootsFromProjectNames,
+  getProjectDependencies,
+  type DependencyRoot,
+} from './get-project-dependencies';
 import { getCommits, getFirstCommitRef } from './git';
 import { _logStep } from './logger';
 import { formatTag, formatTagPrefix } from './tag';
@@ -109,6 +114,8 @@ export function tryBump({
   allowEmptyRelease,
   skipCommitTypes,
   projectName,
+  workspace,
+  visitedProjects = [],
 }: {
   commitParserOptions?: CommitParserOptions;
   preset: PresetOpt;
@@ -122,6 +129,8 @@ export function tryBump({
   allowEmptyRelease?: boolean;
   skipCommitTypes: string[];
   projectName: string;
+  workspace?: ProjectsConfigurations;
+  visitedProjects?: string[];
 }): Observable<NewVersion | null> {
   const { lastVersion$, commits$, lastVersionGitRef$ } = getProjectVersion({
     tagPrefix,
@@ -172,6 +181,8 @@ export function tryBump({
         syncVersions,
         projectName,
         preid,
+        workspace,
+        visitedProjects: [...visitedProjects, projectName],
       });
 
       return forkJoin([projectBump$, dependencyVersions$]).pipe(
@@ -320,6 +331,8 @@ export function _getDependencyVersions({
   skipCommitTypes,
   projectName,
   preid,
+  workspace,
+  visitedProjects,
 }: {
   commitParserOptions?: CommitParserOptions;
   preset: PresetOpt;
@@ -331,6 +344,8 @@ export function _getDependencyVersions({
   syncVersions: boolean;
   projectName: string;
   preid?: string;
+  workspace?: ProjectsConfigurations;
+  visitedProjects: string[];
 }): Observable<Version[]> {
   return forkJoin(
     dependencyRoots.map(
@@ -366,11 +381,21 @@ export function _getDependencyVersions({
               }),
             );
             if (filteredCommits.length === 0) {
-              return of({
-                type: 'dependency',
-                version: null,
-                dependencyName: dependencyName,
-              } satisfies Version);
+              return getDependencyVersionFromTrackedDependencies({
+                dependencyName,
+                dependencyLastVersion,
+                projectRoot,
+                preset,
+                tagPrefix,
+                releaseType,
+                preid,
+                versionTagPrefix,
+                syncVersions,
+                skipCommitTypes,
+                commitParserOptions,
+                workspace,
+                visitedProjects,
+              });
             }
 
             /* Dependency has changes but has no tagged version */
@@ -404,6 +429,89 @@ export function _getDependencyVersions({
       },
     ),
   ).pipe(defaultIfEmpty([]));
+}
+
+function getDependencyVersionFromTrackedDependencies({
+  dependencyName,
+  dependencyLastVersion,
+  projectRoot,
+  preset,
+  tagPrefix,
+  releaseType,
+  preid,
+  versionTagPrefix,
+  syncVersions,
+  skipCommitTypes,
+  commitParserOptions,
+  workspace,
+  visitedProjects,
+}: {
+  dependencyName: string;
+  dependencyLastVersion: string;
+  projectRoot: string;
+  preset: PresetOpt;
+  tagPrefix: string;
+  releaseType?: ReleaseIdentifier;
+  preid?: string;
+  versionTagPrefix?: string | null;
+  syncVersions: boolean;
+  skipCommitTypes: string[];
+  commitParserOptions?: CommitParserOptions;
+  workspace?: ProjectsConfigurations;
+  visitedProjects: string[];
+}): Observable<Version> {
+  if (workspace == null || visitedProjects.includes(dependencyName)) {
+    return of({
+      type: 'dependency',
+      version: null,
+      dependencyName,
+    } satisfies Version);
+  }
+
+  return defer(async () =>
+    getDependencyRootsFromProjectNames(
+      await getProjectDependencies(dependencyName),
+      workspace,
+    ),
+  ).pipe(
+    switchMap((dependencyRoots) =>
+      tryBump({
+        commitParserOptions,
+        preset,
+        projectRoot,
+        tagPrefix,
+        dependencyRoots,
+        releaseType,
+        preid,
+        versionTagPrefix,
+        syncVersions,
+        skipCommitTypes,
+        projectName: dependencyName,
+        workspace,
+        visitedProjects,
+      }),
+    ),
+    map((newVersion) => {
+      const version =
+        newVersion != null &&
+        semver.gt(newVersion.version, dependencyLastVersion)
+          ? newVersion.version
+          : null;
+
+      return {
+        type: 'dependency',
+        version,
+        dependencyName,
+      } satisfies Version;
+    }),
+    catchError(() =>
+      of({
+        type: 'dependency',
+        version: null,
+        dependencyName,
+      } satisfies Version),
+    ),
+  );
 }
 
 export function _isNewVersion(version: Version): boolean {

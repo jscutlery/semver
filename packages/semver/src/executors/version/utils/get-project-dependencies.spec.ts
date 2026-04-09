@@ -208,14 +208,14 @@ describe('getDependencyRootsWithVersionBuilderSchema', () => {
         Object {
           "name": "lib1",
           "options": Object {
-            "tagPrefix": "{projectName}@",
+            "tagPrefix": "{projectName}@v",
           },
           "path": "libs/lib1",
         },
         Object {
           "name": "lib2",
           "options": Object {
-            "tagPrefix": "{projectName}@",
+            "tagPrefix": "{projectName}@v",
           },
           "path": "libs/lib2",
         },

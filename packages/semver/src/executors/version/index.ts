@@ -96,6 +96,7 @@ export default async function version(
     allowEmptyRelease,
     skipCommitTypes,
     projectName,
+    workspace: context.projectsConfigurations,
   });
 
   const runSemver$ = newVersion$.pipe(

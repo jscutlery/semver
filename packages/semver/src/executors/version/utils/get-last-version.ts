@@ -14,39 +14,49 @@ export function getLastVersion({
   preid?: string;
 }): Observable<string> {
   return from(gitSemverTags({ tagPrefix }) as Promise<string[]>).pipe(
-    switchMap((tags) => {
-      const versions = tags
-        .map((tag) => tag.substring(tagPrefix.length))
-        .filter((v) => {
-          const prerelease = semver.prerelease(v);
+    switchMap((tags) => getLastVersionFromTags({ tags, tagPrefix, preid })),
+  );
+}
 
-          /* Filter-in all versions. */
-          if (prerelease == null) {
-            return true;
-          }
+function getLastVersionFromTags({
+  tags,
+  tagPrefix,
+  preid,
+}: {
+  tags: string[];
+  tagPrefix: string;
+  preid?: string;
+}): Observable<string> {
+  const versions = tags
+    .map((tag) => tag.substring(tagPrefix.length))
+    .filter((v) => {
+      const prerelease = semver.prerelease(v);
 
-          /* Filter-in all prereleases if no preid is specified. */
-          if (preid == null) {
-            return true;
-          }
-
-          /* Filter-in if preids match. */
-          const [versionPreid] = prerelease;
-          if (versionPreid === preid) {
-            return true;
-          }
-
-          /* Filter-out only prereleases with different preids. */
-          return false;
-        });
-
-      const [version] = versions.sort(semver.rcompare);
-
-      if (version == null) {
-        return throwError(() => new Error('No semver tag found'));
+      /* Filter-in all versions. */
+      if (prerelease == null) {
+        return true;
       }
 
-      return of(version);
-    }),
-  );
+      /* Filter-in all prereleases if no preid is specified. */
+      if (preid == null) {
+        return true;
+      }
+
+      /* Filter-in if preids match. */
+      const [versionPreid] = prerelease;
+      if (versionPreid === preid) {
+        return true;
+      }
+
+      /* Filter-out only prereleases with different preids. */
+      return false;
+    });
+
+  const [version] = versions.sort(semver.rcompare);
+
+  if (version == null) {
+    return throwError(() => new Error('No semver tag found'));
+  }
+
+  return of(version);
 }
