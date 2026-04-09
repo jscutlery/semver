@@ -1,7 +1,7 @@
 import { ExecutorContext, type ProjectGraph } from '@nx/devkit';
 import {
-  getProjectDependencies,
   getDependencyRoots,
+  getProjectDependencies,
 } from './get-project-dependencies';
 
 // Mock @nx/devkit at the top level for dynamic import support
@@ -218,6 +218,36 @@ describe('getDependencyRootsWithVersionBuilderSchema', () => {
             "tagPrefix": "{projectName}@",
           },
           "path": "libs/lib2",
+        },
+      ]
+    `);
+  });
+
+  it('includes dependency roots when releaseAs is set and trackDepsWithReleaseAs is true', async () => {
+    mockCreateProjectGraphAsync.mockReturnValue(Promise.resolve(projectGraph));
+    const result = await getDependencyRoots({
+      trackDeps: true,
+      trackDepsWithReleaseAs: true,
+      releaseAs: 'prerelease',
+      projectName: 'lib2',
+      context,
+    });
+
+    expect(result).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "name": "lib1",
+          "options": Object {
+            "tagPrefix": "{projectName}@v",
+          },
+          "path": "libs/lib1",
+        },
+        Object {
+          "name": "lib3",
+          "options": Object {
+            "tagPrefix": "{projectName}@v",
+          },
+          "path": "libs/lib3",
         },
       ]
     `);

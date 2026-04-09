@@ -42,6 +42,7 @@ export default async function version(
     releaseAs,
     preid,
     changelogHeader,
+    trackDepsWithReleaseAs,
     versionTagPrefix,
     postTargets,
     commitMessageFormat,
@@ -59,10 +60,11 @@ export default async function version(
   let dependencyRoots: DependencyRoot[] = [];
   try {
     dependencyRoots = await getDependencyRoots({
+      context,
       projectName,
       releaseAs,
       trackDeps,
-      context,
+      trackDepsWithReleaseAs,
     });
   } catch (e) {
     _logStep({
@@ -248,6 +250,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
     commitParserOptions: options.commitParserOptions,
     skipCommit: options.skipCommit as boolean,
     skipStage: options.skipStage as boolean,
+    trackDepsWithReleaseAs: !!options.trackDepsWithReleaseAs,
     preset: (options.preset === 'conventional'
       ? 'conventionalcommits'
       : options.preset || 'conventionalcommits') as PresetOpt,
