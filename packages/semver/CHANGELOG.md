@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.0.1](https://github.com/jscutlery/semver/compare/semver-6.0.0...semver-6.0.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* **semver:** preserve named preset overrides in changelog generation ([#1069](https://github.com/jscutlery/semver/issues/1069)) ([713a66e](https://github.com/jscutlery/semver/commit/713a66e2f568d0e17bf4ce0ddcd9712176a21e6d))
+
 ## [6.0.0](https://github.com/jscutlery/semver/compare/semver-5.8.1...semver-6.0.0) (2026-04-01)
 
 
