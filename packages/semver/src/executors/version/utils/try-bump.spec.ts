@@ -220,6 +220,85 @@ describe('tryBump', () => {
     expect(mockGetProjectDependencies).toHaveBeenCalledWith('dep1');
   });
 
+  it('should bump a dependency with changes but no tagged version', async () => {
+    mockGetLastVersion
+      .mockReturnValueOnce(of('2.1.0'))
+      .mockReturnValueOnce(of('0.0.0'));
+    mockGetFirstCommitRef.mockReturnValue(of('first-commit'));
+    mockGetCommits
+      .mockReturnValueOnce(of(['chore: root change']))
+      .mockReturnValueOnce(of(['feat: dependency change']));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest
+        .fn()
+        .mockResolvedValueOnce({
+          releaseType: undefined,
+        })
+        .mockResolvedValueOnce({
+          releaseType: 'minor',
+        }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+        tagPrefix: 'v',
+        skipCommitTypes: [],
+        syncVersions: true,
+        projectName: '',
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      dependencyUpdates: [
+        {
+          dependencyName: 'dep1',
+          type: 'dependency',
+          version: '0.1.0',
+        },
+      ],
+      previousVersion: '2.1.0',
+      version: '2.1.1',
+    });
+  });
+
+  it('should ignore dependency recursion failures', async () => {
+    mockGetCommits
+      .mockReturnValueOnce(of([]))
+      .mockReturnValueOnce(of(['docs: dependency snapshot release']));
+    mockGetProjectDependencies.mockRejectedValueOnce(new Error('boom'));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest.fn().mockResolvedValue({
+        releaseType: undefined,
+      }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+        tagPrefix: 'v',
+        skipCommitTypes: ['docs'],
+        syncVersions: true,
+        projectName: '',
+        workspace: {
+          version: 1,
+          projects: {
+            dep2: {
+              root: '/libs/dep2',
+            },
+          },
+        },
+      }),
+    );
+
+    expect(newVersion).toBeNull();
+    expect(mockGetProjectDependencies).toHaveBeenCalledWith('dep1');
+  });
+
   it('should use given type to calculate next version', async () => {
     mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
 

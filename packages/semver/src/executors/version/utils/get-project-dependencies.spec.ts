@@ -1,7 +1,10 @@
 import { ExecutorContext, type ProjectGraph } from '@nx/devkit';
 import {
+  getDependencyRootsFromProjectNames,
   getDependencyRoots,
   getProjectDependencies,
+  getProjectVersionBuilderSchema,
+  getProjectVersionBuilderSchemaFromContext,
 } from './get-project-dependencies';
 
 // Mock @nx/devkit at the top level for dynamic import support
@@ -221,6 +224,52 @@ describe('getDependencyRootsWithVersionBuilderSchema', () => {
         },
       ]
     `);
+  });
+
+  it('returns empty dependency roots when project configuration is missing', () => {
+    expect(getDependencyRootsFromProjectNames(['lib1'], undefined)).toEqual([]);
+  });
+
+  it('skips dependency roots that are not present in project configuration', () => {
+    expect(
+      getDependencyRootsFromProjectNames(
+        ['missing', 'lib1'],
+        context.projectsConfigurations,
+      ),
+    ).toEqual([
+      {
+        name: 'lib1',
+        path: 'libs/lib1',
+        options: {
+          tagPrefix: '{projectName}@v',
+        },
+      },
+    ]);
+  });
+
+  it('returns undefined when a project has no semver version target', () => {
+    expect(
+      getProjectVersionBuilderSchema({
+        root: 'libs/other',
+        targets: {
+          build: {
+            executor: '@nx/js:tsc',
+          },
+        },
+      }),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined when context has no matching project', () => {
+    expect(
+      getProjectVersionBuilderSchemaFromContext('missing', context),
+    ).toBeUndefined();
+  });
+
+  it('returns version target options from context when project exists', () => {
+    expect(getProjectVersionBuilderSchemaFromContext('lib2', context)).toEqual({
+      tagPrefix: '{projectName}@v',
+    });
   });
 
   it('includes dependency roots when releaseAs is set and trackDepsWithReleaseAs is true', async () => {
