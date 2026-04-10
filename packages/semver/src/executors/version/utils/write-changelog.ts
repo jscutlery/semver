@@ -61,7 +61,7 @@ async function buildConventionalChangelog(
   newVersion: string,
 ): Promise<string> {
   const preset =
-    typeof config.preset === 'object'
+    typeof config.preset === 'object' && !config.preset.name
       ? await createPreset(config.preset)
       : config.preset;
 
