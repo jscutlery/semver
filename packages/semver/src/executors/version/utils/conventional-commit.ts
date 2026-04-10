@@ -9,8 +9,7 @@ export function createConventionalCommitStream(
 ) {
   return conventionalChangelog(
     {
-      ...(typeof config.preset === 'string' ? { preset: config.preset } : {}),
-      ...(typeof config.preset === 'object' ? { config: config.preset } : {}),
+      ...resolvePresetOptions(config),
       tagPrefix: config.tagPrefix,
       pkg: {
         path: path.join(config.projectRoot, 'package.json'),
@@ -21,4 +20,19 @@ export function createConventionalCommitStream(
     { path: config.projectRoot },
     config.commitParserOptions,
   );
+}
+
+function resolvePresetOptions(config: WriteChangelogConfig) {
+  if (typeof config.preset === 'string') {
+    return { preset: config.preset };
+  }
+
+  if (!config.preset.name) {
+    return { config: config.preset };
+  }
+
+  return {
+    preset: config.preset.name ?? 'conventionalcommits',
+    config: config.preset,
+  };
 }
