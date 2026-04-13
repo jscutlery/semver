@@ -449,11 +449,13 @@
     },
     {
       "login": "tuffz",
-      "name": "tuffz",
+      "name": "Eric Büttner",
       "avatar_url": "https://avatars.githubusercontent.com/u/2077427?v=4",
-      "profile": "https://github.com/tuffz",
+      "profile": "https://www.ericbuettner.com",
       "contributions": [
-        "code"
+        "bug",
+        "code",
+        "doc"
       ]
     },
     {
