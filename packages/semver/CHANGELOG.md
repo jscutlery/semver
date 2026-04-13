@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.1.0](https://github.com/jscutlery/semver/compare/semver-6.0.1...semver-6.1.0) (2026-04-13)
+
+
+### Features
+
+* **semver:** preserve dependency tracking with releaseAs ([#1070](https://github.com/jscutlery/semver/issues/1070)) ([5ee17f6](https://github.com/jscutlery/semver/commit/5ee17f612468cd59673d4fe27fa744fdc51d6364))
+
 ## [6.0.1](https://github.com/jscutlery/semver/compare/semver-6.0.0...semver-6.0.1) (2026-04-10)
 
 
