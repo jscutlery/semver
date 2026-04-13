@@ -3,11 +3,16 @@ import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as gitSemverTags from 'git-semver-tags';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { getLastVersion } from './get-last-version';
+import {
+  getDependencyRootsFromProjectNames,
+  getProjectDependencies,
+} from './get-project-dependencies';
 import { getCommits, getFirstCommitRef } from './git';
 import { tryBump } from './try-bump';
 
 jest.mock('conventional-recommended-bump');
 jest.mock('./get-last-version');
+jest.mock('./get-project-dependencies');
 jest.mock('./git');
 jest.mock('git-semver-tags', () => jest.fn());
 
@@ -19,6 +24,14 @@ describe('tryBump', () => {
   const mockGetLastVersion = getLastVersion as jest.MockedFunction<
     typeof getLastVersion
   >;
+  const mockGetProjectDependencies =
+    getProjectDependencies as jest.MockedFunction<
+      typeof getProjectDependencies
+    >;
+  const mockGetDependencyRootsFromProjectNames =
+    getDependencyRootsFromProjectNames as jest.MockedFunction<
+      typeof getDependencyRootsFromProjectNames
+    >;
   const mockGetCommits = getCommits as jest.MockedFunction<typeof getCommits>;
   const mockGetFirstCommitRef = getFirstCommitRef as jest.MockedFunction<
     typeof getFirstCommitRef
@@ -29,6 +42,13 @@ describe('tryBump', () => {
 
   beforeEach(() => {
     mockGetLastVersion.mockReturnValue(of('2.1.0'));
+    mockGetProjectDependencies.mockResolvedValue([]);
+    mockGetDependencyRootsFromProjectNames.mockImplementation(
+      (_, workspace) => {
+        const projectRoot = workspace?.projects.dep2?.root;
+        return projectRoot ? [{ name: 'dep2', path: projectRoot }] : [];
+      },
+    );
     loggerSpy = jest.spyOn(logger, 'warn');
   });
 
@@ -141,6 +161,142 @@ describe('tryBump', () => {
       },
       undefined,
     );
+  });
+
+  it('should bump when a dependency would bump through its own dependencies', async () => {
+    mockGetLastVersion
+      .mockReturnValueOnce(of('2.1.0'))
+      .mockReturnValueOnce(of('2.1.0'))
+      .mockReturnValueOnce(of('2.1.0'))
+      .mockReturnValueOnce(of('2.0.0'));
+    mockGetProjectDependencies.mockResolvedValueOnce(['dep2']);
+    mockGetCommits
+      .mockReturnValueOnce(of([]))
+      .mockReturnValueOnce(of(['docs: dependency snapshot release']))
+      .mockReturnValueOnce(of(['docs: dependency snapshot release']))
+      .mockReturnValueOnce(of(['feat: transitive dependency change']));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest
+        .fn()
+        .mockResolvedValueOnce({
+          releaseType: undefined,
+        })
+        .mockResolvedValueOnce({
+          releaseType: undefined,
+        }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+        tagPrefix: 'v',
+        skipCommitTypes: ['docs'],
+        syncVersions: true,
+        projectName: '',
+        workspace: {
+          version: 1,
+          projects: {
+            dep2: {
+              root: '/libs/dep2',
+            },
+          },
+        },
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      dependencyUpdates: [
+        {
+          dependencyName: 'dep1',
+          type: 'dependency',
+          version: '2.1.1',
+        },
+      ],
+      previousVersion: '2.1.0',
+      version: '2.1.1',
+    });
+    expect(mockGetProjectDependencies).toHaveBeenCalledWith('dep1');
+  });
+
+  it('should bump a dependency with changes but no tagged version', async () => {
+    mockGetLastVersion
+      .mockReturnValueOnce(of('2.1.0'))
+      .mockReturnValueOnce(of('0.0.0'));
+    mockGetFirstCommitRef.mockReturnValue(of('first-commit'));
+    mockGetCommits
+      .mockReturnValueOnce(of(['chore: root change']))
+      .mockReturnValueOnce(of(['feat: dependency change']));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest
+        .fn()
+        .mockResolvedValueOnce({
+          releaseType: undefined,
+        })
+        .mockResolvedValueOnce({
+          releaseType: 'minor',
+        }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+        tagPrefix: 'v',
+        skipCommitTypes: [],
+        syncVersions: true,
+        projectName: '',
+      }),
+    );
+
+    expect(newVersion).toEqual({
+      dependencyUpdates: [
+        {
+          dependencyName: 'dep1',
+          type: 'dependency',
+          version: '0.1.0',
+        },
+      ],
+      previousVersion: '2.1.0',
+      version: '2.1.1',
+    });
+  });
+
+  it('should ignore dependency recursion failures', async () => {
+    mockGetCommits
+      .mockReturnValueOnce(of([]))
+      .mockReturnValueOnce(of(['docs: dependency snapshot release']));
+    mockGetProjectDependencies.mockRejectedValueOnce(new Error('boom'));
+    mockConventionalRecommendedBump.mockImplementation(
+      jest.fn().mockResolvedValue({
+        releaseType: undefined,
+      }),
+    );
+
+    const newVersion = await lastValueFrom(
+      tryBump({
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+        tagPrefix: 'v',
+        skipCommitTypes: ['docs'],
+        syncVersions: true,
+        projectName: '',
+        workspace: {
+          version: 1,
+          projects: {
+            dep2: {
+              root: '/libs/dep2',
+            },
+          },
+        },
+      }),
+    );
+
+    expect(newVersion).toBeNull();
+    expect(mockGetProjectDependencies).toHaveBeenCalledWith('dep1');
   });
 
   it('should use given type to calculate next version', async () => {

@@ -26,6 +26,7 @@ export interface VersionBuilderSchema {
   skipRootChangelog?: boolean;
   skipProjectChangelog?: boolean;
   trackDeps?: boolean;
+  trackDepsWithReleaseAs?: boolean;
   skipCommit?: boolean;
   releaseAs?: ReleaseIdentifier;
   preid?: string;

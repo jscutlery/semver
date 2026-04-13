@@ -1,4 +1,9 @@
-import type { ExecutorContext, ProjectGraphDependency } from '@nx/devkit';
+import type {
+  ExecutorContext,
+  ProjectConfiguration,
+  ProjectGraphDependency,
+  ProjectsConfigurations,
+} from '@nx/devkit';
 import type { VersionBuilderSchema } from '../schema';
 
 export interface DependencyRoot {
@@ -13,19 +18,18 @@ export async function getDependencyRoots({
   releaseAs,
   projectName,
   context,
+  trackDepsWithReleaseAs,
 }: Required<Pick<VersionBuilderSchema, 'trackDeps'>> &
-  Pick<VersionBuilderSchema, 'releaseAs'> & {
+  Pick<VersionBuilderSchema, 'releaseAs' | 'trackDepsWithReleaseAs'> & {
     projectName: string;
     context: ExecutorContext;
   }): Promise<DependencyRoot[]> {
-  if (trackDeps && !releaseAs) {
+  if (trackDeps && (trackDepsWithReleaseAs || !releaseAs)) {
     // Include any depended-upon libraries in determining the version bump.
-    return (await getProjectDependencies(projectName)).map((name) => ({
-      name,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      path: context.projectsConfigurations!.projects[name].root,
-      options: getProjectVersionBuilderSchema(projectName, context),
-    }));
+    return getDependencyRootsFromProjectNames(
+      await getProjectDependencies(projectName),
+      context.projectsConfigurations,
+    );
   }
 
   return [];
@@ -50,15 +54,47 @@ function getProjectsFromDependencies(
     .map((d) => d.target);
 }
 
-function getProjectVersionBuilderSchema(
-  projectName: string,
-  context: ExecutorContext,
+export function getDependencyRootsFromProjectNames(
+  projectNames: string[],
+  projectsConfigurations: ProjectsConfigurations | undefined,
+): DependencyRoot[] {
+  if (projectsConfigurations == null) {
+    return [];
+  }
+
+  return projectNames.flatMap((name) => {
+    const project = projectsConfigurations.projects[name];
+    if (project == null) {
+      return [];
+    }
+
+    return {
+      name,
+      path: project.root,
+      options: getProjectVersionBuilderSchema(project),
+    };
+  });
+}
+
+export function getProjectVersionBuilderSchema(
+  project: ProjectConfiguration,
 ): VersionBuilderSchema | undefined {
-  const versionTarget = Object.values(
-    context.projectsConfigurations!.projects[projectName].targets ?? {},
-  ).find((target) => target.executor === '@jscutlery/semver:version');
+  const versionTarget = Object.values(project.targets ?? {}).find(
+    (target) => target.executor === '@jscutlery/semver:version',
+  );
   if (!versionTarget) {
     return;
   }
   return versionTarget.options || undefined;
+}
+
+export function getProjectVersionBuilderSchemaFromContext(
+  projectName: string,
+  context: ExecutorContext,
+): VersionBuilderSchema | undefined {
+  const project = context.projectsConfigurations?.projects[projectName];
+  if (project == null) {
+    return;
+  }
+  return getProjectVersionBuilderSchema(project);
 }
