@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.1.1](https://github.com/jscutlery/semver/compare/semver-6.1.0...semver-6.1.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* **semver:** declare git-raw-commits as direct dependency ([#1075](https://github.com/jscutlery/semver/issues/1075)) ([34e7c1a](https://github.com/jscutlery/semver/commit/34e7c1aad706858fdaffe2247b41eb1d698389cc))
+
 ## [6.1.0](https://github.com/jscutlery/semver/compare/semver-6.0.1...semver-6.1.0) (2026-04-13)
 
 
