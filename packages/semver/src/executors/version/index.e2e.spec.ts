@@ -524,6 +524,83 @@ describe('@jscutlery/semver', () => {
         ).toMatchSnapshot('b-0.2.0');
       });
     });
+
+    describe('trackDeps cascade', () => {
+      beforeAll(() => {
+        testingWorkspace.generateLib(
+          'child',
+          '--publishable --importPath=@proj/child',
+        );
+        testingWorkspace.installSemver('child', '--preset=conventionalcommits');
+        testingWorkspace.generateLib(
+          'parent',
+          '--publishable --importPath=@proj/parent',
+        );
+        testingWorkspace.installSemver(
+          'parent',
+          '--preset=conventionalcommits',
+        );
+
+        const parentProjectPath = `${testingWorkspace.root}/libs/parent/project.json`;
+        const parentProject = JSON.parse(
+          readFileSync(parentProjectPath, 'utf-8'),
+        );
+        parentProject.targets.version.options.trackDeps = true;
+        parentProject.implicitDependencies = ['child'];
+        writeFileSync(
+          parentProjectPath,
+          JSON.stringify(parentProject, null, 2),
+        );
+
+        testingWorkspace.exec(
+          `
+              git add .
+              git commit -m "chore: 🐣 set up trackDeps cascade libs" --no-verify
+          `,
+        );
+
+        testingWorkspace.exec(
+          `
+              echo feat > libs/child/child.txt
+              git add .
+              git commit -m "feat(child): 🚀 new feature 1"
+          `,
+        );
+        testingWorkspace.runNx(`run child:version --noVerify`);
+        testingWorkspace.runNx(`run parent:version --noVerify`);
+
+        testingWorkspace.exec(
+          `
+              echo feat >> libs/child/child.txt
+              git add .
+              git commit -m "feat(child): 🚀 new feature 2"
+          `,
+        );
+        testingWorkspace.runNx(`run child:version --noVerify`);
+        testingWorkspace.runNx(`run parent:version --noVerify`);
+      });
+
+      it('should tag child and parent through both cascades', () => {
+        expect(getTags(testingWorkspace.root)).toEqual(
+          expect.arrayContaining([
+            'child-0.1.0',
+            'child-0.2.0',
+            'parent-0.0.1',
+            'parent-0.0.2',
+          ]),
+        );
+      });
+
+      it('should generate libs/parent/CHANGELOG.md with dep-only chain', () => {
+        expect(
+          deterministicChangelog(
+            readFile(`${testingWorkspace.root}/libs/parent/CHANGELOG.md`),
+          ),
+        ).toMatchSnapshot(
+          'trackDeps cascade > libs/parent/CHANGELOG.md dep-only chain (parent 0.0.1 → 0.0.2)',
+        );
+      });
+    });
   });
 
   describe('@jscutlery/semver:migrate-nx-release', () => {

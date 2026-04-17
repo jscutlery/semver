@@ -29,6 +29,24 @@ exports[`@jscutlery/semver @jscutlery/semver:migrate-nx-release should generate 
 "
 `;
 
+exports[`@jscutlery/semver @jscutlery/semver:version trackDeps cascade should generate libs/parent/CHANGELOG.md with dep-only chain: trackDeps cascade > libs/parent/CHANGELOG.md dep-only chain (parent 0.0.1 → 0.0.2) 1`] = `
+"# Changelog
+
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## [0.0.2](///compare/parent-0.0.1...parent-0.0.2) (yyyy-mm-dd)
+
+### Dependency Updates
+
+* \`child\` updated to version \`0.2.0\`
+## 0.0.1 (yyyy-mm-dd)
+
+### Dependency Updates
+
+* \`child\` updated to version \`0.1.0\`
+"
+`;
+
 exports[`@jscutlery/semver @jscutlery/semver:version when graduating prerelease to stable release (v1.2.0-alpha.0 => v1.2.0) should generate CHANGELOG.md: a-1.2.0 1`] = `
 "# Changelog
 
