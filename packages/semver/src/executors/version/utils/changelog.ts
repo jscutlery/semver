@@ -139,10 +139,13 @@ export function _calculateDependencyUpdates({
       return acc;
     }, [] as string[]);
 
+    const headerEnd = match.index + match[0].length;
+    const rest = changelog.substring(headerEnd).replace(/^\n+/, '');
+
     changelog =
-      `${changelog.substring(0, match.index + match[0].length)}` +
-      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n` +
-      `${changelog.substring(match.index + match[0].length + 2)}`;
+      `${changelog.substring(0, headerEnd)}` +
+      `\n\n### Dependency Updates\n\n${dependencyNames.join('\n')}\n\n` +
+      rest;
   }
 
   return changelog;
