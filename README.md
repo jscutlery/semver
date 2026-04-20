@@ -289,7 +289,7 @@ The tag for the new version would be put on the last existing commit.
 
 ### Skipping Stage
 
-In case you want to run nx cmd in parallel, you can provide the `--skipStage` flag and it will not add to git stage - since that requires a git-lock, this has to be used together with `--skipCommit` and `--skipTag` and not with `--push`, all for the same reason they will require a git-lock.
+In case you want to run nx cmd in parallel, you can provide the `--skipStage` flag and it will not add to git stage - since that requires a git-lock, this has to be used together with `--skipCommit` and not with `--push`, all for the same reason they will require a git-lock.
 
 ### Triggering executors post-release
 
