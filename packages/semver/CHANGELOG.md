@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.1.2](https://github.com/jscutlery/semver/compare/semver-6.1.1...semver-6.1.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* **semver:** blank-line separator after Dependency Updates section ([#1079](https://github.com/jscutlery/semver/issues/1079)) ([69f9542](https://github.com/jscutlery/semver/commit/69f9542ecdc53df97519b59fc45ed2d126cdd301))
+
 ## [6.1.1](https://github.com/jscutlery/semver/compare/semver-6.1.0...semver-6.1.1) (2026-04-16)
 
 
