@@ -108,6 +108,36 @@ describe(writeChangelog, () => {
     });
   });
 
+  describe('changelog section spacing', () => {
+    beforeEach(() => {
+      jest.spyOn(fs, 'accessSync').mockReturnValue(undefined);
+      jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+    });
+
+    it('writes the generated changelog block', async () => {
+      const rawConventionalCommitsBlock =
+        '## 1.0.0 (2024-01-01)\n' +
+        '\n\n' +
+        '### Features\n\n* **button:** add a button\n' +
+        '\n\n' +
+        '### Bug Fixes\n\n* **button:** fix the click handler\n';
+      createConventionalCommitStreamMock.mockReturnValue(
+        streamOf(rawConventionalCommitsBlock),
+      );
+
+      await writeChangelog(config, version);
+
+      const written = (fs.writeFileSync as jest.Mock).mock
+        .calls[0][1] as string;
+      const generatedBlock = written.slice(
+        `${config.changelogHeader}\n`.length,
+      );
+      expect(generatedBlock).toMatchSnapshot(
+        'write-changelog: blank lines between version header and sections',
+      );
+    });
+  });
+
   xdescribe('handle errors', () => {
     beforeEach(async () => {
       createConventionalCommitStreamMock.mockReturnValue(
@@ -212,4 +242,13 @@ function createMockStream() {
   });
 
   return stream;
+}
+
+function streamOf(content: string) {
+  return new Stream.Readable({
+    read() {
+      this.push(content);
+      this.push(null);
+    },
+  });
 }
