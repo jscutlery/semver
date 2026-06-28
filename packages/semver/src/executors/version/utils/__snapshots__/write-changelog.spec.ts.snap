@@ -3,11 +3,9 @@
 exports[`writeChangelog changelog section spacing writes the generated changelog block: write-changelog: blank lines between version header and sections 1`] = `
 "## 1.0.0 (2024-01-01)
 
-
 ### Features
 
 * **button:** add a button
-
 
 ### Bug Fixes
 
