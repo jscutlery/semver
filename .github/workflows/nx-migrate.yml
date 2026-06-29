@@ -10,6 +10,12 @@ jobs:
   nx-migrate:
     runs-on: ubuntu-latest
 
+    env:
+      # Conventional Commit subject (minus the version) reused by the bot commit
+      # and the PR title so the squash-merged commit stays a valid Conventional
+      # Commit. Single source of truth: edit here, both call sites follow.
+      NX_UPDATE_TITLE_PREFIX: 'build: 📦 update @nx/workspace to'
+
     steps:
       - uses: actions/checkout@v6
       - name: Setup
@@ -56,7 +62,7 @@ jobs:
         run: |
           LAST_VERSION=$(npm view @nx/workspace version)
           git add .
-          [[ $(git status --porcelain) ]] && git commit -m "build: 📦 update nrwl workspace to ${LAST_VERSION}" || echo "nothing to commit"
+          [[ $(git status --porcelain) ]] && git commit -m "${NX_UPDATE_TITLE_PREFIX} ${LAST_VERSION}" || echo "nothing to commit"
 
       - name: Remove migrations.json & commit
         if: steps.nrwl-workspace-has-migrations.outputs.has_migrations == 'true'
@@ -81,7 +87,7 @@ jobs:
           BRANCH="update-nrwl-workspace-${LAST_VERSION}"
           git checkout -b ${BRANCH}
           git push -f --set-upstream origin ${BRANCH}
-          gh pr view ${BRANCH} || gh pr create -t "Update @nx/workspace to ${BRANCH}" -b "Update @nx/workspace dependencies to ${LAST_VERSION}."
+          gh pr view ${BRANCH} || gh pr create -t "${NX_UPDATE_TITLE_PREFIX} ${LAST_VERSION}" -b "Update @nx/workspace dependencies to ${LAST_VERSION}."
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_BOT_TOKEN }}
 
@@ -90,8 +96,10 @@ jobs:
         run: |
           LAST_VERSION=$(npm view @nx/workspace version)
           CURRENT_BRANCH="update-nrwl-workspace-${LAST_VERSION}"
-          # Find and close all open PRs with titles starting with "Update @nx/workspace to", except the current one
-          gh pr list --state open --json number,title,headRefName --jq '.[] | select(.title | startswith("Update @nx/workspace to")) | select(.headRefName != "'"${CURRENT_BRANCH}"'") | .number' | while read -r pr_number; do
+          # Find and close all open @nx/workspace update PRs, matched by branch
+          # name (stable) rather than title (now a Conventional Commit), except
+          # the current one
+          gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName | startswith("update-nrwl-workspace-")) | select(.headRefName != "'"${CURRENT_BRANCH}"'") | .number' | while read -r pr_number; do
             echo "Closing PR #${pr_number}"
             gh pr close ${pr_number} --comment "Closing in favor of newer @nx/workspace update PR"
           done
