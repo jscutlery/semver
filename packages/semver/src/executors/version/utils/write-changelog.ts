@@ -13,7 +13,15 @@ export default function writeChangelog(
   newVersion: string,
 ): Promise<void> {
   return buildConventionalChangelog(config, newVersion)
-    .then((newContent) => {
+    .then((generatedContent) => {
+      /**
+       * conventional-changelog-conventionalcommits emits two blank lines after
+       * the version header and between sections. Collapse runs of blank lines
+       * in the freshly generated block down to a single blank line. Only the
+       * new content is normalized so previously written entries stay untouched.
+       */
+      const newContent = generatedContent.replace(/\n{3,}/g, '\n\n');
+
       if (config.dryRun) {
         return console.info(`\n---\n${chalk.gray(newContent.trim())}\n---\n`);
       }
