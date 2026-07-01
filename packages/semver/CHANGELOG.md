@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.1.3](https://github.com/jscutlery/semver/compare/semver-6.1.2...semver-6.1.3) (2026-07-01)
+
+### Bug Fixes
+
+* **semver:** collapse blank lines between changelog sections ([#1089](https://github.com/jscutlery/semver/issues/1089)) ([eb87ba1](https://github.com/jscutlery/semver/commit/eb87ba1d0bcf9079ca6512762d73049b4b7b58ba))
+
 ## [6.1.2](https://github.com/jscutlery/semver/compare/semver-6.1.1...semver-6.1.2) (2026-04-20)
 
 
