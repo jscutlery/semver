@@ -40,7 +40,7 @@
     "@nx/plugin": "22.7.0",
     "@nx/workspace": "22.7.0",
     "@swc-node/register": "1.11.1",
-    "@swc/core": "1.15.8",
+    "@swc/core": "1.15.43",
     "@types/jest": "30.0.0",
     "@types/node": "22.19.1",
     "@typescript-eslint/eslint-plugin": "7.18.0",
