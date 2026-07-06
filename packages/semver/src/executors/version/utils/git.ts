@@ -167,17 +167,30 @@ export function createTag({
   commitHash,
   commitMessage,
   projectName,
+  tagSign,
 }: {
   dryRun: boolean;
   tag: string;
   commitHash: string;
   commitMessage: string;
   projectName: string;
+  tagSign?: boolean;
 }): Observable<string> {
   if (dryRun) {
     return EMPTY;
   }
-  return exec('git', ['tag', '-a', tag, commitHash, '-m', commitMessage]).pipe(
+
+  const gitTagOptions = [...(true === tagSign ? ['--sign'] : [])];
+
+  return exec('git', [
+    'tag',
+    '-a',
+    tag,
+    commitHash,
+    '-m',
+    commitMessage,
+    ...gitTagOptions,
+  ]).pipe(
     catchError((error) => {
       if (/already exists/.test(error)) {
         return throwError(

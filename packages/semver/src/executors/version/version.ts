@@ -32,6 +32,7 @@ export interface CommonVersionOptions {
   noVerify: boolean;
   workspaceRoot: string;
   tagPrefix: string;
+  tagSign: boolean;
   changelogHeader: string;
   skipCommit: boolean;
   skipStage: boolean;
@@ -50,6 +51,7 @@ export function versionWorkspace({
   newVersion,
   dryRun,
   noVerify,
+  tagSign,
   projectName,
   tag,
   skipCommit,
@@ -72,6 +74,7 @@ export function versionWorkspace({
       newVersion,
       dryRun,
       noVerify,
+      tagSign,
       projectName,
       skipCommit,
       skipStage,
@@ -115,6 +118,7 @@ export function versionWorkspace({
         commitHash,
         commitMessage,
         projectName,
+        tagSign,
       }),
     ),
   );
@@ -128,6 +132,7 @@ export function versionProject({
   commitMessage,
   noVerify,
   tagPrefix,
+  tagSign,
   projectName,
   skipCommit,
   skipStage,
@@ -149,6 +154,7 @@ export function versionProject({
     noVerify,
     tagPrefix,
     tag,
+    tagSign,
     ...options,
   }).pipe(
     concatMap((changelogPaths) =>
@@ -201,6 +207,7 @@ export function versionProject({
         commitHash,
         commitMessage,
         projectName,
+        tagSign,
       }),
     ),
   );

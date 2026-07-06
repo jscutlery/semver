@@ -318,6 +318,34 @@ describe('git', () => {
       );
     });
 
+    it('should create signed git tag', async () => {
+      jest.spyOn(cp, 'exec').mockReturnValue(of('success'));
+
+      const tag = await lastValueFrom(
+        createTag({
+          dryRun: false,
+          commitHash: '12344',
+          tag: 'project-b-1.0.1',
+          commitMessage: 'chore(release): 1.0.1',
+          projectName: 'project_B',
+          tagSign: true,
+        }),
+      );
+      expect(tag).toBe('project-b-1.0.1');
+      expect(cp.exec).toHaveBeenCalledWith(
+        'git',
+        expect.arrayContaining([
+          'tag',
+          '-a',
+          'project-b-1.0.1',
+          '12344',
+          '-m',
+          'chore(release): 1.0.1',
+          '--sign',
+        ]),
+      );
+    });
+
     it('should skip with --dryRun', (done) => {
       createTag({
         dryRun: true,
