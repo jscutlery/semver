@@ -32,6 +32,7 @@ export interface VersionBuilderSchema {
   preid?: string;
   changelogHeader?: string;
   tagPrefix?: string | null;
+  tagSign?: boolean;
   postTargets: string[];
   allowEmptyRelease?: boolean;
   skipCommitTypes?: string[];
