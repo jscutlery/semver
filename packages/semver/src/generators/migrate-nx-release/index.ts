@@ -7,12 +7,14 @@ import {
   readNxJson,
   formatFiles,
   writeJson,
+  readJsonFile,
   TargetConfiguration,
   installPackagesTask,
   updateJson,
   NxJsonConfiguration,
   detectPackageManager,
 } from '@nx/devkit';
+import { major } from 'semver';
 import { VersionBuilderSchema } from '../../executors/version/schema';
 import { defaultHeader } from '../../executors/version/utils/changelog';
 
@@ -155,6 +157,13 @@ function removeSemverTargets(
   updateProjectConfiguration(tree, projectName, projectConfig);
 }
 
+function getInstalledNxMajorVersion(): number {
+  const { version } = readJsonFile<{ version: string }>(
+    require.resolve('nx/package.json'),
+  );
+  return major(version);
+}
+
 function configureNxRelease(
   tree: Tree,
   semverProjects: [string, ProjectConfiguration][],
@@ -183,14 +192,25 @@ function configureNxRelease(
 
   const pm = detectPackageManager(tree.root);
   const runCmd = pm === 'yarn' ? 'yarn' : pm === 'npm' ? 'npx' : 'pnpm exec';
+  const nxMajor = getInstalledNxMajorVersion();
 
   nxJson.release = {
-    releaseTagPattern: `${tagPrefix}{version}`,
+    // Nx 23 removed the flat `releaseTagPattern` in favour of the nested
+    // `releaseTag.pattern` that was introduced in Nx 22. Nx < 22 only
+    // understands the flat form, so emit the shape the installed Nx supports.
+    ...(nxMajor >= 22
+      ? { releaseTag: { pattern: `${tagPrefix}{version}` } }
+      : { releaseTagPattern: `${tagPrefix}{version}` }),
     projects: semverProjects.map(([projectName]) => projectName),
     projectsRelationship: 'independent',
     version: {
       preVersionCommand: `${runCmd} nx run-many -t build`,
       conventionalCommits: true,
+      // Nx 23 defaults `adjustSemverBumpsForZeroMajorVersion` to `true`, which
+      // bumps 0.x features as patches. Nx < 23 has no such option and already
+      // bumps them as minors, so only opt out on Nx >= 23 to keep the
+      // `@jscutlery/semver` versioning behavior consistent across the range.
+      ...(nxMajor >= 23 ? { adjustSemverBumpsForZeroMajorVersion: false } : {}),
     },
     git: {
       commit: options.skipCommit != true,
