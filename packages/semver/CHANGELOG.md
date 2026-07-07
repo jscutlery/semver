@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.2.0](https://github.com/jscutlery/semver/compare/semver-6.1.3...semver-6.2.0) (2026-07-07)
+
+### Features
+
+* **semver:** add "tagSign" option for `git tag --sign` ([#1095](https://github.com/jscutlery/semver/issues/1095)) ([5d6a420](https://github.com/jscutlery/semver/commit/5d6a4209ba3652658b1f36b61b71d67a0aff1996)), closes [#489](https://github.com/jscutlery/semver/issues/489) [#489](https://github.com/jscutlery/semver/issues/489)
+
 ## [6.1.3](https://github.com/jscutlery/semver/compare/semver-6.1.2...semver-6.1.3) (2026-07-01)
 
 ### Bug Fixes
