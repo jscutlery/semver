@@ -14,6 +14,7 @@ import {
 } from './utils/get-project-dependencies';
 import { tryPush } from './utils/git';
 import { _logStep } from './utils/logger';
+import { verifyNpmAuth } from './utils/npm';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
 import { tryBump } from './utils/try-bump';
@@ -53,10 +54,25 @@ export default async function version(
     skipCommit,
     skipStage,
     commitParserOptions,
+    verifyNpmAuth: shouldVerifyNpmAuth,
   } = _normalizeOptions(options);
 
   const workspaceRoot = context.root;
   const projectName = context.projectName as string;
+
+  if (shouldVerifyNpmAuth) {
+    try {
+      await lastValueFrom(verifyNpmAuth({ projectName }));
+    } catch (error) {
+      _logStep({
+        step: 'failure',
+        level: 'error',
+        message: _toErrorMessage(error),
+        projectName,
+      });
+      return { success: false };
+    }
+  }
 
   let dependencyRoots: DependencyRoot[] = [];
   try {
@@ -235,6 +251,7 @@ function _normalizeOptions(options: VersionBuilderSchema) {
   return {
     ...options,
     push: options.push as boolean,
+    verifyNpmAuth: options.verifyNpmAuth as boolean,
     enforceAtomicPush: options.enforceAtomicPush as boolean,
     remote: options.remote as string,
     dryRun: options.dryRun as boolean,

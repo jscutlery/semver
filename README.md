@@ -57,13 +57,14 @@ nx run workspace:version [...options]
 
 #### When run, this executor does the following
 
-1. Retrieve the current version by looking at the last `git tag`.
-2. Bump `package.json` version based on the commits.
-3. Generates CHANGELOG based on the commits (uses [conventional-changelog-conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits) under the hood).
-4. Creates a new commit including the `package.json` file and updated CHANGELOG.
-5. Creates a new tag with the new version number.
-6. Pushes the version to the remote repository.
-7. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
+1. Optionally verifies npm registry authentication (with `--verifyNpmAuth`).
+2. Retrieve the current version by looking at the last `git tag`.
+3. Bump `package.json` version based on the commits.
+4. Generates CHANGELOG based on the commits (uses [conventional-changelog-conventionalcommits](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits) under the hood).
+5. Creates a new commit including the `package.json` file and updated CHANGELOG.
+6. Creates a new tag with the new version number.
+7. Pushes the version to the remote repository.
+8. Runs post-targets hook to publish the version on NPM, GitHub or GitLab.
 
 #### Available options
 
@@ -73,6 +74,7 @@ nx run workspace:version [...options]
 | **`--noVerify`**               | `boolean`          | `false`                 | skip git hooks                                                                                                                                                  |
 | **`--enforceAtomicPush`**      | `boolean`          | `false`                 | enforce an atomic push without retrying a non atomic one in case of failure                                                                                     |
 | **`--push`**                   | `boolean`          | `false`                 | push the release to the remote repository                                                                                                                       |
+| **`--verifyNpmAuth`**          | `boolean`          | `false`                 | verify npm registry authentication before versioning ([details](https://github.com/jscutlery/semver#verifying-npm-authentication))                              |
 | **`--syncVersions`**           | `boolean`          | `false`                 | lock/sync versions between projects                                                                                                                             |
 | **`--skipRootChangelog`**      | `boolean`          | `false`                 | skip generating root changelog                                                                                                                                  |
 | **`--skipProjectChangelog`**   | `boolean`          | `false`                 | skip generating project changelog                                                                                                                               |
@@ -291,6 +293,24 @@ The tag for the new version would be put on the last existing commit.
 ### Skipping Stage
 
 In case you want to run nx cmd in parallel, you can provide the `--skipStage` flag and it will not add to git stage - since that requires a git-lock, this has to be used together with `--skipCommit` and not with `--push`, all for the same reason they will require a git-lock.
+
+### Verifying npm authentication
+
+If your release process publishes to npm (e.g. via `--postTargets`), you can catch authentication problems (expired token, missing `NPM_TOKEN`, wrong registry, etc.) before any versioning work happens, rather than failing mid-release after commits and tags have already been created.
+
+Provide the `--verifyNpmAuth` flag to run `npm whoami` against the configured registry as the very first step. If it fails, semver exits early with `{ success: false }` and no git changes are made.
+
+```json
+{
+  "version": {
+    "executor": "@jscutlery/semver:version",
+    "options": {
+      "verifyNpmAuth": true,
+      "push": true
+    }
+  }
+}
+```
 
 ### Triggering executors post-release
 

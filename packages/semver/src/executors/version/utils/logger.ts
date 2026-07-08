@@ -12,7 +12,8 @@ type Step =
   | 'tag_success'
   | 'post_target_success'
   | 'push_success'
-  | 'commit_success';
+  | 'commit_success'
+  | 'npm_auth_success';
 
 const iconMap = new Map<Step, string>([
   ['failure', '❌'],
@@ -25,6 +26,7 @@ const iconMap = new Map<Step, string>([
   ['post_target_success', '🎉'],
   ['tag_success', '🔖'],
   ['push_success', '🚀'],
+  ['npm_auth_success', '🔐'],
 ]);
 
 /* istanbul ignore next */

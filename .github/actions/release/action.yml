@@ -10,15 +10,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Verify NPM authentication
-      shell: bash
-      run: |
-        pnpm nx build semver
-        cd dist/packages/semver
-        npm version prerelease --no-git-tag-version --preid=verify
-        cd -
-        pnpm publish --dry-run --access public --tag verify dist/packages/semver
-
     - name: Version
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}

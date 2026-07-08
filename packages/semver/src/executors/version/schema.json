@@ -26,6 +26,11 @@
       "type": "boolean",
       "default": false
     },
+    "verifyNpmAuth": {
+      "description": "Verify npm registry authentication before versioning.",
+      "type": "boolean",
+      "default": false
+    },
     "remote": {
       "description": "Pushes against git remote repository.",
       "type": "string",

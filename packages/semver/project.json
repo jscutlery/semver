@@ -11,6 +11,7 @@
       "options": {
         "push": true,
         "noVerify": true,
+        "verifyNpmAuth": true,
         "postTargets": ["build", "publish", "github"],
         "commitMessageFormat": "release({projectName}): 🎸 cut release to {version}"
       }
