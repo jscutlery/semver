@@ -494,20 +494,21 @@ For more details on using Nx Release, refer to the [official Nx documentation](h
 
 ## Compatibility overview with Nx
 
-| Version | Required Package          |
-| ------- | ------------------------- |
-| v5.8.0  | `@nx/devkit ^22.0.0`      |
-| v5.7.0  | `@nx/devkit ^21.0.0`      |
-| v5.5.0  | `@nx/devkit ^20.0.0`      |
-| v5.3.0  | `@nx/devkit ^19.0.0`      |
-| v5.0.0  | `@nx/devkit ^18.0.0`      |
-| v4.0.0  | `@nx/devkit ^17.0.0`      |
-| v3.0.0  | `@nx/devkit ^16.0.0`      |
-| v2.28.0 | `@nrwl/devkit ^15.0.0`    |
-| v2.23.0 | `@nrwl/devkit ^14.0.0`    |
-| v2.12.0 | `@nrwl/workspace ^13.0.0` |
-| v2.4.0  | `@nrwl/workspace ^12.0.0` |
-| v1.0.0  | `@nrwl/workspace ^11.0.0` |
+| Version | Required Package                                            |
+| ------- | ----------------------------------------------------------- |
+| v7.0.0  | `@nx/devkit ^20.0.0 \|\| ^21.0.0 \|\| ^22.0.0 \|\| ^23.0.0` |
+| v5.8.0  | `@nx/devkit ^22.0.0`                                        |
+| v5.7.0  | `@nx/devkit ^21.0.0`                                        |
+| v5.5.0  | `@nx/devkit ^20.0.0`                                        |
+| v5.3.0  | `@nx/devkit ^19.0.0`                                        |
+| v5.0.0  | `@nx/devkit ^18.0.0`                                        |
+| v4.0.0  | `@nx/devkit ^17.0.0`                                        |
+| v3.0.0  | `@nx/devkit ^16.0.0`                                        |
+| v2.28.0 | `@nrwl/devkit ^15.0.0`                                      |
+| v2.23.0 | `@nrwl/devkit ^14.0.0`                                      |
+| v2.12.0 | `@nrwl/workspace ^13.0.0`                                   |
+| v2.4.0  | `@nrwl/workspace ^12.0.0`                                   |
+| v1.0.0  | `@nrwl/workspace ^11.0.0`                                   |
 
 ## Changelog
 

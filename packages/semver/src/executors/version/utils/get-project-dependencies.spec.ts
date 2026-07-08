@@ -13,7 +13,6 @@ jest.mock('@nx/devkit', () => ({
   ...jest.requireActual('@nx/devkit'),
   createProjectGraphAsync: mockCreateProjectGraphAsync,
 }));
-jest.mock('@nx/workspace/src/core/project-graph', () => ({}));
 
 const projectGraph: ProjectGraph = {
   nodes: {},

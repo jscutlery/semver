@@ -125,10 +125,64 @@ describe('Nx Release Migration', () => {
       release = readNxJson(tree)!.release;
     }
 
-    it('should configure release.releaseTagPattern', async () => {
+    it('should configure the release tag pattern', async () => {
       await setupSemver();
 
-      expect(release!.releaseTagPattern).toBe(`{projectName}-{version}`);
+      // The generator emits the nested `releaseTag.pattern` on Nx >= 22 and the
+      // flat `releaseTagPattern` on Nx < 22, so assert whichever the installed
+      // Nx produced to stay green across the whole supported range.
+      const { releaseTag, releaseTagPattern } = release as unknown as {
+        releaseTag?: { pattern?: string };
+        releaseTagPattern?: string;
+      };
+      expect(releaseTag?.pattern ?? releaseTagPattern).toBe(
+        `{projectName}-{version}`,
+      );
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    function mockInstalledNxMajor(version: string) {
+      jest.spyOn(devkit, 'readJsonFile').mockReturnValue({ version } as never);
+    }
+
+    it('emits the flat releaseTagPattern on Nx < 22', async () => {
+      mockInstalledNxMajor('21.0.0');
+
+      await setupSemver();
+
+      const config = release as unknown as {
+        releaseTag?: unknown;
+        releaseTagPattern?: string;
+      };
+      expect(config.releaseTagPattern).toBe(`{projectName}-{version}`);
+      expect(config.releaseTag).toBeUndefined();
+    });
+
+    it('emits the nested releaseTag.pattern without the 0.x adjustment on Nx 22', async () => {
+      mockInstalledNxMajor('22.0.0');
+
+      await setupSemver();
+
+      const config = release as unknown as {
+        releaseTag?: { pattern?: string };
+        version?: { adjustSemverBumpsForZeroMajorVersion?: boolean };
+      };
+      expect(config.releaseTag?.pattern).toBe(`{projectName}-{version}`);
+      expect(
+        config.version?.adjustSemverBumpsForZeroMajorVersion,
+      ).toBeUndefined();
+    });
+
+    it('opts out of adjustSemverBumpsForZeroMajorVersion on Nx >= 23', async () => {
+      mockInstalledNxMajor('23.0.0');
+
+      await setupSemver();
+
+      const version = release!.version as unknown as {
+        adjustSemverBumpsForZeroMajorVersion?: boolean;
+      };
+      expect(version.adjustSemverBumpsForZeroMajorVersion).toBe(false);
     });
 
     it('should configure projects', async () => {
