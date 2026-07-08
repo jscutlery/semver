@@ -60,7 +60,7 @@ export default async function version(
 
   if (shouldVerifyNpmAuth) {
     try {
-      await verifyNpmAuth({ projectName });
+      await verifyNpmAuth({ context, projectName });
     } catch (error) {
       logStep({
         step: 'failure',
