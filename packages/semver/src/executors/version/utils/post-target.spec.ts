@@ -19,8 +19,6 @@ describe(runPostTargets.name, () => {
   const mockRunExecutor = runExecutor as jest.Mock;
   const mockReadTargetOptions = readTargetOptions as jest.Mock;
 
-  let nextSpy: jest.Mock;
-
   const additionalProjects: {
     project: string;
     projectRoot: string;
@@ -68,7 +66,6 @@ describe(runPostTargets.name, () => {
   });
 
   beforeEach(() => {
-    nextSpy = jest.fn();
     mockRunExecutor.mockImplementation(function* () {
       yield { success: true };
     });
@@ -79,52 +76,47 @@ describe(runPostTargets.name, () => {
     jest.resetAllMocks();
   });
 
-  it('should execute post targets', (done) => {
+  it('should execute post targets', async () => {
     mockReadTargetOptions.mockReturnValue({
       optionA: 'optionA',
     });
 
-    runPostTargets({
+    await runPostTargets({
       projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test:prod'],
       templateStringContext: {},
       context,
-    }).subscribe({
-      next: nextSpy,
-      complete: () => {
-        expect(nextSpy).toHaveBeenCalledTimes(3);
-        expect(mockRunExecutor).toHaveBeenCalledTimes(3);
-        expect(mockRunExecutor.mock.calls[0][0]).toEqual(
-          expect.objectContaining({
-            project: 'project-a',
-            target: 'test',
-          }),
-        );
-        expect(mockRunExecutor.mock.calls[1][0]).toEqual(
-          expect.objectContaining({
-            project: 'project-b',
-            target: 'test',
-          }),
-        );
-        expect(mockRunExecutor.mock.calls[1][1]).toEqual(
-          expect.objectContaining({
-            optionA: 'optionA',
-          }),
-        );
-        expect(mockRunExecutor.mock.calls[2][0]).toEqual(
-          expect.objectContaining({
-            project: 'project-c',
-            target: 'test',
-            configuration: 'prod',
-          }),
-        );
-        done();
-      },
     });
+
+    expect(mockRunExecutor).toHaveBeenCalledTimes(3);
+    expect(mockRunExecutor.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        project: 'project-a',
+        target: 'test',
+      }),
+    );
+    expect(mockRunExecutor.mock.calls[1][0]).toEqual(
+      expect.objectContaining({
+        project: 'project-b',
+        target: 'test',
+      }),
+    );
+    expect(mockRunExecutor.mock.calls[1][1]).toEqual(
+      expect.objectContaining({
+        optionA: 'optionA',
+      }),
+    );
+    expect(mockRunExecutor.mock.calls[2][0]).toEqual(
+      expect.objectContaining({
+        project: 'project-c',
+        target: 'test',
+        configuration: 'prod',
+      }),
+    );
   });
 
-  it('should execute post targets without specifying the project name', (done) => {
-    runPostTargets({
+  it('should execute post targets without specifying the project name', async () => {
+    await runPostTargets({
       projectName: 'a',
       postTargets: ['test'],
       templateStringContext: {},
@@ -138,23 +130,18 @@ describe(runPostTargets.name, () => {
         projectRoot: 'libs/a',
         workspaceRoot: '/root',
       }),
-    }).subscribe({
-      next: nextSpy,
-      complete: () => {
-        expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(mockRunExecutor).toHaveBeenCalledTimes(1);
-        expect(mockRunExecutor.mock.calls[0][0]).toEqual(
-          expect.objectContaining({
-            project: 'a',
-            target: 'test',
-          }),
-        );
-        done();
-      },
     });
+
+    expect(mockRunExecutor).toHaveBeenCalledTimes(1);
+    expect(mockRunExecutor.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        project: 'a',
+        target: 'test',
+      }),
+    );
   });
 
-  it('should handle post target failure', (done) => {
+  it('should handle post target failure', async () => {
     mockRunExecutor.mockImplementationOnce(function* () {
       yield { success: true };
     });
@@ -162,85 +149,64 @@ describe(runPostTargets.name, () => {
       yield new Error('Nop!');
     });
 
-    runPostTargets({
-      projectName: 'p',
-      postTargets: ['project-a:test', 'project-b:test'],
-      templateStringContext: {},
-      context,
-    }).subscribe({
-      next: nextSpy,
-      error: (error) => {
-        expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(error.toString()).toEqual(
-          'Error: Something went wrong with post-target "project-b:test".',
-        );
-        expect(mockRunExecutor).toHaveBeenCalledTimes(2);
-        done();
-      },
-    });
+    await expect(
+      runPostTargets({
+        projectName: 'p',
+        postTargets: ['project-a:test', 'project-b:test'],
+        templateStringContext: {},
+        context,
+      }),
+    ).rejects.toThrow(
+      'Something went wrong with post-target "project-b:test".',
+    );
+
+    expect(mockRunExecutor).toHaveBeenCalledTimes(2);
   });
 
-  it('should handle empty post target', (done) => {
-    const errorSpy = jest.fn();
-
-    runPostTargets({
+  it('should handle empty post target', async () => {
+    await runPostTargets({
       projectName: 'p',
       postTargets: [],
       templateStringContext: {},
       context,
-    }).subscribe({
-      next: nextSpy,
-      error: errorSpy,
-      complete: () => {
-        expect(nextSpy).not.toHaveBeenCalled();
-        expect(errorSpy).not.toHaveBeenCalled();
-        expect(mockRunExecutor).not.toHaveBeenCalled();
-        done();
-      },
     });
+
+    expect(mockRunExecutor).not.toHaveBeenCalled();
   });
 
-  it('should handle wrong post target project', (done) => {
-    runPostTargets({
-      projectName: 'p',
-      /* The second project "project-foo" is not defined in the workspace. */
-      postTargets: ['project-a:test', 'project-foo:test'],
-      templateStringContext: {},
-      context,
-    }).subscribe({
-      next: nextSpy,
-      error: (error) => {
-        expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(mockRunExecutor).toHaveBeenCalledTimes(1);
-        expect(error.toString()).toEqual(
-          'Error: The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c".',
-        );
-        done();
-      },
-    });
+  it('should handle wrong post target project', async () => {
+    await expect(
+      runPostTargets({
+        projectName: 'p',
+        /* The second project "project-foo" is not defined in the workspace. */
+        postTargets: ['project-a:test', 'project-foo:test'],
+        templateStringContext: {},
+        context,
+      }),
+    ).rejects.toThrow(
+      'The target project "project-foo" does not exist in your workspace. Available projects: "test","project-a","project-b","project-c".',
+    );
+
+    expect(mockRunExecutor).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle wrong post target name', (done) => {
-    runPostTargets({
-      projectName: 'p',
-      /* The second target "foo" is not defined in the workspace. */
-      postTargets: ['project-a:test', 'project-b:foo'],
-      templateStringContext: {},
-      context,
-    }).subscribe({
-      next: nextSpy,
-      error: (error) => {
-        expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(mockRunExecutor).toHaveBeenCalledTimes(1);
-        expect(error.toString()).toEqual(
-          'Error: The target name "foo" does not exist. Available targets for "project-b": "test".',
-        );
-        done();
-      },
-    });
+  it('should handle wrong post target name', async () => {
+    await expect(
+      runPostTargets({
+        projectName: 'p',
+        /* The second target "foo" is not defined in the workspace. */
+        postTargets: ['project-a:test', 'project-b:foo'],
+        templateStringContext: {},
+        context,
+      }),
+    ).rejects.toThrow(
+      'The target name "foo" does not exist. Available targets for "project-b": "test".',
+    );
+
+    expect(mockRunExecutor).toHaveBeenCalledTimes(1);
   });
 
-  it('should forward and resolve options', (done) => {
+  it('should forward and resolve options', async () => {
     mockReadTargetOptions.mockReturnValueOnce({
       optionA: 'optionA',
       version: '${version}',
@@ -285,51 +251,48 @@ describe(runPostTargets.name, () => {
       falseyValue: false,
     };
 
-    runPostTargets({
+    await runPostTargets({
       projectName: 'p',
       postTargets: ['project-a:test', 'project-b:test', 'project-c:test'],
       templateStringContext,
       context,
-    }).subscribe({
-      complete: () => {
-        expect(mockRunExecutor.mock.calls[0][1]).toEqual({
-          optionA: 'optionA',
-          version: '2.0.0',
-          dryRun: true,
-          numeric: 42,
-          falseyValue: false,
-        });
-        expect(mockRunExecutor.mock.calls[1][1]).toEqual({
-          optionB: 'optionB',
-          version: 'project@2.0.0',
-        });
-        expect(mockRunExecutor.mock.calls[2][1]).toEqual({
-          notNested: 42,
-          nestedObject: {
-            version: '2.0.0',
-          },
-          deepNestedObject: {
-            versions: {
-              versionA: '2.0.0-a',
-              versionB: '2.0.0-b',
-            },
-          },
-          arrayWithObjects: {
-            assetsArray: [
-              {
-                name: 'first-asset-2.0.0.end',
-                path: 'path/to/first-asset-2.0.0.end',
-              },
-              {
-                name: 'second-asset-2.0.0.end',
-                path: 'path/to/second-asset-2.0.0.end',
-              },
-            ],
-          },
-          arrayWithStrings: ['first-2.0.0', 'seconnd-2.0.0'],
-        });
-        done();
+    });
+
+    expect(mockRunExecutor.mock.calls[0][1]).toEqual({
+      optionA: 'optionA',
+      version: '2.0.0',
+      dryRun: true,
+      numeric: 42,
+      falseyValue: false,
+    });
+    expect(mockRunExecutor.mock.calls[1][1]).toEqual({
+      optionB: 'optionB',
+      version: 'project@2.0.0',
+    });
+    expect(mockRunExecutor.mock.calls[2][1]).toEqual({
+      notNested: 42,
+      nestedObject: {
+        version: '2.0.0',
       },
+      deepNestedObject: {
+        versions: {
+          versionA: '2.0.0-a',
+          versionB: '2.0.0-b',
+        },
+      },
+      arrayWithObjects: {
+        assetsArray: [
+          {
+            name: 'first-asset-2.0.0.end',
+            path: 'path/to/first-asset-2.0.0.end',
+          },
+          {
+            name: 'second-asset-2.0.0.end',
+            path: 'path/to/second-asset-2.0.0.end',
+          },
+        ],
+      },
+      arrayWithStrings: ['first-2.0.0', 'seconnd-2.0.0'],
     });
   });
 });

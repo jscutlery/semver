@@ -1,27 +1,22 @@
-import { catchError, map, type Observable } from 'rxjs';
-import { throwError } from 'rxjs';
 import { exec } from '../../common/exec';
 import { logStep } from './logger';
 
-export function verifyNpmAuth({
+export async function verifyNpmAuth({
   projectName,
 }: {
   projectName: string;
-}): Observable<void> {
-  return exec('npm', ['whoami']).pipe(
-    map(() => undefined),
-    catchError(() =>
-      throwError(
-        () =>
-          new Error(
-            'Failed to authenticate with the npm registry. Run "npm login" or check your NPM_TOKEN, then try again.',
-          ),
-      ),
-    ),
-    logStep({
-      step: 'npm_auth_success',
-      message: 'Verified npm registry authentication.',
-      projectName,
-    }),
-  );
+}): Promise<void> {
+  try {
+    await exec('npm', ['whoami']);
+  } catch {
+    throw new Error(
+      'Failed to authenticate with the npm registry. Run "npm login" or check your NPM_TOKEN, then try again.',
+    );
+  }
+
+  logStep({
+    step: 'npm_auth_success',
+    message: 'Verified npm registry authentication.',
+    projectName,
+  });
 }

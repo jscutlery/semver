@@ -1,10 +1,8 @@
-import { of } from 'rxjs';
-import { map, type Observable } from 'rxjs';
 import { exec } from '../../common/exec';
 import { logStep } from './logger';
 import { createTemplateString } from './template-string';
 
-export function commit({
+export async function commit({
   dryRun,
   noVerify,
   skipCommit,
@@ -16,24 +14,23 @@ export function commit({
   noVerify: boolean;
   commitMessage: string;
   projectName: string;
-}): Observable<void> {
+}): Promise<void> {
   if (dryRun || skipCommit) {
-    return of(undefined);
+    return;
   }
 
-  return exec('git', [
+  await exec('git', [
     'commit',
     ...(noVerify ? ['--no-verify'] : []),
     '-m',
     commitMessage,
-  ]).pipe(
-    map(() => undefined),
-    logStep({
-      step: 'commit_success',
-      message: `Committed "${commitMessage}".`,
-      projectName,
-    }),
-  );
+  ]);
+
+  logStep({
+    step: 'commit_success',
+    message: `Committed "${commitMessage}".`,
+    projectName,
+  });
 }
 
 export function formatCommitMessage({

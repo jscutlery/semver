@@ -5,11 +5,10 @@ import {
   runExecutor,
   Target,
 } from '@nx/devkit';
-import { catchError, concat, defer, Observable, throwError } from 'rxjs';
 import { logStep } from './logger';
 import { coerce, createTemplateString } from './template-string';
 
-export function runPostTargets({
+export async function runPostTargets({
   postTargets,
   templateStringContext,
   context,
@@ -19,48 +18,45 @@ export function runPostTargets({
   templateStringContext: Record<string, unknown>;
   context: ExecutorContext;
   projectName: string;
-}): Observable<void> {
-  return concat(
-    ...postTargets.map((postTargetSchema) =>
-      defer(async () => {
-        const target = postTargetSchema.includes(':')
-          ? parseTargetString(postTargetSchema, context.projectGraph)
-          : parseTargetString(postTargetSchema, context);
+}): Promise<void> {
+  for (const postTargetSchema of postTargets) {
+    try {
+      const target = postTargetSchema.includes(':')
+        ? parseTargetString(postTargetSchema, context.projectGraph)
+        : parseTargetString(postTargetSchema, context);
 
-        _checkTargetExist(target, context);
+      _checkTargetExist(target, context);
 
-        const targetOptions = _getTargetOptions({
-          options: readTargetOptions(target, context),
-          context: templateStringContext,
-        });
+      const targetOptions = _getTargetOptions({
+        options: readTargetOptions(target, context),
+        context: templateStringContext,
+      });
 
-        for await (const { success } of await runExecutor(
-          target,
-          targetOptions,
-          context,
-        )) {
-          if (!success) {
-            throw new Error(
-              `Something went wrong with post-target "${target.project}:${target.target}".`,
-            );
-          }
+      for await (const { success } of await runExecutor(
+        target,
+        targetOptions,
+        context,
+      )) {
+        if (!success) {
+          throw new Error(
+            `Something went wrong with post-target "${target.project}:${target.target}".`,
+          );
         }
-      }).pipe(
-        logStep({
-          step: 'post_target_success',
-          message: `Ran post-target "${postTargetSchema}".`,
-          projectName,
-        }),
-        catchError((error) => {
-          if (error?.name === 'SchemaError') {
-            return throwError(() => new Error(error.message));
-          }
+      }
 
-          return throwError(() => error);
-        }),
-      ),
-    ),
-  );
+      logStep({
+        step: 'post_target_success',
+        message: `Ran post-target "${postTargetSchema}".`,
+        projectName,
+      });
+    } catch (error) {
+      if ((error as { name?: string })?.name === 'SchemaError') {
+        throw new Error((error as Error).message);
+      }
+
+      throw error;
+    }
+  }
 }
 
 /* istanbul ignore next */

@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import { lastValueFrom } from 'rxjs';
 
 import { readFileIfExists, readJsonFile } from './filesystem';
 
@@ -19,19 +18,12 @@ describe('readJsonFile', () => {
     mockReadFile.mockReset();
   });
 
-  it('should emit error', async () => {
+  it('should throw error', async () => {
     mockReadFile.mockRejectedValue(
       new Error('ENOENT: no such file or directory'),
     );
 
-    const file$ = readJsonFile('/unexisting-file');
-
-    /* Wait for all microtasks to finish. */
-    /* We want to make sure that `fs.readFile` is not called
-     * before we subscribe, otherwise the error is not handled. */
-    await new Promise(setImmediate);
-
-    await expect(lastValueFrom(file$)).rejects.toThrow(
+    await expect(readJsonFile('/unexisting-file')).rejects.toThrow(
       'ENOENT: no such file or directory',
     );
     expect(mockReadFile).toHaveBeenCalledTimes(1);
@@ -48,36 +40,24 @@ describe('readFileIfExists', () => {
   });
 
   it('should return an empty string if the file does not exists', async () => {
-    mockAccess.mockResolvedValue(false);
+    mockAccess.mockRejectedValue(new Error('ENOENT'));
 
     mockReadFile.mockRejectedValue(
       new Error('ENOENT: no such file or directory'),
     );
 
-    const file$ = readFileIfExists('/unexisting-file');
-
-    /* Wait for all microtasks to finish. */
-    /* We want to make sure that `fs.readFile` is not called
-     * before we subscribe, otherwise the error is not handled. */
-    await new Promise(setImmediate);
-
-    expect(await lastValueFrom(file$)).toBe('');
+    expect(await readFileIfExists('/unexisting-file')).toBe('');
   });
 
   it('should return a fallback value if provided', async () => {
-    mockAccess.mockResolvedValue(false);
+    mockAccess.mockRejectedValue(new Error('ENOENT'));
 
     mockReadFile.mockRejectedValue(
       new Error('ENOENT: no such file or directory'),
     );
 
-    const file$ = readFileIfExists('/unexisting-file', 'some fallback');
-
-    /* Wait for all microtasks to finish. */
-    /* We want to make sure that `fs.readFile` is not called
-     * before we subscribe, otherwise the error is not handled. */
-    await new Promise(setImmediate);
-
-    expect(await lastValueFrom(file$)).toBe('some fallback');
+    expect(await readFileIfExists('/unexisting-file', 'some fallback')).toBe(
+      'some fallback',
+    );
   });
 });

@@ -1,8 +1,6 @@
 import * as gitRawCommits from 'git-raw-commits';
-import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, last, map, scan, startWith } from 'rxjs/operators';
 import { exec } from '../../common/exec';
-import { logStep, _logStep } from './logger';
+import { logStep } from './logger';
 
 /**
  * Return the list of commit bodies since `since` commit.
@@ -13,7 +11,7 @@ export function getCommits({
 }: {
   projectRoot: string;
   since?: string;
-}): Observable<string[]> {
+}): Promise<string[]> {
   return getFormattedCommits({
     since,
     projectRoot,
@@ -24,16 +22,17 @@ export function getCommits({
 /**
  * Return hash of last commit of a project
  */
-export function getLastCommitHash({
+export async function getLastCommitHash({
   projectRoot,
 }: {
   projectRoot: string;
-}): Observable<string> {
-  return getFormattedCommits({
+}): Promise<string> {
+  const [commit] = await getFormattedCommits({
     projectRoot,
     ignoreMergeCommits: false,
     format: '%H',
-  }).pipe(map(([commit]) => commit.trim()));
+  });
+  return commit.trim();
 }
 
 function getFormattedCommits({
@@ -46,8 +45,8 @@ function getFormattedCommits({
   format: string;
   ignoreMergeCommits: boolean;
   since?: string;
-}): Observable<string[]> {
-  return new Observable<string>((observer) => {
+}): Promise<string[]> {
+  return new Promise<string[]>((resolve, reject) => {
     const params: Record<string, string | boolean> = {
       from: since,
       format,
@@ -57,19 +56,18 @@ function getFormattedCommits({
     if (ignoreMergeCommits) {
       params['no-merges'] = ignoreMergeCommits;
     }
+
+    const commits: string[] = [];
+
     gitRawCommits(params)
-      .on('data', (data: string) => observer.next(data))
-      .on('error', (error: Error) => observer.error(error))
-      .on('close', () => observer.complete())
-      .on('finish', () => observer.complete());
-  }).pipe(
-    scan((commits, commit) => [...commits, commit.toString()], [] as string[]),
-    startWith([]),
-    last(),
-  );
+      .on('data', (data: string) => commits.push(data.toString()))
+      .on('error', (error: Error) => reject(error))
+      .on('close', () => resolve(commits))
+      .on('finish', () => resolve(commits));
+  });
 }
 
-export function tryPush({
+export async function tryPush({
   remote,
   branch,
   noVerify,
@@ -83,51 +81,55 @@ export function tryPush({
   noVerify: boolean;
   enforceAtomicPush: boolean;
   projectName: string;
-}): Observable<string> {
+}): Promise<string> {
   if (remote == null || branch == null) {
-    return throwError(
-      () =>
-        new Error(
-          'Missing option --remote or --branch, see: https://github.com/jscutlery/semver#configure.',
-        ),
+    throw new Error(
+      'Missing option --remote or --branch, see: https://github.com/jscutlery/semver#configure.',
     );
   }
 
   const gitPushOptions = [...(noVerify ? ['--no-verify'] : [])];
 
-  return exec('git', [
-    'push',
-    ...gitPushOptions,
-    '--atomic',
-    remote,
-    branch,
-    tag,
-  ])
-    .pipe(
-      catchError((error) => {
-        if (!enforceAtomicPush && /atomic/.test(error)) {
-          _logStep({
-            step: 'warning',
-            level: 'warn',
-            message: 'Git push --atomic failed, attempting non-atomic push.',
-            projectName,
-          });
-          return exec('git', ['push', ...gitPushOptions, remote, branch, tag]);
-        }
-
-        return throwError(() => error);
-      }),
-    )
-    .pipe(
+  let result: string;
+  try {
+    result = await exec('git', [
+      'push',
+      ...gitPushOptions,
+      '--atomic',
+      remote,
+      branch,
+      tag,
+    ]);
+  } catch (error) {
+    if (!enforceAtomicPush && /atomic/.test(error as string)) {
       logStep({
-        step: 'push_success',
-        message: `Pushed to "${remote}" "${branch}".`,
+        step: 'warning',
+        level: 'warn',
+        message: 'Git push --atomic failed, attempting non-atomic push.',
         projectName,
-      }),
-    );
+      });
+      result = await exec('git', [
+        'push',
+        ...gitPushOptions,
+        remote,
+        branch,
+        tag,
+      ]);
+    } else {
+      throw error;
+    }
+  }
+
+  logStep({
+    step: 'push_success',
+    message: `Pushed to "${remote}" "${branch}".`,
+    projectName,
+  });
+
+  return result;
 }
 
-export function addToStage({
+export async function addToStage({
   paths,
   dryRun,
   skipStage,
@@ -135,33 +137,30 @@ export function addToStage({
   paths: string[];
   dryRun: boolean;
   skipStage: boolean;
-}): Observable<void> {
+}): Promise<void> {
   if (paths.length === 0) {
-    return EMPTY;
+    return;
   } else if (skipStage) {
     // skip stage and return like this to ensure the chain will continue.
-    return of(undefined);
+    return;
   }
 
   const gitAddOptions = [...(dryRun ? ['--dry-run'] : []), ...paths];
-  return exec('git', ['add', ...gitAddOptions]).pipe(map(() => undefined));
+  await exec('git', ['add', ...gitAddOptions]);
 }
 
-export function getFirstCommitRef(): Observable<string> {
-  return exec('git', ['rev-list', '--max-parents=0', 'HEAD']).pipe(
-    map((output) => {
-      return (
-        output
-          .split('\n')
-          .map((c) => c.trim())
-          .filter(Boolean)
-          .pop() ?? ''
-      );
-    }),
+export async function getFirstCommitRef(): Promise<string> {
+  const output = await exec('git', ['rev-list', '--max-parents=0', 'HEAD']);
+  return (
+    output
+      .split('\n')
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .pop() ?? ''
   );
 }
 
-export function createTag({
+export async function createTag({
   dryRun,
   tag,
   commitHash,
@@ -175,39 +174,38 @@ export function createTag({
   commitMessage: string;
   projectName: string;
   tagSign?: boolean;
-}): Observable<string> {
+}): Promise<string | undefined> {
   if (dryRun) {
-    return EMPTY;
+    return undefined;
   }
 
   const gitTagOptions = [...(true === tagSign ? ['--sign'] : [])];
 
-  return exec('git', [
-    'tag',
-    '-a',
-    tag,
-    commitHash,
-    '-m',
-    commitMessage,
-    ...gitTagOptions,
-  ]).pipe(
-    catchError((error) => {
-      if (/already exists/.test(error)) {
-        return throwError(
-          () =>
-            new Error(`Failed to tag "${tag}", this tag already exists.
+  try {
+    await exec('git', [
+      'tag',
+      '-a',
+      tag,
+      commitHash,
+      '-m',
+      commitMessage,
+      ...gitTagOptions,
+    ]);
+  } catch (error) {
+    if (/already exists/.test(error as string)) {
+      throw new Error(`Failed to tag "${tag}", this tag already exists.
             This error occurs because the same version was previously created but the tag does not point to a commit referenced in your base branch.
-            Please delete the tag by running "git tag -d ${tag}", make sure the tag has been removed from the remote repository as well and run this command again.`),
-        );
-      }
+            Please delete the tag by running "git tag -d ${tag}", make sure the tag has been removed from the remote repository as well and run this command again.`);
+    }
 
-      return throwError(() => error);
-    }),
-    map(() => tag),
-    logStep({
-      step: 'tag_success',
-      message: `Tagged "${tag}".`,
-      projectName,
-    }),
-  );
+    throw error;
+  }
+
+  logStep({
+    step: 'tag_success',
+    message: `Tagged "${tag}".`,
+    projectName,
+  });
+
+  return tag;
 }

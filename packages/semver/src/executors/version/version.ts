@@ -1,6 +1,4 @@
 import { ProjectsConfigurations } from '@nx/devkit';
-import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
 import type { Options as CommitParserOptions } from 'conventional-commits-parser';
 import { PresetOpt } from './schema';
 import {
@@ -45,7 +43,7 @@ export interface CommonVersionOptions {
   commitParserOptions?: CommitParserOptions;
 }
 
-export function versionWorkspace({
+export async function versionWorkspace({
   skipRootChangelog,
   commitMessage,
   newVersion,
@@ -61,12 +59,13 @@ export function versionWorkspace({
 }: {
   skipRootChangelog: boolean;
   projectRoot: string;
-} & CommonVersionOptions) {
+} & CommonVersionOptions): Promise<string | undefined> {
   const projectRoots = getProjectRoots(
     options.workspaceRoot,
     options.workspace,
   );
-  return forkJoin([
+
+  const [changelogPaths, packageJsonPaths] = await Promise.all([
     _generateChangelogs({
       projectRoots,
       skipRootChangelog,
@@ -82,7 +81,7 @@ export function versionWorkspace({
       ...options,
     }),
 
-    forkJoin(
+    Promise.all(
       projectRoots.map((projectRoot) =>
         updatePackageJson({
           projectRoot,
@@ -91,40 +90,38 @@ export function versionWorkspace({
           dryRun,
         }),
       ),
-    ).pipe(map((paths) => paths.filter(isNotNull))),
-  ]).pipe(
-    map((paths) => paths.flat()),
-    concatMap((paths) =>
-      addToStage({
-        paths,
-        dryRun,
-        skipStage,
-      }),
-    ),
-    concatMap(() =>
-      commit({
-        skipCommit,
-        dryRun,
-        noVerify,
-        commitMessage,
-        projectName,
-      }),
-    ),
-    concatMap(() => getLastCommitHash({ projectRoot })),
-    concatMap((commitHash) =>
-      createTag({
-        dryRun,
-        tag,
-        commitHash,
-        commitMessage,
-        projectName,
-        tagSign,
-      }),
-    ),
-  );
+    ).then((paths) => paths.filter(isNotNull)),
+  ]);
+
+  const paths = [...changelogPaths, ...packageJsonPaths];
+
+  await addToStage({
+    paths,
+    dryRun,
+    skipStage,
+  });
+
+  await commit({
+    skipCommit,
+    dryRun,
+    noVerify,
+    commitMessage,
+    projectName,
+  });
+
+  const commitHash = await getLastCommitHash({ projectRoot });
+
+  return createTag({
+    dryRun,
+    tag,
+    commitHash,
+    commitMessage,
+    projectName,
+    tagSign,
+  });
 }
 
-export function versionProject({
+export async function versionProject({
   workspaceRoot,
   projectRoot,
   newVersion,
@@ -140,8 +137,8 @@ export function versionProject({
   ...options
 }: {
   projectRoot: string;
-} & CommonVersionOptions) {
-  return _generateChangelogs({
+} & CommonVersionOptions): Promise<string | undefined> {
+  const changelogPaths = await _generateChangelogs({
     projectName,
     projectRoots: [projectRoot],
     skipRootChangelog: true,
@@ -156,65 +153,57 @@ export function versionProject({
     tag,
     tagSign,
     ...options,
-  }).pipe(
-    concatMap((changelogPaths) =>
-      /* If --skipProjectChangelog is passed `changelogPaths` has length 0, otherwise it has 1 single entry. */
-      changelogPaths.length === 1
-        ? insertChangelogDependencyUpdates({
-            changelogPath: changelogPaths[0],
-            version: newVersion,
-            dryRun,
-            dependencyUpdates: options.dependencyUpdates,
-          }).pipe(
-            concatMap((changelogPath) =>
-              addToStage({ paths: [changelogPath], dryRun, skipStage }),
-            ),
-          )
-        : of(undefined),
-    ),
-    concatMap(() =>
-      updatePackageJson({
-        newVersion,
-        projectRoot,
-        projectName,
-        dryRun,
-      }).pipe(
-        concatMap((packageFile) =>
-          packageFile !== null
-            ? addToStage({
-                paths: [packageFile],
-                dryRun,
-                skipStage,
-              })
-            : of(undefined),
-        ),
-      ),
-    ),
-    concatMap(() =>
-      commit({
-        skipCommit,
-        dryRun,
-        noVerify,
-        commitMessage,
-        projectName,
-      }),
-    ),
-    concatMap(() => getLastCommitHash({ projectRoot })),
-    concatMap((commitHash) =>
-      createTag({
-        dryRun,
-        tag,
-        commitHash,
-        commitMessage,
-        projectName,
-        tagSign,
-      }),
-    ),
-  );
+  });
+
+  /* If --skipProjectChangelog is passed `changelogPaths` has length 0, otherwise it has 1 single entry. */
+  if (changelogPaths.length === 1) {
+    const changelogPath = await insertChangelogDependencyUpdates({
+      changelogPath: changelogPaths[0],
+      version: newVersion,
+      dryRun,
+      dependencyUpdates: options.dependencyUpdates,
+    });
+
+    await addToStage({ paths: [changelogPath], dryRun, skipStage });
+  }
+
+  const packageFile = await updatePackageJson({
+    newVersion,
+    projectRoot,
+    projectName,
+    dryRun,
+  });
+
+  if (packageFile !== null) {
+    await addToStage({
+      paths: [packageFile],
+      dryRun,
+      skipStage,
+    });
+  }
+
+  await commit({
+    skipCommit,
+    dryRun,
+    noVerify,
+    commitMessage,
+    projectName,
+  });
+
+  const commitHash = await getLastCommitHash({ projectRoot });
+
+  return createTag({
+    dryRun,
+    tag,
+    commitHash,
+    commitMessage,
+    projectName,
+    tagSign,
+  });
 }
 
 /* istanbul ignore next */
-export function _generateChangelogs({
+export async function _generateChangelogs({
   projectRoots,
   workspaceRoot,
   skipRootChangelog,
@@ -224,7 +213,7 @@ export function _generateChangelogs({
 }: CommonVersionOptions & {
   skipRootChangelog: boolean;
   projectRoots: string[];
-}): Observable<string[]> {
+}): Promise<string[]> {
   const changelogRoots = projectRoots
     .filter(
       (projectRoot) => !(skipProjectChangelog && projectRoot !== workspaceRoot),
@@ -234,21 +223,22 @@ export function _generateChangelogs({
     );
 
   if (changelogRoots.length === 0) {
-    return of([]);
+    return [];
   }
 
-  return forkJoin(
+  return Promise.all(
     changelogRoots.map((projectRoot) =>
       updateChangelog({
         projectRoot,
         ...options,
-      }).pipe(
+      }).then((changelogPath) => {
         logStep({
           step: 'changelog_success',
           message: `Generated CHANGELOG.md.`,
           projectName,
-        }),
-      ),
+        });
+        return changelogPath;
+      }),
     ),
   );
 }

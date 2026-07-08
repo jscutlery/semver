@@ -2,7 +2,6 @@ import { execSync } from 'child_process';
 import { setupTestingWorkspace, type TestingWorkspace } from './testing';
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { writeFile } from './utils/filesystem';
-import { firstValueFrom } from 'rxjs';
 
 describe('@jscutlery/semver', () => {
   let testingWorkspace: TestingWorkspace;
@@ -456,11 +455,9 @@ describe('@jscutlery/semver', () => {
             '^([A-Z]{3,}-\\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\\(([\\w-]+)\\))?\\S* (.+)$',
           headerCorrespondence: ['ticketReference', 'type', 'scope', 'subject'],
         };
-        await firstValueFrom(
-          writeFile(
-            `${testingWorkspace.root}/libs/d/project.json`,
-            JSON.stringify(projectJson, null, 2),
-          ),
+        await writeFile(
+          `${testingWorkspace.root}/libs/d/project.json`,
+          JSON.stringify(projectJson, null, 2),
         );
         testingWorkspace.exec(
           `

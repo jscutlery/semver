@@ -1,26 +1,12 @@
-import { lastValueFrom } from 'rxjs';
 import { exec } from './exec';
 
 describe(exec.name, () => {
-  it('should exec and return stdout', (done) => {
-    const observer = {
-      next: jest.fn(),
-    };
-
-    exec('node', ['--version']).subscribe({
-      next: observer.next,
-      error: done.fail,
-      complete: () => {
-        expect(observer.next).toHaveBeenCalledTimes(1);
-        expect(observer.next).toHaveBeenCalledWith(
-          expect.stringContaining('v'),
-        );
-        done();
-      },
-    });
+  it('should exec and return stdout', async () => {
+    const stdout = await exec('node', ['--version']);
+    expect(stdout).toEqual(expect.stringContaining('v'));
   });
 
   it('should handle failure and return stderr', async () => {
-    await expect(lastValueFrom(exec('exit', ['1']))).rejects.toThrow();
+    await expect(exec('exit', ['1'])).rejects.toThrow();
   });
 });

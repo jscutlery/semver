@@ -1,6 +1,5 @@
 import type { ExecutorContext } from '@nx/devkit';
 import { logger } from '@nx/devkit';
-import { of, throwError } from 'rxjs';
 import version from './';
 import type { VersionBuilderSchema } from './schema';
 import { createFakeContext } from './testing';
@@ -100,30 +99,32 @@ describe('@jscutlery/semver:version', () => {
     jest.spyOn(logger, 'error');
     jest.spyOn(logger, 'log').mockImplementation();
 
-    mockTryBump.mockReturnValue(
-      of({ version: '2.1.0', previousVersion: '2.0.0', dependencyUpdates: [] }),
-    );
+    mockTryBump.mockResolvedValue({
+      version: '2.1.0',
+      previousVersion: '2.0.0',
+      dependencyUpdates: [],
+    });
     mockUpdateChangelog.mockImplementation(({ projectRoot }) =>
-      of(changelog.getChangelogPath(projectRoot)),
+      Promise.resolve(changelog.getChangelogPath(projectRoot)),
     );
     mockUpdatePackageJson.mockImplementation(({ projectRoot }) =>
-      of(project.getPackageJsonPath(projectRoot)),
+      Promise.resolve(project.getPackageJsonPath(projectRoot)),
     );
-    mockCalculateChangelogChanges.mockReturnValue((source) => {
-      source.subscribe();
-      return of('');
-    });
-    mockInsertChangelogDependencyUpdates.mockReturnValue(of(''));
+    mockCalculateChangelogChanges.mockImplementation(async ({ run }) => ({
+      result: await run(),
+      notes: '',
+    }));
+    mockInsertChangelogDependencyUpdates.mockResolvedValue('');
 
     /* Mock Git execution */
-    mockTryPush.mockReturnValue(of(''));
+    mockTryPush.mockResolvedValue('');
 
-    mockGetLastCommitHash.mockReturnValue(of(LAST_COMMIT_HASH));
-    mockAddToStage.mockReturnValue(of(undefined));
-    mockCommit.mockReturnValue(of(undefined));
-    mockCreateTag.mockReturnValue(of(''));
+    mockGetLastCommitHash.mockResolvedValue(LAST_COMMIT_HASH);
+    mockAddToStage.mockResolvedValue(undefined);
+    mockCommit.mockResolvedValue(undefined);
+    mockCreateTag.mockResolvedValue('');
 
-    mockRunPostTargets.mockReturnValue(of(undefined));
+    mockRunPostTargets.mockResolvedValue(undefined);
     mockGetDependencyRoots.mockReturnValue(Promise.resolve([]));
 
     jest
@@ -334,7 +335,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockResolvedValue(null);
 
       const { success } = await version(options, context);
 
@@ -523,7 +524,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should not version if no commits since last release', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockResolvedValue(null);
 
       const { success } = await version(
         {
@@ -578,7 +579,7 @@ describe('@jscutlery/semver:version', () => {
 
   describe('--push', () => {
     it('should push to Git', async () => {
-      mockTryPush.mockReturnValue(of('success'));
+      mockTryPush.mockResolvedValue('success');
 
       const { success } = await version({ ...options, push: true }, context);
 
@@ -593,9 +594,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should handle Git failure', async () => {
-      mockTryPush.mockReturnValue(
-        throwError(() => new Error('Something went wrong')),
-      );
+      mockTryPush.mockRejectedValue(new Error('Something went wrong'));
 
       const { success } = await version({ ...options, push: true }, context);
 
@@ -646,7 +645,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should handle post targets failure', async () => {
-      mockRunPostTargets.mockReturnValue(throwError(() => new Error('Nop!')));
+      mockRunPostTargets.mockRejectedValue(new Error('Nop!'));
 
       const { success } = await version(
         {
@@ -690,7 +689,7 @@ describe('@jscutlery/semver:version', () => {
     });
 
     it('should skip executing post targets if no bump occurred', async () => {
-      mockTryBump.mockReturnValue(of(null));
+      mockTryBump.mockResolvedValue(null);
 
       const { success } = await version(
         {

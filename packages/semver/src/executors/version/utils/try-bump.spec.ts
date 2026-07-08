@@ -1,7 +1,6 @@
 import { logger } from '@nx/devkit';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as gitSemverTags from 'git-semver-tags';
-import { lastValueFrom, of, throwError } from 'rxjs';
 import { getLastVersion } from './get-last-version';
 import {
   getDependencyRootsFromProjectNames,
@@ -41,7 +40,7 @@ describe('tryBump', () => {
   let loggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    mockGetLastVersion.mockReturnValue(of('2.1.0'));
+    mockGetLastVersion.mockResolvedValue('2.1.0');
     mockGetProjectDependencies.mockResolvedValue([]);
     mockGetDependencyRootsFromProjectNames.mockImplementation(
       (_, workspace) => {
@@ -57,7 +56,7 @@ describe('tryBump', () => {
   });
 
   it('should compute next version based on last version and changes', async () => {
-    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+    mockGetCommits.mockResolvedValue(['feat: A', 'feat: B']);
     /* Mock bump to return "minor". */
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
@@ -65,19 +64,17 @@ describe('tryBump', () => {
       }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        releaseType: undefined,
-        preid: undefined,
-        skipCommitTypes: [],
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      releaseType: undefined,
+      preid: undefined,
+      skipCommitTypes: [],
 
-        projectName: '',
-      }),
-    );
+      projectName: '',
+    });
 
     expect(newVersion?.version).toEqual('2.2.0');
     expect(newVersion?.previousVersion).toEqual('2.1.0');
@@ -100,9 +97,9 @@ describe('tryBump', () => {
 
   it('should compute the next version based on last version, changes, and dependencies', async () => {
     mockGetCommits
-      .mockReturnValueOnce(of(['chore: A', 'chore: B']))
-      .mockReturnValueOnce(of(['chore: A', 'chore: B']))
-      .mockReturnValueOnce(of(['fix: A', 'feat: B']));
+      .mockResolvedValueOnce(['chore: A', 'chore: B'])
+      .mockResolvedValueOnce(['chore: A', 'chore: B'])
+      .mockResolvedValueOnce(['fix: A', 'feat: B']);
 
     /* Mock bump to return "minor". */
     mockConventionalRecommendedBump.mockImplementation(
@@ -119,21 +116,19 @@ describe('tryBump', () => {
         }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        dependencyRoots: [
-          { name: 'dep1', path: '/libs/dep1' },
-          { name: 'dep2', path: '/libs/dep2' },
-        ],
-        tagPrefix: 'v',
-        syncVersions: true,
-        skipCommitTypes: [],
+    const newVersion = await tryBump({
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      dependencyRoots: [
+        { name: 'dep1', path: '/libs/dep1' },
+        { name: 'dep2', path: '/libs/dep2' },
+      ],
+      tagPrefix: 'v',
+      syncVersions: true,
+      skipCommitTypes: [],
 
-        projectName: '',
-      }),
-    );
+      projectName: '',
+    });
 
     expect(newVersion?.version).toEqual('2.1.1');
 
@@ -165,16 +160,16 @@ describe('tryBump', () => {
 
   it('should bump when a dependency would bump through its own dependencies', async () => {
     mockGetLastVersion
-      .mockReturnValueOnce(of('2.1.0'))
-      .mockReturnValueOnce(of('2.1.0'))
-      .mockReturnValueOnce(of('2.1.0'))
-      .mockReturnValueOnce(of('2.0.0'));
+      .mockResolvedValueOnce('2.1.0')
+      .mockResolvedValueOnce('2.1.0')
+      .mockResolvedValueOnce('2.1.0')
+      .mockResolvedValueOnce('2.0.0');
     mockGetProjectDependencies.mockResolvedValueOnce(['dep2']);
     mockGetCommits
-      .mockReturnValueOnce(of([]))
-      .mockReturnValueOnce(of(['docs: dependency snapshot release']))
-      .mockReturnValueOnce(of(['docs: dependency snapshot release']))
-      .mockReturnValueOnce(of(['feat: transitive dependency change']));
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce(['docs: dependency snapshot release'])
+      .mockResolvedValueOnce(['docs: dependency snapshot release'])
+      .mockResolvedValueOnce(['feat: transitive dependency change']);
     mockConventionalRecommendedBump.mockImplementation(
       jest
         .fn()
@@ -186,25 +181,23 @@ describe('tryBump', () => {
         }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
-        tagPrefix: 'v',
-        skipCommitTypes: ['docs'],
-        syncVersions: true,
-        projectName: '',
-        workspace: {
-          version: 1,
-          projects: {
-            dep2: {
-              root: '/libs/dep2',
-            },
+    const newVersion = await tryBump({
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+      tagPrefix: 'v',
+      skipCommitTypes: ['docs'],
+      syncVersions: true,
+      projectName: '',
+      workspace: {
+        version: 1,
+        projects: {
+          dep2: {
+            root: '/libs/dep2',
           },
         },
-      }),
-    );
+      },
+    });
 
     expect(newVersion).toEqual({
       dependencyUpdates: [
@@ -222,12 +215,12 @@ describe('tryBump', () => {
 
   it('should bump a dependency with changes but no tagged version', async () => {
     mockGetLastVersion
-      .mockReturnValueOnce(of('2.1.0'))
-      .mockReturnValueOnce(of('0.0.0'));
-    mockGetFirstCommitRef.mockReturnValue(of('first-commit'));
+      .mockResolvedValueOnce('2.1.0')
+      .mockResolvedValueOnce('0.0.0');
+    mockGetFirstCommitRef.mockResolvedValue('first-commit');
     mockGetCommits
-      .mockReturnValueOnce(of(['chore: root change']))
-      .mockReturnValueOnce(of(['feat: dependency change']));
+      .mockResolvedValueOnce(['chore: root change'])
+      .mockResolvedValueOnce(['feat: dependency change']);
     mockConventionalRecommendedBump.mockImplementation(
       jest
         .fn()
@@ -239,17 +232,15 @@ describe('tryBump', () => {
         }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
-        tagPrefix: 'v',
-        skipCommitTypes: [],
-        syncVersions: true,
-        projectName: '',
-      }),
-    );
+    const newVersion = await tryBump({
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+      tagPrefix: 'v',
+      skipCommitTypes: [],
+      syncVersions: true,
+      projectName: '',
+    });
 
     expect(newVersion).toEqual({
       dependencyUpdates: [
@@ -266,8 +257,8 @@ describe('tryBump', () => {
 
   it('should ignore dependency recursion failures', async () => {
     mockGetCommits
-      .mockReturnValueOnce(of([]))
-      .mockReturnValueOnce(of(['docs: dependency snapshot release']));
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce(['docs: dependency snapshot release']);
     mockGetProjectDependencies.mockRejectedValueOnce(new Error('boom'));
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
@@ -275,46 +266,42 @@ describe('tryBump', () => {
       }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
-        tagPrefix: 'v',
-        skipCommitTypes: ['docs'],
-        syncVersions: true,
-        projectName: '',
-        workspace: {
-          version: 1,
-          projects: {
-            dep2: {
-              root: '/libs/dep2',
-            },
+    const newVersion = await tryBump({
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+      tagPrefix: 'v',
+      skipCommitTypes: ['docs'],
+      syncVersions: true,
+      projectName: '',
+      workspace: {
+        version: 1,
+        projects: {
+          dep2: {
+            root: '/libs/dep2',
           },
         },
-      }),
-    );
+      },
+    });
 
     expect(newVersion).toBeNull();
     expect(mockGetProjectDependencies).toHaveBeenCalledWith('dep1');
   });
 
   it('should use given type to calculate next version', async () => {
-    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+    mockGetCommits.mockResolvedValue(['feat: A', 'feat: B']);
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        releaseType: 'premajor',
-        skipCommitTypes: [],
-        preid: 'alpha',
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      releaseType: 'premajor',
+      skipCommitTypes: [],
+      preid: 'alpha',
 
-        projectName: '',
-      }),
-    );
+      projectName: '',
+    });
 
     expect(newVersion?.version).toEqual('3.0.0-alpha.0');
 
@@ -334,19 +321,17 @@ describe('tryBump', () => {
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+    mockGetCommits.mockResolvedValue(['feat: A', 'feat: B']);
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        releaseType: 'major',
-        skipCommitTypes: [],
-        projectName: '',
-      }),
-    );
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      releaseType: 'major',
+      skipCommitTypes: [],
+      projectName: '',
+    });
 
     expect(newVersion).toEqual({
       version: '3.0.0',
@@ -368,19 +353,17 @@ describe('tryBump', () => {
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+    mockGetCommits.mockResolvedValue(['feat: A', 'feat: B']);
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        releaseType: 'patch',
-        projectName: '',
-        skipCommitTypes: [],
-      }),
-    );
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      releaseType: 'patch',
+      projectName: '',
+      skipCommitTypes: [],
+    });
 
     expect(newVersion).toEqual({
       version: '2.1.1',
@@ -402,19 +385,17 @@ describe('tryBump', () => {
       'my-lib-2.0.0',
       'my-lib-1.0.0',
     ]);
-    mockGetCommits.mockReturnValue(of(['feat: A', 'feat: B']));
+    mockGetCommits.mockResolvedValue(['feat: A', 'feat: B']);
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        releaseType: 'minor',
-        projectName: '',
-        skipCommitTypes: [],
-      }),
-    );
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      releaseType: 'minor',
+      projectName: '',
+      skipCommitTypes: [],
+    });
 
     expect(newVersion).toEqual({
       version: '2.2.0',
@@ -430,20 +411,18 @@ describe('tryBump', () => {
   });
 
   it('should use given type to calculate next version even if there are no changes', async () => {
-    mockGetCommits.mockReturnValue(of([]));
+    mockGetCommits.mockResolvedValue([]);
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        releaseType: 'patch',
-        projectName: '',
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      releaseType: 'patch',
+      projectName: '',
 
-        skipCommitTypes: [],
-      }),
-    );
+      skipCommitTypes: [],
+    });
 
     expect(newVersion?.version).toEqual('2.1.1');
     expect(newVersion?.previousVersion).toEqual('2.1.0');
@@ -452,25 +431,23 @@ describe('tryBump', () => {
 
   it('should graduate prerelease to release using conventional commits', async () => {
     // Mock getLastVersion to return the highest version (including prerelease)
-    mockGetLastVersion.mockReturnValueOnce(of('2.0.0-rc.1'));
+    mockGetLastVersion.mockResolvedValueOnce('2.0.0-rc.1');
 
-    mockGetCommits.mockReturnValue(of(['fix: bug fix']));
+    mockGetCommits.mockResolvedValue(['fix: bug fix']);
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
         releaseType: 'patch',
       }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'angular',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        projectName: '',
-        skipCommitTypes: [],
-      }),
-    );
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'angular',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      projectName: '',
+      skipCommitTypes: [],
+    });
 
     expect(newVersion).toEqual({
       version: '2.0.0',
@@ -485,25 +462,23 @@ describe('tryBump', () => {
 
   it('should handle multiple prerelease versions with different preids', async () => {
     // Mock getLastVersion to return the highest prerelease version (beta.2 > alpha.5)
-    mockGetLastVersion.mockReturnValueOnce(of('3.0.0-beta.2'));
+    mockGetLastVersion.mockResolvedValueOnce('3.0.0-beta.2');
 
-    mockGetCommits.mockReturnValue(of(['feat: new feature']));
+    mockGetCommits.mockResolvedValue(['feat: new feature']);
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
         releaseType: 'minor',
       }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'angular',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        projectName: '',
-        skipCommitTypes: [],
-      }),
-    );
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'angular',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      projectName: '',
+      skipCommitTypes: [],
+    });
 
     expect(newVersion).toEqual({
       version: '3.0.0',
@@ -513,26 +488,24 @@ describe('tryBump', () => {
   });
 
   it('should call getFirstCommitRef if version is 0.0.0', async () => {
-    mockGetLastVersion.mockReturnValue(throwError(() => 'No version found'));
-    mockGetCommits.mockReturnValue(of([]));
-    mockGetFirstCommitRef.mockReturnValue(of('sha1'));
+    mockGetLastVersion.mockRejectedValue(new Error('No version found'));
+    mockGetCommits.mockResolvedValue([]);
+    mockGetFirstCommitRef.mockResolvedValue('sha1');
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
         releaseType: undefined,
       }),
     );
 
-    await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        projectName: '',
+    await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      projectName: '',
 
-        skipCommitTypes: [],
-      }),
-    );
+      skipCommitTypes: [],
+    });
 
     expect(loggerSpy).toHaveBeenCalledWith(
       expect.stringContaining('No previous version tag found'),
@@ -545,24 +518,22 @@ describe('tryBump', () => {
   });
 
   it('should return undefined if there are no changes in current path', async () => {
-    mockGetCommits.mockReturnValue(of([]));
+    mockGetCommits.mockResolvedValue([]);
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
         releaseType: 'patch',
       }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        projectName: '',
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      projectName: '',
 
-        skipCommitTypes: [],
-      }),
-    );
+      skipCommitTypes: [],
+    });
 
     expect(newVersion).toBeNull();
     expect(mockGetCommits).toHaveBeenCalledWith({
@@ -572,25 +543,23 @@ describe('tryBump', () => {
   });
 
   it('should try to do a bump even if there are no changes in current path when allowEmptyRelease is true', async () => {
-    mockGetCommits.mockReturnValue(of([]));
+    mockGetCommits.mockResolvedValue([]);
     mockConventionalRecommendedBump.mockImplementation(
       jest.fn().mockResolvedValue({
         releaseType: 'patch',
       }),
     );
 
-    const newVersion = await lastValueFrom(
-      tryBump({
-        syncVersions: false,
-        preset: 'conventionalcommits',
-        projectRoot: '/libs/demo',
-        tagPrefix: 'v',
-        allowEmptyRelease: true,
-        projectName: '',
+    const newVersion = await tryBump({
+      syncVersions: false,
+      preset: 'conventionalcommits',
+      projectRoot: '/libs/demo',
+      tagPrefix: 'v',
+      allowEmptyRelease: true,
+      projectName: '',
 
-        skipCommitTypes: [],
-      }),
-    );
+      skipCommitTypes: [],
+    });
 
     expect(newVersion?.version).toEqual('2.1.1');
     expect(mockGetCommits).toHaveBeenCalledWith({
@@ -601,54 +570,50 @@ describe('tryBump', () => {
 
   describe('skipCommitTypes is set', () => {
     it('should return undefined if all commits types match skipCommitTypes', async () => {
-      mockGetCommits.mockReturnValue(of(['docs: A ', 'refactor: B ']));
+      mockGetCommits.mockResolvedValue(['docs: A ', 'refactor: B ']);
       mockConventionalRecommendedBump.mockImplementation(
         jest.fn().mockResolvedValue({
           releaseType: 'patch',
         }),
       );
 
-      const newVersion = await lastValueFrom(
-        tryBump({
-          syncVersions: false,
-          preset: 'conventionalcommits',
-          skipCommitTypes: ['docs', 'refactor'],
-          projectRoot: '/libs/demo',
-          tagPrefix: 'v',
+      const newVersion = await tryBump({
+        syncVersions: false,
+        preset: 'conventionalcommits',
+        skipCommitTypes: ['docs', 'refactor'],
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
 
-          projectName: '',
-        }),
-      );
+        projectName: '',
+      });
 
       expect(newVersion).toBeNull();
     });
     it('should return correct version if NOT commits types match skipCommitTypes', async () => {
-      mockGetCommits.mockReturnValue(of(['feat: A', 'docs: B']));
+      mockGetCommits.mockResolvedValue(['feat: A', 'docs: B']);
       mockConventionalRecommendedBump.mockImplementation(
         jest.fn().mockResolvedValue({
           releaseType: 'patch',
         }),
       );
 
-      const newVersion = await lastValueFrom(
-        tryBump({
-          syncVersions: false,
-          preset: 'conventionalcommits',
-          skipCommitTypes: ['docs', 'refactor'],
-          projectRoot: '/libs/demo',
-          tagPrefix: 'v',
+      const newVersion = await tryBump({
+        syncVersions: false,
+        preset: 'conventionalcommits',
+        skipCommitTypes: ['docs', 'refactor'],
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
 
-          projectName: '',
-        }),
-      );
+        projectName: '',
+      });
 
       expect(newVersion?.version).toEqual('2.1.1');
     });
 
     it('should return undefined if all dependency commits types match skipCommitTypes', async () => {
       mockGetCommits
-        .mockReturnValueOnce(of([]))
-        .mockReturnValueOnce(of(['docs: A', 'refactor(scope): B']));
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['docs: A', 'refactor(scope): B']);
 
       mockConventionalRecommendedBump.mockImplementation(
         jest
@@ -661,18 +626,16 @@ describe('tryBump', () => {
           }),
       );
 
-      const newVersion = await lastValueFrom(
-        tryBump({
-          preset: 'conventionalcommits',
-          projectRoot: '/libs/demo',
-          dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
-          tagPrefix: 'v',
-          skipCommitTypes: ['docs', 'refactor'],
+      const newVersion = await tryBump({
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        dependencyRoots: [{ name: 'dep1', path: '/libs/dep1' }],
+        tagPrefix: 'v',
+        skipCommitTypes: ['docs', 'refactor'],
 
-          syncVersions: true,
-          projectName: '',
-        }),
-      );
+        syncVersions: true,
+        projectName: '',
+      });
 
       expect(newVersion).toBeNull();
     });
@@ -680,9 +643,10 @@ describe('tryBump', () => {
 
   describe('custom parser config', () => {
     it('can deal with a custom commitParserOptions (no changes)', async () => {
-      mockGetCommits.mockReturnValue(
-        of(['JIRA-1234 chore: A', 'JIRA-5678 chore B']),
-      );
+      mockGetCommits.mockResolvedValue([
+        'JIRA-1234 chore: A',
+        'JIRA-5678 chore B',
+      ]);
       /* Mock bump to return "minor". */
       mockConventionalRecommendedBump.mockImplementation(
         jest.fn().mockResolvedValue({
@@ -690,37 +654,31 @@ describe('tryBump', () => {
         }),
       );
 
-      const newVersion = await lastValueFrom(
-        tryBump({
-          syncVersions: false,
-          preset: 'conventionalcommits',
-          projectRoot: '/libs/demo',
-          tagPrefix: 'v',
-          releaseType: undefined,
-          preid: undefined,
-          skipCommitTypes: ['chore'],
+      const newVersion = await tryBump({
+        syncVersions: false,
+        preset: 'conventionalcommits',
+        projectRoot: '/libs/demo',
+        tagPrefix: 'v',
+        releaseType: undefined,
+        preid: undefined,
+        skipCommitTypes: ['chore'],
 
-          projectName: '',
-          commitParserOptions: {
-            headerPattern:
-              /^([A-Z]{3,}-\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\(([\w-]+)\))?\S* (.+)$/,
-            headerCorrespondence: [
-              'ticketReference',
-              'type',
-              'scope',
-              'subject',
-            ],
-          },
-        }),
-      );
+        projectName: '',
+        commitParserOptions: {
+          headerPattern:
+            /^([A-Z]{3,}-\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\(([\w-]+)\))?\S* (.+)$/,
+          headerCorrespondence: ['ticketReference', 'type', 'scope', 'subject'],
+        },
+      });
 
       expect(newVersion).toBeNull();
     });
 
     it('can deal with a custom commitParserOptions (with changes)', async () => {
-      mockGetCommits.mockReturnValue(
-        of(['JIRA-1234 feat: A', 'JIRA-5678 fix(scope) B']),
-      );
+      mockGetCommits.mockResolvedValue([
+        'JIRA-1234 feat: A',
+        'JIRA-5678 fix(scope) B',
+      ]);
       /* Mock bump to return "minor". */
       mockConventionalRecommendedBump.mockImplementation(
         jest.fn().mockResolvedValue({
@@ -728,28 +686,21 @@ describe('tryBump', () => {
         }),
       );
 
-      const newVersion = await lastValueFrom(
-        tryBump({
-          commitParserOptions: {
-            headerPattern:
-              /^([A-Z]{3,}-\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\(([\w-]+)\))?\S* (.+)$/,
-            headerCorrespondence: [
-              'ticketReference',
-              'type',
-              'scope',
-              'subject',
-            ],
-          },
-          preid: undefined,
-          preset: 'conventionalcommits',
-          projectName: '',
-          projectRoot: '/libs/demo',
-          releaseType: undefined,
-          skipCommitTypes: ['chore'],
-          syncVersions: false,
-          tagPrefix: 'v',
-        }),
-      );
+      const newVersion = await tryBump({
+        commitParserOptions: {
+          headerPattern:
+            /^([A-Z]{3,}-\d{1,5}):? (chore|build|ci|docs|feat|fix|perf|refactor|test)(?:\(([\w-]+)\))?\S* (.+)$/,
+          headerCorrespondence: ['ticketReference', 'type', 'scope', 'subject'],
+        },
+        preid: undefined,
+        preset: 'conventionalcommits',
+        projectName: '',
+        projectRoot: '/libs/demo',
+        releaseType: undefined,
+        skipCommitTypes: ['chore'],
+        syncVersions: false,
+        tagPrefix: 'v',
+      });
 
       expect(newVersion).toStrictEqual({
         dependencyUpdates: [],

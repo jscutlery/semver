@@ -1,6 +1,4 @@
 import { logger } from '@nx/devkit';
-import { lastValueFrom, of } from 'rxjs';
-import { catchError, mapTo } from 'rxjs/operators';
 import { exec } from '../common/exec';
 import type { GitLabReleaseSchema } from './schema';
 
@@ -13,31 +11,30 @@ export default async function runExecutor({
   name,
   releasedAt,
 }: GitLabReleaseSchema) {
-  const createRelease$ = exec('release-cli', [
-    'create',
-    ...['--tag-name', tag],
-    ...(name ? ['--name', name] : []),
-    ...(description ? ['--description', description] : []),
-    ...(milestones
-      ? milestones.map((milestone) => ['--milestone', milestone]).flat()
-      : []),
-    ...(releasedAt ? ['--released-at', releasedAt] : []),
-    ...(ref ? ['--ref', ref] : []),
-    ...(assets
-      ? assets
-          .map((asset) => [
-            '--assets-link',
-            `{"name": "${asset.name}", "url": "${asset.url}"}`,
-          ])
-          .flat()
-      : []),
-  ]).pipe(
-    mapTo({ success: true }),
-    catchError((response) => {
-      logger.error(response);
-      return of({ success: false });
-    }),
-  );
+  try {
+    await exec('release-cli', [
+      'create',
+      ...['--tag-name', tag],
+      ...(name ? ['--name', name] : []),
+      ...(description ? ['--description', description] : []),
+      ...(milestones
+        ? milestones.map((milestone) => ['--milestone', milestone]).flat()
+        : []),
+      ...(releasedAt ? ['--released-at', releasedAt] : []),
+      ...(ref ? ['--ref', ref] : []),
+      ...(assets
+        ? assets
+            .map((asset) => [
+              '--assets-link',
+              `{"name": "${asset.name}", "url": "${asset.url}"}`,
+            ])
+            .flat()
+        : []),
+    ]);
 
-  return lastValueFrom(createRelease$);
+    return { success: true };
+  } catch (response) {
+    logger.error(response);
+    return { success: false };
+  }
 }

@@ -1,6 +1,5 @@
 import { logger } from '@nx/devkit';
 import * as chalk from 'chalk';
-import { tap, type MonoTypeOperatorFunction } from 'rxjs';
 
 type Step =
   | 'nothing_changed'
@@ -30,21 +29,7 @@ const iconMap = new Map<Step, string>([
 ]);
 
 /* istanbul ignore next */
-export function logStep<T>({
-  step,
-  message,
-  projectName,
-}: {
-  step: Step;
-  message: string;
-  projectName: string;
-}): MonoTypeOperatorFunction<T> {
-  return (source) =>
-    source.pipe(tap(() => _logStep({ step, message, projectName })));
-}
-
-/* istanbul ignore next */
-export function _logStep({
+export function logStep({
   step,
   message,
   projectName,

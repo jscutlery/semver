@@ -164,9 +164,6 @@ importers:
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.19.1)
-      rxjs:
-        specifier: 7.8.2
-        version: 7.8.2
       semver:
         specifier: ^7.0.0
         version: 7.7.4

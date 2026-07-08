@@ -1,6 +1,4 @@
 import { logger } from '@nx/devkit';
-import { of, throwError } from 'rxjs';
-
 import { exec } from '../common/exec';
 import executor from './executor';
 
@@ -16,11 +14,7 @@ describe('@jscutlery/semver:gitlab', () => {
   const mockExec = exec as jest.Mock;
 
   beforeEach(() => {
-    mockExec.mockImplementation(() => {
-      return of({
-        stdout: 'success',
-      });
-    });
+    mockExec.mockResolvedValue('success');
   });
 
   it('create release with specified --tag', async () => {
@@ -103,11 +97,7 @@ describe('@jscutlery/semver:gitlab', () => {
   });
 
   it('handle release CLI errors', async () => {
-    mockExec.mockImplementation(() => {
-      return throwError(() => ({
-        stderr: 'something went wrong',
-      }));
-    });
+    mockExec.mockRejectedValue({ stderr: 'something went wrong' });
     jest.spyOn(logger, 'error').mockImplementation();
 
     const output = await executor(options);

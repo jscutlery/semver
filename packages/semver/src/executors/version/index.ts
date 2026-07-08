@@ -1,6 +1,4 @@
 import { type ExecutorContext } from '@nx/devkit';
-import { concat, defer, lastValueFrom, of } from 'rxjs';
-import { catchError, concatMap, reduce, switchMap } from 'rxjs/operators';
 import type { PresetOpt, VersionBuilderSchema } from './schema';
 import {
   calculateChangelogChanges,
@@ -13,7 +11,7 @@ import {
   type DependencyRoot,
 } from './utils/get-project-dependencies';
 import { tryPush } from './utils/git';
-import { _logStep } from './utils/logger';
+import { logStep } from './utils/logger';
 import { verifyNpmAuth } from './utils/npm';
 import { runPostTargets } from './utils/post-target';
 import { formatTag, formatTagPrefix } from './utils/tag';
@@ -62,9 +60,9 @@ export default async function version(
 
   if (shouldVerifyNpmAuth) {
     try {
-      await lastValueFrom(verifyNpmAuth({ projectName }));
+      await verifyNpmAuth({ projectName });
     } catch (error) {
-      _logStep({
+      logStep({
         step: 'failure',
         level: 'error',
         message: _toErrorMessage(error),
@@ -84,7 +82,7 @@ export default async function version(
       trackDepsWithReleaseAs,
     });
   } catch (e) {
-    _logStep({
+    logStep({
       step: 'failure',
       level: 'error',
       message: `Failed to determine dependencies.
@@ -100,70 +98,77 @@ export default async function version(
     syncVersions,
   });
   const projectRoot = getProject(context).root;
-  const newVersion$ = tryBump({
-    commitParserOptions,
-    preset,
-    projectRoot,
-    dependencyRoots,
-    tagPrefix,
-    versionTagPrefix,
-    releaseType: releaseAs,
-    preid,
-    syncVersions,
-    allowEmptyRelease,
-    skipCommitTypes,
-    projectName,
-    workspace: context.projectsConfigurations,
-  });
 
-  const runSemver$ = newVersion$.pipe(
-    switchMap((newVersion) => {
-      if (newVersion == null) {
-        _logStep({
-          step: 'nothing_changed',
-          level: 'info',
-          message: 'Nothing changed since last release.',
-          projectName,
-        });
-        return of({ success: true });
-      }
+  try {
+    const newVersion = await tryBump({
+      commitParserOptions,
+      preset,
+      projectRoot,
+      dependencyRoots,
+      tagPrefix,
+      versionTagPrefix,
+      releaseType: releaseAs,
+      preid,
+      syncVersions,
+      allowEmptyRelease,
+      skipCommitTypes,
+      projectName,
+      workspace: context.projectsConfigurations,
+    });
 
-      _logStep({
-        step: 'calculate_version_success',
-        message: `Calculated new version "${newVersion.version}".`,
+    if (newVersion == null) {
+      logStep({
+        step: 'nothing_changed',
+        level: 'info',
+        message: 'Nothing changed since last release.',
         projectName,
       });
+      return { success: true };
+    }
 
-      const { version, dependencyUpdates } = newVersion;
-      const tag = formatTag({ tagPrefix, version });
-      const commitMessage = formatCommitMessage({
-        projectName,
-        commitMessageFormat,
-        version,
-      });
+    logStep({
+      step: 'calculate_version_success',
+      message: `Calculated new version "${newVersion.version}".`,
+      projectName,
+    });
 
-      const options: CommonVersionOptions = {
-        newVersion: version,
-        tag,
-        dryRun,
-        trackDeps,
-        noVerify,
-        preset,
-        tagPrefix,
-        tagSign,
-        changelogHeader,
-        workspaceRoot,
-        projectName,
-        skipProjectChangelog,
-        commitMessage,
-        dependencyUpdates,
-        skipCommit,
-        skipStage,
-        commitParserOptions,
-        workspace: context.projectsConfigurations,
-      };
+    const { version, dependencyUpdates } = newVersion;
+    const tag = formatTag({ tagPrefix, version });
+    const commitMessage = formatCommitMessage({
+      projectName,
+      commitMessageFormat,
+      version,
+    });
 
-      const version$ = defer(() =>
+    const options: CommonVersionOptions = {
+      newVersion: version,
+      tag,
+      dryRun,
+      trackDeps,
+      noVerify,
+      preset,
+      tagPrefix,
+      tagSign,
+      changelogHeader,
+      workspaceRoot,
+      projectName,
+      skipProjectChangelog,
+      commitMessage,
+      dependencyUpdates,
+      skipCommit,
+      skipStage,
+      commitParserOptions,
+      workspace: context.projectsConfigurations,
+    };
+
+    const changelogPath = getChangelogPath(
+      syncVersions ? workspaceRoot : projectRoot,
+    );
+
+    const { notes } = await calculateChangelogChanges({
+      changelogHeader,
+      changelogPath,
+      run: () =>
         syncVersions
           ? versionWorkspace({
               ...options,
@@ -174,72 +179,48 @@ export default async function version(
               ...options,
               projectRoot,
             }),
-      );
+    });
 
-      const push$ = defer(() =>
-        tryPush({
+    if (push && dryRun === false) {
+      await tryPush({
+        tag,
+        branch: baseBranch,
+        noVerify,
+        enforceAtomicPush,
+        remote,
+        projectName,
+      });
+    }
+
+    if (dryRun === false) {
+      await runPostTargets({
+        context,
+        projectName,
+        postTargets,
+        templateStringContext: {
+          dryRun,
+          notes,
+          version,
+          projectName,
           tag,
-          branch: baseBranch,
-          noVerify,
-          enforceAtomicPush,
-          remote,
-          projectName,
-        }),
-      );
-
-      const _runPostTargets = ({ notes }: { notes: string }) =>
-        defer(() =>
-          runPostTargets({
-            context,
-            projectName,
-            postTargets,
-            templateStringContext: {
-              dryRun,
-              notes,
-              version,
-              projectName,
-              tag,
-              previousTag: formatTag({
-                tagPrefix,
-                version: newVersion.previousVersion,
-              }),
-            },
+          previousTag: formatTag({
+            tagPrefix,
+            version: newVersion.previousVersion,
           }),
-        );
+        },
+      });
+    }
 
-      const changelogPath = getChangelogPath(
-        syncVersions ? workspaceRoot : projectRoot,
-      );
-
-      return version$.pipe(
-        calculateChangelogChanges({
-          changelogHeader,
-          changelogPath,
-        }),
-        concatMap((notes) =>
-          concat(
-            ...(push && dryRun === false ? [push$] : []),
-            ...(dryRun === false ? [_runPostTargets({ notes })] : []),
-          ),
-        ),
-        reduce((result) => result, { success: true }),
-      );
-    }),
-  );
-
-  return lastValueFrom(
-    runSemver$.pipe(
-      catchError((error) => {
-        _logStep({
-          step: 'failure',
-          level: 'error',
-          message: _toErrorMessage(error),
-          projectName,
-        });
-        return of({ success: false });
-      }),
-    ),
-  );
+    return { success: true };
+  } catch (error) {
+    logStep({
+      step: 'failure',
+      level: 'error',
+      message: _toErrorMessage(error),
+      projectName,
+    });
+    return { success: false };
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

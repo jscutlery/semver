@@ -1,13 +1,14 @@
 import { resolve } from 'path';
-import { map, of, switchMap, type Observable } from 'rxjs';
 import { readFileIfExists, readJsonFile, writeFile } from './filesystem';
 import { logStep } from './logger';
 import * as detectIndent from 'detect-indent';
 
-export function readPackageJson(projectRoot: string): Observable<{
+export function readPackageJson(projectRoot: string): Promise<{
   version?: string;
 }> {
-  return readJsonFile(getPackageJsonPath(projectRoot));
+  return readJsonFile(getPackageJsonPath(projectRoot)) as Promise<{
+    version?: string;
+  }>;
 }
 
 export function getPackageJsonPath(projectRoot: string) {
@@ -15,7 +16,7 @@ export function getPackageJsonPath(projectRoot: string) {
 }
 
 /* istanbul ignore next */
-export function updatePackageJson({
+export async function updatePackageJson({
   newVersion,
   projectRoot,
   projectName,
@@ -25,31 +26,30 @@ export function updatePackageJson({
   projectRoot: string;
   projectName: string;
   dryRun: boolean;
-}): Observable<string | null> {
+}): Promise<string | null> {
   if (dryRun) {
-    return of(null);
+    return null;
   }
 
   const path = getPackageJsonPath(projectRoot);
 
-  return readFileIfExists(path).pipe(
-    switchMap((packageJson) => {
-      if (!packageJson.length) {
-        return of(null);
-      }
+  const packageJson = await readFileIfExists(path);
 
-      const newPackageJson = _updatePackageVersion(packageJson, newVersion);
+  if (!packageJson.length) {
+    return null;
+  }
 
-      return writeFile(path, newPackageJson).pipe(
-        logStep({
-          step: 'package_json_success',
-          message: `Updated package.json version.`,
-          projectName,
-        }),
-        map(() => path),
-      );
-    }),
-  );
+  const newPackageJson = _updatePackageVersion(packageJson, newVersion);
+
+  await writeFile(path, newPackageJson);
+
+  logStep({
+    step: 'package_json_success',
+    message: `Updated package.json version.`,
+    projectName,
+  });
+
+  return path;
 }
 
 /* istanbul ignore next */

@@ -1,15 +1,4 @@
 import { resolve } from 'path';
-import {
-  combineLatestWith,
-  concatMap,
-  defer,
-  lastValueFrom,
-  map,
-  of,
-  switchMap,
-  type Observable,
-  type OperatorFunction,
-} from 'rxjs';
 import writeChangelog from './write-changelog';
 import type { Version } from '../version';
 import { diff } from './diff';
@@ -27,7 +16,7 @@ export function getChangelogPath(projectRoot: string) {
 }
 
 /* istanbul ignore next */
-export function updateChangelog({
+export async function updateChangelog({
   projectRoot,
   dryRun,
   preset,
@@ -43,27 +32,25 @@ export function updateChangelog({
   tagPrefix: string;
   changelogHeader: string;
   commitParserOptions?: CommitParserOptions;
-}): Observable<string> {
-  return defer(async () => {
-    const changelogPath = getChangelogPath(projectRoot);
-    await writeChangelog(
-      {
-        changelogHeader,
-        changelogPath,
-        dryRun,
-        projectRoot,
-        preset,
-        tagPrefix,
-        commitParserOptions,
-      },
-      newVersion,
-    );
-    return changelogPath;
-  });
+}): Promise<string> {
+  const changelogPath = getChangelogPath(projectRoot);
+  await writeChangelog(
+    {
+      changelogHeader,
+      changelogPath,
+      dryRun,
+      projectRoot,
+      preset,
+      tagPrefix,
+      commitParserOptions,
+    },
+    newVersion,
+  );
+  return changelogPath;
 }
 
 /* istanbul ignore next */
-export function insertChangelogDependencyUpdates({
+export async function insertChangelogDependencyUpdates({
   changelogPath,
   version,
   dryRun,
@@ -73,48 +60,39 @@ export function insertChangelogDependencyUpdates({
   version: string;
   dryRun: boolean;
   dependencyUpdates: Version[];
-}): Observable<string> {
-  return of(!dependencyUpdates.length || dryRun).pipe(
-    switchMap((skipDependencyUpdates) => {
-      if (skipDependencyUpdates) {
-        return of(changelogPath);
-      }
+}): Promise<string> {
+  const skipDependencyUpdates = !dependencyUpdates.length || dryRun;
 
-      return readFile(changelogPath).pipe(
-        map((changelog) =>
-          _calculateDependencyUpdates({
-            changelog,
-            version,
-            dependencyUpdates,
-          }),
-        ),
-        switchMap((changelog) => writeFile(changelogPath, changelog)),
-        map(() => changelogPath),
-      );
-    }),
-  );
+  if (skipDependencyUpdates) {
+    return changelogPath;
+  }
+
+  const changelog = _calculateDependencyUpdates({
+    changelog: await readFile(changelogPath),
+    version,
+    dependencyUpdates,
+  });
+
+  await writeFile(changelogPath, changelog);
+
+  return changelogPath;
 }
 
 /* istanbul ignore next */
-export function calculateChangelogChanges<T>({
+export async function calculateChangelogChanges<T>({
   changelogPath,
   changelogHeader,
+  run,
 }: {
   changelogPath: string;
   changelogHeader: string;
-}): OperatorFunction<T, string> {
-  return (source) => {
-    return readFileIfExists(changelogPath, changelogHeader).pipe(
-      combineLatestWith(source),
-      concatMap(async ([input]) => {
-        const output = await lastValueFrom(
-          readFileIfExists(changelogPath, changelogHeader),
-        );
+  run: () => Promise<T>;
+}): Promise<{ result: T; notes: string }> {
+  const input = await readFileIfExists(changelogPath, changelogHeader);
+  const result = await run();
+  const output = await readFileIfExists(changelogPath, changelogHeader);
 
-        return diff(input, output);
-      }),
-    );
-  };
+  return { result, notes: diff(input, output) };
 }
 
 /* istanbul ignore next */

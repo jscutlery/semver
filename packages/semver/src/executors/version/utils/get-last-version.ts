@@ -1,10 +1,7 @@
 import * as gitSemverTags from 'git-semver-tags';
-import { from, of, throwError } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import * as semver from 'semver';
-import type { Observable } from 'rxjs';
 
-export function getLastVersion({
+export async function getLastVersion({
   tagPrefix,
   releaseType,
   preid,
@@ -12,10 +9,9 @@ export function getLastVersion({
   tagPrefix: string;
   releaseType?: semver.ReleaseType;
   preid?: string;
-}): Observable<string> {
-  return from(gitSemverTags({ tagPrefix }) as Promise<string[]>).pipe(
-    switchMap((tags) => getLastVersionFromTags({ tags, tagPrefix, preid })),
-  );
+}): Promise<string> {
+  const tags = await (gitSemverTags({ tagPrefix }) as Promise<string[]>);
+  return getLastVersionFromTags({ tags, tagPrefix, preid });
 }
 
 function getLastVersionFromTags({
@@ -26,7 +22,7 @@ function getLastVersionFromTags({
   tags: string[];
   tagPrefix: string;
   preid?: string;
-}): Observable<string> {
+}): string {
   const versions = tags
     .map((tag) => tag.substring(tagPrefix.length))
     .filter((v) => {
@@ -55,8 +51,8 @@ function getLastVersionFromTags({
   const [version] = versions.sort(semver.rcompare);
 
   if (version == null) {
-    return throwError(() => new Error('No semver tag found'));
+    throw new Error('No semver tag found');
   }
 
-  return of(version);
+  return version;
 }
