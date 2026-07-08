@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [7.0.0](https://github.com/jscutlery/semver/compare/semver-6.2.0...semver-7.0.0) (2026-07-08)
+
+### ⚠ BREAKING CHANGES
+
+* **semver:** `@nx/devkit` `^20.0.0 || ^21.0.0 || ^22.0.0 || ^23.0.0`
+is now required; support for Nx 18 and 19 has been dropped.
+
+* docs(semver): document the Nx 20-23 support range
+
+Add a v7.0.0 row to the compatibility table for the
+`@nx/devkit ^20.0.0 || ^21.0.0 || ^22.0.0 || ^23.0.0` peer range.
+
+### Features
+
+* **semver:** support Nx 23 and drop support for Nx < 20 ([#1094](https://github.com/jscutlery/semver/issues/1094)) ([c2813ba](https://github.com/jscutlery/semver/commit/c2813ba399b40b65da3a0036c8bc98e862768d58))
+
 ## [6.2.0](https://github.com/jscutlery/semver/compare/semver-6.1.3...semver-6.2.0) (2026-07-07)
 
 ### Features
