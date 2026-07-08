@@ -593,6 +593,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/NachoVazquez"><img src="https://avatars.githubusercontent.com/u/9338604?v=4?s=60" width="60px;" alt="NachoVazquez"/><br /><sub><b>NachoVazquez</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=NachoVazquez" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Mayur-Ram"><img src="https://avatars.githubusercontent.com/u/51334424?v=4?s=60" width="60px;" alt="Mayur-Ram"/><br /><sub><b>Mayur-Ram</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=Mayur-Ram" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/maxkoryukov"><img src="https://avatars.githubusercontent.com/u/8887971?v=4?s=60" width="60px;" alt="Maksim Koryukov"/><br /><sub><b>Maksim Koryukov</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=maxkoryukov" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/inoovador"><img src="https://avatars.githubusercontent.com/u/152461817?v=4?s=60" width="60px;" alt="inoovador"/><br /><sub><b>inoovador</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=inoovador" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

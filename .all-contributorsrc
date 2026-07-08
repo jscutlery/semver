@@ -392,6 +392,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/8887971?v=4",
       "profile": "https://github.com/maxkoryukov",
       "contributions": ["code"]
+    },
+    {
+      "login": "inoovador",
+      "name": "inoovador",
+      "avatar_url": "https://avatars.githubusercontent.com/u/152461817?v=4",
+      "profile": "https://github.com/inoovador",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
