@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [7.1.0](https://github.com/jscutlery/semver/compare/semver-7.0.0...semver-7.1.0) (2026-07-08)
+
+### Features
+
+* **semver:** add verifyNpmAuth option to version executor ([2a0a9e9](https://github.com/jscutlery/semver/commit/2a0a9e9fde875fe7c716092259feb6e034d664d9))
+
+### Bug Fixes
+
+* **semver:** make verifyNpmAuth compatible with OIDC trusted publishing ([c1d1548](https://github.com/jscutlery/semver/commit/c1d15489b8e827e332b2facb1036bf94415e8aec))
+
 ## [7.0.0](https://github.com/jscutlery/semver/compare/semver-6.2.0...semver-7.0.0) (2026-07-08)
 
 ### ⚠ BREAKING CHANGES
