@@ -296,9 +296,9 @@ In case you want to run nx cmd in parallel, you can provide the `--skipStage` fl
 
 ### Verifying npm authentication
 
-If your release process publishes to npm (e.g. via `--postTargets`), you can catch authentication problems (expired token, missing `NPM_TOKEN`, wrong registry, etc.) before any versioning work happens, rather than failing mid-release after commits and tags have already been created.
+If your release process publishes to npm (e.g. via `--postTargets`), you can catch authentication problems (expired token, missing `NPM_TOKEN`, misconfigured OIDC trusted publisher, wrong registry, etc.) before any versioning work happens, rather than failing mid-release after commits and tags have already been created.
 
-Provide the `--verifyNpmAuth` flag to run `npm whoami` against the configured registry as the very first step. If it fails, semver exits early with `{ success: false }` and no git changes are made.
+Provide the `--verifyNpmAuth` flag to build the project and run `npm publish --dry-run` against the configured registry as the very first step, before anything else. A plain `npm whoami` isn't used because it doesn't work with npm's [OIDC Trusted Publishing](https://docs.npmjs.com/trusted-publishers) — no token is exchanged until an actual (or dry-run) publish is attempted. If verification fails, semver exits early with `{ success: false }` and no git changes are made. This requires the project to have a `build` target configured.
 
 ```json
 {
