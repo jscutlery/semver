@@ -494,21 +494,21 @@ For more details on using Nx Release, refer to the [official Nx documentation](h
 
 ## Compatibility overview with Nx
 
-| Version | Required Package                                            |
-| ------- | ----------------------------------------------------------- |
-| v7.0.0  | `@nx/devkit ^20.0.0 \|\| ^21.0.0 \|\| ^22.0.0 \|\| ^23.0.0` |
-| v5.8.0  | `@nx/devkit ^22.0.0`                                        |
-| v5.7.0  | `@nx/devkit ^21.0.0`                                        |
-| v5.5.0  | `@nx/devkit ^20.0.0`                                        |
-| v5.3.0  | `@nx/devkit ^19.0.0`                                        |
-| v5.0.0  | `@nx/devkit ^18.0.0`                                        |
-| v4.0.0  | `@nx/devkit ^17.0.0`                                        |
-| v3.0.0  | `@nx/devkit ^16.0.0`                                        |
-| v2.28.0 | `@nrwl/devkit ^15.0.0`                                      |
-| v2.23.0 | `@nrwl/devkit ^14.0.0`                                      |
-| v2.12.0 | `@nrwl/workspace ^13.0.0`                                   |
-| v2.4.0  | `@nrwl/workspace ^12.0.0`                                   |
-| v1.0.0  | `@nrwl/workspace ^11.0.0`                                   |
+| Version | Required Package          |
+| ------- | ------------------------- |
+| v7.0.0  | `@nx/devkit ^23.0.0`      |
+| v5.8.0  | `@nx/devkit ^22.0.0`      |
+| v5.7.0  | `@nx/devkit ^21.0.0`      |
+| v5.5.0  | `@nx/devkit ^20.0.0`      |
+| v5.3.0  | `@nx/devkit ^19.0.0`      |
+| v5.0.0  | `@nx/devkit ^18.0.0`      |
+| v4.0.0  | `@nx/devkit ^17.0.0`      |
+| v3.0.0  | `@nx/devkit ^16.0.0`      |
+| v2.28.0 | `@nrwl/devkit ^15.0.0`    |
+| v2.23.0 | `@nrwl/devkit ^14.0.0`    |
+| v2.12.0 | `@nrwl/workspace ^13.0.0` |
+| v2.4.0  | `@nrwl/workspace ^12.0.0` |
+| v1.0.0  | `@nrwl/workspace ^11.0.0` |
 
 ## Changelog
 
@@ -592,6 +592,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sj-e2digital"><img src="https://avatars.githubusercontent.com/u/82376198?v=4?s=60" width="60px;" alt="sj-e2digital"/><br /><sub><b>sj-e2digital</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=sj-e2digital" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/NachoVazquez"><img src="https://avatars.githubusercontent.com/u/9338604?v=4?s=60" width="60px;" alt="NachoVazquez"/><br /><sub><b>NachoVazquez</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=NachoVazquez" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Mayur-Ram"><img src="https://avatars.githubusercontent.com/u/51334424?v=4?s=60" width="60px;" alt="Mayur-Ram"/><br /><sub><b>Mayur-Ram</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=Mayur-Ram" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maxkoryukov"><img src="https://avatars.githubusercontent.com/u/8887971?v=4?s=60" width="60px;" alt="Maksim Koryukov"/><br /><sub><b>Maksim Koryukov</b></sub></a><br /><a href="https://github.com/jscutlery/semver/commits?author=maxkoryukov" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
