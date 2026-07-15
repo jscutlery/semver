@@ -18,7 +18,11 @@
     "baseUrl": ".",
     "paths": {
       "@jscutlery/semver": ["packages/semver/src/index.ts"]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }
