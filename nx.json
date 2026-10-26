@@ -44,5 +44,16 @@
   },
   "parallel": 1,
   "defaultBase": "main",
-  "analytics": false
+  "analytics": false,
+  "affected": {
+    "legacy": true
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
+    }
+  ]
 }
