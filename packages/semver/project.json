@@ -32,31 +32,50 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
+      "dependsOn": ["lint-commits"],
       "options": {
         "lintFilePatterns": ["packages/semver/**/*.ts"]
-      },
-      "dependsOn": ["lint-commits"]
+      }
     },
     "lint-commits": {
       "command": "pnpm commitlint --from=last-release"
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/jest.preset.js",
+        {
+          "externalDependencies": [
+            "jest",
+            "@nx/jest",
+            "jest-extended",
+            "ts-jest"
+          ]
+        }
+      ],
       "options": {
-        "jestConfig": "packages/semver/jest.config.ts",
-        "testPathIgnorePatterns": ["packages/semver/.*\\.e2e\\.spec\\.ts$"]
+        "passWithNoTests": true,
+        "testPathIgnorePatterns": ".*\\.e2e\\.spec\\.ts$"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "e2e": {
       "executor": "@nx/jest:jest",
+      "dependsOn": ["build"],
       "options": {
         "jestConfig": "packages/semver/jest.config.ts",
         "testPathPatterns": ["packages/semver/.*\\.e2e\\.spec\\.ts$"]
-      },
-      "dependsOn": ["build"]
+      }
     },
     "build": {
       "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/semver",
         "tsConfig": "packages/semver/tsconfig.lib.json",
@@ -89,8 +108,7 @@
             "output": "/"
           }
         ]
-      },
-      "outputs": ["{options.outputPath}"]
+      }
     }
   }
 }
